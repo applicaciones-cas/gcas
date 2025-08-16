@@ -566,73 +566,103 @@ public class InvRequest_ConfirmationMPController implements Initializable, Scree
                         break;
 
                         case "btnSave":
-                    if (!ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to save?")) {
-                        return;
-                    }
-                    LocalDate selectedLocalDate = dpTransactionDate.getValue();
-                    if (!psOldDate.isEmpty()) {
-                        if (!CustomCommonUtil.formatLocalDateToShortString(selectedLocalDate).equals(psOldDate) && tfReferenceNo.getText().isEmpty()) {
-                            ShowMessageFX.Warning("A reference number is required for backdated transactions.", psFormName, null);
-                            return;
-                        }
-                    }
-                    pnTblInvDetailRow = -1;
-                    if (pnEditMode == EditMode.UPDATE) {
-                        invRequestController.StockRequest().Master().setModifiedDate(poApp.getServerDate());
-                        invRequestController.StockRequest().Master().setModifyingId(poApp.getUserID());
-                        for (int i = 0; i < invRequestController.StockRequest().getDetailCount(); i++) {
-                            invRequestController.StockRequest().Detail(i).setModifiedDate(poApp.getServerDate());
-                        }
-                    }
-
-                    poJSON = invRequestController.StockRequest().isDetailHasZeroQty();
-                    if (!"success".equals((String) poJSON.get("result"))) {
-                        if ("true".equals((String) poJSON.get("warning"))) {
-                            ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
-                            pnTblInvDetailRow = (int) poJSON.get("tableRow");
-                            loadTableInvDetail();
-                            loadDetail();
-                            initDetailFocus();
-                            return;
-                        } else {
-                            if (!ShowMessageFX.YesNo((String) poJSON.get("message"), psFormName, null)) {
-                                pnTblInvDetailRow = (int) poJSON.get("tableRow");
-                                loadTableInvDetail();
-                                loadDetail();
-                                initDetailFocus();
+                            if (!ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to save?")) {
                                 return;
                             }
-                        }
-                    }
-                    poJSON = invRequestController.StockRequest().SaveTransaction();
-                    if (!"success".equals((String) poJSON.get("result"))) {
-                        ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
-                        loadTableInvDetail();
-                        return;
-                    }
-                    ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
+                            LocalDate selectedLocalDate = dpTransactionDate.getValue();
+                            if (pnEditMode == EditMode.UPDATE) {
+                                if (!psOldDate.isEmpty()) {
+                                    if (!CustomCommonUtil.formatLocalDateToShortString(selectedLocalDate).equals(psOldDate) && tfReferenceNo.getText().isEmpty()) {
+                                        ShowMessageFX.Warning("A reference number is required for backdated transactions.", psFormName, null);
+                                        return;
+                                    }
+                                }
+                            }
 
-                    if (invRequestController.StockRequest().Master().getTransactionStatus().equals(StockRequestStatus.OPEN)
-                            && ShowMessageFX.YesNo(null, psFormName, "Do you want to confirm this transaction?")) {
-                try {
-                    if ("success".equals((poJSON = invRequestController.StockRequest().ConfirmTransaction("Confirmed")).get("result"))) {
-                        ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
-                    }
-                } catch (ParseException ex) {
-                    Logger.getLogger(InvRequest_Roq_ConfirmationMonarchGeneralController.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                    } else {
-                        if (!"success".equals((poJSON = invRequestController.StockRequest().OpenTransaction(invRequestController.StockRequest().Master().getTransactionNo())).get("result"))) {
-                            ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
-                            return;
-                        }
-                    }
 
-                    loadMaster();
-                    loadDetail();
-                    loadTableInvDetail();
-                    pnEditMode = invRequestController.StockRequest().getEditMode();
-                    
+                            // Validate Detail Count Before Backend Processing
+                            int detailCount = invRequestController.StockRequest().getDetailCount();
+                            boolean hasValidItem = false; // True if at least one valid item exists
+
+                            if (detailCount == 0) {
+                                ShowMessageFX.Warning("Your order is empty. Please add at least one item.", psFormName, null);
+                                return;
+                            }
+
+                            for (int lnCntr = 0; lnCntr <= detailCount - 1; lnCntr++) {
+                                double quantity = invRequestController.StockRequest().Detail(lnCntr).getQuantity();
+                                String stockID = invRequestController.StockRequest().Detail(lnCntr).getStockId();
+
+                                // If any stock ID is empty OR quantity is 0, show an error and prevent saving
+                                if (detailCount == 1) {
+                                    if (stockID == null || stockID.trim().isEmpty() || quantity == 0) {
+                                        ShowMessageFX.Warning("Invalid item in order. Ensure all items have a valid Stock ID and quantity greater than 0.", psFormName, null);
+                                        return;
+                                    }
+                                }
+
+                                hasValidItem = true;
+                            }
+
+                            // If no valid items exist, prevent saving
+                            if (!hasValidItem) {
+                                ShowMessageFX.Warning("Your order must have at least one valid item with a Stock ID and quantity greater than 0.", psFormName, null);
+                                return;
+                            }
+
+                            // Assign modification details for Update Mode
+                            if (pnEditMode == EditMode.UPDATE) {
+                                invRequestController.StockRequest().Master().setModifiedDate(poApp.getServerDate());
+                                invRequestController.StockRequest().Master().setModifyingId(poApp.getUserID());
+                            }
+
+                            // Assign modification date to all details
+                            for (int lnCntr = 0; lnCntr < detailCount; lnCntr++) {
+                                invRequestController.StockRequest().Detail(lnCntr).setModifiedDate(poApp.getServerDate());
+                            }
+
+                            // Save Transaction
+                            poJSON = invRequestController.StockRequest().isDetailHasZeroQty();
+                            if (!"success".equals((String) poJSON.get("result"))) {
+                                if ("true".equals((String) poJSON.get("warning"))) {
+                                    ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                                    pnTblInvDetailRow = (int) poJSON.get("tableRow");
+                                    loadTableInvDetail();
+                                    loadDetail();
+                                    initDetailFocus();
+                                    return;
+                                } else {
+                                    if (!ShowMessageFX.YesNo((String) poJSON.get("message"), psFormName, null)) {
+                                        pnTblInvDetailRow = (int) poJSON.get("tableRow");
+                                        loadTableInvDetail();
+                                        loadDetail();
+                                        initDetailFocus();
+                                        return;
+                                    }
+                                }
+                            }
+                            poJSON = invRequestController.StockRequest().SaveTransaction();
+                            if (!"success".equals((String) poJSON.get("result"))) {
+                                ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                                loadTableInvDetail();
+                                return;
+                            }
+                            ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
+                            poJSON = invRequestController.StockRequest().OpenTransaction(invRequestController.StockRequest().Master().getTransactionNo());
+                            // Confirmation Prompt
+                            if ("success".equals(poJSON.get("result")) && invRequestController.StockRequest().Master().getTransactionStatus().equals(StockRequestStatus.OPEN)
+                                    && ShowMessageFX.YesNo(null, psFormName, "Do you want to confirm this transaction?")) {
+                        try {
+                            if ("success".equals((poJSON = invRequestController.StockRequest().ConfirmTransaction("Confirmed")).get("result"))) {
+                                ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
+                            }
+                        } catch (ParseException ex) {
+                            Logger.getLogger(InvRequest_EntryMPGeneralController.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                            }
+                          
+                            break;
+
                        case "btnConfirm":
                                 if (ShowMessageFX.YesNo(null, psFormName, "Do you want to confirm this transaction?")) {
                                     try {
