@@ -991,7 +991,7 @@ public class SalesReservation_ConfirmationSPCarController implements Initializab
 //                        showRetainedHighlight(true);
                         if (source_data.isEmpty()) {
                             tblSourceList.setPlaceholder(new Label("NO RECORD TO LOAD"));
-                            ShowMessageFX.Warning("This customer has no inquiries or quotations on record.", psFormName, null);
+                            ShowMessageFX.Warning("NO RECORD TO LOAD", psFormName, null);
                             return;
                         }
                         tblSourceList.setItems(source_data);

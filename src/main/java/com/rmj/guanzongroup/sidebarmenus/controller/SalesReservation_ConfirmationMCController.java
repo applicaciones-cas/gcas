@@ -220,7 +220,7 @@ public class SalesReservation_ConfirmationMCController implements Initializable,
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-//         initObject();
+         initObject();
          initButton(EditMode.UNKNOWN);
          ClickButton();
          initFields();
@@ -231,38 +231,41 @@ public class SalesReservation_ConfirmationMCController implements Initializable,
         // TODO
     }
     
-    private void initObject(){
+    private void initObject() {
         try {
             poSalesReservationControllers = new SalesReservationControllers(poApp, logWrapper);
-            poSalesReservationControllers.SalesReservation().setTransactionStatus(Sales_Reservation_Static.OPEN + Sales_Reservation_Static.CONFIRMED);
-            poSalesReservationControllers.SalesReservation().setWithUI(true);
+            poSalesReservationControllers.SalesReservation().setTransactionStatus(Sales_Reservation_Static.OPEN);
+
             poJSON = poSalesReservationControllers.SalesReservation().InitTransaction();
             if (!"success".equals(poJSON.get("result"))) {
                 ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
             }
 
-            Platform.runLater((() -> {
-                try {
-                    poSalesReservationControllers.SalesReservation().setIndustryID(psIndustryID);
-                    poSalesReservationControllers.SalesReservation().setCompanyID(psCompanyID);
-                    poSalesReservationControllers.SalesReservation().setCategoryCd(psCategoryID);
-                    poSalesReservationControllers.SalesReservation().setBranchCode(poApp.getBranchCode());
-                    System.out.println("inits : " + psIndustryID + " " +  poSalesReservationControllers.SalesReservation().Master().getIndustryID());
-                    //                loadRecordSearch();
-                } catch (SQLException | GuanzonException ex) {
-                    Logger.getLogger(SalesReservation_ConfirmationCarController.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }));
-                pnEditMode =  poSalesReservationControllers.SalesReservation().getEditMode();
-                poSalesReservationControllers.SalesReservation().Master().setIndustryID(psIndustryID);
-                poSalesReservationControllers.SalesReservation().Master().setCompanyID(psCompanyID);
-                poSalesReservationControllers.SalesReservation().setCategoryCd(psCategoryID);
-                System.out.println("psIndustryID : " + psIndustryID);
-                System.out.println("psCompanyID : " + psIndustryID);
-                
-                } catch (SQLException | GuanzonException ex) {
-                    Logger.getLogger(SalesReservation_ConfirmationCarController.class.getName()).log(Level.SEVERE, null, ex);
-                }
+            poSalesReservationControllers.SalesReservation().setIndustryID(psIndustryID);
+            poSalesReservationControllers.SalesReservation().setCompanyID(psCompanyID);
+            poSalesReservationControllers.SalesReservation().setCategoryCd(psCategoryID);
+            poSalesReservationControllers.SalesReservation().setBranchCode(poApp.getBranchCode());
+
+            System.out.println("inits : " + psIndustryID + " "
+                    + poSalesReservationControllers.SalesReservation().Master().getIndustryID());
+
+            // Now safely call initFields
+            poJSON = poSalesReservationControllers.SalesReservation().initFields();
+            if ("error".equals(poJSON.get("result"))) {
+                ShowMessageFX.Error((String) poJSON.get("message"), psFormName, null);
+            }
+
+            lblSource.setText(
+                    poSalesReservationControllers.SalesReservation().Master().Company().getCompanyName() + " - "
+                    + poSalesReservationControllers.SalesReservation().Master().Industry().getDescription()
+            );
+            
+
+
+        } catch (SQLException | GuanzonException ex) {
+            Logger.getLogger(SalesReservation_EntryMCController.class.getName())
+                    .log(Level.SEVERE, null, ex);
+        }
     }
     
     private void initFields() {
@@ -941,7 +944,7 @@ public class SalesReservation_ConfirmationMCController implements Initializable,
 //                        showRetainedHighlight(true);
                         if (source_data.isEmpty()) {
                             tblSourceList.setPlaceholder(new Label("NO RECORD TO LOAD"));
-                            ShowMessageFX.Warning("This customer has no inquiries or quotations on record.", psFormName, null);
+                            ShowMessageFX.Warning("NO RECORD TO LOAD", psFormName, null);
                             return;
                         }
                         tblSourceList.setItems(source_data);

@@ -217,12 +217,14 @@ public class SalesReservation_HistoryCarController implements Initializable, Scr
             poSalesReservationControllers.SalesReservation().setCompanyID(psCompanyID);
             poSalesReservationControllers.SalesReservation().setCategoryCd(psCategoryID);
             poSalesReservationControllers.SalesReservation().setBranchCode(poApp.getBranchCode());
-                    System.out.println("inits : " + psIndustryID + " " +  poSalesReservationControllers.SalesReservation().Master().getIndustryID());
-                    pnEditMode =  poSalesReservationControllers.SalesReservation().getEditMode();
-                    //                loadRecordSearch();
-               
+            poSalesReservationControllers.SalesReservation().initFields();
+            pnEditMode =  poSalesReservationControllers.SalesReservation().getEditMode();
+            lblSource.setText(
+                    poSalesReservationControllers.SalesReservation().Master().Company().getCompanyName() + " - "
+                    + poSalesReservationControllers.SalesReservation().Master().Industry().getDescription()
+            );
                 } catch (SQLException | GuanzonException ex) {
-                    Logger.getLogger(SalesReservation_HistoryCarController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(SalesReservation_HistoryMonarchFoodController.class.getName()).log(Level.SEVERE, null, ex);
                 }
     }
     

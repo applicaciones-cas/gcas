@@ -221,31 +221,41 @@ public class SalesReservation_EntryMPController implements Initializable, Screen
         // TODO
     }
     
-    private void initObject(){
+    private void initObject() {
         try {
             poSalesReservationControllers = new SalesReservationControllers(poApp, logWrapper);
             poSalesReservationControllers.SalesReservation().setTransactionStatus(Sales_Reservation_Static.OPEN);
+
             poJSON = poSalesReservationControllers.SalesReservation().InitTransaction();
             if (!"success".equals(poJSON.get("result"))) {
                 ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
             }
 
-            Platform.runLater((() -> {
-                try {
-                    poSalesReservationControllers.SalesReservation().setIndustryID(psIndustryID);
-                    poSalesReservationControllers.SalesReservation().setCompanyID(psCompanyID);
-                    poSalesReservationControllers.SalesReservation().setCategoryCd(psCategoryID);
-                    poSalesReservationControllers.SalesReservation().setBranchCode(poApp.getBranchCode());
-                    System.out.println("inits : " + psIndustryID + " " +  poSalesReservationControllers.SalesReservation().Master().getIndustryID());
-                    //                loadRecordSearch();
-                } catch (SQLException | GuanzonException ex) {
-                    Logger.getLogger(SalesReservation_EntryMPController.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }));
+            poSalesReservationControllers.SalesReservation().setIndustryID(psIndustryID);
+            poSalesReservationControllers.SalesReservation().setCompanyID(psCompanyID);
+            poSalesReservationControllers.SalesReservation().setCategoryCd(psCategoryID);
+            poSalesReservationControllers.SalesReservation().setBranchCode(poApp.getBranchCode());
+
+            System.out.println("inits : " + psIndustryID + " "
+                    + poSalesReservationControllers.SalesReservation().Master().getIndustryID());
+
+            // Now safely call initFields
+            poJSON = poSalesReservationControllers.SalesReservation().initFields();
+            if ("error".equals(poJSON.get("result"))) {
+                ShowMessageFX.Error((String) poJSON.get("message"), psFormName, null);
+            }
+
+            lblSource.setText(
+                    poSalesReservationControllers.SalesReservation().Master().Company().getCompanyName() + " - "
+                    + poSalesReservationControllers.SalesReservation().Master().Industry().getDescription()
+            );
+            
             Platform.runLater(() -> btnNew.fire());
-                } catch (SQLException | GuanzonException ex) {
-                    Logger.getLogger(SalesReservation_EntryMPController.class.getName()).log(Level.SEVERE, null, ex);
-                }
+
+        } catch (SQLException | GuanzonException ex) {
+            Logger.getLogger(SalesReservation_EntryMCController.class.getName())
+                    .log(Level.SEVERE, null, ex);
+        }
     }
     
     private void initFields() {
@@ -940,7 +950,7 @@ public class SalesReservation_EntryMPController implements Initializable, Screen
 //                        showRetainedHighlight(true);
                         if (source_data.isEmpty()) {
                             tblSourceList.setPlaceholder(new Label("NO RECORD TO LOAD"));
-                            ShowMessageFX.Warning("This customer has no inquiries or quotations on record.", psFormName, null);
+                            ShowMessageFX.Warning("NO RECORD TO LOAD", psFormName, null);
                             return;
                         }
                         tblSourceList.setItems(source_data);
