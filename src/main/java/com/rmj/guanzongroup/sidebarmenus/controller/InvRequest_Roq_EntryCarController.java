@@ -917,14 +917,14 @@ public class InvRequest_Roq_EntryCarController implements Initializable, ScreenI
         if (lsValue == null) {
             return;
         }
-        if ("tfReferenceNo".equals(lsTextFieldID)) {
-        return;
-    }
+        
         poJSON = new JSONObject();
         if (!nv) {
             /*Lost Focus*/
             switch (lsTextFieldID) {
-                
+                case "tfReferenceNo":
+                    invRequestController.StockRequest().Master().setReferenceNo(lsValue);
+                    break;
                 case "tfOrderQuantity":
                     break;
                 case "tfSearchReferenceNo":
