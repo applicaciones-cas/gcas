@@ -9,8 +9,11 @@ import com.rmj.guanzongroup.sidebarmenus.controller.ScreenInterface;
 import com.rmj.guanzongroup.sidebarmenus.utility.CustomCommonUtil;
 import java.lang.reflect.Field;
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -22,34 +25,39 @@ import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Control;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.control.cell.PropertyValueFactory;
 import static javafx.scene.input.KeyCode.ENTER;
 import static javafx.scene.input.KeyCode.F3;
 import static javafx.scene.input.KeyCode.TAB;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import org.guanzon.appdriver.agent.services.Model;
+import javafx.scene.layout.StackPane;
+import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.GRiderCAS;
 import org.guanzon.appdriver.base.LogWrapper;
 import org.guanzon.appdriver.constant.EditMode;
-import org.guanzon.cas.inv.warehouse.model.Model_Inv_Stock_Request_Detail;
+import javafx.concurrent.Task;
+import org.json.simple.JSONObject;
+import ph.com.guanzongroup.cas.inv.warehouse.t4.InventoryStockIssuanceNeo;
 import ph.com.guanzongroup.cas.inv.warehouse.t4.model.Model_Inventory_Transfer_Detail;
 import ph.com.guanzongroup.cas.inv.warehouse.t4.model.Model_Inventory_Transfer_Master;
+import ph.com.guanzongroup.cas.inv.warehouse.t4.model.services.DeliveryIssuanceControllers;
 
 /**
  * FXML Controller class
@@ -63,9 +71,10 @@ public class InventoryStockTransferIssuanceNeoController implements Initializabl
     private String psFormName = "Issuance without ROQ";
     private String psIndustryID, psCompanyID, psCategoryID;
     private Control lastFocusedControl;
-    private Model_Inventory_Transfer_Master poAppController;
-    private ObservableList<Model_Inv_Stock_Request_Detail> laTransactionDetail;
-    private int pnSelectMaster, pnSelectedDetail, pnSelectedDelivery, pnEditMode, pnCTransactionDetail;
+    private InventoryStockIssuanceNeo poAppController;
+    private ObservableList<Model_Inventory_Transfer_Master> laTransactionMaster;
+    private ObservableList<Model_Inventory_Transfer_Detail> laTransactionDetail;
+    private int pnSelectMaster, pnTransferDetail, pnEditMode, pnCTransactionDetail;
     
     private final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
         TextField loTextField = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
@@ -115,10 +124,10 @@ public class InventoryStockTransferIssuanceNeoController implements Initializabl
     TableView<Model_Inventory_Transfer_Detail> tblViewDetails;
     
     @FXML
-    TableColumn<?, ?> tblColNo, tblColTransNo, tblColTransDate, tblColBranch;
+    TableColumn<Model_Inventory_Transfer_Master, String> tblColNo, tblColTransNo, tblColTransDate, tblColBranch;
     
     @FXML
-    TableColumn<?, ?> tblColDetailNo, tblColDetailOrderNo, tblColDetailSerial, tblColDetailBarcode, tblColDetailDescr, tblColDetailBrand, tblColDetailVariant, tblColDetailCost, tblColDetailOrderQty;
+    TableColumn<Model_Inventory_Transfer_Detail, String> tblColDetailNo, tblColDetailOrderNo, tblColDetailSerial, tblColDetailBarcode, tblColDetailDescr, tblColDetailBrand, tblColDetailVariant, tblColDetailCost, tblColDetailOrderQty;
     
     @FXML
     Label lblSource;
@@ -148,10 +157,33 @@ public class InventoryStockTransferIssuanceNeoController implements Initializabl
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        Platform.runLater(() -> {
         
-        });
-        initControlEvents();
+        try{
+            poLogWrapper = new LogWrapper(psFormName, psFormName);
+            poAppController = new DeliveryIssuanceControllers(poApp, poLogWrapper).InventoryStockIssuanceNeo();
+
+            //initlalize and validate transaction objects from class controller
+            if (!isJSONSuccess(poAppController.initTransaction(), psFormName)) {
+                unloadForm appUnload = new unloadForm();
+                appUnload.unloadForm(apMainAnchor, poApp, psFormName);
+            }
+
+            //background thread
+            Platform.runLater(() -> {
+
+                //initialize logged in category
+                poAppController.setIndustryID(psIndustryID);
+                poAppController.setCompanyID(psCompanyID);
+                poAppController.setCategoryID(psCategoryID);
+                System.err.println("Initialize value : Industry >" + psIndustryID
+                        + "\nCompany :" + psCompanyID
+                        + "\nCategory:" + psCategoryID);
+            });
+            initControlEvents();
+        
+        }catch(Exception e){
+            poLogWrapper.severe(psFormName + " :" + e.getMessage());
+        }
     }
     
     @FXML
@@ -161,7 +193,7 @@ public class InventoryStockTransferIssuanceNeoController implements Initializabl
     
     @FXML
     void ontblDetailClicked(MouseEvent e){
-        pnSelectedDetail = tblViewDetails.getSelectionModel().getSelectedIndex();
+        pnTransferDetail = tblViewDetails.getSelectionModel().getSelectedIndex();
         loadSelectedDetail();
     }
     
@@ -171,10 +203,89 @@ public class InventoryStockTransferIssuanceNeoController implements Initializabl
              //get button id
             String btnID = ((Button) event.getSource()).getId();
             switch(btnID){
-                case "btnUpdate":
-                    break;
-                    
                 case "btnSearch":
+                    if (lastFocusedControl == null) {
+                        ShowMessageFX.Information(null, psFormName,
+                                "Search unavailable. Please ensure a searchable field is selected or focused before proceeding..");
+                        return;
+                    }
+                    
+                    switch (lastFocusedControl.getId()) {
+                        case "tfSearchSourceno":
+                            if (pnTransferDetail > 0) {
+                                if (!isJSONSuccess(poAppController.searchTransaction(tfClusterName.getText(), false),
+                                        "Unable to Search Source No! ")) {
+                                    return;
+                                }
+                                loadTransactionMaster();
+
+                            }
+                            break;
+                        case "tfSeacrchTransNo":
+                            if (pnTransferDetail > 0) {
+                                if (!isJSONSuccess(poAppController.searchTransaction(tfSeacrchTransNo.getText(), true),
+                                        "Unable to Search Transaction! ")) {
+                                    return;
+                                }
+                                loadTransactionMaster();
+
+                            }
+                        break;
+                        case "tfClusterName":
+                            if (pnTransferDetail > 0) {
+                                if (!isJSONSuccess(poAppController.searchTransaction(tfClusterName.getText(), false),
+                                        "Unable to Search Destination! ")) {
+                                }
+                                return;
+
+                            }
+                        break;
+                        case "tfTrucking":
+                            if (pnTransferDetail > 0) {
+                                if (!isJSONSuccess(poAppController.searchTransaction(tfTrucking.getText(), false),
+                                        "Unable to Search Trucking! ")) {
+                                }
+                                return;
+
+                            }
+                        break;
+                        case "tfSearchSerial":
+                            if (pnTransferDetail > 0) {
+                                if (!isJSONSuccess(poAppController.searchDetailBySerial(pnTransferDetail, tfSearchSerial.getText(), false),
+                                        "Unable to Search Serial! ")) {
+                                }
+                                return;
+
+                            }
+                        break;
+                        case "tfSearchBarcode":
+                            if (pnTransferDetail > 0) {
+                                if (!isJSONSuccess(poAppController.searchDetailByBarcode(pnTransferDetail, tfSearchBarcode.getText(), false),
+                                        "Unable to Search Barcode! ")) {
+                                }
+                                return;
+
+                            }
+                        break;
+                        case "tfSearchDescription":
+                            if (pnTransferDetail > 0) {
+                                if (!isJSONSuccess(poAppController.searchDetailByIssuance(pnTransferDetail, tfSearchDescription.getText(), false),
+                                        "Unable to Search Description! ")) {
+                                }
+                                return;
+
+                            }
+                        break;
+                        case "tfSupersede":
+                            if (pnTransferDetail > 0) {
+                                if (!isJSONSuccess(poAppController.searchDetailByIssuance(pnTransferDetail, tfSupersede.getText(), false),
+                                        "Unable to Search Supersede! ")) {
+                                }
+                                return;
+
+                            }
+                        break;
+                    }
                     break;
 
                 case "btnSave":
@@ -246,6 +357,83 @@ public class InventoryStockTransferIssuanceNeoController implements Initializabl
         }
     }
     
+    private void loadTransactionMaster(){
+        StackPane overlay = getOverlayProgress(apMaster);
+        ProgressIndicator pi = (ProgressIndicator) overlay.getChildren().get(0);
+        overlay.setVisible(true);
+        pi.setVisible(true);
+        
+        Task<ObservableList<Model_Inventory_Transfer_Master>> loadTransaction = new Task<ObservableList<Model_Inventory_Transfer_Master>>(){
+            @Override
+            protected ObservableList<Model_Inventory_Transfer_Master> call() throws Exception {
+                if (!isJSONSuccess(poAppController.loadTransactionList(),
+                        "Initialize : Load of Transaction List")) {
+                    return null;
+                }
+                
+                List<Model_Inventory_Transfer_Master> rawList = poAppController.getMasterList();
+                return FXCollections.observableArrayList(new ArrayList<>(rawList));
+            }
+
+            @Override
+            protected void succeeded() {
+                ObservableList<Model_Inventory_Transfer_Master> laMasterList = getValue();
+                tblViewMaster.setItems(laMasterList);
+                
+                tblColNo.setCellValueFactory(loModel -> {
+                    int index = tblViewMaster.getItems().indexOf(loModel.getValue()) + 1;
+                    return new SimpleStringProperty(String.valueOf(index));
+                });
+                tblColTransNo.setCellValueFactory(loModel -> {
+                    return new SimpleStringProperty(String.valueOf(loModel.getValue().getTransactionNo()));
+                });
+                tblColTransDate.setCellValueFactory(loModel -> {
+                    return new SimpleStringProperty(String.valueOf(loModel.getValue().getTransactionDate()));
+                });
+                tblColBranch.setCellValueFactory(loModel -> {
+                    try{
+                        return new SimpleStringProperty(String.valueOf(loModel.getValue().Branch().getBranchName()));
+                    }catch(Exception e){
+                        poLogWrapper.severe(psFormName, e.getMessage());
+                        return new SimpleStringProperty("");
+                    }
+                });
+            }
+
+            @Override
+            protected void failed() {
+                overlay.setVisible(false);
+                pi.setVisible(false);
+                Throwable ex = getException();
+                Logger
+                        .getLogger(DeliverySchedule_EntryController.class
+                                .getName()).log(Level.SEVERE, null, ex);
+                poLogWrapper.severe(psFormName + " : " + ex.getMessage());
+            }
+
+            @Override
+            protected void cancelled() {
+                overlay.setVisible(false);
+                pi.setVisible(false);
+            }
+            
+        };
+    }
+    
+    private void loadSelectedMaster(){
+        int indextoSelect = pnSelectMaster <= 0 ? 1 : pnSelectMaster;
+        
+        tfSearchSourceno.setText(tblColBranch.getCellData(indextoSelect));
+        tfSeacrchTransNo.setText(tblColTransNo.getCellData(indextoSelect));
+        tfTransNo.setText(tblColTransNo.getCellData(indextoSelect));
+        dpTransactionDate.setValue(ParseDate(poAppController.getMaster(indextoSelect).getTransactionDate()));
+        tfClusterName.setText(poAppController.getMaster(indextoSelect).getDestination());
+        tfTrucking.setText(poAppController.getMaster(indextoSelect).getTruckId());
+        tfDiscountRate.setText(String.valueOf(poAppController.getMaster(indextoSelect).getDiscount()));
+        tfDiscountAmount.setText(String.valueOf(poAppController.getMaster(indextoSelect).getDiscount()));
+        tfTotal.setText(String.valueOf(poAppController.getMaster(indextoSelect).getDiscount()));
+    }
+    
     private void loadSelectedTableItem(int fnRow, TableView<?> ftblSrc, HashMap<String, Object> fmapObject){
         //iterate to table columns
         for(TableColumn<?, ?> column: ftblSrc.getColumns()){
@@ -278,7 +466,7 @@ public class InventoryStockTransferIssuanceNeoController implements Initializabl
         loMapFields.put("tblColDetailCost", tfCost);
         loMapFields.put("tblColDetailOrderQty", tfOrderQuantity);
         
-        loadSelectedTableItem(pnSelectedDetail, tblViewDetails, loMapFields);
+        loadSelectedTableItem(pnTransferDetail, tblViewDetails, loMapFields);
     }
     
     private void initControlEvents() {
@@ -364,8 +552,8 @@ public class InventoryStockTransferIssuanceNeoController implements Initializabl
     }
     
     private void reloadTableDetail() {
-//        List<Model_> rawDetail = poAppController.getDetailList();
-//        laTransactionDetail.setAll(rawDetail);
+        List<Model_Inventory_Transfer_Detail> rawDetail = poAppController.getDetailList();
+        laTransactionDetail.setAll(rawDetail);
 
         // Restore or select last row
         int indexToSelect = (pnCTransactionDetail >= 0 && pnCTransactionDetail < laTransactionDetail.size())
@@ -377,6 +565,78 @@ public class InventoryStockTransferIssuanceNeoController implements Initializabl
         pnCTransactionDetail = tblViewDetails.getSelectionModel().getSelectedIndex(); // Not focusedIndex
 
         tblViewDetails.refresh();
+    }
+    
+    private boolean isJSONSuccess(JSONObject loJSON, String fsModule) {
+        String result = (String) loJSON.get("result");
+        if ("error".equals(result)) {
+            String message = (String) loJSON.get("message");
+            poLogWrapper.severe(psFormName + " :" + message);
+            Platform.runLater(() -> {
+                ShowMessageFX.Warning(null, psFormName, fsModule + ": " + message);
+            });
+            return false;
+        }
+        String message = (String) loJSON.get("message");
+
+        poLogWrapper.severe(psFormName + " :" + message);
+        Platform.runLater(() -> {
+            if (message != null) {
+                ShowMessageFX.Information(null, psFormName, fsModule + ": " + message);
+            }
+        });
+        poLogWrapper.info(psFormName + " : Success on " + fsModule);
+        return true;
+
+    }
+    
+    private LocalDate ParseDate(Date date) {
+        if (date == null) {
+            return null;
+        }
+        Date loDate = new java.util.Date(date.getTime());
+        return loDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+    }
+    
+    private StackPane getOverlayProgress(AnchorPane foAnchorPane) {
+        ProgressIndicator localIndicator = null;
+        StackPane localOverlay = null;
+
+        // Check if overlay already exists
+        for (Node node : foAnchorPane.getChildren()) {
+            if (node instanceof StackPane) {
+                StackPane stack = (StackPane) node;
+                for (Node child : stack.getChildren()) {
+                    if (child instanceof ProgressIndicator) {
+                        localIndicator = (ProgressIndicator) child;
+                        localOverlay = stack;
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (localIndicator == null) {
+            localIndicator = new ProgressIndicator();
+            localIndicator.setMaxSize(50, 50);
+            localIndicator.setVisible(false);
+            localIndicator.setStyle("-fx-progress-color: orange;");
+        }
+
+        if (localOverlay == null) {
+            localOverlay = new StackPane();
+            localOverlay.setPickOnBounds(false); // Let clicks through
+            localOverlay.getChildren().add(localIndicator);
+
+            AnchorPane.setTopAnchor(localOverlay, 0.0);
+            AnchorPane.setBottomAnchor(localOverlay, 0.0);
+            AnchorPane.setLeftAnchor(localOverlay, 0.0);
+            AnchorPane.setRightAnchor(localOverlay, 0.0);
+
+            foAnchorPane.getChildren().add(localOverlay);
+        }
+
+        return localOverlay;
     }
     
     private List<Control> getAllSupportedControls() {

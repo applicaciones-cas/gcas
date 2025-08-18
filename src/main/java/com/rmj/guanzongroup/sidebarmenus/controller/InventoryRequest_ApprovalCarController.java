@@ -371,7 +371,7 @@ public class InventoryRequest_ApprovalCarController implements Initializable, Sc
             initControlEvents();
             initializeTableDetail();
         } catch (Exception e) {
-            e.printStackTrace();
+            poLogWrapper.severe(psFormName + " :" + e.getMessage());
         }
     }
     //Fetching All Controller 

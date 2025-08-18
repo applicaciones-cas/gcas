@@ -1106,7 +1106,6 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
             @Override
             protected void succeeded() {
                 ObservableList<Model_Delivery_Schedule_Master> laMasterList = getValue();
-
                 tblTransaction.setItems(laMasterList);
 
                 tblColDeliveryNo.setCellValueFactory(loModel -> {
