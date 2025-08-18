@@ -523,6 +523,7 @@ public class SalesInquiry_ConfirmationAppliancesController implements Initializa
                     break;
                 case UP:
                     switch (lsID) {
+                        case "tfBrand":
                         case "tfBarcode":
                         case "tfDescription":
                             moveNext(true);
@@ -532,6 +533,7 @@ public class SalesInquiry_ConfirmationAppliancesController implements Initializa
                     break;
                 case DOWN:
                     switch (lsID) {
+                        case "tfBrand":
                         case "tfBarcode":
                         case "tfDescription":
                             moveNext(false);

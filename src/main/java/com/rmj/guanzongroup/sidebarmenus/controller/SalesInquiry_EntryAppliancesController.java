@@ -719,6 +719,7 @@ public class SalesInquiry_EntryAppliancesController implements Initializable, Sc
                     break;
                 case UP:
                     switch (lsID) {
+                        case "tfBrand":
                         case "tfBarcode":
                         case "tfDescription":
                             moveNext(true);
@@ -728,6 +729,7 @@ public class SalesInquiry_EntryAppliancesController implements Initializable, Sc
                     break;
                 case DOWN:
                     switch (lsID) {
+                        case "tfBrand":
                         case "tfBarcode":
                         case "tfDescription":
                             moveNext(false);

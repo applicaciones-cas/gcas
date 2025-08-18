@@ -719,6 +719,7 @@ public class SalesInquiry_EntryMPController implements Initializable, ScreenInte
                     break;
                 case UP:
                     switch (lsID) {
+                        case "tfBrand":
                         case "tfBarcode":
                         case "tfDescription":
                             moveNext(true);
@@ -728,6 +729,7 @@ public class SalesInquiry_EntryMPController implements Initializable, ScreenInte
                     break;
                 case DOWN:
                     switch (lsID) {
+                        case "tfBrand":
                         case "tfBarcode":
                         case "tfDescription":
                             moveNext(false);
