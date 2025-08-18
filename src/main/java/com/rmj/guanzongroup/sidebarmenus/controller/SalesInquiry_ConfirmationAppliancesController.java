@@ -955,7 +955,7 @@ public class SalesInquiry_ConfirmationAppliancesController implements Initializa
                 }
         );
 
-        loadTableDetail = new JFXUtil.ReloadableTableTask(
+        loadTableMain = new JFXUtil.ReloadableTableTask(
                 tblViewMainList,
                 main_data,
                 () -> {
