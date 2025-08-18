@@ -345,7 +345,6 @@
                                                                   <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
                                                                       </rowConstraints>
                                                                       <children>
-                                                                          <TextField fx:id="tfBarcode" maxHeight="25.0" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                                                                           <Label text="Brand" GridPane.rowIndex="1">
                                                                                  <font>
                                                                                     <Font size="12.0" />
@@ -362,11 +361,6 @@
                                                                                  <font>
                                                                                     <Font size="12.0" />
                                                                                  </font></Label>
-                                                                  <TextField fx:id="tfCategory" layoutX="100.0" layoutY="41.0" maxHeight="25.0" promptText="Press F3: Search" GridPane.columnIndex="2" />
-                                                                  <TextField fx:id="tfDescription" layoutX="519.0" layoutY="42.0" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="3" />
-                                                                          <TextField fx:id="tfBrand" maxHeight="25.0" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                                                                              <TextField fx:id="tfModel" promptText="Press F3: Search" GridPane.columnIndex="7" />
-                                                                          <TextField fx:id="tfColor" maxHeight="25.0" promptText="Press F3: Search" GridPane.columnIndex="7" GridPane.rowIndex="2" />
                                                                   <Label layoutX="58.0" layoutY="17.0" text="Description" GridPane.rowIndex="3">
                                                                      <font>
                                                                         <Font size="12.0" />
@@ -382,12 +376,18 @@
                                                                         <Font size="12.0" />
                                                                      </font>
                                                                   </Label>
-                                                                  <TextField fx:id="tfModelVariant" disable="true" editable="false" styleClass="DisabledTextField" GridPane.columnIndex="7" GridPane.rowIndex="1" />
                                                                   <Label layoutX="480.0" layoutY="104.0" text="Selling Price" GridPane.columnIndex="5" GridPane.rowIndex="3">
                                                                      <font>
                                                                         <Font size="12.0" />
                                                                      </font>
                                                                   </Label>
+                                                                  <TextField fx:id="tfCategory" layoutX="100.0" layoutY="41.0" maxHeight="25.0" promptText="Press F3: Search" GridPane.columnIndex="2" />
+                                                                          <TextField fx:id="tfBrand" maxHeight="25.0" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                                          <TextField fx:id="tfBarcode" maxHeight="25.0" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                                                  <TextField fx:id="tfDescription" layoutX="519.0" layoutY="42.0" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="3" />
+                                                                              <TextField fx:id="tfModel" promptText="Press F3: Search" GridPane.columnIndex="7" />
+                                                                  <TextField fx:id="tfModelVariant" disable="true" editable="false" styleClass="DisabledTextField" GridPane.columnIndex="7" GridPane.rowIndex="1" />
+                                                                          <TextField fx:id="tfColor" maxHeight="25.0" promptText="Press F3: Search" GridPane.columnIndex="7" GridPane.rowIndex="2" />
                                                                   <TextField fx:id="tfSellingPrice" alignment="CENTER_RIGHT" disable="true" editable="false" layoutX="519.0" layoutY="70.0" maxWidth="139.0" promptText="0.0000" styleClass="DisabledTextField" GridPane.columnIndex="7" GridPane.halignment="LEFT" GridPane.rowIndex="3" />
                                                                       </children>
                                                                   </GridPane>
