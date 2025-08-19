@@ -63,6 +63,7 @@ import org.json.simple.JSONObject;
 import ph.com.guanzongroup.cas.sales.t1.services.SalesControllers;
 import ph.com.guanzongroup.cas.sales.t1.status.SalesInquiryStatic;
 import org.guanzon.appdriver.constant.UserRight;
+import ph.com.guanzongroup.cas.sales.t1.status.BankApplicationStatus;
 
 /**
  *
@@ -744,9 +745,10 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
 
                                 String lsActive = pnEditMode == EditMode.UNKNOWN ? "-1" : poSalesInquiryController.SalesInquiry().BankApplicationsList(lnCtr).getTransactionStatus();
                                 Map<String, String> statusMap = new HashMap<>();
-                                statusMap.put(SalesInquiryStatic.QUOTED, "QUOTED");
-                                statusMap.put(SalesInquiryStatic.SALE, "SALE");
-                                statusMap.put(SalesInquiryStatic.CONFIRMED, "CONFIRMED");
+                                statusMap.put(BankApplicationStatus.OPEN, "OPEN");
+                                statusMap.put(BankApplicationStatus.APPROVED, "APPROVED");
+                                statusMap.put(BankApplicationStatus.DISAPPROVED, "DISAPPROVED");
+                                statusMap.put(BankApplicationStatus.CANCELLED, "CANCELLED");
                                 String lsStat = statusMap.getOrDefault(lsActive, "UNKNOWN"); //default
 
                                 bankapplications_data.add(
@@ -1304,7 +1306,6 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
                         poSalesInquiryController.SalesInquiry().Master().setCategoryType(String.valueOf(selectedIndex));
                         break;
                     case "cmbCustomerGroup":
-
                         if (!poSalesInquiryController.SalesInquiry().getCustomerGroup().equals(String.valueOf(cmbCustomerGroup.getSelectionModel().getSelectedIndex()))) {
                             if (ShowMessageFX.YesNo(null, pxeModuleName,
                                     "Are you sure you want to change the Customer group?\nPlease note that doing so will delete all requirements list.\n\nDo you wish to proceed?") == true) {
@@ -1368,7 +1369,7 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
         JFXUtil.setButtonsVisibility(lbShow2, btnUpdate, btnHistory);
         JFXUtil.setButtonsVisibility(lbShow3, btnBrowse, btnClose);
 
-        JFXUtil.setDisabled(!lbShow, taRemarks, apMaster, apDetail);
+        JFXUtil.setDisabled(!lbShow, taRemarks, apMaster, apDetail,apRequirements, apBankApplications);
 
         switch (poSalesInquiryController.SalesInquiry().Master().getTransactionStatus()) {
             case SalesInquiryStatic.QUOTED:
