@@ -85,7 +85,8 @@ public class SalesInquiry_HistorySPMCController implements Initializable, Screen
     @FXML
     private Button btnBrowse, btnHistory, btnClose;
     @FXML
-    private TextField tfSearchClient, tfSearchReferenceNo, tfTransactionNo, tfBranch, tfSalesPerson, tfInquiryType, tfClient, tfAddress, tfInquiryStatus, tfContactNo, tfBrand, tfModel, tfColor, tfBarcode, tfDescription;
+    private TextField tfSearchClient, tfSearchReferenceNo, tfTransactionNo, tfBranch, tfSalesPerson, tfInquiryType, tfClient, tfAddress, tfInquiryStatus, tfContactNo, 
+                        tfBrand, tfModel, tfColor, tfBarcode, tfDescription, tfModelVariant, tfSellingPrice, tfReferralAgent;
     @FXML
     private TextArea taRemarks;
     @FXML
@@ -93,7 +94,7 @@ public class SalesInquiry_HistorySPMCController implements Initializable, Screen
     ObservableList<String> ClientType = ModelSalesInquiry_Detail.ClientType;
     
     ObservableList<String> PurchaseType = ModelSalesInquiry_Detail.PurchaseType;
-    ObservableList<String> CategoryType = ModelSalesInquiry_Detail.CategoryType;
+//    ObservableList<String> CategoryType = ModelSalesInquiry_Detail.CategoryType;
     @FXML
     private DatePicker dpTransactionDate, dpTargetDate;
     @FXML
@@ -233,8 +234,8 @@ public class SalesInquiry_HistorySPMCController implements Initializable, Screen
 
             tfBranch.setText(poSalesInquiryController.SalesInquiry().Master().Branch().getBranchName());
             tfSalesPerson.setText(poSalesInquiryController.SalesInquiry().Master().SalesPerson().getFullName());
+            tfReferralAgent.setText(poSalesInquiryController.SalesInquiry().Master().ReferralAgent().getCompanyName());
             
-
             tfClient.setText(poSalesInquiryController.SalesInquiry().Master().Client().getCompanyName());
             tfAddress.setText(poSalesInquiryController.SalesInquiry().Master().ClientAddress().getAddress());
             tfContactNo.setText(poSalesInquiryController.SalesInquiry().Master().ClientMobile().getMobileNo());
@@ -262,10 +263,13 @@ public class SalesInquiry_HistorySPMCController implements Initializable, Screen
 
             tfBarcode.setText(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Inventory().getBarCode());
             tfDescription.setText(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Inventory().getDescription());
-
+            
             tfBrand.setText(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Inventory().Brand().getDescription());
             tfModel.setText(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Model().getDescription());
+            tfModelVariant.setText(poSalesInquiryController.SalesInquiry().Detail(pnDetail).ModelVariant().getDescription());
             tfColor.setText(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Color().getDescription());
+            tfSellingPrice.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getSellPrice(), true));
+            
             JFXUtil.updateCaretPositions(apDetail);
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
