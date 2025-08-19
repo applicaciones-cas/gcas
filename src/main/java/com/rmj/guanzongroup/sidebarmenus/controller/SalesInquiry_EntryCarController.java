@@ -184,7 +184,6 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
             try {
                 if (newTab != null) {
                     String tabTitle = newTab.getText();
-//                    if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                     switch (tabTitle) {
                         case "Inquiry":
                             break;
@@ -197,15 +196,14 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
                             break;
                         case "Bank Applications":
                             if (pnEditMode == EditMode.ADDNEW) {
-//                                poSalesInquiryController.SalesInquiry().addBankApplication();
-                            } else if (pnEditMode == EditMode.UPDATE || pnEditMode == EditMode.READY) {
-//                                loadTableBankApplications.reload();
+                                poSalesInquiryController.SalesInquiry().addBankApplication();
+                                loadTableBankApplications.reload();
+                            } else if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE || pnEditMode == EditMode.READY) {
+                                loadTableBankApplications.reload();
                             } else {
                             }
-//                            loadTableBankApplications.reload();
                             break;
                     }
-//                    }
                 }
             } catch (SQLException ex) {
                 Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
@@ -590,7 +588,7 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
                     switch (colIndex) {
                         case 1:
                             poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList(rowIndex).isRequired(lbisTrue);
-//                            loadTableRequirements.reload();
+                            loadTableRequirements.reload();
                             break;
                         case 2:
                             poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList(rowIndex).isSubmitted(lbisTrue);
@@ -692,8 +690,8 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
                         try {
 
                             for (lnCtr = 0; lnCtr < poSalesInquiryController.SalesInquiry().getSalesInquiryRequirementsCount(); lnCtr++) {
-                                int lnIsRequired = poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList(pnRequirements).isRequired() ? 1 : 0;
-                                int lnIsSubmitted = poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList(pnRequirements).isRequired() ? 1 : 0;
+                                int lnIsRequired = poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList(lnCtr).isRequired() ? 1 : 0;
+                                int lnIsSubmitted = poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList(lnCtr).isRequired() ? 1 : 0;
 
                                 String lsReceivedDate = CustomCommonUtil.formatDateToShortString(poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList(lnCtr).getReceivedDate());
                                 requirements_data.add(
@@ -732,17 +730,16 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
                         int lnCtr;
                         bankapplications_data.clear();
                         try {
-                            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE || pnEditMode == EditMode.READY) {
-                                poSalesInquiryController.SalesInquiry().loadBankApplications();
-                            }
 
                             for (lnCtr = 0; lnCtr < poSalesInquiryController.SalesInquiry().getDetailCount(); lnCtr++) {
+                                String lsAppliedDate = CustomCommonUtil.formatDateToShortString(poSalesInquiryController.SalesInquiry().BankApplicationsList(lnCtr).getAppliedDate());
+                                String lsApprovedDate = CustomCommonUtil.formatDateToShortString(poSalesInquiryController.SalesInquiry().BankApplicationsList(lnCtr).getApprovedDate());
                                 bankapplications_data.add(
                                         new ModelBankApplications_Detail(String.valueOf(lnCtr + 1),
                                                 String.valueOf(poSalesInquiryController.SalesInquiry().BankApplicationsList(lnCtr).getApplicationNo()),
                                                 String.valueOf(poSalesInquiryController.SalesInquiry().BankApplicationsList(lnCtr).Bank().getBankName()),
-                                                String.valueOf(poSalesInquiryController.SalesInquiry().BankApplicationsList(lnCtr).getAppliedDate()),
-                                                String.valueOf(poSalesInquiryController.SalesInquiry().BankApplicationsList(lnCtr).getApprovedDate()),
+                                                String.valueOf(lsAppliedDate),
+                                                String.valueOf(lsApprovedDate),
                                                 String.valueOf(poSalesInquiryController.SalesInquiry().BankApplicationsList(lnCtr).getEditMode())
                                         )
                                 );
@@ -1114,7 +1111,7 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
                             poJSON = poSalesInquiryController.SalesInquiry().SearchBank(lsValue, false, pnBankApplications);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                tfBrand.setText("");
+                                tfBank.setText("");
                                 break;
                             }
                             loadTableBankApplications.reload();
