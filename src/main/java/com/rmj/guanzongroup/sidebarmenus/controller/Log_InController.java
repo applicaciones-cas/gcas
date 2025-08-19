@@ -6,6 +6,7 @@ package com.rmj.guanzongroup.sidebarmenus.controller;
 
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelLog_In_Company;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelLog_In_Industry;
+import com.rmj.guanzongroup.sidebarmenus.table.model.ModelLog_In_User;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import java.net.URL;
@@ -41,6 +42,7 @@ import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.Logical;
 import com.rmj.guanzongroup.sidebarmenus.utility.JFXUtil;
 import java.util.Arrays;
+import java.util.function.Function;
 import org.json.simple.JSONObject;
 
 /**
@@ -51,7 +53,6 @@ import org.json.simple.JSONObject;
 public class Log_InController implements Initializable, ScreenInterface {
 
     private final String pxeModuleName = "Log In";
-//param
     private ParamControllers poParameter;
     private GRiderCAS oApp;
     private String psIndustryID = "";
@@ -59,8 +60,10 @@ public class Log_InController implements Initializable, ScreenInterface {
     private boolean isMainOffice = true;
     private boolean isWarehouse = true;
     private LogWrapper poLogWrapper;
+    private DashboardController dashboardController;
     ObservableList<ModelLog_In_Industry> industryOptions = FXCollections.observableArrayList();
     ObservableList<ModelLog_In_Company> companyOptions = FXCollections.observableArrayList();
+    ObservableList<ModelLog_In_User> users = FXCollections.observableArrayList();
     @FXML
     private TextField tfUsername;
     @FXML
@@ -94,11 +97,10 @@ public class Log_InController implements Initializable, ScreenInterface {
     @Override
     public void setCategoryID(String fsValue) {
     }
+
     /**
      * Initializes the controller class.
      */
-    private DashboardController dashboardController;
-
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         DashboardController mainController = LoginControllerHolder.getMainController();
@@ -106,6 +108,7 @@ public class Log_InController implements Initializable, ScreenInterface {
         poParameter = new ParamControllers(oApp, poLogWrapper);
         tfPassword.textProperty().bindBidirectional(pfPassword.textProperty());
         String year = String.valueOf(Year.now().getValue());
+        lblCopyright.setStyle("-fx-font-size: 13px;");
         lblCopyright.setText("© " + year + " Guanzon Group of Companies. All Rights Reserved.");
 
         initComboBox();
@@ -114,13 +117,23 @@ public class Log_InController implements Initializable, ScreenInterface {
 
     }
 
+    public static <T> int getComboBoxIndexByProperty(ComboBox<T> comboBox, Function<T, String> propertyGetter, String targetValue) {
+        for (int i = 0; i < comboBox.getItems().size(); i++) {
+            T item = comboBox.getItems().get(i);
+            if (propertyGetter.apply(item).equalsIgnoreCase(targetValue)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     public void autoloadRecord() {
         // auto load based on config
-        cmbCompany.getSelectionModel().select(getCompanyName()[1]); // should select based on companyID
-        psCompanyID = getCompanyName()[0];
+        cmbCompany.getSelectionModel().select(getComboBoxIndexByProperty(cmbCompany, ModelLog_In_Company::getCompanyName, getCompany()[1])); //  select based on companyID
+        psCompanyID = getCompany()[0];
 
-        reloadCmbIndustry();
-        cmbIndustry.getSelectionModel().select(getIndustryName());
+        reloadCmbIndustryItems(); // reload industries based on Company selected
+        cmbIndustry.getSelectionModel().select(getComboBoxIndexByProperty(cmbIndustry, ModelLog_In_Industry::getIndustryName, getIndustryName()));
         psIndustryID = oApp.getIndustry();
 
         //set effect of industry disabled
@@ -151,7 +164,7 @@ public class Log_InController implements Initializable, ScreenInterface {
                 cmbCompany.requestFocus();
                 break;
             case "cmbCompany":
-                tfUsername.requestFocus(); // loop back to username if needed
+                tfUsername.requestFocus();
                 break;
         }
     };
@@ -164,33 +177,7 @@ public class Log_InController implements Initializable, ScreenInterface {
         cmbIndustry.setOnKeyPressed(tabKeyHandler);
     }
 
-    public String[] companyName() {
-        String[] result = new String[2];
-        try {
-
-            JSONObject loJSON = new JSONObject();
-            loJSON = poParameter.Branch().searchRecord(oApp.getBranchCode(), true);
-            if ("success".equals((String) loJSON.get("result"))) {
-                String lsSQL = "SELECT b.sCompnyID, c.sCompnyNm FROM branch b JOIN company c ON b.sCompnyID = c.sCompnyID ";
-                if (!oApp.isMainOffice()) {
-                    lsSQL = lsSQL + MiscUtil.addCondition(lsSQL, "sBranchCd = " + SQLUtil.toSQL(oApp.getBranchCode()));
-                }
-                ResultSet loRS = oApp.executeQuery(lsSQL);
-                if (loRS.next()) {
-                    result[0] = loRS.getString("sCompnyID");
-                    result[1] = loRS.getString("sCompnyNm");
-                }
-
-                MiscUtil.close(loRS);
-            }
-//            return result;
-        } catch (SQLException | GuanzonException ex) {
-            Logger.getLogger(Log_InController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return result;
-    }
-
-    public String[] getCompanyName() {
+    public String[] getCompany() {
         String[] result = new String[2];
         try {
             JSONObject loJSON = new JSONObject();
@@ -231,7 +218,6 @@ public class Log_InController implements Initializable, ScreenInterface {
         try {
             String lsSQL = "SELECT sDescript FROM industry ";
             lsSQL = MiscUtil.addCondition(lsSQL, "sIndstCdx = " + SQLUtil.toSQL(oApp.getIndustry()));
-
             ResultSet loRS = oApp.executeQuery(lsSQL);
 
             if (loRS.next()) {
@@ -240,9 +226,8 @@ public class Log_InController implements Initializable, ScreenInterface {
 
             MiscUtil.close(loRS);
         } catch (SQLException ex) {
-            ex.printStackTrace(); // You can also use a logger here
+            ex.printStackTrace();
         }
-
         return lsIndustryNm;
     }
 
@@ -252,49 +237,59 @@ public class Log_InController implements Initializable, ScreenInterface {
 
     @FXML
     private void cmdButton_Click(ActionEvent event) {
-        String lsButton = ((Button) event.getSource()).getId();
-        switch (lsButton) {
-            case "btnSignIn":
-                JSONObject poJSON = ValidateLogin();
-                if (!"success".equals((String) poJSON.get("result"))) {
-                    System.err.println((String) poJSON.get("message"));
-                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                } else {
-                    DashboardController dashboardController = LoginControllerHolder.getMainController();
-                    dashboardController.triggervbox2();
-                    dashboardController.setUserIndustry(psIndustryID);
-                    dashboardController.setUserCompany(psCompanyID);
-                    dashboardController.changeUserInfo(psIndustryID);
-                    LoginControllerHolder.setLogInStatus(true);
-                }
+        try {
+            String lsButton = ((Button) event.getSource()).getId();
+            switch (lsButton) {
+                case "btnSignIn":
+                    JSONObject poJSON = ValidateLogin();
+                    if (!"success".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                    } else {
 
-                break;
+                        if (!oApp.logUser("gRider", (String) poJSON.get("userID"))) {
+                            System.out.println("Log in status: " + oApp.getMessage() + "\nDefault user logged as " + oApp.getUserID() + "\nUser Level " + oApp.getUserLevel());
+                        } else {
+                            System.out.println("Log in status: " + oApp.getMessage() + "\nUser logged as " + oApp.getUserID() + "\nUser Level " + oApp.getUserLevel());
+                        }
+                        DashboardController dashboardController = LoginControllerHolder.getMainController();
+                        dashboardController.triggervbox2();
+                        dashboardController.setUserIndustry(psIndustryID);
+                        dashboardController.setUserCompany(psCompanyID);
+                        dashboardController.changeUserInfo(psIndustryID);
+                        LoginControllerHolder.setLogInStatus(true);
 
-            case "btnEyeIcon":
-                FontAwesomeIconView eyeIcon = new FontAwesomeIconView(FontAwesomeIcon.EYE);
-                if (pfPassword.isVisible()) {
-                    tfPassword.setText(pfPassword.getText());
-                    pfPassword.setVisible(false);
-                    tfPassword.setVisible(true);
-                    eyeIcon.setIcon(FontAwesomeIcon.EYE);
-                    eyeIcon.setStyle("-fx-fill: gray; -glyph-size: 20; ");
-                    btnEyeIcon.setGraphic(eyeIcon);
-                } else {
-                    pfPassword.setText(tfPassword.getText());
-                    tfPassword.setVisible(false);
-                    pfPassword.setVisible(true);
-                    eyeIcon.setIcon(FontAwesomeIcon.EYE_SLASH);
-                    eyeIcon.setStyle("-fx-fill: gray; -glyph-size: 20; ");
-                    btnEyeIcon.setGraphic(eyeIcon);
-                }
-                break;
-            default:
-                break;
+                    }
+                    break;
+                case "btnEyeIcon":
+                    FontAwesomeIconView eyeIcon = new FontAwesomeIconView(FontAwesomeIcon.EYE);
+                    if (pfPassword.isVisible()) {
+                        tfPassword.setText(pfPassword.getText());
+                        pfPassword.setVisible(false);
+                        tfPassword.setVisible(true);
+                        eyeIcon.setIcon(FontAwesomeIcon.EYE);
+                        eyeIcon.setStyle("-fx-fill: gray; -glyph-size: 20; ");
+                        btnEyeIcon.setGraphic(eyeIcon);
+                    } else {
+                        pfPassword.setText(tfPassword.getText());
+                        tfPassword.setVisible(false);
+                        pfPassword.setVisible(true);
+                        eyeIcon.setIcon(FontAwesomeIcon.EYE_SLASH);
+                        eyeIcon.setStyle("-fx-fill: gray; -glyph-size: 20; ");
+                        btnEyeIcon.setGraphic(eyeIcon);
+                    }
+                    break;
+                default:
+                    break;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Log_InController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (GuanzonException ex) {
+            Logger.getLogger(Log_InController.class.getName()).log(Level.SEVERE, null, ex);
         }
-
     }
 
-    public void reloadCmbIndustry() {
+    public void reloadCmbIndustryItems() {
         try {
             industryOptions = FXCollections.observableArrayList(getAllIndustries(psCompanyID));
             cmbIndustry.setItems(industryOptions);
@@ -302,18 +297,15 @@ public class Log_InController implements Initializable, ScreenInterface {
             ModelLog_In_Industry selectedIndustry = (ModelLog_In_Industry) cmbIndustry.getSelectionModel().getSelectedItem();
             if (selectedIndustry != null) {
                 psIndustryID = selectedIndustry.getIndustryID();
-                System.out.println("Industry ID: " + psIndustryID);
             }
         } catch (SQLException ex) {
-            ex.printStackTrace(); // or log it properly using Logger
-            // Optional: Show error message to user
+            ex.printStackTrace();
         }
     }
 
     EventHandler<ActionEvent> comboBoxHandler = event -> {
         ComboBox<?> source = (ComboBox<?>) event.getSource();
         String id = source.getId();
-
         switch (id) {
             case "cmbCompany":
             try {
@@ -322,8 +314,7 @@ public class Log_InController implements Initializable, ScreenInterface {
                     psCompanyID = selectedCompany.getCompanyId();
                     System.out.println("Company ID: " + psCompanyID);
 
-                    reloadCmbIndustry();
-
+                    reloadCmbIndustryItems();
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -349,7 +340,6 @@ public class Log_InController implements Initializable, ScreenInterface {
     }
 
     private void loadComboBoxItems() {
-
         try {
             industryOptions = FXCollections.observableArrayList(getAllIndustries(""));
             companyOptions = FXCollections.observableArrayList(getAllCompanies());
@@ -362,29 +352,57 @@ public class Log_InController implements Initializable, ScreenInterface {
     public JSONObject ValidateLogin() {
         JSONObject poJSON = new JSONObject();
         boolean isUsernameFilled = tfUsername.getText().trim().isEmpty();
+
         if (pfPassword.isVisible()) {
             tfPassword.setText(pfPassword.getText());
         } else {
             pfPassword.setText(tfPassword.getText());
         }
+
         boolean isPasswordFilled = tfPassword.getText().trim().isEmpty();
         if (!isUsernameFilled && !isPasswordFilled) {
-            poJSON.put("result", "success");
-            poJSON.put("message", "success");
 
             if (psIndustryID.equals("") || psCompanyID.equals("")) {
-                poJSON.put("result", "error");
-                poJSON.put("message", "Please fill all the fields");
+                JFXUtil.setJSONError(poJSON, "Please fill all the fields");
             } else {
-                poJSON.put("result", "success");
-                poJSON.put("message", "success");
+                JFXUtil.setJSONSuccess(poJSON, "success");
+                try {
+                    // final log
+                    users.clear();
+                    users = FXCollections.observableArrayList(getAllUsers());
+
+                    for (ModelLog_In_User user : users) {
+                        if (user.getUserName().equals(tfUsername.getText().trim()) && user.getUserPassword().equals(tfPassword.getText().trim())) {
+                            System.out.println("Login success for user ID: " + user.getUserID());
+                            poJSON.put("userID", user.getUserID());
+                        }
+                    }
+
+                } catch (SQLException ex) {
+                    Logger.getLogger(Log_InController.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         } else {
-            poJSON.put("result", "error");
-            poJSON.put("message", "Please fill all the fields");
+            JFXUtil.setJSONError(poJSON, "Please fill all the fields");
         }
 
         return poJSON;
+    }
+
+    private List<ModelLog_In_User> getAllUsers() throws SQLException {
+        List<ModelLog_In_User> user = new ArrayList<>();
+        String lsSQL = "SELECT * FROM xxxsysuser";
+//        lsSQL = MiscUtil.addCondition(lsSQL, "cRecdStat = " + SQLUtil.toSQL(Logical.YES));
+        ResultSet rs = oApp.executeQuery(lsSQL);
+
+        while (rs.next()) {
+            String userID = rs.getString("sUserIDxx");
+            String username = rs.getString("sUserName");
+            String userpassword = rs.getString("sPassword");
+            user.add(new ModelLog_In_User(userID, username, userpassword));
+        }
+        MiscUtil.close(rs);
+        return user;
     }
 
     private List<ModelLog_In_Company> getAllCompanies() throws SQLException {
@@ -398,7 +416,6 @@ public class Log_InController implements Initializable, ScreenInterface {
             String name = rs.getString("sCompnyNm");
             companies.add(new ModelLog_In_Company(id, name));
         }
-
         MiscUtil.close(rs);
         return companies;
     }
@@ -417,7 +434,6 @@ public class Log_InController implements Initializable, ScreenInterface {
                     condition.append(" OR ");
                 }
             }
-
             lsSQL = MiscUtil.addCondition(lsSQL, condition.toString());
         }
         ResultSet loRS = oApp.executeQuery(lsSQL);
@@ -427,7 +443,6 @@ public class Log_InController implements Initializable, ScreenInterface {
             String description = loRS.getString("sDescript");
             industries.add(new ModelLog_In_Industry(id, description));
         }
-
         MiscUtil.close(loRS);
         return industries;
     }

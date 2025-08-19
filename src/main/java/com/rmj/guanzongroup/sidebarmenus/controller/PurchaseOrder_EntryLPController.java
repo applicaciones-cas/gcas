@@ -344,9 +344,7 @@ public class PurchaseOrder_EntryLPController implements Initializable, ScreenInt
             String lsButton = ((Button) event.getSource()).getId();
             switch (lsButton) {
                 case "btnBrowse":
-                    poJSON = poPurchasingController.PurchaseOrder().SearchTransaction("",
-                            poPurchasingController.PurchaseOrder().Master().getSupplierID(),
-                            "");
+                    poJSON = poPurchasingController.PurchaseOrder().SearchTransaction("", poPurchasingController.PurchaseOrder().Master().getSupplierID(), "");
                     if (!"error".equals((String) poJSON.get("result"))) {
                         tblVwStockRequest.getSelectionModel().clearSelection(pnTblDetailRow);
                         pnTblDetailRow = -1;
@@ -585,11 +583,17 @@ public class PurchaseOrder_EntryLPController implements Initializable, ScreenInt
                     }
                     ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
                     poJSON = poPurchasingController.PurchaseOrder().OpenTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
-                    // Confirmation Prompt
-                    if ("success".equals(poJSON.get("result")) && poPurchasingController.PurchaseOrder().Master().getTransactionStatus().equals(PurchaseOrderStatus.OPEN)
-                            && ShowMessageFX.YesNo(null, psFormName, "Do you want to confirm this transaction?")) {
-                        if ("success".equals((poJSON = poPurchasingController.PurchaseOrder().ConfirmTransaction("Confirmed")).get("result"))) {
-                            ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
+                    if ("success".equals(poJSON.get("result"))) {
+                        if (poPurchasingController.PurchaseOrder().Master().getTransactionStatus().equals(PurchaseOrderStatus.OPEN)) {
+                            if (ShowMessageFX.YesNo(null, psFormName, "Do you want to confirm this transaction?")) {
+                                poPurchasingController.PurchaseOrder().setWithUI(true);
+                                if ("success".equals((poJSON = poPurchasingController.PurchaseOrder().ConfirmTransaction("")).get("result"))) {
+                                    ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
+                                } else {
+                                    ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                                    return;
+                                }
+                            }
                         }
                     }
 
@@ -1097,9 +1101,15 @@ public class PurchaseOrder_EntryLPController implements Initializable, ScreenInt
                         if (proceed) {
                             if (poApp.getUserLevel() <= UserRight.ENCODER) {
                                 poJSON = ShowDialogFX.getUserApproval(poApp);
-                                if (!"success".equalsIgnoreCase((String) poJSON.get("result"))) {
-                                    ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                                if (!"success".equals((String) poJSON.get("result"))) {
                                     approved = false;
+                                    return;
+                                } else {
+                                    if (Integer.parseInt(poJSON.get("nUserLevl").toString()) <= UserRight.ENCODER) {
+                                        ShowMessageFX.Warning("User is not an authorized approving officer..", psFormName, null);
+                                        approved = false;
+                                        return;
+                                    }
                                 }
                             }
                         } else {
@@ -1127,9 +1137,15 @@ public class PurchaseOrder_EntryLPController implements Initializable, ScreenInt
                         if (proceed) {
                             if (poApp.getUserLevel() <= UserRight.ENCODER) {
                                 poJSON = ShowDialogFX.getUserApproval(poApp);
-                                if (!"success".equalsIgnoreCase((String) poJSON.get("result"))) {
-                                    ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                                if (!"success".equals((String) poJSON.get("result"))) {
                                     approved = false;
+                                    return;
+                                } else {
+                                    if (Integer.parseInt(poJSON.get("nUserLevl").toString()) <= UserRight.ENCODER) {
+                                        ShowMessageFX.Warning("User is not an authorized approving officer..", psFormName, null);
+                                        approved = false;
+                                        return;
+                                    }
                                 }
                             }
                         } else {
@@ -1541,7 +1557,7 @@ public class PurchaseOrder_EntryLPController implements Initializable, ScreenInt
 
                     for (int lnCtr = 0; lnCtr < detailCount; lnCtr++) {
                         Model_PO_Detail orderDetail = poPurchasingController.PurchaseOrder().Detail(lnCtr);
-                        double lnTotalAmount = orderDetail.Inventory().getCost().doubleValue() * orderDetail.getQuantity().doubleValue();
+                        double lnTotalAmount = orderDetail.getUnitPrice().doubleValue() * orderDetail.getQuantity().intValue();
                         grandTotalAmount += lnTotalAmount;
                         double lnRequestQuantity = 0.00;
                         String status = "0";

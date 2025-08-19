@@ -7,11 +7,14 @@ package com.rmj.guanzongroup.sidebarmenus.utility;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import com.sun.javafx.scene.control.skin.TableViewSkin;
 import com.sun.javafx.scene.control.skin.VirtualFlow;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
@@ -24,14 +27,25 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.PauseTransition;
+import javafx.animation.ScaleTransition;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.property.ReadOnlyProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
@@ -66,28 +80,45 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.control.TextInputControl;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.Dragboard;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
 import javafx.stage.Modality;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
+import javafx.util.Callback;
+import javafx.util.Duration;
 import javafx.util.Pair;
 import javafx.util.StringConverter;
 import org.apache.poi.ss.formula.functions.T;
 import org.json.simple.JSONObject;
+import javafx.concurrent.Task;
+import javafx.scene.control.ContentDisplay;
+import javafx.scene.control.OverrunStyle;
+import javafx.scene.control.TableCell;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
+import org.guanzon.appdriver.agent.ShowMessageFX;
 
 /**
  * Date : 4/28/2025
@@ -298,6 +329,25 @@ public class JFXUtil {
         }
     }
 
+    public static void setDatePickerFormat(String pattern, DatePicker... datePickers) {
+//        "yyyy-MM-dd"
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
+
+        for (DatePicker datePicker : datePickers) {
+            datePicker.setConverter(new StringConverter<LocalDate>() {
+                @Override
+                public String toString(LocalDate date) {
+                    return (date != null) ? date.format(formatter) : "";
+                }
+
+                @Override
+                public LocalDate fromString(String string) {
+                    return (string != null && !string.isEmpty()) ? LocalDate.parse(string, formatter) : null;
+                }
+            });
+        }
+    }
+
     public static void updateCaretPositions(AnchorPane anchorPane) {
         List<TextField> textFields = getAllTextFields(anchorPane);
         for (TextField textField : textFields) {
@@ -464,7 +514,7 @@ public class JFXUtil {
             return root;
         }
 
-        public void closeSerialDialog() {
+        public void closeDialog() {
             if (dialog != null) {
                 dialog.close();
                 dialog = null;
@@ -590,27 +640,44 @@ public class JFXUtil {
         }
     }
 
-    public static void setColumnsIndexAndDisableReordering(TableView<?> tableView) {
+    public static void setColumnsIndexAndDisableReordering(final TableView<?> tableView) {
         int counter = 1;
         for (Object obj : tableView.getColumns()) {
             if (obj instanceof TableColumn) {
                 @SuppressWarnings("unchecked")
-                TableColumn<?, ?> column = (TableColumn<?, ?>) obj;
-                String indexName = String.format("index%02d", counter);
-                column.setCellValueFactory(new PropertyValueFactory(indexName));
-                counter++;
+                final TableColumn<Object, Object> column = (TableColumn<Object, Object>) obj;
+
+                final String indexName = String.format("index%02d", counter++);
+                column.setCellValueFactory(new PropertyValueFactory<>(indexName));
+
+                // Directly set cell factory without Label
+                column.setCellFactory(col -> {
+                    TableCell<Object, Object> cell = new TableCell<Object, Object>() {
+                        @Override
+                        protected void updateItem(Object item, boolean empty) {
+                            super.updateItem(item, empty);
+                            if (empty || item == null) {
+                                setText(null);
+                            } else {
+                                String text = item.toString().replaceAll("\\r?\\n", " ");
+                                setText(text);
+                            }
+                        }
+                    };
+                    cell.setWrapText(false);
+                    cell.setTextOverrun(OverrunStyle.ELLIPSIS);
+                    return cell;
+                });
             }
         }
 
-        tableView.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
+        // disable column reordering
+        tableView.widthProperty().addListener((obs, oldWidth, newWidth) -> {
             TableHeaderRow header = (TableHeaderRow) tableView.lookup("TableHeaderRow");
             if (header != null) {
-                header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-                    header.setReordering(false);
-                });
+                header.reorderingProperty().addListener((o, oldVal, newVal) -> header.setReordering(false));
             }
         });
-
     }
 
     public static void clearTextFields(AnchorPane... anchorPanes) {
@@ -623,6 +690,12 @@ public class JFXUtil {
         for (Node node : parent.getChildrenUnmodifiable()) {
             if (node instanceof TextInputControl) {
                 ((TextInputControl) node).clear();
+            } else if (node instanceof DatePicker) {
+                DatePicker dp = (DatePicker) node;
+                dp.setValue(null); // Set the selected date to null
+                if (dp.getEditor() != null) {
+                    dp.getEditor().clear(); // Clear any text in the editor field
+                }
             } else if (node instanceof Parent) {
                 clearTextInputsRecursive((Parent) node); // Recursively check child nodes
             }
@@ -681,14 +754,37 @@ public class JFXUtil {
         }
     }
 
+    public static String convertToIsoFormat(String dateStr) {
+        DateTimeFormatter isoFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter usFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+
+        // Try to parse as ISO format first
+        try {
+            LocalDate date = LocalDate.parse(dateStr, isoFormatter);
+            // If it parses successfully, return as-is
+            return dateStr;
+        } catch (DateTimeParseException ignore) {
+            // Not in ISO format, try MM/dd/yyyy
+        }
+
+        // Try to parse as MM/dd/yyyy and convert
+        try {
+            LocalDate date = LocalDate.parse(dateStr, usFormatter);
+            return date.format(isoFormatter);
+        } catch (DateTimeParseException e) {
+            System.err.println("Invalid date format: " + dateStr);
+            return null;
+        }
+    }
+
     public static JFXUtilDateResult processDate(String inputText, DatePicker datePicker) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy"); // accepted string
         JSONObject poJSON = new JSONObject();
         LocalDate selectedDate = null;
 
         if (inputText != null && !inputText.trim().isEmpty()) {
             try {
-                LocalDate parsedDate = LocalDate.parse(inputText, DateTimeFormatter.ofPattern("yyyy-M-d"));
+                LocalDate parsedDate = LocalDate.parse(inputText, DateTimeFormatter.ofPattern("MM/dd/yyyy"));
                 datePicker.setValue(parsedDate);
                 datePicker.getEditor().setText(formatter.format(parsedDate));
                 inputText = datePicker.getEditor().getText();
@@ -702,7 +798,7 @@ public class JFXUtil {
                 datePicker.setValue(selectedDate);
             } catch (Exception ex) {
                 poJSON.put("result", "error");
-                poJSON.put("message", "Invalid date format. Please use yyyy-mm-dd format.");
+                poJSON.put("message", "Invalid date format. Please use MM/dd/yyyy format.");
                 return new JFXUtilDateResult("", selectedDate, poJSON);
             }
         } else {
@@ -1500,4 +1596,514 @@ public class JFXUtil {
 
         return result.toString();
     }
+
+    @FunctionalInterface
+    public interface Action<T> {
+
+        T execute();
+    }
+
+    public static void executeConditional(boolean condition, Runnable trueAction, Runnable falseAction) {
+        if (condition) {
+            trueAction.run();
+        } else {
+            falseAction.run();
+        }
+    }
+
+    public static void applyHoverFadeToButtons(String firstColorHex, String secondColorHex, Button... buttons) {
+        for (Button button : buttons) {
+            Node graphic = button.getGraphic();
+            if (graphic instanceof FontAwesomeIconView) {
+                FontAwesomeIconView icon = (FontAwesomeIconView) graphic;
+
+                button.setOnMouseEntered(e -> animateColorFade(icon, firstColorHex, secondColorHex));
+                button.setOnMouseExited(e -> animateColorFade(icon, secondColorHex, firstColorHex));
+            }
+        }
+    }
+
+    private static void animateColorFade(FontAwesomeIconView icon, String fromColorHex, String toColorHex) {
+        Color startColor = Color.web(fromColorHex);
+        Color endColor = Color.web(toColorHex);
+
+        ObjectProperty<Color> colorProperty = new SimpleObjectProperty<>(startColor);
+        colorProperty.addListener((obs, oldVal, newVal) -> icon.setFill(newVal));
+
+        Timeline timeline = new Timeline(
+                new KeyFrame(Duration.ZERO, new KeyValue(colorProperty, startColor)),
+                new KeyFrame(Duration.millis(300), new KeyValue(colorProperty, endColor))
+        );
+
+        timeline.play();
+    }
+
+    public static void applyToggleHoverAnimation(ToggleButton... toggleButtons) {
+        for (ToggleButton toggleButton : toggleButtons) {
+            FontAwesomeIconView icon = extractFontAwesomeIcon(toggleButton);
+            if (icon != null) {
+                // Hover
+                toggleButton.setOnMouseEntered(e -> scaleIcon(icon, 1.2, 150));
+                toggleButton.setOnMouseExited(e -> {
+                    if (!toggleButton.isSelected()) {
+                        scaleIcon(icon, 1.0, 150);
+                    }
+                });
+
+                // Toggle click
+                toggleButton.selectedProperty().addListener((obs, wasSelected, isSelected) -> {
+                    if (isSelected) {
+                        playClickBounce(icon);
+                    } else {
+                        scaleIcon(icon, 1.0, 150);
+                    }
+                });
+            }
+        }
+    }
+
+    private static FontAwesomeIconView extractFontAwesomeIcon(ToggleButton toggleButton) {
+        Node graphic = toggleButton.getGraphic();
+        if (graphic instanceof FontAwesomeIconView) {
+            return (FontAwesomeIconView) graphic;
+        }
+        return null;
+    }
+
+    private static void scaleIcon(FontAwesomeIconView icon, double scaleTo, double durationMillis) {
+        ScaleTransition st = new ScaleTransition(Duration.millis(durationMillis), icon);
+        st.setToX(scaleTo);
+        st.setToY(scaleTo);
+        st.play();
+    }
+
+    private static void playClickBounce(FontAwesomeIconView icon) {
+        ScaleTransition shrink = new ScaleTransition(Duration.millis(80), icon);
+        shrink.setToX(0.9);
+        shrink.setToY(0.9);
+
+        ScaleTransition expand = new ScaleTransition(Duration.millis(150), icon);
+        expand.setToX(1.2);
+        expand.setToY(1.2);
+
+        shrink.setOnFinished(e -> expand.play());
+        shrink.play();
+    }
+
+    public static void placeClockInAnchorPane(AnchorPane anchorPane, double size) {
+        if (anchorPane == null) {
+            return;
+        }
+
+        Pane clockGraphic = createClockGraphic(size);
+        anchorPane.getChildren().add(clockGraphic);
+    }
+    static double hourHand1 = 0.27;
+    static double minuteHand1 = 0.3;
+
+    private static Pane createClockGraphic(final double size) {
+        final Pane clockPane = new Pane();
+        final double center = size / 2;
+        final double radius = center - 5;
+
+        Circle clockFace = new Circle(center, center, radius);
+        clockFace.setFill(Color.TRANSPARENT);
+        clockFace.setStroke(Color.BLACK);
+        clockFace.setStrokeWidth(2.5);
+
+        final Line hourHand = new Line(center, center, center, center - radius * hourHand1);
+        hourHand.setStrokeWidth(1.3);
+
+        final Line minuteHand = new Line(center, center, center, center - radius * minuteHand1);
+        minuteHand.setStrokeWidth(1.3);
+        minuteHand.setStroke(Color.BLACK);
+
+        clockPane.getChildren().addAll(clockFace, hourHand, minuteHand);
+
+        Timeline clockUpdater = new Timeline(new KeyFrame(Duration.seconds(1),
+                new javafx.event.EventHandler<javafx.event.ActionEvent>() {
+            @Override
+            public void handle(javafx.event.ActionEvent event) {
+                updateHands(hourHand, minuteHand, center);
+            }
+        }
+        ));
+        clockUpdater.setCycleCount(Timeline.INDEFINITE);
+        clockUpdater.play();
+
+        clockPane.setPrefSize(size, size);
+        return clockPane;
+    }
+
+    private static void updateHands(Line hourHand, Line minuteHand, double center) {
+        LocalDateTime now = LocalDateTime.now();
+        double hourAngle = (now.getHour() % 12 + now.getMinute() / 60.0) * 30;
+        double minuteAngle = now.getMinute() * 6;
+
+        setHandAngle(hourHand, hourAngle, center, center * hourHand1);
+        setHandAngle(minuteHand, minuteAngle, center, center * minuteHand1);
+    }
+
+    private static void setHandAngle(Line hand, double angle, double center, double length) {
+        double radians = Math.toRadians(angle - 90);
+        hand.setEndX(center + length * Math.cos(radians));
+        hand.setEndY(center + length * Math.sin(radians));
+    }
+
+    public static class RowDragLock {
+
+        public boolean isEnabled;
+
+        public RowDragLock(boolean enabled) {
+            this.isEnabled = enabled;
+        }
+    }
+
+    public static <T> void enableRowDragAndDrop(
+            TableView<T> tableView,
+            Function<T, StringProperty> index01Getter,
+            Function<T, StringProperty> index03Getter,
+            Function<T, StringProperty> index04Getter,
+            RowDragLock dragLock,
+            Consumer<Integer> onDropCallback
+    ) {
+        tableView.setRowFactory(tv -> {
+            TableRow<T> row = new TableRow<>();
+
+            row.setOnMouseEntered(e -> {
+                if (!row.isEmpty() && dragLock.isEnabled && !isBlankRow(row.getItem(), index01Getter, index03Getter, index04Getter)) {
+                    row.setCursor(Cursor.OPEN_HAND);
+                }
+            });
+
+            row.setOnMouseExited(e -> row.setCursor(Cursor.DEFAULT));
+
+            row.setOnMousePressed(e -> {
+                if (!row.isEmpty() && dragLock.isEnabled && !isBlankRow(row.getItem(), index01Getter, index03Getter, index04Getter)) {
+                    row.setCursor(Cursor.CLOSED_HAND);
+                }
+            });
+
+            row.setOnMouseReleased(e -> {
+                if (!row.isEmpty() && dragLock.isEnabled && !isBlankRow(row.getItem(), index01Getter, index03Getter, index04Getter)) {
+                    row.setCursor(Cursor.OPEN_HAND);
+                }
+            });
+
+            row.setOnDragDetected(event -> {
+                if (!dragLock.isEnabled || row.isEmpty() || isBlankRow(row.getItem(), index01Getter, index03Getter, index04Getter)) {
+                    return;
+                }
+
+                Dragboard db = row.startDragAndDrop(TransferMode.MOVE);
+                ClipboardContent content = new ClipboardContent();
+                content.putString("drag");
+                db.setContent(content);
+
+                tableView.getProperties().put("dragSourceIndex", row.getIndex());
+                row.setCursor(Cursor.CLOSED_HAND);
+                event.consume();
+            });
+
+            row.setOnDragOver(event -> {
+                if (!dragLock.isEnabled || event.getGestureSource() == row || row.isEmpty()
+                        || isBlankRow(row.getItem(), index01Getter, index03Getter, index04Getter)) {
+                    return;
+                }
+
+                if (event.getDragboard().hasString()) {
+                    event.acceptTransferModes(TransferMode.MOVE);
+
+                    int dragIndex = (int) tableView.getProperties().get("dragSourceIndex");
+                    int hoverIndex = row.getIndex();
+
+                    double sceneY = event.getSceneY();
+                    double rowY = row.localToScene(row.getBoundsInLocal()).getMinY();
+                    double rowHeight = row.getHeight();
+                    boolean isTopHalf = (sceneY - rowY) < rowHeight / 2;
+                    int targetIndex = isTopHalf ? hoverIndex : hoverIndex + 1;
+
+                    if (targetIndex == dragIndex || targetIndex == dragIndex + 1) {
+                        row.setStyle("");
+                    } else if (isTopHalf) {
+                        row.setStyle("-fx-border-color: #FF8201; -fx-border-width: 2px 0 0 0;");
+                    } else {
+                        row.setStyle("-fx-border-color: #FF8201; -fx-border-width: 0 0 2px 0;");
+                    }
+
+                    tableView.getProperties().put("highlightIndex", targetIndex);
+                    event.consume();
+                }
+            });
+
+            row.setOnDragExited(e -> row.setStyle(""));
+
+            row.setOnDragDropped(event -> {
+                Dragboard db = event.getDragboard();
+                if (!db.hasString()) {
+                    return;
+                }
+
+                int dragIndex = (int) tableView.getProperties().get("dragSourceIndex");
+                int dropIndex = (int) tableView.getProperties().getOrDefault("highlightIndex", dragIndex);
+
+                if (dropIndex > dragIndex) {
+                    dropIndex--;
+                }
+
+                ObservableList<T> items = tableView.getItems();
+                T draggedItem = items.remove(dragIndex);
+
+                if (dropIndex >= items.size()) {
+                    items.add(draggedItem);
+                    dropIndex = items.size() - 1;
+                } else {
+                    items.add(dropIndex, draggedItem);
+                }
+
+                renumberIndex01(items, index01Getter);
+                tableView.getSelectionModel().select(dropIndex);
+                tableView.getProperties().remove("dragSourceIndex");
+                tableView.getProperties().remove("highlightIndex");
+
+                if (onDropCallback != null) {
+                    onDropCallback.accept(dropIndex);
+                }
+
+                event.setDropCompleted(true);
+                event.consume();
+            });
+
+            row.setOnDragDone(e -> row.setCursor(Cursor.DEFAULT));
+
+            return row;
+        });
+    }
+
+    private static <T> void renumberIndex01(ObservableList<T> items, Function<T, StringProperty> index01Getter) {
+        for (int i = 0; i < items.size(); i++) {
+            index01Getter.apply(items.get(i)).set(String.valueOf(i + 1));
+        }
+    }
+
+    private static <T> boolean isBlankRow(
+            T item,
+            Function<T, StringProperty> index01Getter,
+            Function<T, StringProperty> index03Getter,
+            Function<T, StringProperty> index04Getter
+    ) {
+        if (item == null) {
+            return true;
+        }
+
+        String val1 = index01Getter.apply(item).get();
+        String val3 = index03Getter.apply(item).get();
+        String val4 = index04Getter.apply(item).get();
+
+        return val1 == null || val1.trim().isEmpty()
+                || val3 == null || val3.trim().isEmpty()
+                || val4 == null || val4.trim().isEmpty();
+    }
+
+    public static class Pairs<K, V> {
+
+        public final K key;
+        public final V value;
+
+        public Pairs(K ObservableList, V comboBox) {
+            this.key = ObservableList;
+            this.value = comboBox;
+        }
+    }
+
+    public static <T> void setComboBoxItems(Pairs<ObservableList<T>, ComboBox<T>>... comboPairs) {
+        for (Pairs<ObservableList<T>, ComboBox<T>> pair : comboPairs) {
+            ObservableList<T> list = pair.key;
+            ComboBox<T> cb = pair.value;
+
+            cb.getItems().clear();
+            cb.setItems(list);
+
+            if (!list.isEmpty()) {
+                cb.getSelectionModel().select(0); // selects the first item
+            }
+        }
+    }
+
+    public static void setComboBoxActionListener(EventHandler<ActionEvent> listener, ComboBox<?>... comboBoxes) {
+        for (ComboBox<?> cb : comboBoxes) {
+            cb.setOnAction(listener);
+        }
+    }
+
+//    public static <T> void enableAutoFillOnFocusWithDropdownHighlight(String hexColor, ComboBox<T>... comboBoxes) {
+//        for (ComboBox<T> comboBox : comboBoxes) {
+//            comboBox.setEditable(false);
+//
+//            // Only style dropdown list cells — do not change display
+//            comboBox.setCellFactory(cb -> new ListCell<T>() {
+//                @Override
+//                protected void updateItem(T item, boolean empty) {
+//                    super.updateItem(item, empty);
+//                    if (empty || item == null) {
+//                        setText(null);
+//                        setStyle("");
+//                    } else {
+//                        setText(item.toString());
+//                        if (comboBox.getSelectionModel().getSelectedItem() != null
+//                                && comboBox.getSelectionModel().getSelectedItem().equals(item)) {
+//                            setStyle("-fx-background-color: " + hexColor + "; -fx-text-fill: white;");
+//                        } else {
+//                            setStyle("");
+//                        }
+//                    }
+//                }
+//            });
+//
+//            // On key typed, select the first item starting with that character (case-insensitive)
+//            comboBox.addEventFilter(KeyEvent.KEY_TYPED, event -> {
+//                if (!comboBox.isFocused()) {
+//                    return;
+//                }
+//
+//                String typedChar = event.getCharacter().toLowerCase();
+//                ObservableList<T> items = comboBox.getItems();
+//
+//                for (T item : items) {
+//                    if (item != null && item.toString().toLowerCase().startsWith(typedChar)) {
+//                        comboBox.getSelectionModel().select(item);
+//                        break;
+//                    }
+//                }
+//
+//                event.consume();
+//            });
+//        }
+//    }
+//
+    //sample usage
+//    JFXUtil.ReloadableTableTask loadTableDetail = new JFXUtil.ReloadableTableTask(
+//            tblViewTransDetails,
+//            details_data,
+//            () -> {
+//            }
+//    );
+    public static class ReloadableTableTask {
+
+        private final TableView<?> tableView;
+        private final ObservableList<?> data;
+        private final Runnable content;
+
+        public ReloadableTableTask(TableView<?> tableView, ObservableList<?> data, Runnable content) {
+            this.tableView = tableView;
+            this.data = data;
+            this.content = content;
+        }
+
+        public void reload() {
+            JFXUtil.LoadScreenComponents loading = JFXUtil.createLoadingComponents();
+            tableView.setPlaceholder(loading.loadingPane);
+            loading.progressIndicator.setVisible(true);
+
+            Task<Void> task = new Task<Void>() {
+                @Override
+                protected Void call() throws Exception {
+                    content.run(); // Caller must wrap with Platform.runLater if needed
+                    return null;
+                }
+
+                @Override
+                protected void succeeded() {
+                    if (data == null || data.isEmpty()) {
+                        tableView.setPlaceholder(loading.placeholderLabel);
+                    } else {
+                        tableView.toFront();
+                    }
+                    loading.progressIndicator.setVisible(false);
+                }
+
+                @Override
+                protected void failed() {
+                    if (data == null || data.isEmpty()) {
+                        tableView.setPlaceholder(loading.placeholderLabel);
+                    }
+                    loading.progressIndicator.setVisible(false);
+                }
+            };
+            new Thread(task).start();
+        }
+    }
+
+    public static void textFieldMoveNext(TextField fsId) {
+        Platform.runLater(() -> {
+            PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
+            delay.setOnFinished(e -> {
+                fsId.requestFocus();
+            });
+            delay.play();
+        });
+    }
+
+    public static void initiateBtnSearch(
+            String pxeModuleName,
+            AtomicReference<Object> lastFocusedTextField,
+            AtomicReference<Object> previousSearchedTextField,
+            AnchorPane... anchorPanes
+    ) {
+        String lsMessage = "Focus a searchable textfield to search";
+        Object lastNode = lastFocusedTextField.get();
+
+        if (lastNode instanceof TextField) {
+            TextField tf = (TextField) lastNode;
+
+            boolean isSearchable = false;
+            for (AnchorPane ap : anchorPanes) {
+                if (JFXUtil.getTextFieldsIDWithPrompt("Press F3: Search", ap).contains(tf.getId())) {
+                    isSearchable = true;
+                    break;
+                }
+            }
+
+            if (isSearchable) {
+                if (lastNode == previousSearchedTextField.get()) {
+                    return;
+                }
+
+                previousSearchedTextField.set(lastNode);
+                JFXUtil.makeKeyPressed(tf, KeyCode.F3);
+            } else {
+                ShowMessageFX.Information(null, pxeModuleName, lsMessage);
+            }
+
+        } else if (lastNode != null) {
+            ShowMessageFX.Information(null, pxeModuleName, lsMessage);
+        } else {
+            ShowMessageFX.Information(null, pxeModuleName, lsMessage);
+        }
+    }
+
+//    ChangeListener<Boolean> txtArea_Focus = JFXUtil.createFocusListener(TextArea.class,
+//            (lsID, lsValue) -> {
+//            });
+    public static ChangeListener<Boolean> createFocusListener(Class<? extends TextInputControl> nodeType, BiConsumer<String, String> onLostFocus) {
+        return (observable, oldValue, newValue) -> {
+            Object bean = ((ReadOnlyBooleanPropertyBase) observable).getBean();
+            if (!nodeType.isInstance(bean)) {
+                return;
+            }
+
+            TextInputControl control = nodeType.cast(bean);
+            String id = control.getId();
+            String value = control.getText();
+
+            if (value == null) {
+                return;
+            }
+
+            if (!newValue) { // Lost focus
+                onLostFocus.accept(id, value.trim());
+            }
+        };
+    }
+
 }

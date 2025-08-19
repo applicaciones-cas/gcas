@@ -85,7 +85,7 @@ import javax.script.ScriptException;
 public class SIPosting_HistorySPCarController implements Initializable, ScreenInterface {
 
     private GRiderCAS oApp;
-    static PurchaseOrderReceiving poPurchaseReceivingController;
+    static PurchaseOrderReceivingControllers poPurchaseReceivingController;
     private JSONObject poJSON;
     public int pnEditMode;
     private final String pxeModuleName = JFXUtil.getFormattedClassTitle(this.getClass());
@@ -166,9 +166,9 @@ public class SIPosting_HistorySPCarController implements Initializable, ScreenIn
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        poPurchaseReceivingController = new PurchaseOrderReceivingControllers(oApp, null).PurchaseOrderReceiving();
+        poPurchaseReceivingController = new PurchaseOrderReceivingControllers(oApp, null);
         poJSON = new JSONObject();
-        poJSON = poPurchaseReceivingController.InitTransaction(); // Initialize transaction
+        poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().InitTransaction(); // Initialize transaction
         if (!"success".equals((String) poJSON.get("result"))) {
             System.err.println((String) poJSON.get("message"));
             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -184,13 +184,14 @@ public class SIPosting_HistorySPCarController implements Initializable, ScreenIn
         clearTextFields();
 
         Platform.runLater(() -> {
-            poPurchaseReceivingController.Master().setIndustryId(psIndustryId);
-            poPurchaseReceivingController.Master().setCompanyId(psCompanyId);
-            poPurchaseReceivingController.setIndustryId(psIndustryId);
-            poPurchaseReceivingController.setCompanyId(psCompanyId);
-            poPurchaseReceivingController.setCategoryId(psCategoryId);
-            poPurchaseReceivingController.isFinance(true);
-            poPurchaseReceivingController.initFields();
+            poPurchaseReceivingController.PurchaseOrderReceiving().Master().setIndustryId(psIndustryId);
+            poPurchaseReceivingController.PurchaseOrderReceiving().Master().setCompanyId(psCompanyId);
+            poPurchaseReceivingController.PurchaseOrderReceiving().setIndustryId(psIndustryId);
+            poPurchaseReceivingController.PurchaseOrderReceiving().setCompanyId(psCompanyId);
+            poPurchaseReceivingController.PurchaseOrderReceiving().setCategoryId(psCategoryId);
+            poPurchaseReceivingController.PurchaseOrderReceiving().isFinance(true);
+            poPurchaseReceivingController.PurchaseOrderReceiving().initFields();
+            poPurchaseReceivingController.PurchaseOrderReceiving().setWithUI(true);
             loadRecordSearch();
 
             TriggerWindowEvent();
@@ -240,7 +241,7 @@ public class SIPosting_HistorySPCarController implements Initializable, ScreenIn
     public void RemoveWindowEvent() {
         root.sceneProperty().removeListener(WindowKeyEvent);
         scene.setOnKeyPressed(null);
-        stageAttachment.closeSerialDialog();
+        stageAttachment.closeDialog();
     }
 
     private void populateJE() {
@@ -248,7 +249,7 @@ public class SIPosting_HistorySPCarController implements Initializable, ScreenIn
             JSONObject pnJSON = new JSONObject();
             JFXUtil.setValueToNull(dpJETransactionDate, dpReportMonthYear);
             JFXUtil.clearTextFields(apJEMaster, apJEDetail);
-            pnJSON = poPurchaseReceivingController.populateJournal();
+            pnJSON = poPurchaseReceivingController.PurchaseOrderReceiving().populateJournal();
             if (JFXUtil.isJSONSuccess(pnJSON)) {
                 loadTableJEDetail();
             } else {
@@ -274,7 +275,7 @@ public class SIPosting_HistorySPCarController implements Initializable, ScreenIn
             if (event.getCode() == KeyCode.F5) {
                 System.out.println("tested key press");
 
-                if (JFXUtil.isObjectEqualTo(poPurchaseReceivingController.getEditMode(), EditMode.READY, EditMode.UPDATE)) {
+                if (JFXUtil.isObjectEqualTo(poPurchaseReceivingController.PurchaseOrderReceiving().getEditMode(), EditMode.READY, EditMode.UPDATE)) {
                     showAttachmentDialog();
                 }
             }
@@ -293,19 +294,19 @@ public class SIPosting_HistorySPCarController implements Initializable, ScreenIn
 
     public void showAttachmentDialog() {
         poJSON = new JSONObject();
-        stageAttachment.closeSerialDialog();
+        stageAttachment.closeDialog();
         openedAttachment = "";
-        if (poPurchaseReceivingController.getTransactionAttachmentCount() <= 0) {
+        if (poPurchaseReceivingController.PurchaseOrderReceiving().getTransactionAttachmentCount() <= 0) {
             ShowMessageFX.Warning(null, pxeModuleName, "No transaction attachment to load.");
             return;
         }
 
-        openedAttachment = poPurchaseReceivingController.Master().getTransactionNo();
+        openedAttachment = poPurchaseReceivingController.PurchaseOrderReceiving().Master().getTransactionNo();
         Map<String, Pair<String, String>> data = new HashMap<>();
         data.clear();
-        for (int lnCtr = 0; lnCtr < poPurchaseReceivingController.getTransactionAttachmentCount(); lnCtr++) {
-            data.put(String.valueOf(lnCtr + 1), new Pair<>(String.valueOf(poPurchaseReceivingController.TransactionAttachmentList(lnCtr).getModel().getFileName()),
-                    poPurchaseReceivingController.TransactionAttachmentList(lnCtr).getModel().getDocumentType()));
+        for (int lnCtr = 0; lnCtr < poPurchaseReceivingController.PurchaseOrderReceiving().getTransactionAttachmentCount(); lnCtr++) {
+            data.put(String.valueOf(lnCtr + 1), new Pair<>(String.valueOf(poPurchaseReceivingController.PurchaseOrderReceiving().TransactionAttachmentList(lnCtr).getModel().getFileName()),
+                    poPurchaseReceivingController.PurchaseOrderReceiving().TransactionAttachmentList(lnCtr).getModel().getDocumentType()));
 
         }
         AttachmentDialogController controller = new AttachmentDialogController();
@@ -332,25 +333,25 @@ public class SIPosting_HistorySPCarController implements Initializable, ScreenIn
                 String lsButton = clickedButton.getId();
                 switch (lsButton) {
                     case "btnBrowse":
-                        poJSON = poPurchaseReceivingController.searchTransaction(psIndustryId, psCompanyId, tfSearchSupplier.getText(), tfSearchReceiveBranch.getText(), tfSearchReferenceNo.getText());
+                        poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().searchTransaction(psIndustryId, psCompanyId, tfSearchSupplier.getText(), tfSearchReceiveBranch.getText(), tfSearchReferenceNo.getText());
                         if ("error".equalsIgnoreCase((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                             tfTransactionNo.requestFocus();
                             return;
                         }
 
-                        stageAttachment.closeSerialDialog();
-                        pnEditMode = poPurchaseReceivingController.getEditMode();
-                        psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
-                        psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
-                        poPurchaseReceivingController.populateJournal();
-                        poPurchaseReceivingController.loadAttachments();
+                        stageAttachment.closeDialog();
+                        pnEditMode = poPurchaseReceivingController.PurchaseOrderReceiving().getEditMode();
+                        psCompanyId = poPurchaseReceivingController.PurchaseOrderReceiving().Master().getCompanyId();
+                        psSupplierId = poPurchaseReceivingController.PurchaseOrderReceiving().Master().getSupplierId();
+                        poPurchaseReceivingController.PurchaseOrderReceiving().populateJournal();
+                        poPurchaseReceivingController.PurchaseOrderReceiving().loadAttachments();
 
                         break;
                     case "btnClose":
                         unloadForm appUnload = new unloadForm();
                         if (ShowMessageFX.OkayCancel(null, "Close Tab", "Are you sure you want to close this Tab?") == true) {
-                            stageAttachment.closeSerialDialog();
+                            stageAttachment.closeDialog();
                             appUnload.unloadForm(apMainAnchor, oApp, pxeModuleName);
                         } else {
                             return;
@@ -371,10 +372,10 @@ public class SIPosting_HistorySPCarController implements Initializable, ScreenIn
                 }
 
                 if (JFXUtil.isObjectEqualTo(lsButton, "btnSave", "btnCancel")) {
-                    poPurchaseReceivingController.resetMaster();
-                    poPurchaseReceivingController.resetOthers();
-                    poPurchaseReceivingController.Detail().clear();
-                    poPurchaseReceivingController.resetJournal();
+                    poPurchaseReceivingController.PurchaseOrderReceiving().resetMaster();
+                    poPurchaseReceivingController.PurchaseOrderReceiving().resetOthers();
+                    poPurchaseReceivingController.PurchaseOrderReceiving().Detail().clear();
+                    poPurchaseReceivingController.PurchaseOrderReceiving().resetJournal();
                     imageView.setImage(null);
                     pnEditMode = EditMode.UNKNOWN;
                     clearTextFields();
@@ -447,42 +448,42 @@ public class SIPosting_HistorySPCarController implements Initializable, ScreenIn
                 case F3:
                     switch (lsID) {
                         case "tfSearchSupplier":
-                            poJSON = poPurchaseReceivingController.SearchSupplier(lsValue, false);
+                            poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().SearchSupplier(lsValue, false);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 psSupplierId = "";
                                 break;
                             } else {
-                                psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
+                                psSupplierId = poPurchaseReceivingController.PurchaseOrderReceiving().Master().getSupplierId();
                             }
                             loadRecordSearch();
                             return;
                         case "tfSearchReceiveBranch":
-                            poJSON = poPurchaseReceivingController.SearchBranch(lsValue, false);
+                            poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().SearchBranch(lsValue, false);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 psBranchId = "";
                                 break;
                             } else {
-                                psBranchId = poPurchaseReceivingController.Master().getBranchCode();
+                                psBranchId = poPurchaseReceivingController.PurchaseOrderReceiving().Master().getBranchCode();
                             }
                             loadRecordSearch();
                             return;
                         case "tfSearchReferenceNo":
-                            stageAttachment.closeSerialDialog();
-                            poJSON = poPurchaseReceivingController.searchTransaction(psIndustryId, psCompanyId,
+                            stageAttachment.closeDialog();
+                            poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().searchTransaction(psIndustryId, psCompanyId,
                                     tfSearchSupplier.getText(), tfSearchReceiveBranch.getText(), tfSearchReferenceNo.getText());
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfSearchReferenceNo.setText("");
                                 break;
                             } else {
-                                stageAttachment.closeSerialDialog();
-                                pnEditMode = poPurchaseReceivingController.getEditMode();
-                                psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
-                                psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
-                                poPurchaseReceivingController.populateJournal();
-                                poPurchaseReceivingController.loadAttachments();
+                                stageAttachment.closeDialog();
+                                pnEditMode = poPurchaseReceivingController.PurchaseOrderReceiving().getEditMode();
+                                psCompanyId = poPurchaseReceivingController.PurchaseOrderReceiving().Master().getCompanyId();
+                                psSupplierId = poPurchaseReceivingController.PurchaseOrderReceiving().Master().getSupplierId();
+                                poPurchaseReceivingController.PurchaseOrderReceiving().populateJournal();
+                                poPurchaseReceivingController.PurchaseOrderReceiving().loadAttachments();
                                 loadRecordMaster();
                                 loadTableDetail();
                                 populateJE();
@@ -519,9 +520,9 @@ public class SIPosting_HistorySPCarController implements Initializable, ScreenIn
 
     public void loadRecordSearch() {
         try {
-            lblSource.setText(poPurchaseReceivingController.Master().Company().getCompanyName() + " - " + poPurchaseReceivingController.Master().Industry().getDescription());
-            tfSearchSupplier.setText(psSupplierId.equals("") ? "" : poPurchaseReceivingController.Master().Supplier().getCompanyName());
-            tfSearchReceiveBranch.setText(psBranchId.equals("") ? "" : poPurchaseReceivingController.Master().Branch().getBranchName());
+            lblSource.setText(poPurchaseReceivingController.PurchaseOrderReceiving().Master().Company().getCompanyName() + " - " + poPurchaseReceivingController.PurchaseOrderReceiving().Master().Industry().getDescription());
+            tfSearchSupplier.setText(psSupplierId.equals("") ? "" : poPurchaseReceivingController.PurchaseOrderReceiving().Master().Supplier().getCompanyName());
+            tfSearchReceiveBranch.setText(psBranchId.equals("") ? "" : poPurchaseReceivingController.PurchaseOrderReceiving().Master().Branch().getBranchName());
             JFXUtil.updateCaretPositions(apBrowse);
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
@@ -532,10 +533,10 @@ public class SIPosting_HistorySPCarController implements Initializable, ScreenIn
         try {
             if (attachment_data.size() > 0) {
                 tfAttachmentNo.setText(String.valueOf(pnAttachment + 1));
-                String lsAttachmentType = poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().getDocumentType();
+                String lsAttachmentType = poPurchaseReceivingController.PurchaseOrderReceiving().TransactionAttachmentList(pnAttachment).getModel().getDocumentType();
                 if (lsAttachmentType.equals("")) {
-                    poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().setDocumentType(DocumentType.OTHER);
-                    lsAttachmentType = poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().getDocumentType();
+                    poPurchaseReceivingController.PurchaseOrderReceiving().TransactionAttachmentList(pnAttachment).getModel().setDocumentType(DocumentType.OTHER);
+                    lsAttachmentType = poPurchaseReceivingController.PurchaseOrderReceiving().TransactionAttachmentList(pnAttachment).getModel().getDocumentType();
                 }
                 int lnAttachmentType = 0;
                 lnAttachmentType = Integer.parseInt(lsAttachmentType);
@@ -583,18 +584,18 @@ public class SIPosting_HistorySPCarController implements Initializable, ScreenIn
     public void loadRecordJEDetail() {
         try {
             //DISABLING
-            if (!JFXUtil.isObjectEqualTo(poPurchaseReceivingController.Journal().Detail(pnJEDetail).getAccountCode(), null, "")) {
-                JFXUtil.setDisabled(poPurchaseReceivingController.Journal().Detail(pnJEDetail).getEditMode() != EditMode.ADDNEW, tfJEAcctCode, tfJEAcctDescription);
+            if (!JFXUtil.isObjectEqualTo(poPurchaseReceivingController.PurchaseOrderReceiving().Journal().Detail(pnJEDetail).getAccountCode(), null, "")) {
+                JFXUtil.setDisabled(poPurchaseReceivingController.PurchaseOrderReceiving().Journal().Detail(pnJEDetail).getEditMode() != EditMode.ADDNEW, tfJEAcctCode, tfJEAcctDescription);
             } else {
                 JFXUtil.setDisabled(false, tfJEAcctCode, tfJEAcctDescription);
             }
 
-            tfJEAcctCode.setText(poPurchaseReceivingController.Journal().Detail(pnJEDetail).getAccountCode());
-            tfJEAcctDescription.setText(poPurchaseReceivingController.Journal().Detail(pnJEDetail).Account_Chart().getDescription());
-            String lsReportMonthYear = CustomCommonUtil.formatDateToShortString(poPurchaseReceivingController.Journal().Detail(pnJEDetail).getForMonthOf());
+            tfJEAcctCode.setText(poPurchaseReceivingController.PurchaseOrderReceiving().Journal().Detail(pnJEDetail).getAccountCode());
+            tfJEAcctDescription.setText(poPurchaseReceivingController.PurchaseOrderReceiving().Journal().Detail(pnJEDetail).Account_Chart().getDescription());
+            String lsReportMonthYear = CustomCommonUtil.formatDateToShortString(poPurchaseReceivingController.PurchaseOrderReceiving().Journal().Detail(pnJEDetail).getForMonthOf());
             dpReportMonthYear.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsReportMonthYear, "yyyy-MM-dd"));
-            tfCreditAmt.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Journal().Detail(pnJEDetail).getCreditAmount(), true));
-            tfDebitAmt.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Journal().Detail(pnJEDetail).getDebitAmount(), true));
+            tfCreditAmt.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.PurchaseOrderReceiving().Journal().Detail(pnJEDetail).getCreditAmount(), true));
+            tfDebitAmt.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.PurchaseOrderReceiving().Journal().Detail(pnJEDetail).getDebitAmount(), true));
             JFXUtil.updateCaretPositions(apJEDetail);
         } catch (SQLException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
@@ -606,33 +607,33 @@ public class SIPosting_HistorySPCarController implements Initializable, ScreenIn
     public void loadRecordDetail() {
 
         try {
-            if (pnDetail < 0 || pnDetail > poPurchaseReceivingController.getDetailCount() - 1) {
+            if (pnDetail < 0 || pnDetail > poPurchaseReceivingController.PurchaseOrderReceiving().getDetailCount() - 1) {
                 return;
             }
 
-            tfBarcode.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().getBarCode());
-            tfDescription.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().getDescription());
-            tfSupersede.setText(poPurchaseReceivingController.Detail(pnDetail).Supersede().getBarCode());
-            tfOrderNo.setText(poPurchaseReceivingController.Detail(pnDetail).getOrderNo());
-            tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getUnitPrce(), true));
+            tfBarcode.setText(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).Inventory().getBarCode());
+            tfDescription.setText(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).Inventory().getDescription());
+            tfSupersede.setText(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).Supersede().getBarCode());
+            tfOrderNo.setText(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getOrderNo());
+            tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getUnitPrce(), true));
             Platform.runLater(() -> {
                 double lnValue = 0.00;
-                if (poPurchaseReceivingController.Detail(pnDetail).getDiscountRate() != null) {
-                    lnValue = poPurchaseReceivingController.Detail(pnDetail).getDiscountRate().doubleValue();
+                if (poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getDiscountRate() != null) {
+                    lnValue = poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getDiscountRate().doubleValue();
                 }
                 tfDiscRateDetail.setText(String.format("%.2f", Double.isNaN(lnValue) ? 0.00 : lnValue));
             });
-            double ldblDiscountRate = poPurchaseReceivingController.Detail(pnDetail).getUnitPrce().doubleValue()
-                    * (poPurchaseReceivingController.Detail(pnDetail).getDiscountRate().doubleValue() / 100);
-            tfAddlDiscAmtDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getDiscountAmount(), true));
-            double lnTotal = poPurchaseReceivingController.Detail(pnDetail).getUnitPrce().doubleValue()
-                    + poPurchaseReceivingController.Detail(pnDetail).getDiscountAmount().doubleValue()
+            double ldblDiscountRate = poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getUnitPrce().doubleValue()
+                    * (poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getDiscountRate().doubleValue() / 100);
+            tfAddlDiscAmtDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getDiscountAmount(), true));
+            double lnTotal = poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getUnitPrce().doubleValue()
+                    + poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getDiscountAmount().doubleValue()
                     + ldblDiscountRate;
             tfSRPAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotal, true));
-            tfOrderQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getOrderQty().intValue()));
-            tfReceiveQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().intValue()));
+            tfOrderQuantity.setText(String.valueOf(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getOrderQty().intValue()));
+            tfReceiveQuantity.setText(String.valueOf(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getQuantity().intValue()));
 
-            cbVatable.setSelected(poPurchaseReceivingController.Detail(pnDetail).isVatable());
+            cbVatable.setSelected(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).isVatable());
 
             JFXUtil.updateCaretPositions(apDetail);
         } catch (SQLException ex) {
@@ -645,7 +646,7 @@ public class SIPosting_HistorySPCarController implements Initializable, ScreenIn
 
     public void loadRecordJEMaster() {
         Platform.runLater(() -> {
-            String lsActive = poPurchaseReceivingController.Journal().Master().getEditMode() == EditMode.UNKNOWN ? "-1" : poPurchaseReceivingController.Journal().Master().getTransactionStatus();
+            String lsActive = poPurchaseReceivingController.PurchaseOrderReceiving().Journal().Master().getEditMode() == EditMode.UNKNOWN ? "-1" : poPurchaseReceivingController.PurchaseOrderReceiving().Journal().Master().getTransactionStatus();
             Map<String, String> statusMap = new HashMap<>();
             statusMap.put(PurchaseOrderReceivingStatus.POSTED, "POSTED");
             statusMap.put(PurchaseOrderReceivingStatus.PAID, "PAID");
@@ -659,17 +660,17 @@ public class SIPosting_HistorySPCarController implements Initializable, ScreenIn
             lblJEStatus.setText(lsStat);
 
         });
-        if (poPurchaseReceivingController.Journal().Master().getTransactionNo() != null) {
-            tfJETransactionNo.setText(poPurchaseReceivingController.Journal().Master().getTransactionNo());
-            String lsJETransactionDate = CustomCommonUtil.formatDateToShortString(poPurchaseReceivingController.Journal().Master().getTransactionDate());
+        if (poPurchaseReceivingController.PurchaseOrderReceiving().Journal().Master().getTransactionNo() != null) {
+            tfJETransactionNo.setText(poPurchaseReceivingController.PurchaseOrderReceiving().Journal().Master().getTransactionNo());
+            String lsJETransactionDate = CustomCommonUtil.formatDateToShortString(poPurchaseReceivingController.PurchaseOrderReceiving().Journal().Master().getTransactionDate());
             dpJETransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsJETransactionDate, "yyyy-MM-dd"));
 
-            taJERemarks.setText(poPurchaseReceivingController.Journal().Master().getRemarks());
+            taJERemarks.setText(poPurchaseReceivingController.PurchaseOrderReceiving().Journal().Master().getRemarks());
             double lnTotalDebit = 0;
             double lnTotalCredit = 0;
-            for (int lnCtr = 0; lnCtr < poPurchaseReceivingController.Journal().getDetailCount(); lnCtr++) {
-                lnTotalDebit += poPurchaseReceivingController.Journal().Detail(lnCtr).getDebitAmount();
-                lnTotalCredit += poPurchaseReceivingController.Journal().Detail(lnCtr).getCreditAmount();
+            for (int lnCtr = 0; lnCtr < poPurchaseReceivingController.PurchaseOrderReceiving().Journal().getDetailCount(); lnCtr++) {
+                lnTotalDebit += poPurchaseReceivingController.PurchaseOrderReceiving().Journal().Detail(lnCtr).getDebitAmount();
+                lnTotalCredit += poPurchaseReceivingController.PurchaseOrderReceiving().Journal().Detail(lnCtr).getCreditAmount();
             }
 
             tfTotalCreditAmt.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotalCredit, true));
@@ -683,7 +684,7 @@ public class SIPosting_HistorySPCarController implements Initializable, ScreenIn
         try {
 
             Platform.runLater(() -> {
-                String lsActive = pnEditMode == EditMode.UNKNOWN ? "-1" : poPurchaseReceivingController.Master().getTransactionStatus();
+                String lsActive = pnEditMode == EditMode.UNKNOWN ? "-1" : poPurchaseReceivingController.PurchaseOrderReceiving().Master().getTransactionStatus();
                 Map<String, String> statusMap = new HashMap<>();
                 statusMap.put(PurchaseOrderReceivingStatus.POSTED, "POSTED");
                 statusMap.put(PurchaseOrderReceivingStatus.PAID, "PAID");
@@ -697,58 +698,58 @@ public class SIPosting_HistorySPCarController implements Initializable, ScreenIn
                 lblStatus.setText(lsStat);
             });
 
-            if (poPurchaseReceivingController.Master().getDiscountRate().doubleValue() > 0.00) {
-                poPurchaseReceivingController.computeDiscount(poPurchaseReceivingController.Master().getDiscountRate().doubleValue());
+            if (poPurchaseReceivingController.PurchaseOrderReceiving().Master().getDiscountRate().doubleValue() > 0.00) {
+                poPurchaseReceivingController.PurchaseOrderReceiving().computeDiscount(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getDiscountRate().doubleValue());
             } else {
-                if (poPurchaseReceivingController.Master().getDiscount().doubleValue() > 0.00) {
-                    poPurchaseReceivingController.computeDiscountRate(poPurchaseReceivingController.Master().getDiscount().doubleValue());
+                if (poPurchaseReceivingController.PurchaseOrderReceiving().Master().getDiscount().doubleValue() > 0.00) {
+                    poPurchaseReceivingController.PurchaseOrderReceiving().computeDiscountRate(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getDiscount().doubleValue());
                 }
             }
 
-            poPurchaseReceivingController.computeFields();
+            poPurchaseReceivingController.PurchaseOrderReceiving().computeFields();
 
-            tfTransactionNo.setText(poPurchaseReceivingController.Master().getTransactionNo());
-            String lsTransactionDate = CustomCommonUtil.formatDateToShortString(poPurchaseReceivingController.Master().getTransactionDate());
+            tfTransactionNo.setText(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getTransactionNo());
+            String lsTransactionDate = CustomCommonUtil.formatDateToShortString(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getTransactionDate());
             dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsTransactionDate, "yyyy-MM-dd"));
 
-            tfSupplier.setText(poPurchaseReceivingController.Master().Supplier().getCompanyName());
-            tfBranch.setText(poPurchaseReceivingController.Master().Branch().getBranchName());
-            tfTrucking.setText(poPurchaseReceivingController.Master().Trucking().getCompanyName());
+            tfSupplier.setText(poPurchaseReceivingController.PurchaseOrderReceiving().Master().Supplier().getCompanyName());
+            tfBranch.setText(poPurchaseReceivingController.PurchaseOrderReceiving().Master().Branch().getBranchName());
+            tfTrucking.setText(poPurchaseReceivingController.PurchaseOrderReceiving().Master().Trucking().getCompanyName());
 
-            String lsReferenceDate = CustomCommonUtil.formatDateToShortString(poPurchaseReceivingController.Master().getReferenceDate());
+            String lsReferenceDate = CustomCommonUtil.formatDateToShortString(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getReferenceDate());
             dpReferenceDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsReferenceDate, "yyyy-MM-dd"));
-            tfReferenceNo.setText(poPurchaseReceivingController.Master().getReferenceNo());
-            tfSINo.setText(poPurchaseReceivingController.Master().getSalesInvoice());
-            tfTerm.setText(poPurchaseReceivingController.Master().Term().getDescription());
-            taRemarks.setText(poPurchaseReceivingController.Master().getRemarks());
+            tfReferenceNo.setText(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getReferenceNo());
+            tfSINo.setText(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getSalesInvoice());
+            tfTerm.setText(poPurchaseReceivingController.PurchaseOrderReceiving().Master().Term().getDescription());
+            taRemarks.setText(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getRemarks());
 
             tfTransactionTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(getGrossTotal(), true));
             Platform.runLater(() -> {
-                double lnValue = poPurchaseReceivingController.Master().getDiscountRate().doubleValue();
+                double lnValue = poPurchaseReceivingController.PurchaseOrderReceiving().Master().getDiscountRate().doubleValue();
                 tfDiscountRate.setText(String.format("%.2f", Double.isNaN(lnValue) ? 0.00 : lnValue));
-                double lnVat = poPurchaseReceivingController.Master().getVatRate().doubleValue();
+                double lnVat = poPurchaseReceivingController.PurchaseOrderReceiving().Master().getVatRate().doubleValue();
                 tfVatRate.setText(String.format("%.2f", Double.isNaN(lnVat) ? 0.00 : lnVat));
             });
-            tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Master().getDiscount().doubleValue(), true));
-            tfFreightAmt.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Master().getFreight().doubleValue()));
-            tfTaxAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Master().getWithHoldingTax().doubleValue(), true));
-            cbVatInclusive.setSelected(poPurchaseReceivingController.Master().isVatTaxable());
-            tfVatSales.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Master().getVatSales().doubleValue(), true));
-            tfVatAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Master().getVatAmount().doubleValue(), true));
-            tfZeroVatSales.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Master().getZeroVatSales().doubleValue(), true));
-            tfVatExemptSales.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Master().getVatExemptSales().doubleValue(), true));
+            tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getDiscount().doubleValue(), true));
+            tfFreightAmt.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getFreight().doubleValue()));
+            tfTaxAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getWithHoldingTax().doubleValue(), true));
+            cbVatInclusive.setSelected(poPurchaseReceivingController.PurchaseOrderReceiving().Master().isVatTaxable());
+            tfVatSales.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getVatSales().doubleValue(), true));
+            tfVatAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getVatAmount().doubleValue(), true));
+            tfZeroVatSales.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getZeroVatSales().doubleValue(), true));
+            tfVatExemptSales.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getVatExemptSales().doubleValue(), true));
             //Net Total = Vat Amount - Tax Amount
             double ldblNetTotal = 0.00;
-            if (poPurchaseReceivingController.Master().isVatTaxable()) {
+            if (poPurchaseReceivingController.PurchaseOrderReceiving().Master().isVatTaxable()) {
                 //Net VAT Amount : VAT Sales - VAT Amount
                 //Net Total : VAT Sales - Withholding Tax
-                ldblNetTotal = poPurchaseReceivingController.Master().getVatSales().doubleValue() - poPurchaseReceivingController.Master().getWithHoldingTax().doubleValue();
+                ldblNetTotal = poPurchaseReceivingController.PurchaseOrderReceiving().Master().getVatSales().doubleValue() - poPurchaseReceivingController.PurchaseOrderReceiving().Master().getWithHoldingTax().doubleValue();
             } else {
                 //Net VAT Amount : VAT Sales + VAT Amount
                 //Net Total : Net VAT Amount - Withholding Tax
-                ldblNetTotal = (poPurchaseReceivingController.Master().getVatSales().doubleValue()
-                        + poPurchaseReceivingController.Master().getVatAmount().doubleValue())
-                        - poPurchaseReceivingController.Master().getWithHoldingTax().doubleValue();
+                ldblNetTotal = (poPurchaseReceivingController.PurchaseOrderReceiving().Master().getVatSales().doubleValue()
+                        + poPurchaseReceivingController.PurchaseOrderReceiving().Master().getVatAmount().doubleValue())
+                        - poPurchaseReceivingController.PurchaseOrderReceiving().Master().getWithHoldingTax().doubleValue();
 
             }
 
@@ -765,9 +766,9 @@ public class SIPosting_HistorySPCarController implements Initializable, ScreenIn
 
     private double getGrossTotal() {
         double ldblGrossTotal = 0.0000;
-        for (int lnCtr = 0; lnCtr <= poPurchaseReceivingController.getDetailCount() - 1; lnCtr++) {
-            ldblGrossTotal = ldblGrossTotal + (poPurchaseReceivingController.Detail(lnCtr).getUnitPrce().doubleValue()
-                    * poPurchaseReceivingController.Detail(lnCtr).getQuantity().doubleValue());
+        for (int lnCtr = 0; lnCtr <= poPurchaseReceivingController.PurchaseOrderReceiving().getDetailCount() - 1; lnCtr++) {
+            ldblGrossTotal = ldblGrossTotal + (poPurchaseReceivingController.PurchaseOrderReceiving().Detail(lnCtr).getUnitPrce().doubleValue()
+                    * poPurchaseReceivingController.PurchaseOrderReceiving().Detail(lnCtr).getQuantity().doubleValue());
         }
         return ldblGrossTotal;
     }
@@ -790,35 +791,35 @@ public class SIPosting_HistorySPCarController implements Initializable, ScreenIn
                     int lnCtr;
                     try {
                         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                            lnCtr = poPurchaseReceivingController.Journal().getDetailCount() - 1;
+                            lnCtr = poPurchaseReceivingController.PurchaseOrderReceiving().Journal().getDetailCount() - 1;
                             while (lnCtr >= 0) {
-                                if (poPurchaseReceivingController.Journal().Detail(lnCtr).getAccountCode() == null || poPurchaseReceivingController.Journal().Detail(lnCtr).getAccountCode().equals("")) {
-                                    poPurchaseReceivingController.Journal().Detail().remove(lnCtr);
+                                if (poPurchaseReceivingController.PurchaseOrderReceiving().Journal().Detail(lnCtr).getAccountCode() == null || poPurchaseReceivingController.PurchaseOrderReceiving().Journal().Detail(lnCtr).getAccountCode().equals("")) {
+                                    poPurchaseReceivingController.PurchaseOrderReceiving().Journal().Detail().remove(lnCtr);
                                 }
                                 lnCtr--;
                             }
-                            if ((poPurchaseReceivingController.Journal().getDetailCount() - 1) >= 0) {
-                                if (poPurchaseReceivingController.Journal().Detail(poPurchaseReceivingController.Journal().getDetailCount() - 1).getAccountCode() != null
-                                        && !poPurchaseReceivingController.Journal().Detail(poPurchaseReceivingController.Journal().getDetailCount() - 1).getAccountCode().equals("")) {
-                                    poPurchaseReceivingController.Journal().AddDetail();
-                                    poPurchaseReceivingController.Journal().Detail(poPurchaseReceivingController.Journal().getDetailCount() - 1).setForMonthOf(oApp.getServerDate());
+                            if ((poPurchaseReceivingController.PurchaseOrderReceiving().Journal().getDetailCount() - 1) >= 0) {
+                                if (poPurchaseReceivingController.PurchaseOrderReceiving().Journal().Detail(poPurchaseReceivingController.PurchaseOrderReceiving().Journal().getDetailCount() - 1).getAccountCode() != null
+                                        && !poPurchaseReceivingController.PurchaseOrderReceiving().Journal().Detail(poPurchaseReceivingController.PurchaseOrderReceiving().Journal().getDetailCount() - 1).getAccountCode().equals("")) {
+                                    poPurchaseReceivingController.PurchaseOrderReceiving().Journal().AddDetail();
+                                    poPurchaseReceivingController.PurchaseOrderReceiving().Journal().Detail(poPurchaseReceivingController.PurchaseOrderReceiving().Journal().getDetailCount() - 1).setForMonthOf(oApp.getServerDate());
                                 }
                             }
-                            if ((poPurchaseReceivingController.Journal().getDetailCount() - 1) < 0) {
-                                poPurchaseReceivingController.Journal().AddDetail();
-                                poPurchaseReceivingController.Journal().Detail(poPurchaseReceivingController.Journal().getDetailCount() - 1).setForMonthOf(oApp.getServerDate());
+                            if ((poPurchaseReceivingController.PurchaseOrderReceiving().Journal().getDetailCount() - 1) < 0) {
+                                poPurchaseReceivingController.PurchaseOrderReceiving().Journal().AddDetail();
+                                poPurchaseReceivingController.PurchaseOrderReceiving().Journal().Detail(poPurchaseReceivingController.PurchaseOrderReceiving().Journal().getDetailCount() - 1).setForMonthOf(oApp.getServerDate());
                             }
                         }
                         String lsReportMonthYear = "";
                         String lsAcctCode = "";
                         String lsAccDesc = "";
-                        for (lnCtr = 0; lnCtr < poPurchaseReceivingController.Journal().getDetailCount(); lnCtr++) {
-                            lsReportMonthYear = CustomCommonUtil.formatDateToShortString(poPurchaseReceivingController.Journal().Detail(lnCtr).getForMonthOf());
-                            if (poPurchaseReceivingController.Journal().Detail(lnCtr).getAccountCode() != null) {
-                                lsAcctCode = poPurchaseReceivingController.Journal().Detail(lnCtr).getAccountCode();
+                        for (lnCtr = 0; lnCtr < poPurchaseReceivingController.PurchaseOrderReceiving().Journal().getDetailCount(); lnCtr++) {
+                            lsReportMonthYear = CustomCommonUtil.formatDateToShortString(poPurchaseReceivingController.PurchaseOrderReceiving().Journal().Detail(lnCtr).getForMonthOf());
+                            if (poPurchaseReceivingController.PurchaseOrderReceiving().Journal().Detail(lnCtr).getAccountCode() != null) {
+                                lsAcctCode = poPurchaseReceivingController.PurchaseOrderReceiving().Journal().Detail(lnCtr).getAccountCode();
                             }
-                            if (poPurchaseReceivingController.Journal().Detail(lnCtr).Account_Chart().getDescription() != null) {
-                                lsAccDesc = poPurchaseReceivingController.Journal().Detail(lnCtr).Account_Chart().getDescription();
+                            if (poPurchaseReceivingController.PurchaseOrderReceiving().Journal().Detail(lnCtr).Account_Chart().getDescription() != null) {
+                                lsAccDesc = poPurchaseReceivingController.PurchaseOrderReceiving().Journal().Detail(lnCtr).Account_Chart().getDescription();
                             }
 
                             JEdetails_data.add(
@@ -826,8 +827,8 @@ public class SIPosting_HistorySPCarController implements Initializable, ScreenIn
                                             String.valueOf(CustomCommonUtil.parseDateStringToLocalDate(lsReportMonthYear, "yyyy-MM-dd")),
                                             String.valueOf(lsAcctCode),
                                             String.valueOf(lsAccDesc),
-                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Journal().Detail(lnCtr).getCreditAmount(), true)),
-                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Journal().Detail(lnCtr).getDebitAmount(), true))) //identify total
+                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.PurchaseOrderReceiving().Journal().Detail(lnCtr).getCreditAmount(), true)),
+                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.PurchaseOrderReceiving().Journal().Detail(lnCtr).getDebitAmount(), true))) //identify total
                             );
 
                             lsReportMonthYear = "";
@@ -903,37 +904,37 @@ public class SIPosting_HistorySPCarController implements Initializable, ScreenIn
                     try {
                         double lnTotal = 0.00;
                         double lnDiscountAmt = 0.00;
-                        for (lnCtr = 0; lnCtr < poPurchaseReceivingController.getDetailCount(); lnCtr++) {
+                        for (lnCtr = 0; lnCtr < poPurchaseReceivingController.PurchaseOrderReceiving().getDetailCount(); lnCtr++) {
 
-                            if (JFXUtil.isObjectEqualTo(poPurchaseReceivingController.Master().getSalesInvoice(), null, "")) {
-                                poPurchaseReceivingController.Detail(lnCtr).isVatable(false);
+                            if (JFXUtil.isObjectEqualTo(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getSalesInvoice(), null, "")) {
+                                poPurchaseReceivingController.PurchaseOrderReceiving().Detail(lnCtr).isVatable(false);
                                 JFXUtil.setDisabled(true, cbVatable);
                             } else {
                                 JFXUtil.setDisabled(false, cbVatable);
                             }
 
                             try {
-                                lnTotal = poPurchaseReceivingController.Detail(lnCtr).getUnitPrce().doubleValue() * poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue();
-                                lnDiscountAmt = poPurchaseReceivingController.Detail(lnCtr).getDiscountAmount().doubleValue()
-                                        + (lnTotal * (poPurchaseReceivingController.Detail(lnCtr).getDiscountRate().doubleValue() / 100));
+                                lnTotal = poPurchaseReceivingController.PurchaseOrderReceiving().Detail(lnCtr).getUnitPrce().doubleValue() * poPurchaseReceivingController.PurchaseOrderReceiving().Detail(lnCtr).getQuantity().intValue();
+                                lnDiscountAmt = poPurchaseReceivingController.PurchaseOrderReceiving().Detail(lnCtr).getDiscountAmount().doubleValue()
+                                        + (lnTotal * (poPurchaseReceivingController.PurchaseOrderReceiving().Detail(lnCtr).getDiscountRate().doubleValue() / 100));
                             } catch (Exception e) {
                             }
 
-                            if ((!poPurchaseReceivingController.Detail(lnCtr).getOrderNo().equals("") && poPurchaseReceivingController.Detail(lnCtr).getOrderNo() != null)
-                                    && poPurchaseReceivingController.Detail(lnCtr).getOrderQty().intValue() != poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue()
-                                    && poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue() != 0) {
+                            if ((!poPurchaseReceivingController.PurchaseOrderReceiving().Detail(lnCtr).getOrderNo().equals("") && poPurchaseReceivingController.PurchaseOrderReceiving().Detail(lnCtr).getOrderNo() != null)
+                                    && poPurchaseReceivingController.PurchaseOrderReceiving().Detail(lnCtr).getOrderQty().intValue() != poPurchaseReceivingController.PurchaseOrderReceiving().Detail(lnCtr).getQuantity().intValue()
+                                    && poPurchaseReceivingController.PurchaseOrderReceiving().Detail(lnCtr).getQuantity().intValue() != 0) {
                                 JFXUtil.highlightByKey(tblViewTransDetailList, String.valueOf(lnCtr + 1), "#FAA0A0", highlightedRowsDetail);
                             }
 
-                            if (poPurchaseReceivingController.Detail(lnCtr).getStockId() != null && !"".equals(poPurchaseReceivingController.Detail(lnCtr).getStockId())) {
+                            if (poPurchaseReceivingController.PurchaseOrderReceiving().Detail(lnCtr).getStockId() != null && !"".equals(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(lnCtr).getStockId())) {
                                 details_data.add(
                                         new ModelDeliveryAcceptance_Detail(String.valueOf(lnCtr + 1),
-                                                String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getOrderNo()),
-                                                String.valueOf(poPurchaseReceivingController.Detail(lnCtr).Inventory().getBarCode()),
-                                                String.valueOf(poPurchaseReceivingController.Detail(lnCtr).Inventory().getDescription()),
-                                                String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(lnCtr).getUnitPrce(), true)),
-                                                String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getOrderQty().intValue()),
-                                                String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue()),
+                                                String.valueOf(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(lnCtr).getOrderNo()),
+                                                String.valueOf(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(lnCtr).Inventory().getBarCode()),
+                                                String.valueOf(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(lnCtr).Inventory().getDescription()),
+                                                String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(lnCtr).getUnitPrce(), true)),
+                                                String.valueOf(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(lnCtr).getOrderQty().intValue()),
+                                                String.valueOf(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(lnCtr).getQuantity().intValue()),
                                                 //                                                String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(lnDiscountAmt, true)),
                                                 String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotal, true)) //identify total
                                         ));
@@ -1002,10 +1003,10 @@ public class SIPosting_HistorySPCarController implements Initializable, ScreenIn
                     try {
                         attachment_data.clear();
                         int lnCtr;
-                        for (lnCtr = 0; lnCtr < poPurchaseReceivingController.getTransactionAttachmentCount(); lnCtr++) {
+                        for (lnCtr = 0; lnCtr < poPurchaseReceivingController.PurchaseOrderReceiving().getTransactionAttachmentCount(); lnCtr++) {
                             attachment_data.add(
                                     new ModelDeliveryAcceptance_Attachment(String.valueOf(lnCtr + 1),
-                                            String.valueOf(poPurchaseReceivingController.TransactionAttachmentList(lnCtr).getModel().getFileName())
+                                            String.valueOf(poPurchaseReceivingController.PurchaseOrderReceiving().TransactionAttachmentList(lnCtr).getModel().getFileName())
                                     ));
                         }
                         if (pnAttachment < 0 || pnAttachment
@@ -1059,7 +1060,8 @@ public class SIPosting_HistorySPCarController implements Initializable, ScreenIn
     }
 
     public void initDatePickers() {
-        JFXUtil.setDatePickerFormat(dpTransactionDate, dpReferenceDate, dpJETransactionDate, dpReportMonthYear);
+        JFXUtil.setDatePickerFormat("MM/dd/yyyy",
+dpTransactionDate, dpReferenceDate, dpJETransactionDate, dpReportMonthYear);
     }
 
     public void initTextFields() {
@@ -1085,10 +1087,10 @@ public class SIPosting_HistorySPCarController implements Initializable, ScreenIn
             if (selected != null) {
                 pnJEDetail = Integer.parseInt(selected.getIndex01()) - 1;
                 loadRecordJEDetail();
-                if (JFXUtil.isObjectEqualTo(poPurchaseReceivingController.Journal().Detail(pnJEDetail).getAccountCode(), null, "")) {
+                if (JFXUtil.isObjectEqualTo(poPurchaseReceivingController.PurchaseOrderReceiving().Journal().Detail(pnJEDetail).getAccountCode(), null, "")) {
                     tfJEAcctCode.requestFocus();
                 } else {
-                    if (poPurchaseReceivingController.Journal().Detail(pnJEDetail).getCreditAmount() > 0) {
+                    if (poPurchaseReceivingController.PurchaseOrderReceiving().Journal().Detail(pnJEDetail).getCreditAmount() > 0) {
                         tfCreditAmt.requestFocus();
                     } else {
                         tfDebitAmt.requestFocus();
@@ -1272,7 +1274,7 @@ public class SIPosting_HistorySPCarController implements Initializable, ScreenIn
 
     public void clearTextFields() {
         Platform.runLater(() -> {
-            stageAttachment.closeSerialDialog();
+            stageAttachment.closeDialog();
             imageinfo_temp.clear();
             JFXUtil.setValueToNull(previousSearchedTextField, lastFocusedTextField, dpTransactionDate, dpReferenceDate, dpReportMonthYear);
             psSupplierId = "";

@@ -89,17 +89,17 @@
                                     <right>
                                         <HBox alignment="CENTER_RIGHT" spacing="5.0" BorderPane.alignment="CENTER">
                                             <children>
-                                                <FontAwesomeIconView glyphName="CLOCK_ALT" size="20">
-                                                    <HBox.margin>
-                                                        <Insets top="2.0" />
-                                                    </HBox.margin>
-                                                </FontAwesomeIconView>
+                                    <AnchorPane fx:id="apClock" prefHeight="23.0" prefWidth="23.0">
+                                       <HBox.margin>
+                                          <Insets top="2.0" />
+                                       </HBox.margin>
+                                    </AnchorPane>
                                                 <Label fx:id="DateAndTime" text="October 1, 2021 08:36 AM" textFill="#141313">
                                                     <font>
                                                         <Font name="System Bold" size="12.0" />
                                                     </font>
                                                     <HBox.margin>
-                                                        <Insets left="5.0" />
+                                                        <Insets />
                                                     </HBox.margin>
                                                 </Label>
                                             </children>
@@ -209,6 +209,14 @@
                                                                                         <Cursor fx:constant="HAND" />
                                                                                     </cursor>
                                                                                 </ToggleButton>
+                                                            <ToggleButton fx:id="btnDelivery" graphicTextGap="15.0" layoutX="10.0" layoutY="292.0" mnemonicParsing="false" onAction="#switchDelivery" prefHeight="45.0" prefWidth="190.0" styleClass="side-button">
+                                                               <graphic>
+                                                                  <FontAwesomeIconView glyphName="TRUCK" size="25" styleClass="sidebar-icon" textAlignment="CENTER" />
+                                                               </graphic>
+                                                               <cursor>
+                                                                  <Cursor fx:constant="HAND" />
+                                                               </cursor>
+                                                            </ToggleButton>
                                                                             </children>
                                                                         </VBox>
                                                                     </children>

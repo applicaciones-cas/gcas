@@ -164,6 +164,7 @@ public class PurchaseOrder_ApprovalSPCarController implements Initializable, Scr
             poPurchasingController = new PurchaseOrderControllers(poApp, logWrapper);
             poPurchasingController.PurchaseOrder().setTransactionStatus(PurchaseOrderStatus.CONFIRMED);
             poJSON = new JSONObject();
+            poPurchasingController.PurchaseOrder().setWithUI(true);
             poJSON = poPurchasingController.PurchaseOrder().InitTransaction();
             if (!"success".equals(poJSON.get("result"))) {
                 ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
@@ -305,7 +306,7 @@ public class PurchaseOrder_ApprovalSPCarController implements Initializable, Scr
                     break;
                 case "btnApprove":
                     if (ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to approve transaction?")) {
-                        poJSON = poPurchasingController.PurchaseOrder().ApproveTransaction("Approved");
+                        poJSON = poPurchasingController.PurchaseOrder().ApproveTransaction("");
                         if (!"success".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
                             break;
@@ -380,18 +381,31 @@ public class PurchaseOrder_ApprovalSPCarController implements Initializable, Scr
                         return;
                     }
                     ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
-                    if (poPurchasingController.PurchaseOrder().Master().getTransactionStatus().equals(PurchaseOrderStatus.OPEN)
-                            && ShowMessageFX.YesNo(null, psFormName, "Do you want to approve this transaction?")) {
-                        if ("success".equals((poJSON = poPurchasingController.PurchaseOrder().ApproveTransaction("Approved")).get("result"))) {
-                            ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
-                        }
+                    poJSON = poPurchasingController.PurchaseOrder().OpenTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
+                    if ("error".equals(poJSON.get("result"))) {
+                        ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
+                        return;
                     } else {
-                        if (!"success".equals((poJSON = poPurchasingController.PurchaseOrder().OpenTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo())).get("result"))) {
-                            ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
-                            return;
+                        if (poPurchasingController.PurchaseOrder().Master().getTransactionStatus().equals(PurchaseOrderStatus.CONFIRMED)) {
+                            if (ShowMessageFX.YesNo(null, psFormName, "Do you want to approve this transaction?")) {
+                                if ("success".equals((poJSON = poPurchasingController.PurchaseOrder().ApproveTransaction("")).get("result"))) {
+                                    ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
+                                } else {
+                                    ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                                    return;
+                                }
+                            }
                         }
                     }
 
+                    // Print Transaction Prompt
+                    if (ShowMessageFX.YesNo(null, psFormName, "Do you want to print this transaction?")) {
+                        poJSON = poPurchasingController.PurchaseOrder().printTransaction(PurchaseOrderStaticData.Printing_CARSp_MCSp_General);
+                        if (!"success".equals((String) poJSON.get("result"))) {
+                            ShowMessageFX.Warning((String) poJSON.get("message"), "Print Purchase Order", null);
+                        }
+                    }
+                    poJSON = poPurchasingController.PurchaseOrder().OpenTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
                     loadRecordMaster();
                     loadRecordDetail();
                     loadTableDetail();
@@ -427,7 +441,7 @@ public class PurchaseOrder_ApprovalSPCarController implements Initializable, Scr
                     break;
                 case "btnReturn":
                     if (ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to return transaction?")) {
-                        poJSON = poPurchasingController.PurchaseOrder().ReturnTransaction("Returned");
+                        poJSON = poPurchasingController.PurchaseOrder().ReturnTransaction("");
                         if (!"success".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
                             break;
@@ -447,7 +461,7 @@ public class PurchaseOrder_ApprovalSPCarController implements Initializable, Scr
                 case "btnVoid":
 
                     if (ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to void transaction?")) {
-                        poJSON = poPurchasingController.PurchaseOrder().VoidTransaction("Voided");
+                        poJSON = poPurchasingController.PurchaseOrder().VoidTransaction("");
                         if (!"success".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
                             break;
@@ -811,9 +825,15 @@ public class PurchaseOrder_ApprovalSPCarController implements Initializable, Scr
                     if (proceed) {
                         if (poApp.getUserLevel() <= UserRight.ENCODER) {
                             poJSON = ShowDialogFX.getUserApproval(poApp);
-                            if (!"success".equalsIgnoreCase((String) poJSON.get("result"))) {
-                                ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                            if (!"success".equals((String) poJSON.get("result"))) {
                                 approved = false;
+                                return;
+                            } else {
+                                if (Integer.parseInt(poJSON.get("nUserLevl").toString()) <= UserRight.ENCODER) {
+                                    ShowMessageFX.Warning("User is not an authorized approving officer..", psFormName, null);
+                                    approved = false;
+                                    return;
+                                }
                             }
                         }
                     } else {
@@ -1186,7 +1206,7 @@ public class PurchaseOrder_ApprovalSPCarController implements Initializable, Scr
 
                     for (int lnCtr = 0; lnCtr < detailCount; lnCtr++) {
                         Model_PO_Detail orderDetail = poPurchasingController.PurchaseOrder().Detail(lnCtr);
-                        double lnTotalAmount = orderDetail.Inventory().getCost().doubleValue() * orderDetail.getQuantity().intValue();
+                        double lnTotalAmount = orderDetail.getUnitPrice().doubleValue() * orderDetail.getQuantity().intValue();
                         grandTotalAmount += lnTotalAmount;
                         double lnRequestQuantity = 0;
                         String status = "0";

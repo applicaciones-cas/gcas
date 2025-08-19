@@ -84,7 +84,7 @@ public class PurchaseOrderReturn_ConfirmationMonarchFoodController implements In
     int pnDetail = 0;
     int pnMain = 0;
     private final String pxeModuleName = "Purchase Order Return Confirmation MF";
-    static PurchaseOrderReturn poPurchaseReturnController;
+    static PurchaseOrderReturnControllers poPurchaseReturnController;
     public int pnEditMode;
     boolean isPrinted = false;
     private String psIndustryId = "";
@@ -141,9 +141,9 @@ public class PurchaseOrderReturn_ConfirmationMonarchFoodController implements In
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        poPurchaseReturnController = new PurchaseOrderReturnControllers(oApp, null).PurchaseOrderReturn();
+        poPurchaseReturnController = new PurchaseOrderReturnControllers(oApp, null);
         poJSON = new JSONObject();
-        poJSON = poPurchaseReturnController.InitTransaction(); // Initialize transaction
+        poJSON = poPurchaseReturnController.PurchaseOrderReturn().InitTransaction(); // Initialize transaction
         if (!"success".equals((String) poJSON.get("result"))) {
             System.err.println((String) poJSON.get("message"));
             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -157,12 +157,13 @@ public class PurchaseOrderReturn_ConfirmationMonarchFoodController implements In
         clearTextFields();
 
         Platform.runLater(() -> {
-            poPurchaseReturnController.Master().setIndustryId(psIndustryId);
-            poPurchaseReturnController.Master().setCompanyId(psCompanyId);
-            poPurchaseReturnController.setIndustryId(psIndustryId);
-            poPurchaseReturnController.setCompanyId(psCompanyId);
-            poPurchaseReturnController.setCategoryId(psCategoryId);
-            poPurchaseReturnController.initFields();
+            poPurchaseReturnController.PurchaseOrderReturn().Master().setIndustryId(psIndustryId);
+            poPurchaseReturnController.PurchaseOrderReturn().Master().setCompanyId(psCompanyId);
+            poPurchaseReturnController.PurchaseOrderReturn().setIndustryId(psIndustryId);
+            poPurchaseReturnController.PurchaseOrderReturn().setCompanyId(psCompanyId);
+            poPurchaseReturnController.PurchaseOrderReturn().setCategoryId(psCategoryId);
+            poPurchaseReturnController.PurchaseOrderReturn().initFields();
+            poPurchaseReturnController.PurchaseOrderReturn().setWithUI(true);
             loadRecordSearch();
         });
 
@@ -204,11 +205,11 @@ public class PurchaseOrderReturn_ConfirmationMonarchFoodController implements In
                 String lsButton = clickedButton.getId();
                 switch (lsButton) {
                     case "btnPrint":
-                        poJSON = poPurchaseReturnController.printRecord(() -> {
+                        poJSON = poPurchaseReturnController.PurchaseOrderReturn().printRecord(() -> {
                             if (isPrinted) {
                                 JFXUtil.disableAllHighlightByColor(tblViewPuchaseOrderReturn, "#A7C7E7", highlightedRowsMain);
-                                poPurchaseReturnController.resetMaster();
-                                poPurchaseReturnController.Detail().clear();
+                                poPurchaseReturnController.PurchaseOrderReturn().resetMaster();
+                                poPurchaseReturnController.PurchaseOrderReturn().Detail().clear();
                                 pnEditMode = EditMode.UNKNOWN;
                                 clearTextFields();
                                 initButton(pnEditMode);
@@ -216,7 +217,7 @@ public class PurchaseOrderReturn_ConfirmationMonarchFoodController implements In
                             Platform.runLater(() -> {
                                 try {
                                     if (!isPrinted) {
-                                        poPurchaseReturnController.OpenTransaction(poPurchaseReturnController.PurchaseOrderReturnList(pnMain).getTransactionNo());
+                                        poPurchaseReturnController.PurchaseOrderReturn().OpenTransaction(poPurchaseReturnController.PurchaseOrderReturn().PurchaseOrderReturnList(pnMain).getTransactionNo());
                                     }
                                     loadRecordMaster();
                                     loadTableDetail();
@@ -243,14 +244,14 @@ public class PurchaseOrderReturn_ConfirmationMonarchFoodController implements In
                         }
                         break;
                     case "btnUpdate":
-                        poJSON = poPurchaseReturnController.OpenTransaction(psTransactionNo);
-                        poJSON = poPurchaseReturnController.UpdateTransaction();
+                        poJSON = poPurchaseReturnController.PurchaseOrderReturn().OpenTransaction(psTransactionNo);
+                        poJSON = poPurchaseReturnController.PurchaseOrderReturn().UpdateTransaction();
                         if ("error".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                             return;
                         }
 
-                        pnEditMode = poPurchaseReturnController.getEditMode();
+                        pnEditMode = poPurchaseReturnController.PurchaseOrderReturn().getEditMode();
                         break;
                     case "btnSearch":
                         String lsMessage = "Focus a searchable textfield to search";
@@ -298,20 +299,20 @@ public class PurchaseOrderReturn_ConfirmationMonarchFoodController implements In
                         //Validator
                         poJSON = new JSONObject();
                         if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure you want to save the transaction?") == true) {
-                            poJSON = poPurchaseReturnController.SaveTransaction();
+                            poJSON = poPurchaseReturnController.PurchaseOrderReturn().SaveTransaction();
                             if (!"success".equals((String) poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                poPurchaseReturnController.AddDetail();
+                                poPurchaseReturnController.PurchaseOrderReturn().AddDetail();
                                 return;
                             } else {
                                 ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
 
                                 // Confirmation Prompt
-                                JSONObject loJSON = poPurchaseReturnController.OpenTransaction(psTransactionNo);
+                                JSONObject loJSON = poPurchaseReturnController.PurchaseOrderReturn().OpenTransaction(psTransactionNo);
                                 if ("success".equals(loJSON.get("result"))) {
-                                    if (poPurchaseReturnController.Master().getTransactionStatus().equals(PurchaseOrderReturnStatus.OPEN)) {
+                                    if (poPurchaseReturnController.PurchaseOrderReturn().Master().getTransactionStatus().equals(PurchaseOrderReturnStatus.OPEN)) {
                                         if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to confirm this transaction?")) {
-                                            loJSON = poPurchaseReturnController.ConfirmTransaction("Confirmed");
+                                            loJSON = poPurchaseReturnController.PurchaseOrderReturn().ConfirmTransaction("");
                                             if ("success".equals((String) loJSON.get("result"))) {
                                                 ShowMessageFX.Information((String) loJSON.get("message"), pxeModuleName, null);
                                                 JFXUtil.highlightByKey(tblViewPuchaseOrderReturn, String.valueOf(pnMain + 1), "#C1E1C1", highlightedRowsMain);
@@ -323,7 +324,7 @@ public class PurchaseOrderReturn_ConfirmationMonarchFoodController implements In
                                 }
 
                                 // Print Transaction Prompt
-                                loJSON = poPurchaseReturnController.OpenTransaction(psTransactionNo);
+                                loJSON = poPurchaseReturnController.PurchaseOrderReturn().OpenTransaction(psTransactionNo);
                                 loadRecordMaster();
                                 isPrinted = false;
                                 if ("success".equals(loJSON.get("result"))) {
@@ -345,7 +346,7 @@ public class PurchaseOrderReturn_ConfirmationMonarchFoodController implements In
                     case "btnConfirm":
                         poJSON = new JSONObject();
                         if (ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure you want to confirm transaction?") == true) {
-                            poJSON = poPurchaseReturnController.ConfirmTransaction("");
+                            poJSON = poPurchaseReturnController.PurchaseOrderReturn().ConfirmTransaction("");
                             if ("error".equals((String) poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 return;
@@ -361,10 +362,10 @@ public class PurchaseOrderReturn_ConfirmationMonarchFoodController implements In
                     case "btnVoid":
                         poJSON = new JSONObject();
                         if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure you want to void transaction?") == true) {
-                            if (PurchaseOrderReturnStatus.CONFIRMED.equals(poPurchaseReturnController.Master().getTransactionStatus())) {
-                                poJSON = poPurchaseReturnController.CancelTransaction("Cancel");
+                            if (PurchaseOrderReturnStatus.CONFIRMED.equals(poPurchaseReturnController.PurchaseOrderReturn().Master().getTransactionStatus())) {
+                                poJSON = poPurchaseReturnController.PurchaseOrderReturn().CancelTransaction("");
                             } else {
-                                poJSON = poPurchaseReturnController.VoidTransaction("Void");
+                                poJSON = poPurchaseReturnController.PurchaseOrderReturn().VoidTransaction("");
                             }
                             if ("error".equals((String) poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -381,7 +382,7 @@ public class PurchaseOrderReturn_ConfirmationMonarchFoodController implements In
                     case "btnReturn":
                         poJSON = new JSONObject();
                         if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure you want to return transaction?") == true) {
-                            poJSON = poPurchaseReturnController.ReturnTransaction("");
+                            poJSON = poPurchaseReturnController.PurchaseOrderReturn().ReturnTransaction("");
                             if ("error".equals((String) poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 return;
@@ -401,14 +402,14 @@ public class PurchaseOrderReturn_ConfirmationMonarchFoodController implements In
                 }
 
                 if (JFXUtil.isObjectEqualTo(lsButton, "btnSave", "btnConfirm", "btnReturn", "btnVoid", "btnCancel")) {
-                    poPurchaseReturnController.resetMaster();
-                    poPurchaseReturnController.Detail().clear();
+                    poPurchaseReturnController.PurchaseOrderReturn().resetMaster();
+                    poPurchaseReturnController.PurchaseOrderReturn().Detail().clear();
                     pnEditMode = EditMode.UNKNOWN;
                     clearTextFields();
 
-                    poPurchaseReturnController.Master().setIndustryId(psIndustryId);
-                    poPurchaseReturnController.Master().setCompanyId(psCompanyId);
-                    poPurchaseReturnController.Master().setCategoryCode(psCategoryId);
+                    poPurchaseReturnController.PurchaseOrderReturn().Master().setIndustryId(psIndustryId);
+                    poPurchaseReturnController.PurchaseOrderReturn().Master().setCompanyId(psCompanyId);
+                    poPurchaseReturnController.PurchaseOrderReturn().Master().setCategoryCode(psCategoryId);
                 }
 
                 if (JFXUtil.isObjectEqualTo(lsButton, "btnPrint", "btnAddAttachment", "btnRemoveAttachment",
@@ -420,7 +421,7 @@ public class PurchaseOrderReturn_ConfirmationMonarchFoodController implements In
                 initButton(pnEditMode);
 
                 if (lsButton.equals("btnUpdate")) {
-                    if (poPurchaseReturnController.Detail(pnDetail).getStockId() != null && !poPurchaseReturnController.Detail(pnDetail).getStockId().equals("")) {
+                    if (poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).getStockId() != null && !poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).getStockId().equals("")) {
                         tfReturnQuantity.requestFocus();
                     } else {
                         tfBarcode.requestFocus();
@@ -435,7 +436,7 @@ public class PurchaseOrderReturn_ConfirmationMonarchFoodController implements In
 
     public void retrievePOR() {
         poJSON = new JSONObject();
-        poJSON = poPurchaseReturnController.loadPurchaseOrderReturn("confirmation", psSupplierId, tfSearchReferenceNo.getText());
+        poJSON = poPurchaseReturnController.PurchaseOrderReturn().loadPurchaseOrderReturn("confirmation", psSupplierId, tfSearchReferenceNo.getText());
         if (!"success".equals((String) poJSON.get("result"))) {
             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
         } else {
@@ -461,7 +462,7 @@ public class PurchaseOrderReturn_ConfirmationMonarchFoodController implements In
             switch (lsID) {
 
                 case "taRemarks"://Remarks
-                    poJSON = poPurchaseReturnController.Master().setRemarks(lsValue);
+                    poJSON = poPurchaseReturnController.PurchaseOrderReturn().Master().setRemarks(lsValue);
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -494,7 +495,7 @@ public class PurchaseOrderReturn_ConfirmationMonarchFoodController implements In
                 case "tfBarcode":
                     //if value is blank then reset
                     if (lsValue.equals("")) {
-                        poJSON = poPurchaseReturnController.Detail(pnDetail).setStockId("");
+                        poJSON = poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).setStockId("");
                     }
                     break;
                 case "tfReturnQuantity":
@@ -502,17 +503,17 @@ public class PurchaseOrderReturn_ConfirmationMonarchFoodController implements In
                         lsValue = "0";
                     }
                     lsValue = JFXUtil.removeComma(lsValue);
-                    if (poPurchaseReturnController.Detail(pnDetail).getQuantity() != null
-                            && !"".equals(poPurchaseReturnController.Detail(pnDetail).getQuantity())) {
-                        if (poPurchaseReturnController.getReceiveQty(pnDetail).doubleValue() < Double.valueOf(lsValue)) {
+                    if (poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).getQuantity() != null
+                            && !"".equals(poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).getQuantity())) {
+                        if (poPurchaseReturnController.PurchaseOrderReturn().getReceiveQty(pnDetail).doubleValue() < Double.valueOf(lsValue)) {
                             ShowMessageFX.Warning(null, pxeModuleName, "Return quantity cannot be greater than the order quantity.");
-                            poPurchaseReturnController.Detail(pnDetail).setQuantity(0);
+                            poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).setQuantity(0);
                             tfReturnQuantity.requestFocus();
                             break;
                         }
                     }
 
-                    poJSON = poPurchaseReturnController.Detail(pnDetail).setQuantity((Double.valueOf(lsValue)));
+                    poJSON = poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).setQuantity((Double.valueOf(lsValue)));
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -563,17 +564,17 @@ public class PurchaseOrderReturn_ConfirmationMonarchFoodController implements In
     };
 
     public void moveNext() {
-        double lnReceiveQty = Double.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
+        double lnReceiveQty = Double.valueOf(poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).getQuantity().toString());
         apDetail.requestFocus();
-        double lnNewvalue = Double.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
+        double lnNewvalue = Double.valueOf(poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).getQuantity().toString());
         if (lnReceiveQty != lnNewvalue && (lnReceiveQty > 0
-                && poPurchaseReturnController.Detail(pnDetail).getStockId() != null
-                && !"".equals(poPurchaseReturnController.Detail(pnDetail).getStockId()))) {
+                && poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).getStockId() != null
+                && !"".equals(poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).getStockId()))) {
             tfReturnQuantity.requestFocus();
         } else {
             pnDetail = JFXUtil.moveToNextRow(tblViewDetails);
             loadRecordDetail();
-            if (poPurchaseReturnController.Detail(pnDetail).getStockId() != null && !poPurchaseReturnController.Detail(pnDetail).getStockId().equals("")) {
+            if (poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).getStockId() != null && !poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).getStockId().equals("")) {
                 tfReturnQuantity.requestFocus();
             } else {
                 tfBarcode.requestFocus();
@@ -603,17 +604,17 @@ public class PurchaseOrderReturn_ConfirmationMonarchFoodController implements In
                     switch (lsID) {
                         case "tfBarcode":
                         case "tfReturnQuantity":
-                            double lnReceiveQty = Double.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
+                            double lnReceiveQty = Double.valueOf(poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).getQuantity().toString());
                             apDetail.requestFocus();
-                            double lnNewvalue = Double.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
+                            double lnNewvalue = Double.valueOf(poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).getQuantity().toString());
                             if (lnReceiveQty != lnNewvalue && (lnReceiveQty > 0
-                                    && poPurchaseReturnController.Detail(pnDetail).getStockId() != null
-                                    && !"".equals(poPurchaseReturnController.Detail(pnDetail).getStockId()))) {
+                                    && poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).getStockId() != null
+                                    && !"".equals(poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).getStockId()))) {
                                 tfReturnQuantity.requestFocus();
                             } else {
                                 pnDetail = JFXUtil.moveToPreviousRow(currentTable);
                                 loadRecordDetail();
-                                if (poPurchaseReturnController.Detail(pnDetail).getStockId() != null && !poPurchaseReturnController.Detail(pnDetail).getStockId().equals("")) {
+                                if (poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).getStockId() != null && !poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).getStockId().equals("")) {
                                     tfReturnQuantity.requestFocus();
                                 } else {
                                     tfBarcode.requestFocus();
@@ -637,27 +638,27 @@ public class PurchaseOrderReturn_ConfirmationMonarchFoodController implements In
                 case F3:
                     switch (lsID) {
 //                        case "tfReferenceNo":
-//                            poJSON = poPurchaseReturnController.SearchPOReceiving(lsValue, true);
+//                            poJSON = poPurchaseReturnController.PurchaseOrderReturn().SearchPOReceiving(lsValue, true);
 //                            if ("error".equals(poJSON.get("result"))) {
 //                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
 //                            }
 //                            loadRecordMaster();
 //                            break;
 //                        case "tfPOReceivingNo":
-//                            poJSON = poPurchaseReturnController.SearchPOReceiving(lsValue, false);
+//                            poJSON = poPurchaseReturnController.PurchaseOrderReturn().SearchPOReceiving(lsValue, false);
 //                            if ("error".equals(poJSON.get("result"))) {
 //                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
 //                            }
 //                            loadRecordMaster();
 //                            break;
                         case "tfSearchSupplier":
-                            poJSON = poPurchaseReturnController.SearchSupplier(lsValue, false);
+                            poJSON = poPurchaseReturnController.PurchaseOrderReturn().SearchSupplier(lsValue, false);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 psSupplierId = "";
                                 break;
                             } else {
-                                psSupplierId = poPurchaseReturnController.Master().getSupplierId();
+                                psSupplierId = poPurchaseReturnController.PurchaseOrderReturn().Master().getSupplierId();
                             }
                             retrievePOR();
                             loadRecordSearch();
@@ -666,12 +667,12 @@ public class PurchaseOrderReturn_ConfirmationMonarchFoodController implements In
                             retrievePOR();
                             return;
                         case "tfBarcode":
-                            poJSON = poPurchaseReturnController.SearchBarcode(lsValue, pnDetail);
+                            poJSON = poPurchaseReturnController.PurchaseOrderReturn().SearchBarcode(lsValue, pnDetail);
                             lnRow = (int) poJSON.get("row");
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 if (pnDetail != lnRow) {
-//                                    poPurchaseReturnController.Detail(pnDetail).setBrandId("");
+//                                    poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).setBrandId("");
                                     pnDetail = lnRow;
                                     loadRecordDetail();
                                     tfReturnQuantity.requestFocus();
@@ -690,12 +691,12 @@ public class PurchaseOrderReturn_ConfirmationMonarchFoodController implements In
                             });
                             break;
                         case "tfDescription":
-                            poJSON = poPurchaseReturnController.SearchDescription(lsValue, pnDetail);
+                            poJSON = poPurchaseReturnController.PurchaseOrderReturn().SearchDescription(lsValue, pnDetail);
                             lnRow = (int) poJSON.get("row");
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 if (pnDetail != lnRow) {
-//                                    poPurchaseReturnController.Detail(pnDetail).setBrandId("");
+//                                    poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).setBrandId("");
                                     pnDetail = lnRow;
                                     loadRecordDetail();
                                     tfReturnQuantity.requestFocus();
@@ -756,18 +757,18 @@ public class PurchaseOrderReturn_ConfirmationMonarchFoodController implements In
                     loadRecordMaster();
                     return;
                 }
-                if (inputText == null || "".equals(inputText) || "1900-01-01".equals(inputText)) {
+                if (inputText == null || "".equals(inputText) || "01/01/1900".equals(inputText)) {
                     return;
                 }
                 selectedDate = ldtResult.selectedDate;
 
                 switch (datePicker.getId()) {
                     case "dpTransactionDate":
-                        if (poPurchaseReturnController.getEditMode() == EditMode.ADDNEW
-                                || poPurchaseReturnController.getEditMode() == EditMode.UPDATE) {
+                        if (poPurchaseReturnController.PurchaseOrderReturn().getEditMode() == EditMode.ADDNEW
+                                || poPurchaseReturnController.PurchaseOrderReturn().getEditMode() == EditMode.UPDATE) {
                             lsServerDate = sdfFormat.format(oApp.getServerDate());
-                            lsTransDate = sdfFormat.format(poPurchaseReturnController.Master().getTransactionDate());
-                            lsSelectedDate = sdfFormat.format(SQLUtil.toDate(inputText, SQLUtil.FORMAT_SHORT_DATE));
+                            lsTransDate = sdfFormat.format(poPurchaseReturnController.PurchaseOrderReturn().Master().getTransactionDate());
+                            lsSelectedDate = sdfFormat.format(SQLUtil.toDate(JFXUtil.convertToIsoFormat(inputText),  SQLUtil.FORMAT_SHORT_DATE));
                             currentDate = LocalDate.parse(lsServerDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
                             selectedDate = LocalDate.parse(lsSelectedDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
 
@@ -776,8 +777,8 @@ public class PurchaseOrderReturn_ConfirmationMonarchFoodController implements In
                                 poJSON.put("message", "Future dates are not allowed.");
                                 pbSuccess = false;
                             }
-                            if (poPurchaseReturnController.Master().getSourceNo() != null && !"".equals(poPurchaseReturnController.Master().getSourceNo())) {
-                                lsReceivingDate = sdfFormat.format(poPurchaseReturnController.Master().PurchaseOrderReceivingMaster().getTransactionDate());
+                            if (poPurchaseReturnController.PurchaseOrderReturn().Master().getSourceNo() != null && !"".equals(poPurchaseReturnController.PurchaseOrderReturn().Master().getSourceNo())) {
+                                lsReceivingDate = sdfFormat.format(poPurchaseReturnController.PurchaseOrderReturn().Master().PurchaseOrderReceivingMaster().getTransactionDate());
                                 receivingDate = LocalDate.parse(lsReceivingDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
                                 if (selectedDate.isBefore(receivingDate)) {
                                     poJSON.put("result", "error");
@@ -791,10 +792,10 @@ public class PurchaseOrderReturn_ConfirmationMonarchFoodController implements In
                                     pbSuccess = false;
                                 }
                             }
-                            if (pbSuccess && ((poPurchaseReturnController.getEditMode() == EditMode.UPDATE && !lsTransDate.equals(lsSelectedDate))
+                            if (pbSuccess && ((poPurchaseReturnController.PurchaseOrderReturn().getEditMode() == EditMode.UPDATE && !lsTransDate.equals(lsSelectedDate))
                                     || !lsServerDate.equals(lsSelectedDate))) {
                                 pbSuccess = false;
-                                if (oApp.getUserLevel() == UserRight.ENCODER) {
+                                if (oApp.getUserLevel() <= UserRight.ENCODER) {
                                     if (ShowMessageFX.YesNo(null, pxeModuleName, "Change in Transaction Date Detected\n\n"
                                             + "If YES, please seek approval to proceed with the new selected date.\n"
                                             + "If NO, the previous transaction date will be retained.") == true) {
@@ -802,13 +803,19 @@ public class PurchaseOrderReturn_ConfirmationMonarchFoodController implements In
                                         if (!"success".equals((String) poJSON.get("result"))) {
                                             pbSuccess = false;
                                         } else {
-                                            poPurchaseReturnController.Master().setTransactionDate((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
+                                            if(Integer.parseInt(poJSON.get("nUserLevl").toString())<= UserRight.ENCODER){
+                                                poJSON.put("result", "error");
+                                                poJSON.put("message", "User is not an authorized approving officer.");
+                                                pbSuccess = false;
+                                            } else {
+                                                poPurchaseReturnController.PurchaseOrderReturn().Master().setTransactionDate((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
+                                            }
                                         }
                                     } else {
                                         pbSuccess = false;
                                     }
                                 } else {
-                                    poPurchaseReturnController.Master().setTransactionDate((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
+                                    poPurchaseReturnController.PurchaseOrderReturn().Master().setTransactionDate((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
                                 }
                             }
 
@@ -861,22 +868,22 @@ public class PurchaseOrderReturn_ConfirmationMonarchFoodController implements In
                 Platform.runLater(() -> {
                     main_data.clear();
                     JFXUtil.disableAllHighlight(tblViewPuchaseOrderReturn, highlightedRowsMain);
-                    if (poPurchaseReturnController.getPurchaseOrderReturnCount() > 0) {
+                    if (poPurchaseReturnController.PurchaseOrderReturn().getPurchaseOrderReturnCount() > 0) {
                         //pending
                         //retreiving using column index
-                        for (int lnCtr = 0; lnCtr <= poPurchaseReturnController.getPurchaseOrderReturnCount() - 1; lnCtr++) {
+                        for (int lnCtr = 0; lnCtr <= poPurchaseReturnController.PurchaseOrderReturn().getPurchaseOrderReturnCount() - 1; lnCtr++) {
                             try {
                                 main_data.add(new ModelPurchaseOrderReturn_Main(String.valueOf(lnCtr + 1),
-                                        String.valueOf(poPurchaseReturnController.PurchaseOrderReturnList(lnCtr).Supplier().getCompanyName()),
-                                        String.valueOf(poPurchaseReturnController.PurchaseOrderReturnList(lnCtr).getTransactionDate()),
-                                        String.valueOf(poPurchaseReturnController.PurchaseOrderReturnList(lnCtr).getTransactionNo())
+                                        String.valueOf(poPurchaseReturnController.PurchaseOrderReturn().PurchaseOrderReturnList(lnCtr).Supplier().getCompanyName()),
+                                        String.valueOf(poPurchaseReturnController.PurchaseOrderReturn().PurchaseOrderReturnList(lnCtr).getTransactionDate()),
+                                        String.valueOf(poPurchaseReturnController.PurchaseOrderReturn().PurchaseOrderReturnList(lnCtr).getTransactionNo())
                                 ));
                             } catch (SQLException ex) {
                                 Logger.getLogger(PurchaseOrderReturn_ConfirmationMonarchFoodController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                             } catch (GuanzonException ex) {
                                 Logger.getLogger(PurchaseOrderReturn_ConfirmationMonarchFoodController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                             }
-                            if (poPurchaseReturnController.PurchaseOrderReturnList(lnCtr).getTransactionStatus().equals(PurchaseOrderReturnStatus.CONFIRMED)) {
+                            if (poPurchaseReturnController.PurchaseOrderReturn().PurchaseOrderReturnList(lnCtr).getTransactionStatus().equals(PurchaseOrderReturnStatus.CONFIRMED)) {
                                 JFXUtil.highlightByKey(tblViewPuchaseOrderReturn, String.valueOf(lnCtr + 1), "#C1E1C1", highlightedRowsMain);
                             }
                         }
@@ -896,7 +903,7 @@ public class PurchaseOrderReturn_ConfirmationMonarchFoodController implements In
                         tblViewPuchaseOrderReturn.getSelectionModel().select(pnMain);
                         tblViewPuchaseOrderReturn.getFocusModel().focus(pnMain);
                     }
-//                    if (poPurchaseReturnController.getPurchaseOrderReturnCount() < 1) {
+//                    if (poPurchaseReturnController.PurchaseOrderReturn().getPurchaseOrderReturnCount() < 1) {
 //                        JFXUtil.loadTab(pgPagination, main_data.size(), ROWS_PER_PAGE, tblViewPuchaseOrderReturn, filteredData);
 //                    }
                     JFXUtil.loadTab(pgPagination, main_data.size(), ROWS_PER_PAGE, tblViewPuchaseOrderReturn, filteredData);
@@ -930,12 +937,12 @@ public class PurchaseOrderReturn_ConfirmationMonarchFoodController implements In
 
     public void loadRecordSearch() {
         try {
-            lblSource.setText(poPurchaseReturnController.Master().Company().getCompanyName() + " - " + poPurchaseReturnController.Master().Industry().getDescription());
+            lblSource.setText(poPurchaseReturnController.PurchaseOrderReturn().Master().Company().getCompanyName() + " - " + poPurchaseReturnController.PurchaseOrderReturn().Master().Industry().getDescription());
 
             if (psSupplierId.equals("")) {
                 tfSearchSupplier.setText("");
             } else {
-                tfSearchSupplier.setText(poPurchaseReturnController.Master().Supplier().getCompanyName());
+                tfSearchSupplier.setText(poPurchaseReturnController.PurchaseOrderReturn().Master().Supplier().getCompanyName());
             }
             try {
                 if (tfSearchReferenceNo.getText() == null || tfSearchReferenceNo.getText().equals("")) {
@@ -955,24 +962,24 @@ public class PurchaseOrderReturn_ConfirmationMonarchFoodController implements In
     public void loadRecordDetail() {
 
         try {
-            if (pnDetail < 0 || pnDetail > poPurchaseReturnController.getDetailCount() - 1) {
+            if (pnDetail < 0 || pnDetail > poPurchaseReturnController.PurchaseOrderReturn().getDetailCount() - 1) {
                 return;
             }
 
-            boolean lbDisable = poPurchaseReturnController.Detail(pnDetail).getEditMode() == EditMode.ADDNEW;
+            boolean lbDisable = poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).getEditMode() == EditMode.ADDNEW;
             JFXUtil.setDisabled(!lbDisable, tfBarcode, tfDescription);
 
-            tfBarcode.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().getBarCode());
-            tfDescription.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().getDescription());
-            tfBrand.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().Brand().getDescription());
-            tfModel.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().Model().getDescription());
-            tfColor.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().Color().getDescription());
-            tfInventoryType.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().InventoryType().getDescription());
-            tfMeasure.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().Measure().getDescription());
+            tfBarcode.setText(poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).Inventory().getBarCode());
+            tfDescription.setText(poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).Inventory().getDescription());
+            tfBrand.setText(poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).Inventory().Brand().getDescription());
+            tfModel.setText(poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).Inventory().Model().getDescription());
+            tfColor.setText(poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).Inventory().Color().getDescription());
+            tfInventoryType.setText(poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).Inventory().InventoryType().getDescription());
+            tfMeasure.setText(poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).Inventory().Measure().getDescription());
 
-            tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Detail(pnDetail).getUnitPrce(), true));
-            tfReceiveQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.getReceiveQty(pnDetail)));
-            tfReturnQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Detail(pnDetail).getQuantity()));
+            tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).getUnitPrce(), true));
+            tfReceiveQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.PurchaseOrderReturn().getReceiveQty(pnDetail)));
+            tfReturnQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).getQuantity()));
 
             JFXUtil.updateCaretPositions(apDetail);
         } catch (SQLException ex) {
@@ -984,7 +991,7 @@ public class PurchaseOrderReturn_ConfirmationMonarchFoodController implements In
     }
 
     public void loadRecordMaster() {
-//        boolean lbDisable = poPurchaseReturnController.getEditMode() == EditMode.ADDNEW;
+//        boolean lbDisable = poPurchaseReturnController.PurchaseOrderReturn().getEditMode() == EditMode.ADDNEW;
 //        if (!lbDisable) {
 //            JFXUtil.AddStyleClass("DisabledTextField", tfSupplier, tfReferenceNo, tfPOReceivingNo);
 //        } else {
@@ -995,7 +1002,7 @@ public class PurchaseOrderReturn_ConfirmationMonarchFoodController implements In
 //        
 //        JFXUtil.setDisabled(!lbDisable, tfSupplier, tfReferenceNo, tfPOReceivingNo);
 
-        boolean lbIsReprint = poPurchaseReturnController.Master().getPrint().equals("1") ? true : false;
+        boolean lbIsReprint = poPurchaseReturnController.PurchaseOrderReturn().Master().getPrint().equals("1") ? true : false;
         if (lbIsReprint) {
             btnPrint.setText("Reprint");
         } else {
@@ -1005,7 +1012,7 @@ public class PurchaseOrderReturn_ConfirmationMonarchFoodController implements In
         try {
             Platform.runLater(() -> {
                 boolean lbPrintStat = pnEditMode == EditMode.READY;
-                String lsActive = poPurchaseReturnController.Master().getTransactionStatus();
+                String lsActive = poPurchaseReturnController.PurchaseOrderReturn().Master().getTransactionStatus();
                 String lsStat = "UNKNOWN";
                 switch (lsActive) {
                     case PurchaseOrderReturnStatus.POSTED:
@@ -1039,19 +1046,19 @@ public class PurchaseOrderReturn_ConfirmationMonarchFoodController implements In
                 JFXUtil.setButtonsVisibility(lbPrintStat, btnPrint);
             });
 
-            poPurchaseReturnController.computeFields();
+            poPurchaseReturnController.PurchaseOrderReturn().computeFields();
 
             // Transaction Date
-            tfTransactionNo.setText(poPurchaseReturnController.Master().getTransactionNo());
-            String lsTransactionDate = CustomCommonUtil.formatDateToShortString(poPurchaseReturnController.Master().getTransactionDate());
+            tfTransactionNo.setText(poPurchaseReturnController.PurchaseOrderReturn().Master().getTransactionNo());
+            String lsTransactionDate = CustomCommonUtil.formatDateToShortString(poPurchaseReturnController.PurchaseOrderReturn().Master().getTransactionDate());
             dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsTransactionDate, "yyyy-MM-dd"));
 
-            tfSupplier.setText(poPurchaseReturnController.Master().Supplier().getCompanyName());
-            tfReferenceNo.setText(poPurchaseReturnController.Master().PurchaseOrderReceivingMaster().getReferenceNo());
-            tfPOReceivingNo.setText(poPurchaseReturnController.Master().getSourceNo());
-            taRemarks.setText(poPurchaseReturnController.Master().getRemarks());
+            tfSupplier.setText(poPurchaseReturnController.PurchaseOrderReturn().Master().Supplier().getCompanyName());
+            tfReferenceNo.setText(poPurchaseReturnController.PurchaseOrderReturn().Master().PurchaseOrderReceivingMaster().getReferenceNo());
+            tfPOReceivingNo.setText(poPurchaseReturnController.PurchaseOrderReturn().Master().getSourceNo());
+            taRemarks.setText(poPurchaseReturnController.PurchaseOrderReturn().Master().getRemarks());
 
-            tfTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Master().getTransactionTotal().doubleValue(), true));
+            tfTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.PurchaseOrderReturn().Master().getTransactionTotal().doubleValue(), true));
 
             JFXUtil.updateCaretPositions(apMaster);
         } catch (SQLException ex) {
@@ -1072,8 +1079,8 @@ public class PurchaseOrderReturn_ConfirmationMonarchFoodController implements In
                 pnMain = pnRowMain;
                 JFXUtil.disableAllHighlightByColor(tblViewPuchaseOrderReturn, "#A7C7E7", highlightedRowsMain);
                 JFXUtil.highlightByKey(tblViewPuchaseOrderReturn, String.valueOf(pnRowMain + 1), "#A7C7E7", highlightedRowsMain);
-                psTransactionNo = poPurchaseReturnController.PurchaseOrderReturnList(pnMain).getTransactionNo();
-                poJSON = poPurchaseReturnController.OpenTransaction(psTransactionNo);
+                psTransactionNo = poPurchaseReturnController.PurchaseOrderReturn().PurchaseOrderReturnList(pnMain).getTransactionNo();
+                poJSON = poPurchaseReturnController.PurchaseOrderReturn().OpenTransaction(psTransactionNo);
                 if ("error".equals((String) poJSON.get("result"))) {
                     ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                     return;
@@ -1114,40 +1121,40 @@ public class PurchaseOrderReturn_ConfirmationMonarchFoodController implements In
                     int lnCtr;
                     try {
                         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                            lnCtr = poPurchaseReturnController.getDetailCount() - 1;
+                            lnCtr = poPurchaseReturnController.PurchaseOrderReturn().getDetailCount() - 1;
                             while (lnCtr >= 0) {
-                                if (poPurchaseReturnController.Detail(lnCtr).getStockId() == null || poPurchaseReturnController.Detail(lnCtr).getStockId().equals("")) {
-                                    poPurchaseReturnController.Detail().remove(lnCtr);
+                                if (poPurchaseReturnController.PurchaseOrderReturn().Detail(lnCtr).getStockId() == null || poPurchaseReturnController.PurchaseOrderReturn().Detail(lnCtr).getStockId().equals("")) {
+                                    poPurchaseReturnController.PurchaseOrderReturn().Detail().remove(lnCtr);
                                 }
                                 lnCtr--;
                             }
 
-                            if ((poPurchaseReturnController.getDetailCount() - 1) >= 0) {
-                                if (poPurchaseReturnController.Detail(poPurchaseReturnController.getDetailCount() - 1).getStockId() != null && !poPurchaseReturnController.Detail(poPurchaseReturnController.getDetailCount() - 1).getStockId().equals("")) {
-                                    poPurchaseReturnController.AddDetail();
+                            if ((poPurchaseReturnController.PurchaseOrderReturn().getDetailCount() - 1) >= 0) {
+                                if (poPurchaseReturnController.PurchaseOrderReturn().Detail(poPurchaseReturnController.PurchaseOrderReturn().getDetailCount() - 1).getStockId() != null && !poPurchaseReturnController.PurchaseOrderReturn().Detail(poPurchaseReturnController.PurchaseOrderReturn().getDetailCount() - 1).getStockId().equals("")) {
+                                    poPurchaseReturnController.PurchaseOrderReturn().AddDetail();
                                 }
                             }
 
-                            if ((poPurchaseReturnController.getDetailCount() - 1) < 0) {
-                                poPurchaseReturnController.AddDetail();
+                            if ((poPurchaseReturnController.PurchaseOrderReturn().getDetailCount() - 1) < 0) {
+                                poPurchaseReturnController.PurchaseOrderReturn().AddDetail();
                             }
                         }
 
                         double lnTotal = 0.0;
-                        for (lnCtr = 0; lnCtr < poPurchaseReturnController.getDetailCount(); lnCtr++) {
+                        for (lnCtr = 0; lnCtr < poPurchaseReturnController.PurchaseOrderReturn().getDetailCount(); lnCtr++) {
                             try {
 
-                                lnTotal = poPurchaseReturnController.Detail(lnCtr).getUnitPrce().doubleValue() * poPurchaseReturnController.Detail(lnCtr).getQuantity().doubleValue();
+                                lnTotal = poPurchaseReturnController.PurchaseOrderReturn().Detail(lnCtr).getUnitPrce().doubleValue() * poPurchaseReturnController.PurchaseOrderReturn().Detail(lnCtr).getQuantity().doubleValue();
                             } catch (Exception e) {
                             }
 
                             details_data.add(
                                     new ModelPurchaseOrderReturn_Detail(String.valueOf(lnCtr + 1),
-                                            String.valueOf(poPurchaseReturnController.Detail(lnCtr).Inventory().getBarCode()),
-                                            String.valueOf(poPurchaseReturnController.Detail(lnCtr).Inventory().getDescription()),
-                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Detail(lnCtr).getUnitPrce(), true)),
-                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.getReceiveQty(lnCtr))),
-                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Detail(lnCtr).getQuantity())),
+                                            String.valueOf(poPurchaseReturnController.PurchaseOrderReturn().Detail(lnCtr).Inventory().getBarCode()),
+                                            String.valueOf(poPurchaseReturnController.PurchaseOrderReturn().Detail(lnCtr).Inventory().getDescription()),
+                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.PurchaseOrderReturn().Detail(lnCtr).getUnitPrce(), true)),
+                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.PurchaseOrderReturn().getReceiveQty(lnCtr))),
+                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.PurchaseOrderReturn().Detail(lnCtr).getQuantity())),
                                             String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotal, true))) //identify total
                             );
                         }
@@ -1205,7 +1212,8 @@ public class PurchaseOrderReturn_ConfirmationMonarchFoodController implements In
     }
 
     public void initDatePickers() {
-        JFXUtil.setDatePickerFormat(dpTransactionDate);
+        JFXUtil.setDatePickerFormat("MM/dd/yyyy",
+dpTransactionDate);
         JFXUtil.setActionListener(this::datepicker_Action, dpTransactionDate);
 
     }
@@ -1231,7 +1239,7 @@ public class PurchaseOrderReturn_ConfirmationMonarchFoodController implements In
                 if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
                     pnDetail = tblViewDetails.getSelectionModel().getSelectedIndex();
                     loadRecordDetail();
-                    if (poPurchaseReturnController.Detail(pnDetail).getStockId() != null && !poPurchaseReturnController.Detail(pnDetail).getStockId().equals("")) {
+                    if (poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).getStockId() != null && !poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).getStockId().equals("")) {
                         tfReturnQuantity.requestFocus();
                     } else {
                         tfBarcode.requestFocus();
@@ -1245,7 +1253,7 @@ public class PurchaseOrderReturn_ConfirmationMonarchFoodController implements In
             if (pnMain >= 0) {
                 if (event.getClickCount() == 2) {
                     loadTableDetailFromMain();
-                    pnEditMode = poPurchaseReturnController.getEditMode();
+                    pnEditMode = poPurchaseReturnController.PurchaseOrderReturn().getEditMode();
                     initButton(pnEditMode);
                 }
             }
@@ -1293,10 +1301,10 @@ public class PurchaseOrderReturn_ConfirmationMonarchFoodController implements In
         JFXUtil.setButtonsVisibility(lbShow4, btnClose);
         JFXUtil.setButtonsVisibility(false, btnReturn);
 
-        switch (poPurchaseReturnController.Master().getTransactionStatus()) {
+        switch (poPurchaseReturnController.PurchaseOrderReturn().Master().getTransactionStatus()) {
             case PurchaseOrderReturnStatus.CONFIRMED:
                 JFXUtil.setButtonsVisibility(false, btnConfirm);
-                if (poPurchaseReturnController.Master().isProcessed()) {
+                if (poPurchaseReturnController.PurchaseOrderReturn().Master().isProcessed()) {
                     JFXUtil.setButtonsVisibility(false, btnUpdate, btnVoid);
                 } else {
                     JFXUtil.setButtonsVisibility(lbShow3, btnReturn);

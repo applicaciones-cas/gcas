@@ -222,9 +222,7 @@ public class PaymentRequest_EntryController implements Initializable, ScreenInte
                     poGLControllers.PaymentRequest().Master().setIndustryID(psIndustryID);
                     poGLControllers.PaymentRequest().Master().setCompanyID(psCompanyID);
                     loadRecordSearch();
-                } catch (SQLException ex) {
-                    Logger.getLogger(PaymentRequest_EntryController.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (GuanzonException ex) {
+                } catch (SQLException | GuanzonException ex) {
                     Logger.getLogger(PaymentRequest_EntryController.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }));
@@ -590,10 +588,17 @@ public class PaymentRequest_EntryController implements Initializable, ScreenInte
                     ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
                     poJSON = poGLControllers.PaymentRequest().OpenTransaction(poGLControllers.PaymentRequest().Master().getTransactionNo());
                     // Confirmation Prompt
-                    if ("success".equals(poJSON.get("result")) && poGLControllers.PaymentRequest().Master().getTransactionStatus().equals(PaymentRequestStatus.OPEN)
-                            && ShowMessageFX.YesNo(null, psFormName, "Do you want to confirm this transaction?")) {
-                        if ("success".equals((poJSON = poGLControllers.PaymentRequest().ConfirmTransaction("Confirmed")).get("result"))) {
-                            ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
+                    if ("success".equals(poJSON.get("result"))) {
+                        if (poGLControllers.PaymentRequest().Master().getTransactionStatus().equals(PaymentRequestStatus.OPEN)) {
+                            if (ShowMessageFX.YesNo(null, psFormName, "Do you want to confirm this transaction?")) {
+                                poGLControllers.PaymentRequest().setWithUI(true);
+                                if ("success".equals((poJSON = poGLControllers.PaymentRequest().ConfirmTransaction("")).get("result"))) {
+                                    ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
+                                } else {
+                                    ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                                    return;
+                                }
+                            }
                         }
                     }
                     Platform.runLater(() -> btnNew.fire());
