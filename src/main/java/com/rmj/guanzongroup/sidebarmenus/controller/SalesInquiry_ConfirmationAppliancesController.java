@@ -482,10 +482,9 @@ public class SalesInquiry_ConfirmationAppliancesController implements Initializa
             apDetail.requestFocus();
             pnDetail = isUp ? JFXUtil.moveToPreviousRow(tblViewTransDetails) : JFXUtil.moveToNextRow(tblViewTransDetails);
             loadRecordDetail();
-            if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Inventory().Category().getCategoryId(), null, "")) {
+            if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Category2().getCategoryId(), null, "")) {
                 tfCategory.requestFocus();
-            } else if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Inventory().Brand().getBrandId(), null, "")
-                    && JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Brand().getBrandId(), null, "")) {
+            } else if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Brand().getBrandId(), null, "")) {
                 tfBrand.requestFocus();
             } else if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Inventory().getBarCode(), null, "")) {
                 tfBarcode.requestFocus();
@@ -523,9 +522,9 @@ public class SalesInquiry_ConfirmationAppliancesController implements Initializa
                     break;
                 case UP:
                     switch (lsID) {
+                        case "tfCategory":
                         case "tfBrand":
                         case "tfBarcode":
-                        case "tfDescription":
                             moveNext(true);
                             event.consume();
                             break;
@@ -533,9 +532,9 @@ public class SalesInquiry_ConfirmationAppliancesController implements Initializa
                     break;
                 case DOWN:
                     switch (lsID) {
+                        case "tfCategory":
                         case "tfBrand":
                         case "tfBarcode":
-                        case "tfDescription":
                             moveNext(false);
                             event.consume();
                             break;
@@ -786,13 +785,8 @@ public class SalesInquiry_ConfirmationAppliancesController implements Initializa
             }
             tfCategory.setText(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Category2().getDescription());
             poSalesInquiryController.SalesInquiry().Detail(pnDetail).Inventory().Category().getDescription();
-            String lsBrand = "";
-            if (!JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Brand().getDescription(), null, "")) {
-                lsBrand = poSalesInquiryController.SalesInquiry().Detail(pnDetail).Brand().getDescription();
-            } else {
-                lsBrand = poSalesInquiryController.SalesInquiry().Detail(pnDetail).Inventory().Brand().getDescription();
-            }
-            tfBrand.setText(lsBrand);
+
+            tfBrand.setText(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Brand().getDescription());
 
             tfBarcode.setText(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Inventory().getBarCode());
             tfDescription.setText(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Inventory().getDescription());
@@ -1053,7 +1047,7 @@ public class SalesInquiry_ConfirmationAppliancesController implements Initializa
     public void initTextFields() {
         JFXUtil.setFocusListener(txtField_Focus, tfSearchClient, tfSearchReferenceNo);
         JFXUtil.setFocusListener(txtArea_Focus, taRemarks);
-        JFXUtil.setFocusListener(txtMaster_Focus, tfClient, tfSalesPerson, tfReferralAgent,tfInquiryType);
+        JFXUtil.setFocusListener(txtMaster_Focus, tfClient, tfSalesPerson, tfReferralAgent, tfInquiryType);
         JFXUtil.setFocusListener(txtDetail_Focus, tfCategory, tfBrand, tfBarcode, tfDescription, tfModel, tfColor);
 
         JFXUtil.setKeyPressedListener(this::txtField_KeyPressed, apBrowse, apMaster, apDetail);
@@ -1068,10 +1062,9 @@ public class SalesInquiry_ConfirmationAppliancesController implements Initializa
                     try {
                         // Detect single click (or use another condition for double click)
                         pnDetail = tblViewTransDetails.getSelectionModel().getSelectedIndex();
-                        if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Inventory().Category().getCategoryId(), null, "")) {
+                        if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Category2().getCategoryId(), null, "")) {
                             tfCategory.requestFocus();
-                        } else if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Inventory().Brand().getBrandId(), null, "")
-                                && JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Brand().getBrandId(), null, "")) {
+                        } else if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Brand().getBrandId(), null, "")) {
                             tfBrand.requestFocus();
                         } else if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Inventory().getBarCode(), null, "")) {
                             tfBarcode.requestFocus();

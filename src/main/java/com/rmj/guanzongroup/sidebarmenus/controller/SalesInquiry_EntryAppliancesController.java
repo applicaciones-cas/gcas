@@ -429,10 +429,9 @@ public class SalesInquiry_EntryAppliancesController implements Initializable, Sc
                     if (event.getClickCount() == 1) {
                         // Detect single click (or use another condition for double click)
                         pnDetail = tblViewTransDetails.getSelectionModel().getSelectedIndex();
-                        if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Inventory().Category().getCategoryId(), null, "")) {
+                        if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Category2().getCategoryId(), null, "")) {
                             tfCategory.requestFocus();
-                        } else if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Inventory().Brand().getBrandId(), null, "")
-                                && JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Brand().getBrandId(), null, "")) {
+                        } else if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Brand().getBrandId(), null, "")) {
                             tfBrand.requestFocus();
                         } else if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Inventory().getBarCode(), null, "")) {
                             tfBarcode.requestFocus();
@@ -678,10 +677,9 @@ public class SalesInquiry_EntryAppliancesController implements Initializable, Sc
             apDetail.requestFocus();
             pnDetail = isUp ? JFXUtil.moveToPreviousRow(tblViewTransDetails) : JFXUtil.moveToNextRow(tblViewTransDetails);
             loadRecordDetail();
-            if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Inventory().Category().getCategoryId(), null, "")) {
+            if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Category2().getCategoryId(), null, "")) {
                 tfCategory.requestFocus();
-            } else if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Inventory().Brand().getBrandId(), null, "")
-                    && JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Brand().getBrandId(), null, "")) {
+            } else if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Brand().getBrandId(), null, "")) {
                 tfBrand.requestFocus();
             } else if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Inventory().getBarCode(), null, "")) {
                 tfBarcode.requestFocus();
@@ -719,9 +717,9 @@ public class SalesInquiry_EntryAppliancesController implements Initializable, Sc
                     break;
                 case UP:
                     switch (lsID) {
+                        case "tfCategory":
                         case "tfBrand":
                         case "tfBarcode":
-                        case "tfDescription":
                             moveNext(true);
                             event.consume();
                             break;
@@ -729,9 +727,9 @@ public class SalesInquiry_EntryAppliancesController implements Initializable, Sc
                     break;
                 case DOWN:
                     switch (lsID) {
+                        case "tfCategory":
                         case "tfBrand":
                         case "tfBarcode":
-                        case "tfDescription":
                             moveNext(false);
                             event.consume();
                             break;

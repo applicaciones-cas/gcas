@@ -18,12 +18,10 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
-import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
-import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -97,14 +95,16 @@ public class SalesInquiry_ConfirmationMPController implements Initializable, Scr
     AtomicReference<Object> lastFocusedTextField = new AtomicReference<>();
     AtomicReference<Object> previousSearchedTextField = new AtomicReference<>();
     ObservableList<String> ClientType = ModelSalesInquiry_Detail.ClientType;
-
     ObservableList<String> PurchaseType = ModelSalesInquiry_Detail.PurchaseType;
-    ObservableList<String> CategoryType = ModelSalesInquiry_Detail.CategoryType;
+    JFXUtil.ReloadableTableTask loadTableMain;
+    JFXUtil.ReloadableTableTask loadTableDetail;
+
     private final JFXUtil.RowDragLock dragLock = new JFXUtil.RowDragLock(true);
+
     @FXML
     private AnchorPane apMainAnchor, apBrowse, apButton, apMaster, apDetail;
     @FXML
-    private TextField tfSearchClient, tfSearchReferenceNo, tfTransactionNo, tfBranch, tfSalesPerson, tfInquiryType, tfClient, tfAddress, tfInquiryStatus, tfContactNo, tfBrand, tfModel, tfColor, tfBarcode, tfModelVariant;
+    private TextField tfSearchClient, tfSearchReferenceNo, tfTransactionNo, tfBranch, tfSalesPerson, tfClient, tfAddress, tfInquiryStatus, tfContactNo, tfInquiryType, tfReferralAgent, tfBarcode, tfCategory, tfDescription, tfBrand, tfModel, tfColor, tfModelVariant, tfSellingPrice;
     @FXML
     private Label lblSource, lblStatus;
     @FXML
@@ -114,13 +114,13 @@ public class SalesInquiry_ConfirmationMPController implements Initializable, Scr
     @FXML
     private DatePicker dpTransactionDate, dpTargetDate;
     @FXML
-    private ComboBox cmbClientType, cmbPurchaseType, cmbCategoryType;
+    private ComboBox cmbClientType, cmbPurchaseType;
     @FXML
     private TextArea taRemarks;
     @FXML
     private TableView tblViewTransDetails, tblViewMainList;
     @FXML
-    private TableColumn tblRowNoDetail, tblBrandDetail, tblDescriptionDetail, tblRowNo, tblClient, tblDate, tblReferenceNo;
+    private TableColumn tblRowNoDetail, tblBarcodeDetail, tblDescriptionDetail, tblRowNo, tblClient, tblDate, tblReferenceNo;
     @FXML
     private Pagination pgPagination;
 
@@ -134,7 +134,7 @@ public class SalesInquiry_ConfirmationMPController implements Initializable, Scr
             System.err.println((String) poJSON.get("message"));
             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
         }
-
+        initLoadTable();
         initTextFields();
         initDatePickers();
         initMainGrid();
@@ -320,12 +320,12 @@ public class SalesInquiry_ConfirmationMPController implements Initializable, Scr
                         "btnArrowRight", "btnArrowLeft", "btnRetrieve")) {
                 } else {
                     loadRecordMaster();
-                    loadTableDetail();
+                    loadTableDetail.reload();
                 }
                 initButton(pnEditMode);
                 if (lsButton.equals("btnUpdate")) {
-                    if (poSalesInquiryController.SalesInquiry().Detail(pnDetail).getBrandId() == null || "".equals(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getBrandId())) {
-                        tfBrand.requestFocus();
+                    if (poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId() == null || "".equals(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId())) {
+                        tfBarcode.requestFocus();
                     }
                 }
             }
@@ -341,170 +341,166 @@ public class SalesInquiry_ConfirmationMPController implements Initializable, Scr
         if (!"success".equals((String) poJSON.get("result"))) {
             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
         } else {
-            loadTableMain();
+            loadTableMain.reload();
         }
 
     }
 
-    final ChangeListener<? super Boolean> txtArea_Focus = (o, ov, nv) -> {
-        TextArea txtField = (TextArea) ((ReadOnlyBooleanPropertyBase) o).getBean();
-        String lsID = (txtField.getId());
-        String lsValue = txtField.getText();
-
-        if (lsValue == null) {
-            return;
-        }
-        poJSON = new JSONObject();
-        if (!nv) {
-            /*Lost Focus*/
-            lsValue = lsValue.trim();
-            switch (lsID) {
-
-                case "taRemarks"://Remarks
-                    poJSON = poSalesInquiryController.SalesInquiry().Master().setRemarks(lsValue);
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        System.err.println((String) poJSON.get("message"));
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                        return;
-                    }
-                    break;
-            }
-            loadRecordMaster();
-        } else {
-            txtField.selectAll();
-        }
-    };
-
-    // Method to handle focus change and track the last focused TextField
-    final ChangeListener<? super Boolean> txtDetail_Focus = (o, ov, nv) -> {
-        poJSON = new JSONObject();
-        TextField txtPersonalInfo = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
-        String lsTxtFieldID = (txtPersonalInfo.getId());
-        String lsValue = (txtPersonalInfo.getText() == null ? "" : txtPersonalInfo.getText());
-
-        if (lsValue == null) {
-            return;
-        }
-        if (!nv) {
-            /*Lost Focus*/
-            switch (lsTxtFieldID) {
-                case "tfBrand":
-                    //if value is blank then reset
-                    if (lsValue.equals("")) {
-                        poSalesInquiryController.SalesInquiry().Detail(pnDetail).setBrandId("");
-                        poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setStockId("");
-                        poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setModelId("");
-                        poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setColorId("");
-                    }
-                    break;
-                case "tfModel":
-                    //if value is blank then reset
-                    if (lsValue.equals("")) {
-                        poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setModelId("");
-                        poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setStockId("");
-                        poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setColorId("");
-                    }
-                    break;
-                case "tfColor":
-                    //if value is blank then reset
-                    if (lsValue.equals("")) {
-                        poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setColorId("");
-                        poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setStockId("");
-                    }
-                    if (pbEntered) {
-                        moveNext(false);
-                        pbEntered = false;
-                    }
-                    break;
-            }
-            Platform.runLater(() -> {
-                PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
-                delay.setOnFinished(event -> {
-                    loadTableDetail();
-                });
-                delay.play();
+    ChangeListener<Boolean> txtArea_Focus = JFXUtil.FocusListener(TextArea.class,
+            (lsID, lsValue) -> {
+                /*Lost Focus*/
+                lsValue = lsValue.trim();
+                switch (lsID) {
+                    case "taRemarks"://Remarks
+                        poJSON = poSalesInquiryController.SalesInquiry().Master().setRemarks(lsValue);
+                        if ("error".equals((String) poJSON.get("result"))) {
+                            System.err.println((String) poJSON.get("message"));
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                            return;
+                        }
+                        break;
+                }
+                loadRecordMaster();
             });
-        }
-    };
-    final ChangeListener<? super Boolean> txtMaster_Focus = (o, ov, nv) -> {
-        poJSON = new JSONObject();
-        TextField txtPersonalInfo = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
-        String lsTxtFieldID = (txtPersonalInfo.getId());
-        String lsValue = (txtPersonalInfo.getText() == null ? "" : txtPersonalInfo.getText());
-        if (lsValue == null) {
-            return;
-        }
-        if (!nv) {
-            /*Lost Focus*/
-            switch (lsTxtFieldID) {
-                case "tfSalesPerson":
-                    if (lsValue.isEmpty()) {
-                        poJSON = poSalesInquiryController.SalesInquiry().Master().setSalesMan("");
-                    }
-                    break;
-                case "tfInquiryType":
-                    if (lsValue.isEmpty()) {
-                        poJSON = poSalesInquiryController.SalesInquiry().Master().setSourceCode("");
-                    }
-                    break;
-                case "tfClient":
-                    if (lsValue.isEmpty()) {
-                        poJSON = poSalesInquiryController.SalesInquiry().Master().setClientId("");
-                        poJSON = poSalesInquiryController.SalesInquiry().Master().setAddressId("");
-                        poJSON = poSalesInquiryController.SalesInquiry().Master().setContactId("");
-                    }
-                    break;
 
-            }
+    ChangeListener<Boolean> txtDetail_Focus = JFXUtil.FocusListener(TextField.class,
+            (lsID, lsValue) -> {
+                /*Lost Focus*/
+                switch (lsID) {
+                    case "tfCategory":
+                        //if value is blank then reset
+                        if (lsValue.equals("")) {
+                            poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setCategory("");
+                            poSalesInquiryController.SalesInquiry().Detail(pnDetail).setBrandId("");
+                            poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setStockId("");
+                            poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setModelId("");
+                            poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setColorId("");
+                        }
+                        break;
+                    case "tfBrand":
+                        //if value is blank then reset
+                        if (lsValue.equals("")) {
+                            poSalesInquiryController.SalesInquiry().Detail(pnDetail).setBrandId("");
+                            poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setStockId("");
+                            poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setModelId("");
+                            poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setColorId("");
+                        }
+                        break;
+                    case "tfBarcode":
+                        //if value is blank then reset
+                        if (lsValue.equals("")) {
+                            poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setStockId("");
+                            poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setModelId("");
+                            poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setColorId("");
+                        }
+                        break;
+                    case "tfDescription":
+                        //if value is blank then reset
+                        if (lsValue.equals("")) {
+                            poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setStockId("");
+                            poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setModelId("");
+                            poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setColorId("");
+                        }
+                        if (pbEntered) {
+                            moveNext(false);
+                            pbEntered = false;
+                        }
+                        break;
+                    case "tfModel":
+                        //if value is blank then reset
+                        if (lsValue.equals("")) {
+                            poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setModelId("");
+                        }
+                        break;
+                    case "tfColor":
+                        //if value is blank then reset
+                        if (lsValue.equals("")) {
+                            poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setColorId("");
+                        }
+                        break;
+                }
+                Platform.runLater(() -> {
+                    PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
+                    delay.setOnFinished(event -> {
+                        loadTableDetail.reload();
+                    });
+                    delay.play();
+                });
+            });
 
-            loadRecordMaster();
+    ChangeListener<Boolean> txtMaster_Focus = JFXUtil.FocusListener(TextField.class,
+            (lsID, lsValue) -> {
+                /*Lost Focus*/
+                switch (lsID) {
+                    case "tfSalesPerson":
+                        if (lsValue.isEmpty()) {
+                            poJSON = poSalesInquiryController.SalesInquiry().Master().setSalesMan("");
+                        }
+                        break;
+                    case "tfReferralAgent":
+                        if (lsValue.isEmpty()) {
+                            poJSON = poSalesInquiryController.SalesInquiry().Master().setAgentId("");
+                        }
+                        break;
+                    case "tfInquiryType":
+                        if (lsValue.isEmpty()) {
+                            poJSON = poSalesInquiryController.SalesInquiry().Master().setSourceCode("");
+                        }
+                        break;
+                    case "tfClient":
+                        if (lsValue.isEmpty()) {
+                            poJSON = poSalesInquiryController.SalesInquiry().Master().setClientId("");
+                            poJSON = poSalesInquiryController.SalesInquiry().Master().setAddressId("");
+                            poJSON = poSalesInquiryController.SalesInquiry().Master().setContactId("");
+                        }
+                        break;
+                }
+                loadRecordMaster();
+            });
 
-        }
-
-    };
-    final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
-        poJSON = new JSONObject();
-        TextField txtPersonalInfo = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
-        String lsTxtFieldID = (txtPersonalInfo.getId());
-        String lsValue = (txtPersonalInfo.getText() == null ? "" : txtPersonalInfo.getText());
-
-        if (lsValue == null) {
-            return;
-        }
-        if (!nv) {
-            /*Lost Focus*/
-            switch (lsTxtFieldID) {
-                case "tfSearchClient":
-                    if (lsValue.equals("")) {
-                        psSearchClientId = "";
-                    }
+    ChangeListener<Boolean> txtField_Focus = JFXUtil.FocusListener(TextField.class,
+            (lsID, lsValue) -> {
+                /*Lost Focus*/
+                switch (lsID) {
+                    case "tfSearchClient":
+                        if (lsValue.equals("")) {
+                            psSearchClientId = "";
+                        }
+                        loadRecordSearch();
+                        break;
+                    case "tfSearchReferenceNo":
+                        break;
+                }
+                if (lsID.equals("tfSearchClient")
+                || lsID.equals("tfSearchReferenceNo")) {
                     loadRecordSearch();
-                    break;
-                case "tfSearchReferenceNo":
-                    break;
-            }
-            if (lsTxtFieldID.equals("tfSearchClient")
-                    || lsTxtFieldID.equals("tfSearchReferenceNo")) {
-                loadRecordSearch();
-            }
-        }
-    };
+                }
+            });
 
     public void moveNext(boolean isUp) {
-        
-        apDetail.requestFocus();
-        
-        pnDetail = isUp ? JFXUtil.moveToPreviousRow(tblViewTransDetails) : JFXUtil.moveToNextRow(tblViewTransDetails);
-        loadRecordDetail();
-        if (!JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getBrandId(), null, "")) {
-            if (!JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getModelId(), null, "")) {
+        try {
+            apDetail.requestFocus();
+            pnDetail = isUp ? JFXUtil.moveToPreviousRow(tblViewTransDetails) : JFXUtil.moveToNextRow(tblViewTransDetails);
+            loadRecordDetail();
+            if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Category2().getCategoryId(), null, "")) {
+                tfCategory.requestFocus();
+            } else if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Brand().getBrandId(), null, "")) {
+                tfBrand.requestFocus();
+            } else if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Inventory().getBarCode(), null, "")) {
+                tfBarcode.requestFocus();
+            } else if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Inventory().Model().getModelId(), null, "")) {
+                tfModel.requestFocus();
+            } else if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Inventory().Color().getColorId(), null, "")) {
                 tfColor.requestFocus();
             } else {
-                tfModel.requestFocus();
+                tfCategory.requestFocus();
             }
-        } else {
-            tfBrand.requestFocus();
+        } catch (SQLException ex) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
+        } catch (GuanzonException ex) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
         }
+
     }
 
     private void txtField_KeyPressed(KeyEvent event) {
@@ -517,7 +513,6 @@ public class SalesInquiry_ConfirmationMPController implements Initializable, Scr
 
             TableView<?> currentTable = tblViewTransDetails;
             TablePosition<?, ?> focusedCell = currentTable.getFocusModel().getFocusedCell();
-
             switch (event.getCode()) {
                 case TAB:
                 case ENTER:
@@ -527,9 +522,9 @@ public class SalesInquiry_ConfirmationMPController implements Initializable, Scr
                     break;
                 case UP:
                     switch (lsID) {
+                        case "tfCategory":
                         case "tfBrand":
-                        case "tfModel":
-                        case "tfColor":
+                        case "tfBarcode":
                             moveNext(true);
                             event.consume();
                             break;
@@ -537,9 +532,9 @@ public class SalesInquiry_ConfirmationMPController implements Initializable, Scr
                     break;
                 case DOWN:
                     switch (lsID) {
+                        case "tfCategory":
                         case "tfBrand":
-                        case "tfModel":
-                        case "tfColor":
+                        case "tfBarcode":
                             moveNext(false);
                             event.consume();
                             break;
@@ -577,8 +572,21 @@ public class SalesInquiry_ConfirmationMPController implements Initializable, Scr
                             poJSON = poSalesInquiryController.SalesInquiry().SearchSalesPerson(lsValue, false);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                tfSalesPerson.setText("");
+                                txtField.setText("");
                                 break;
+                            } else {
+                                JFXUtil.textFieldMoveNext(tfInquiryType);
+                            }
+                            loadRecordMaster();
+                            return;
+                        case "tfReferralAgent":
+                            poJSON = poSalesInquiryController.SalesInquiry().SearchReferralAgent(lsValue, false);
+                            if ("error".equals(poJSON.get("result"))) {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                txtField.setText("");
+                                break;
+                            } else {
+                                JFXUtil.textFieldMoveNext(tfInquiryType);
                             }
                             loadRecordMaster();
                             return;
@@ -588,6 +596,20 @@ public class SalesInquiry_ConfirmationMPController implements Initializable, Scr
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
 
                                 break;
+                            } else {
+                                JFXUtil.textFieldMoveNext(tfClient);
+                            }
+                            loadRecordMaster();
+                            return;
+                        case "tfCategory":
+                            poJSON = poSalesInquiryController.SalesInquiry().SearchCategory(lsValue, false, pnDetail);
+                            if ("error".equals(poJSON.get("result"))) {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                txtField.setText("");
+                                break;
+                            } else {
+                                loadTableDetail.reload();
+                                JFXUtil.textFieldMoveNext(tfBrand);
                             }
                             loadRecordMaster();
                             return;
@@ -595,47 +617,75 @@ public class SalesInquiry_ConfirmationMPController implements Initializable, Scr
                             poJSON = poSalesInquiryController.SalesInquiry().SearchBrand(lsValue, false, pnDetail);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                tfBrand.setText("");
+                                txtField.setText("");
                                 break;
+                            } else {
+                                loadTableDetail.reload();
+                                JFXUtil.textFieldMoveNext(tfBarcode);
                             }
-                            loadTableDetail();
-                            Platform.runLater(() -> {
-                                PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
-                                delay.setOnFinished(e -> {
-                                    tfModel.requestFocus();
+                            loadRecordMaster();
+                            return;
+                        case "tfBarcode":
+                            poJSON = poSalesInquiryController.SalesInquiry().SearchInventory(lsValue, true, pnDetail);
+                            if ("error".equals(poJSON.get("result"))) {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                txtField.setText("");
+                                break;
+                            } else {
+                                loadTableDetail.reload();
+                                Platform.runLater(() -> {
+                                    PauseTransition delay = new PauseTransition(Duration.seconds(0.70));
+                                    delay.setOnFinished(event1 -> {
+                                        moveNext(false);
+                                    });
+                                    delay.play();
                                 });
-                                delay.play();
-                            });
-
+                            }
+                            break;
+                        case "tfDescription":
+                            poJSON = poSalesInquiryController.SalesInquiry().SearchInventory(lsValue, false, pnDetail);
+                            if ("error".equals(poJSON.get("result"))) {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                txtField.setText("");
+                                break;
+                            } else {
+                                loadTableDetail.reload();
+                                Platform.runLater(() -> {
+                                    PauseTransition delay = new PauseTransition(Duration.seconds(0.70));
+                                    delay.setOnFinished(event1 -> {
+                                        moveNext(false);
+                                    });
+                                    delay.play();
+                                });
+                            }
                             break;
                         case "tfModel":
                             poJSON = poSalesInquiryController.SalesInquiry().SearchModel(lsValue, false, pnDetail);
-                            lnRow = (int) poJSON.get("row");
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                tfModel.setText("");
-                                break;
-                            }
-                            loadTableDetail();
-                            Platform.runLater(() -> {
-                                PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
-                                delay.setOnFinished(e -> {
-                                    tfColor.requestFocus();
-                                });
-                                delay.play();
-                            });
-                            break;
-                        case "tfColor":
-                            poJSON = poSalesInquiryController.SalesInquiry().SearchColor(lsValue, false, pnDetail);
-                            lnRow = (int) poJSON.get("row");
-                            if ("error".equals(poJSON.get("result"))) {
-                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                tfColor.setText("");
+                                txtField.setText("");
                                 break;
                             } else {
-                                loadTableDetail();
+                                loadTableDetail.reload();
                                 Platform.runLater(() -> {
-                                    PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
+                                    PauseTransition delay = new PauseTransition(Duration.seconds(0.70));
+                                    delay.setOnFinished(event1 -> {
+                                        moveNext(false);
+                                    });
+                                    delay.play();
+                                });
+                            }
+                            break;
+                        case "tfColor":
+                            poJSON = poSalesInquiryController.SalesInquiry().SearchColor(lsValue, true, pnDetail);
+                            if ("error".equals(poJSON.get("result"))) {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                txtField.setText("");
+                                break;
+                            } else {
+                                loadTableDetail.reload();
+                                Platform.runLater(() -> {
+                                    PauseTransition delay = new PauseTransition(Duration.seconds(0.70));
                                     delay.setOnFinished(event1 -> {
                                         moveNext(false);
                                     });
@@ -717,81 +767,6 @@ public class SalesInquiry_ConfirmationMPController implements Initializable, Scr
         }
     }
 
-    public void loadTableMain() {
-        // Setting data to table detail
-        JFXUtil.LoadScreenComponents loading = JFXUtil.createLoadingComponents();
-        tblViewMainList.setPlaceholder(loading.loadingPane);
-
-        Task<Void> task = new Task<Void>() {
-            @Override
-            protected Void call() throws Exception {
-                Thread.sleep(100);
-//                Thread.sleep(1000);
-
-                Platform.runLater(() -> {
-                    main_data.clear();
-                    JFXUtil.disableAllHighlight(tblViewMainList, highlightedRowsMain);
-                    if (poSalesInquiryController.SalesInquiry().getSalesInquiryCount() > 0) {
-                        //pending
-                        //retreiving using column index
-                        for (int lnCtr = 0; lnCtr <= poSalesInquiryController.SalesInquiry().getSalesInquiryCount() - 1; lnCtr++) {
-                            try {
-                                main_data.add(new ModelSalesInquiry_Main(String.valueOf(lnCtr + 1),
-                                        String.valueOf(poSalesInquiryController.SalesInquiry().SalesInquiryList(lnCtr).Client().getCompanyName()),
-                                        String.valueOf(poSalesInquiryController.SalesInquiry().SalesInquiryList(lnCtr).getTransactionDate()),
-                                        String.valueOf(poSalesInquiryController.SalesInquiry().SalesInquiryList(lnCtr).getTransactionNo())
-                                ));
-                            } catch (GuanzonException | SQLException ex) {
-                                Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-                            }
-
-                            if (poSalesInquiryController.SalesInquiry().SalesInquiryList(lnCtr).getTransactionStatus().equals(SalesInquiryStatic.CONFIRMED)) {
-                                JFXUtil.highlightByKey(tblViewMainList, String.valueOf(lnCtr + 1), "#C1E1C1", highlightedRowsMain);
-                            }
-                        }
-                    }
-
-                    if (pnMain < 0 || pnMain
-                            >= main_data.size()) {
-                        if (!main_data.isEmpty()) {
-                            /* FOCUS ON FIRST ROW */
-                            JFXUtil.selectAndFocusRow(tblViewMainList, 0);
-                            pnMain = tblViewMainList.getSelectionModel().getSelectedIndex();
-
-                        }
-                    } else {
-                        /* FOCUS ON THE ROW THAT pnRowDetail POINTS TO */
-                        JFXUtil.selectAndFocusRow(tblViewMainList, pnMain);
-                    }
-
-                    JFXUtil.loadTab(pgPagination, main_data.size(), ROWS_PER_PAGE, tblViewMainList, filteredData);
-                });
-
-                return null;
-            }
-
-            @Override
-            protected void succeeded() {
-                if (main_data == null || main_data.isEmpty()) {
-                    tblViewMainList.setPlaceholder(loading.placeholderLabel);
-                } else {
-                    tblViewMainList.toFront();
-                }
-                loading.progressIndicator.setVisible(false);
-            }
-
-            @Override
-            protected void failed() {
-                if (main_data == null || main_data.isEmpty()) {
-                    tblViewMainList.setPlaceholder(loading.placeholderLabel);
-                }
-                loading.progressIndicator.setVisible(false);
-            }
-
-        };
-        new Thread(task).start(); // Run task in background
-    }
-
     public void loadRecordSearch() {
         try {
             lblSource.setText(poSalesInquiryController.SalesInquiry().Master().Company().getCompanyName() + " - " + poSalesInquiryController.SalesInquiry().Master().Industry().getDescription());
@@ -808,12 +783,18 @@ public class SalesInquiry_ConfirmationMPController implements Initializable, Scr
             if (pnDetail < 0 || pnDetail > poSalesInquiryController.SalesInquiry().getDetailCount() - 1) {
                 return;
             }
+            tfCategory.setText(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Category2().getDescription());
+            poSalesInquiryController.SalesInquiry().Detail(pnDetail).Inventory().Category().getDescription();
 
             tfBrand.setText(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Brand().getDescription());
+
+            tfBarcode.setText(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Inventory().getBarCode());
+            tfDescription.setText(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Inventory().getDescription());
+
             tfModel.setText(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Model().getDescription());
             tfModelVariant.setText(poSalesInquiryController.SalesInquiry().Detail(pnDetail).ModelVariant().getDescription());
             tfColor.setText(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Color().getDescription());
-            tfBarcode.setText(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Inventory().getBarCode());
+            tfSellingPrice.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Inventory().getSellingPrice(), true));
             JFXUtil.updateCaretPositions(apDetail);
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
@@ -821,8 +802,10 @@ public class SalesInquiry_ConfirmationMPController implements Initializable, Scr
     }
 
     public void loadRecordMaster() {
+
         boolean lbDisable = pnEditMode == EditMode.ADDNEW;
-        JFXUtil.setDisabled(!lbDisable, tfClient, cmbClientType, cmbCategoryType);
+        JFXUtil.setDisabled(!lbDisable, tfClient, cmbClientType);
+
         try {
             Platform.runLater(() -> {
                 String lsActive = pnEditMode == EditMode.UNKNOWN ? "-1" : poSalesInquiryController.SalesInquiry().Master().getTransactionStatus();
@@ -834,7 +817,6 @@ public class SalesInquiry_ConfirmationMPController implements Initializable, Scr
                 statusMap.put(SalesInquiryStatic.VOID, "VOIDED");
                 statusMap.put(SalesInquiryStatic.CANCELLED, "CANCELLED");
                 statusMap.put(SalesInquiryStatic.LOST, "LOST");
-
                 String lsStat = statusMap.getOrDefault(lsActive, "UNKNOWN"); //default
                 lblStatus.setText(lsStat);
 
@@ -857,6 +839,7 @@ public class SalesInquiry_ConfirmationMPController implements Initializable, Scr
 
             tfBranch.setText(poSalesInquiryController.SalesInquiry().Master().Branch().getBranchName());
             tfSalesPerson.setText(poSalesInquiryController.SalesInquiry().Master().SalesPerson().getFullName());
+            tfReferralAgent.setText(poSalesInquiryController.SalesInquiry().Master().ReferralAgent().getCompanyName());
 
             tfClient.setText(poSalesInquiryController.SalesInquiry().Master().Client().getCompanyName());
             tfAddress.setText(poSalesInquiryController.SalesInquiry().Master().ClientAddress().getAddress());
@@ -864,6 +847,7 @@ public class SalesInquiry_ConfirmationMPController implements Initializable, Scr
             tfInquiryType.setText(poSalesInquiryController.SalesInquiry().Master().Source().getDescription());
 
             taRemarks.setText(poSalesInquiryController.SalesInquiry().Master().getRemarks());
+
             if (pnEditMode != EditMode.UNKNOWN) {
 
                 cmbPurchaseType.getSelectionModel().select(Integer.parseInt(poSalesInquiryController.SalesInquiry().Master().getPurchaseType()));
@@ -872,12 +856,9 @@ public class SalesInquiry_ConfirmationMPController implements Initializable, Scr
                 } else {
                     cmbClientType.getSelectionModel().select(Integer.parseInt(poSalesInquiryController.SalesInquiry().Master().getClientType()));
                 }
-                cmbCategoryType.getSelectionModel().select(Integer.parseInt(poSalesInquiryController.SalesInquiry().Master().getCategoryType()));
             } else {
-
                 cmbPurchaseType.getSelectionModel().select(0);
                 cmbClientType.getSelectionModel().select(0);
-                cmbCategoryType.getSelectionModel().select(0);
             }
 
             JFXUtil.updateCaretPositions(apMaster);
@@ -905,7 +886,7 @@ public class SalesInquiry_ConfirmationMPController implements Initializable, Scr
                 }
             }
             Platform.runLater(() -> {
-                loadTableDetail();
+                loadTableDetail.reload();
             });
 
         } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
@@ -913,110 +894,109 @@ public class SalesInquiry_ConfirmationMPController implements Initializable, Scr
         }
     }
 
-    public void loadTableDetail() {
-        pbEntered = false;
+    public void initLoadTable() {
 
-        JFXUtil.LoadScreenComponents loading = JFXUtil.createLoadingComponents();
-        tblViewTransDetails.setPlaceholder(loading.loadingPane);
-        loading.progressIndicator.setVisible(true);
+        loadTableDetail = new JFXUtil.ReloadableTableTask(
+                tblViewTransDetails,
+                details_data,
+                () -> {
+                    pbEntered = false;
+                    Platform.runLater(() -> {
+                        int lnCtr;
+                        details_data.clear();
+                        try {
 
-        Task<Void> task = new Task<Void>() {
-            @Override
-            protected Void call() throws Exception {
-//                Thread.sleep(1000);
-                // contains try catch, for loop of loading data to observable list until loadTab()
-                Platform.runLater(() -> {
-                    int lnCtr;
-                    details_data.clear();
-                    try {
+                            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                                poSalesInquiryController.SalesInquiry().loadDetail();
+                            }
+                            poSalesInquiryController.SalesInquiry().sortPriority();
+                            String lsBarcode = "";
+                            String lsDescription = "";
+                            for (lnCtr = 0; lnCtr < poSalesInquiryController.SalesInquiry().getDetailCount(); lnCtr++) {
+                                if (poSalesInquiryController.SalesInquiry().Detail(lnCtr).getStockId() != null) {
+                                    lsBarcode = poSalesInquiryController.SalesInquiry().Detail(lnCtr).Inventory().getBarCode();
+                                    lsDescription = poSalesInquiryController.SalesInquiry().Detail(lnCtr).Inventory().getDescription();
+                                }
+                                details_data.add(
+                                        new ModelSalesInquiry_Detail(
+                                                String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getPriority()),
+                                                String.valueOf(lsBarcode),
+                                                lsDescription,
+                                                String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getStockId()),
+                                                String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).Model().getModelId()),
+                                                String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).Color().getColorId()), ""
+                                        ));
+                                lsBarcode = "";
+                                lsDescription = "";
+                            }
 
-                        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                            poSalesInquiryController.SalesInquiry().loadDetail();
-                        }
-                        poSalesInquiryController.SalesInquiry().sortPriority();
-                        String lsBrand = "", lsModel = "", lsModelVariant = "", lsColor = "", lsDescription = "";
-
-                        for (lnCtr = 0; lnCtr < poSalesInquiryController.SalesInquiry().getDetailCount(); lnCtr++) {
-                            if (poSalesInquiryController.SalesInquiry().Detail(lnCtr).getStockId() != null
-                                    && !"".equals(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getStockId())) {
-                                lsBrand = poSalesInquiryController.SalesInquiry().Detail(lnCtr).Inventory().Brand().getDescription();
-                                lsModel = poSalesInquiryController.SalesInquiry().Detail(lnCtr).Inventory().Model().getDescription();
-                                lsModelVariant = " " + poSalesInquiryController.SalesInquiry().Detail(lnCtr).Inventory().Variant().getDescription();
-                                lsColor = " " + poSalesInquiryController.SalesInquiry().Detail(lnCtr).Inventory().Color().getDescription();
+                            if (pnDetail < 0 || pnDetail
+                                    >= details_data.size()) {
+                                if (!details_data.isEmpty()) {
+                                    /* FOCUS ON FIRST ROW */
+                                    JFXUtil.selectAndFocusRow(tblViewTransDetails, 0);
+                                    pnDetail = tblViewTransDetails.getSelectionModel().getSelectedIndex();
+                                    loadRecordDetail();
+                                }
                             } else {
-                                if (poSalesInquiryController.SalesInquiry().Detail(lnCtr).Brand().getDescription() != null) {
-                                    lsBrand = poSalesInquiryController.SalesInquiry().Detail(lnCtr).Brand().getDescription();
+                                /* FOCUS ON THE ROW THAT pnRowDetail POINTS TO */
+                                JFXUtil.selectAndFocusRow(tblViewTransDetails, pnDetail);
+                                loadRecordDetail();
+                            }
+                            loadRecordMaster();
+                        } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
+                            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+                        }
+                    });
+                }
+        );
+
+        loadTableMain = new JFXUtil.ReloadableTableTask(
+                tblViewMainList,
+                main_data,
+                () -> {
+                    Platform.runLater(() -> {
+                        main_data.clear();
+                        JFXUtil.disableAllHighlight(tblViewMainList, highlightedRowsMain);
+                        if (poSalesInquiryController.SalesInquiry().getSalesInquiryCount() > 0) {
+                            //pending
+                            //retreiving using column index
+                            for (int lnCtr = 0; lnCtr <= poSalesInquiryController.SalesInquiry().getSalesInquiryCount() - 1; lnCtr++) {
+                                try {
+                                    main_data.add(new ModelSalesInquiry_Main(String.valueOf(lnCtr + 1),
+                                            String.valueOf(poSalesInquiryController.SalesInquiry().SalesInquiryList(lnCtr).Client().getCompanyName()),
+                                            String.valueOf(poSalesInquiryController.SalesInquiry().SalesInquiryList(lnCtr).getTransactionDate()),
+                                            String.valueOf(poSalesInquiryController.SalesInquiry().SalesInquiryList(lnCtr).getTransactionNo())
+                                    ));
+                                } catch (GuanzonException | SQLException ex) {
+                                    Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                                 }
-                                if (poSalesInquiryController.SalesInquiry().Detail(lnCtr).Model().getDescription() != null) {
-                                    lsModel = poSalesInquiryController.SalesInquiry().Detail(lnCtr).Model().getDescription();
-                                }
-                                if (poSalesInquiryController.SalesInquiry().Detail(lnCtr).ModelVariant().getDescription() != null) {
-                                    lsModelVariant = " " + poSalesInquiryController.SalesInquiry().Detail(lnCtr).ModelVariant().getDescription();
-                                }
-                                if (poSalesInquiryController.SalesInquiry().Detail(lnCtr).Color().getDescription() != null) {
-                                    lsColor = " " + poSalesInquiryController.SalesInquiry().Detail(lnCtr).Color().getDescription();
+
+                                if (poSalesInquiryController.SalesInquiry().SalesInquiryList(lnCtr).getTransactionStatus().equals(SalesInquiryStatic.CONFIRMED)) {
+                                    JFXUtil.highlightByKey(tblViewMainList, String.valueOf(lnCtr + 1), "#C1E1C1", highlightedRowsMain);
                                 }
                             }
-                            lsDescription = lsModel
-                                    + lsModelVariant
-                                    + lsColor;
-                            details_data.add(
-                                    new ModelSalesInquiry_Detail(
-                                            String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getPriority()),
-                                            lsBrand,
-                                            lsDescription.trim().replaceAll("\\r?\\n", " "),
-                                            String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getBrandId()),
-                                            String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getModelId()),
-                                            String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getColorId()),
-                                            String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getModelVarianId())
-                                    ));
-                            lsBrand = "";
-                            lsModel = "";
-                            lsModelVariant = "";
-                            lsColor = "";
                         }
 
-                        if (pnDetail < 0 || pnDetail
-                                >= details_data.size()) {
-                            if (!details_data.isEmpty()) {
+                        if (pnMain < 0 || pnMain
+                                >= main_data.size()) {
+                            if (!main_data.isEmpty()) {
                                 /* FOCUS ON FIRST ROW */
-                                JFXUtil.selectAndFocusRow(tblViewTransDetails, 0);
-                                pnDetail = tblViewTransDetails.getSelectionModel().getSelectedIndex();
-                                loadRecordDetail();
+                                JFXUtil.selectAndFocusRow(tblViewMainList, 0);
+                                pnMain = tblViewMainList.getSelectionModel().getSelectedIndex();
+
                             }
                         } else {
                             /* FOCUS ON THE ROW THAT pnRowDetail POINTS TO */
-                            JFXUtil.selectAndFocusRow(tblViewTransDetails, pnDetail);
-                            loadRecordDetail();
+                            JFXUtil.selectAndFocusRow(tblViewMainList, pnMain);
                         }
-                        loadRecordMaster();
-                    } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
-                        Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-                    }
-                });
-                return null;
-            }
 
-            @Override
-            protected void succeeded() {
-                if (details_data == null || details_data.isEmpty()) {
-                    tblViewTransDetails.setPlaceholder(loading.placeholderLabel);
-                } else {
-                    tblViewTransDetails.toFront();
+                        JFXUtil.loadTab(pgPagination, main_data.size(), ROWS_PER_PAGE, tblViewMainList, filteredData);
+                    });
                 }
-                loading.progressIndicator.setVisible(false);
-            }
-
-            @Override
-            protected void failed() {
-                if (details_data == null || details_data.isEmpty()) {
-                    tblViewTransDetails.setPlaceholder(loading.placeholderLabel);
-                }
-                loading.progressIndicator.setVisible(false);
-            }
-        };
-        new Thread(task).start(); // Run task in background
+        );
     }
+
     final EventHandler<ActionEvent> comboBoxActionListener = event -> {
         Object source = event.getSource();
         @SuppressWarnings("unchecked")
@@ -1051,9 +1031,10 @@ public class SalesInquiry_ConfirmationMPController implements Initializable, Scr
     private void initComboBoxes() {
         // Set the items of the ComboBox to the list of genders
         JFXUtil.setComboBoxItems(new JFXUtil.Pairs<>(ClientType, cmbClientType),
-                new JFXUtil.Pairs<>(PurchaseType, cmbPurchaseType), new JFXUtil.Pairs<>(CategoryType, cmbCategoryType));
-        JFXUtil.setComboBoxActionListener(comboBoxActionListener, cmbClientType, cmbPurchaseType, cmbCategoryType);
-        JFXUtil.initComboBoxCellDesignColor("#FF8201", cmbClientType, cmbPurchaseType, cmbCategoryType);
+                new JFXUtil.Pairs<>(PurchaseType, cmbPurchaseType)
+        );
+        JFXUtil.setComboBoxActionListener(comboBoxActionListener, cmbClientType, cmbPurchaseType);
+        JFXUtil.initComboBoxCellDesignColor("#FF8201", cmbClientType, cmbPurchaseType);
 
     }
 
@@ -1066,30 +1047,41 @@ public class SalesInquiry_ConfirmationMPController implements Initializable, Scr
     public void initTextFields() {
         JFXUtil.setFocusListener(txtField_Focus, tfSearchClient, tfSearchReferenceNo);
         JFXUtil.setFocusListener(txtArea_Focus, taRemarks);
-        JFXUtil.setFocusListener(txtMaster_Focus, tfClient, tfSalesPerson, tfInquiryType, tfInquiryType);
-        JFXUtil.setFocusListener(txtDetail_Focus, tfBrand, tfModel, tfColor);
+        JFXUtil.setFocusListener(txtMaster_Focus, tfClient, tfSalesPerson, tfReferralAgent, tfInquiryType);
+        JFXUtil.setFocusListener(txtDetail_Focus, tfCategory, tfBrand, tfBarcode, tfDescription, tfModel, tfColor);
 
         JFXUtil.setKeyPressedListener(this::txtField_KeyPressed, apBrowse, apMaster, apDetail);
         JFXUtil.setDisabled(oApp.getUserLevel() <= UserRight.ENCODER, tfSalesPerson);
-
     }
 
     public void initTableOnClick() {
 
         tblViewTransDetails.setOnMouseClicked(event -> {
             if (details_data.size() > 0) {
-                if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
-                    pnDetail = tblViewTransDetails.getSelectionModel().getSelectedIndex();
-                    loadRecordDetail();
-                    if (!JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getBrandId(), null, "")) {
-                        if (!JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getModelId(), null, "")) {
+                if (event.getClickCount() == 1) {
+                    try {
+                        // Detect single click (or use another condition for double click)
+                        pnDetail = tblViewTransDetails.getSelectionModel().getSelectedIndex();
+                        if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Category2().getCategoryId(), null, "")) {
+                            tfCategory.requestFocus();
+                        } else if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Brand().getBrandId(), null, "")) {
+                            tfBrand.requestFocus();
+                        } else if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Inventory().getBarCode(), null, "")) {
+                            tfBarcode.requestFocus();
+                        } else if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Inventory().Model().getModelId(), null, "")) {
+                            tfModel.requestFocus();
+                        } else if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Inventory().Color().getColorId(), null, "")) {
                             tfColor.requestFocus();
                         } else {
-                            tfModel.requestFocus();
+                            tfCategory.requestFocus();
                         }
-                    } else {
-                        tfBrand.requestFocus();
+                        loadRecordDetail();
+                    } catch (SQLException ex) {
+                        Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
+                    } catch (GuanzonException ex) {
+                        Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
                     }
+
                 }
             }
         });
@@ -1108,6 +1100,7 @@ public class SalesInquiry_ConfirmationMPController implements Initializable, Scr
         tblViewTransDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
         JFXUtil.adjustColumnForScrollbar(tblViewTransDetails, tblViewMainList); // need to use computed-size in min-width of the column to work
         JFXUtil.applyRowHighlighting(tblViewMainList, item -> ((ModelSalesInquiry_Main) item).getIndex01(), highlightedRowsMain);
+
         JFXUtil.enableRowDragAndDrop(tblViewTransDetails, item -> ((ModelSalesInquiry_Detail) item).index01Property(),
                 item -> ((ModelSalesInquiry_Detail) item).index03Property(),
                 item -> ((ModelSalesInquiry_Detail) item).index04Property(), dragLock, index -> {
@@ -1116,18 +1109,10 @@ public class SalesInquiry_ConfirmationMPController implements Initializable, Scr
                         String brand = d.getIndex04();
                         String model = d.getIndex05();
                         String color = d.getIndex06();
-                        String variant = d.getIndex07();
                         String priorityStr = d.getIndex01();
                         for (int i = 0, n = poSalesInquiryController.SalesInquiry().getDetailCount(); i < n; i++) {
-                            try {
-                                if (!brand.equals(poSalesInquiryController.SalesInquiry().Detail(i).getBrandId())
-                                || !model.equals(poSalesInquiryController.SalesInquiry().Detail(i).getModelId())
-                                || !color.equals(poSalesInquiryController.SalesInquiry().Detail(i).getColorId())
-                                || !variant.equals(poSalesInquiryController.SalesInquiry().Detail(i).ModelVariant().getVariantId())) {
-                                    continue;
-                                }
-                            } catch (SQLException | GuanzonException ex) {
-                                Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+                            if (!brand.equals(poSalesInquiryController.SalesInquiry().Detail(i).getStockId())) {
+                                continue;
                             }
                             try {
                                 /*System.out.println(d.getIndex02() +" - "+priorityStr);*/
@@ -1139,12 +1124,11 @@ public class SalesInquiry_ConfirmationMPController implements Initializable, Scr
                         }
                     }
                     pnDetail = index;
-                    loadTableDetail();
+                    loadTableDetail.reload();
                 });
     }
 
     private void initButton(int fnValue) {
-
         boolean lbShow1 = (fnValue == EditMode.UPDATE);
         boolean lbShow3 = (fnValue == EditMode.READY);
         boolean lbShow4 = (fnValue == EditMode.UNKNOWN || fnValue == EditMode.READY);
@@ -1179,9 +1163,8 @@ public class SalesInquiry_ConfirmationMPController implements Initializable, Scr
 
     public void initDetailsGrid() {
         JFXUtil.setColumnCenter(tblRowNoDetail);
-        JFXUtil.setColumnLeft(tblBrandDetail, tblDescriptionDetail);
+        JFXUtil.setColumnLeft(tblBarcodeDetail, tblDescriptionDetail);
         JFXUtil.setColumnsIndexAndDisableReordering(tblViewTransDetails);
-
         tblViewTransDetails.setItems(details_data);
         tblViewTransDetails.autosize();
     }
@@ -1193,7 +1176,6 @@ public class SalesInquiry_ConfirmationMPController implements Initializable, Scr
 
         filteredData = new FilteredList<>(main_data, b -> true);
         tblViewMainList.setItems(filteredData);
-
     }
 
     private void tableKeyEvents(KeyEvent event) {
