@@ -67,7 +67,7 @@ import ph.com.guanzongroup.cas.inv.warehouse.t4.model.services.DeliveryIssuanceC
  *
  * @author User
  */
-public class InventoryStockTransferIssuanceNeoController implements Initializable, ScreenInterface {
+public class InventoryStockTransferIssuanceNeoController_History implements Initializable, ScreenInterface {
     
     private GRiderCAS poApp;
     private LogWrapper poLogWrapper;
@@ -196,7 +196,7 @@ public class InventoryStockTransferIssuanceNeoController implements Initializabl
     @FXML
     void ontblMasterClicked(MouseEvent e){
         pnSelectMaster = tblViewMaster.getSelectionModel().getSelectedIndex() < 1 ? 1 : tblViewMaster.getSelectionModel().getSelectedIndex();
-        getLoadedTransaction();
+        loadSelectedMaster();
     }
     
     @FXML
@@ -229,7 +229,7 @@ public class InventoryStockTransferIssuanceNeoController implements Initializabl
                                     "Unable to Search Source No! ")) {
                                 return;
                             }
-                            loadTransactionMasterList();
+                            getLoadedTransaction();
                             break;
                         case "tfSeacrchTransNo":
                             if (!tfSeacrchTransNo.getText().isEmpty()) {
@@ -241,7 +241,7 @@ public class InventoryStockTransferIssuanceNeoController implements Initializabl
                                     "Unable to Search Transaction! ")) {
                                 return;
                             }
-                            loadTransactionMasterList();
+                            getLoadedTransaction();
                         break;
                         case "tfClusterName":
                             if (pnSelectMaster > 0) {
@@ -249,6 +249,7 @@ public class InventoryStockTransferIssuanceNeoController implements Initializabl
                                         "Unable to Search Destination! ")) {
                                 }
                                 return;
+
                             }
                         break;
                         case "tfTrucking":
@@ -473,7 +474,7 @@ public class InventoryStockTransferIssuanceNeoController implements Initializabl
         }
     }
     
-    private void loadTransactionMasterList(){
+    private void loadTransactionMaster(){
         StackPane overlay = getOverlayProgress(apMaster);
         ProgressIndicator pi = (ProgressIndicator) overlay.getChildren().get(0);
         overlay.setVisible(true);
@@ -538,17 +539,18 @@ public class InventoryStockTransferIssuanceNeoController implements Initializabl
         thread.start();
     }
     
-    private void loadTransactionMaster(){
-        lblSource.setText(poAppController.getMaster().getTransactionStatus());
-        tfSearchSourceno.setText(poAppController.getMaster().getDestination());
-        tfSeacrchTransNo.setText(poAppController.getMaster().getTransactionNo());
-        tfTransNo.setText(poAppController.getMaster().getTransactionNo());
-        dpTransactionDate.setValue(ParseDate(poAppController.getMaster().getTransactionDate()));
-        tfClusterName.setText(poAppController.getMaster().getDestination());
-        tfTrucking.setText(poAppController.getMaster().getTruckId());
-        tfDiscountRate.setText(String.valueOf(poAppController.getMaster().getDiscount()));
-        tfDiscountAmount.setText(String.valueOf(poAppController.getMaster().getDiscount()));
-        tfTotal.setText(String.valueOf(poAppController.getMaster().getDiscount()));
+    private void loadSelectedMaster(){
+        int indextoSelect = pnSelectMaster <= 0 ? 1 : pnSelectMaster;
+        
+        tfSearchSourceno.setText(tblColBranch.getCellData(indextoSelect));
+        tfSeacrchTransNo.setText(tblColTransNo.getCellData(indextoSelect));
+        tfTransNo.setText(tblColTransNo.getCellData(indextoSelect));
+        dpTransactionDate.setValue(ParseDate(poAppController.getMaster(indextoSelect).getTransactionDate()));
+        tfClusterName.setText(poAppController.getMaster(indextoSelect).getDestination());
+        tfTrucking.setText(poAppController.getMaster(indextoSelect).getTruckId());
+        tfDiscountRate.setText(String.valueOf(poAppController.getMaster(indextoSelect).getDiscount()));
+        tfDiscountAmount.setText(String.valueOf(poAppController.getMaster(indextoSelect).getDiscount()));
+        tfTotal.setText(String.valueOf(poAppController.getMaster(indextoSelect).getDiscount()));
     }
     
     private void loadSelectedTableItem(int fnRow, TableView<?> ftblSrc, HashMap<String, Object> fmapObject){
@@ -640,8 +642,6 @@ public class InventoryStockTransferIssuanceNeoController implements Initializabl
         // Show-only based on mode
         initButtonControls(lbShow, "btnSave", "btnCancel");
         initButtonControls(!lbShow, "btnNew");
-        
-        apMaster.setDisable(!lbShow);
         apDetail.setDisable(!lbShow);
     }
     

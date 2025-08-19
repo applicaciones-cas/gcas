@@ -68,6 +68,7 @@ C:\Users\User\CAS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controlle
 C:\Users\User\CAS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\InvRequest_Roq_UpdateMcGeneralController.java
 C:\Users\User\CAS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\InvRequest_HistoryCarSpController.java
 C:\Users\User\CAS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\SIPosting_HistoryMCController.java
+C:\Users\User\CAS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\InventoryStockTransferIssuanceNeoController_History.java
 C:\Users\User\CAS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\InvRequest_Roq_EntryLPGeneralController.java
 C:\Users\User\CAS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\InvRequest_Roq_EntryMPController.java
 C:\Users\User\CAS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\SIPosting_HistoryMPController.java
@@ -309,6 +310,7 @@ C:\Users\User\CAS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controlle
 C:\Users\User\CAS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\InvRequest_EntryAppliancesGeneralController.java
 C:\Users\User\CAS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\SalesInquiry_EntrySPMCController.java
 C:\Users\User\CAS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\InvRequest_HistoryAppliancesController.java
+C:\Users\User\CAS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\InventoryStockTransferIssuanceNeoController_Approval.java
 C:\Users\User\CAS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\InvRequest_UpdateMonarchFoodController.java
 C:\Users\User\CAS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\SOATagging_EntryController.java
 C:\Users\User\CAS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\MadeController.java
