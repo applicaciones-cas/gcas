@@ -9,6 +9,7 @@ import com.sun.javafx.scene.control.skin.TableViewSkin;
 import com.sun.javafx.scene.control.skin.VirtualFlow;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -36,6 +37,7 @@ import javafx.animation.PauseTransition;
 import javafx.animation.ScaleTransition;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.property.ReadOnlyProperty;
@@ -112,6 +114,13 @@ import javafx.concurrent.Task;
 import javafx.scene.control.OverrunStyle;
 import javafx.scene.control.TableCell;
 import org.guanzon.appdriver.agent.ShowMessageFX;
+import javafx.beans.property.BooleanProperty;
+import javafx.scene.Cursor;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.util.Callback;
 
 /**
  * Date : 4/28/2025
@@ -1974,12 +1983,12 @@ public class JFXUtil {
 //    }
 //
     //sample usage
-//    JFXUtil.ReloadableTableTask loadTableDetail = new JFXUtil.ReloadableTableTask(
-//            tblViewTransDetails,
-//            details_data,
-//            () -> {
-//            }
-//    );
+// JFXUtil.ReloadableTableTask loadTableDetail;
+//        loadTableMain = new JFXUtil.ReloadableTableTask(
+//                tblViewTransDetails,
+//                details_data,
+//                () -> {
+//                } );
     public static class ReloadableTableTask {
 
         private final TableView<?> tableView;
@@ -1993,7 +2002,7 @@ public class JFXUtil {
         }
 
         public void reload() {
-            JFXUtil.LoadScreenComponents loading = JFXUtil.createLoadingComponents();
+            LoadScreenComponents loading = createLoadingComponents();
             tableView.setPlaceholder(loading.loadingPane);
             loading.progressIndicator.setVisible(true);
 
@@ -2105,6 +2114,104 @@ public class JFXUtil {
                 event.consume(); // Prevents moving up/down between rows
             }
         });
+    }
+
+    public static <T> void addCheckboxColumns(
+            Class<T> modelClass,
+            TableView<T> table,
+            BooleanProperty disableAll,
+            TriConsumer<T, Integer, Integer, Boolean> onChange,
+            int... columnIndexes) {
+
+        for (int colIndex : columnIndexes) {
+            @SuppressWarnings("unchecked")
+            TableColumn<T, ?> baseCol = table.getColumns().get(colIndex);
+
+            @SuppressWarnings("unchecked")
+            TableColumn<T, Boolean> column = (TableColumn<T, Boolean>) baseCol;
+
+            final int finalColIndex = colIndex;
+
+            column.setCellValueFactory(cellData -> {
+                T row = cellData.getValue();
+                try {
+                    // Expect getters: getIndex01, getIndex02, etc.
+                    String getterName = "getIndex" + String.format("%02d", colIndex + 1);
+                    Method getter = modelClass.getMethod(getterName);
+
+                    String value = (String) getter.invoke(row);
+                    boolean boolVal = "1".equals(value);
+                    return new javafx.beans.property.SimpleBooleanProperty(boolVal);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return new javafx.beans.property.SimpleBooleanProperty(false);
+                }
+            });
+
+            column.setCellFactory(new Callback<TableColumn<T, Boolean>, TableCell<T, Boolean>>() {
+                @Override
+                public TableCell<T, Boolean> call(TableColumn<T, Boolean> param) {
+                    return new TableCell<T, Boolean>() {
+                        private final CheckBox checkBox = new CheckBox();
+
+                        {
+                            // Center checkbox
+                            setStyle("-fx-alignment: CENTER;");
+
+                            // Cursor binding
+                            checkBox.cursorProperty().bind(
+                                    Bindings.when(disableAll)
+                                            .then(Cursor.DEFAULT)
+                                            .otherwise(Cursor.HAND)
+                            );
+
+                            // Disable binding
+                            checkBox.disableProperty().bind(disableAll);
+
+                            // Only trigger on user click
+                            checkBox.setOnAction(evt -> {
+                                if (getTableRow() != null && getTableRow().getItem() != null) {
+                                    @SuppressWarnings("unchecked")
+                                    T row = (T) getTableRow().getItem();
+                                    int rowIndex = getTableRow().getIndex();
+
+                                    try {
+                                        // Reflect setter e.g. setIndex01
+                                        String setterName = "setIndex" + String.format("%02d", finalColIndex + 1);
+                                        Method setter = modelClass.getMethod(setterName, String.class);
+                                        setter.invoke(row, checkBox.isSelected() ? "1" : "0");
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+
+                                    if (onChange != null) {
+                                        onChange.accept(row, rowIndex, finalColIndex, checkBox.isSelected());
+                                    }
+                                }
+                            });
+                        }
+
+                        @Override
+                        protected void updateItem(Boolean item, boolean empty) {
+                            super.updateItem(item, empty);
+                            if (empty) {
+                                setGraphic(null);
+                            } else {
+                                checkBox.setSelected(item != null && item);
+                                setGraphic(checkBox);
+                            }
+                        }
+                    };
+                }
+            });
+        }
+    }
+
+    @FunctionalInterface
+    public interface TriConsumer<T, U, V, W> {
+
+        void accept(T t, U u, V v, W w);
     }
 
 }

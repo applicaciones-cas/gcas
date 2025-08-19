@@ -198,6 +198,7 @@
                                                       <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="100.0" />
                                                       <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
                                                       <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="139.0" />
+                                                                              <ColumnConstraints />
                                                                       </columnConstraints>
                                                                       <rowConstraints>
                                                                           <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
@@ -397,11 +398,11 @@
                                     </Tab>
                                   <Tab closable="false" style="-fx-font-weight: bold;" text="Requirements">
                                        <content>
-                                          <AnchorPane fx:id="apRequirements" prefHeight="200.0" prefWidth="200.0">
+                                          <AnchorPane prefHeight="200.0" prefWidth="200.0">
                                              <children>
                                                 <VBox spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="5.0">
                                                    <children>
-                                                      <AnchorPane style="-fx-border-color: FF8201;">
+                                                      <AnchorPane fx:id="apRequirements" style="-fx-border-color: FF8201;">
                                                          <children>
                                                             <GridPane AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0">
                                                               <columnConstraints>
@@ -454,7 +455,7 @@
                                                                         <TableColumn fx:id="tblRequired" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" resizable="false" text="Required" />
                                                                         <TableColumn fx:id="tblSubmitted" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" resizable="false" text="Submitted" />
                                                                       <TableColumn fx:id="tblRequirements" maxWidth="185.0" minWidth="185.0" prefWidth="185.0" resizable="false" text="Requirements" />
-                                                                      <TableColumn fx:id="tblReceivedBy" maxWidth="260.0" minWidth="-1.0" prefWidth="260.0" resizable="false" text="Received By" />
+                                                                      <TableColumn fx:id="tblReceivedBy" maxWidth="260.0" minWidth="260.0" prefWidth="260.0" resizable="false" text="Received By" />
                                                                         <TableColumn fx:id="tblReceivedDate" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" resizable="false" text="Received Date" />
                                                                     </columns>
 
@@ -473,11 +474,11 @@
                                     </Tab>
                                     <Tab closable="false" style="-fx-font-weight: bold;" text="Bank Applications">
                                        <content>
-                                          <AnchorPane fx:id="apBankApplications" prefHeight="200.0" prefWidth="200.0">
+                                          <AnchorPane prefHeight="200.0" prefWidth="200.0">
                                              <children>
                                                 <VBox spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="5.0">
                                                    <children>
-                                                      <AnchorPane style="-fx-border-color: FF8201;">
+                                                      <AnchorPane fx:id="apBankApplications" style="-fx-border-color: FF8201;">
                                                          <children>
                                                             <GridPane layoutX="32.0" layoutY="9.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0">
                                                                <columnConstraints>
