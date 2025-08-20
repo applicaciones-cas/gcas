@@ -512,11 +512,12 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
             JFXUtil.setDisabled(lbShow, tfBank);
 
             String lsPaymentMode = "";
-            if (!JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Master().getPurchaseType(), null, "")) {
-                lsPaymentMode = PurchaseType.get(Integer.valueOf(poSalesInquiryController.SalesInquiry().Master().getPurchaseType()));
+            if (!JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().BankApplicationsList(pnBankApplications).getPaymentMode(), null, "")) {
+                lsPaymentMode = PurchaseType.get(Integer.valueOf(poSalesInquiryController.SalesInquiry().BankApplicationsList(pnBankApplications).getPaymentMode()));
             } else {
                 lsPaymentMode = "";
             }
+            tfPaymentMode.setText(lsPaymentMode);
             tfPaymentMode.setText(lsPaymentMode);
             tfApplicationNo.setText(poSalesInquiryController.SalesInquiry().BankApplicationsList(pnBankApplications).getApplicationNo());
             tfBank.setText(poSalesInquiryController.SalesInquiry().BankApplicationsList(pnBankApplications).Bank().getBankName());
