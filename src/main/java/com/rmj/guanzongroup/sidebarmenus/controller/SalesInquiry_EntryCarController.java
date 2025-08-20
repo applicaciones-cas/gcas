@@ -380,7 +380,7 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
 //                                    poSalesInquiryController.SalesInquiry().loadRequirements();
 //                                }
 //                            }
-                            
+
                             if (pnEditMode == EditMode.ADDNEW) {
                                 if (poSalesInquiryController.SalesInquiry().getSalesInquiryRequirementsCount() > 0 && !pbPurchaseTypeChanged) {
                                 } else {
@@ -389,7 +389,7 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
                                     pbPurchaseTypeChanged = false;
                                 }
                             }
-                            
+
                             loadTableRequirements.reload();
                             break;
                         case "Bank Applications":
@@ -405,15 +405,14 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
 //                                loadTableBankApplications.reload();
 //                            } else {
 //                            }
-                            
-                            
+
                             if (pnEditMode == EditMode.ADDNEW) {
                                 if (poSalesInquiryController.SalesInquiry().getBankApplicationsCount() > 0 && !pbPurchaseTypeChanged) {
                                 } else {
                                     poSalesInquiryController.SalesInquiry().BankApplicationsList().clear();
                                     pbPurchaseTypeChanged = false;
                                 }
-                            } 
+                            }
                             loadTableBankApplications.reload();
                             break;
                     }
@@ -509,7 +508,7 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
     public void loadRecordRequirements() {
         try {
             tfRequirement.setText(poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList(pnRequirements).RequirementSource().getDescription());
-            tfReceivedBy.setText(poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList(pnRequirements).getReceivedBy());
+            tfReceivedBy.setText(poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList(pnRequirements).SalesPerson().getFullName());
             String lsdpReceivedDate = CustomCommonUtil.formatDateToShortString(poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList(pnRequirements).getReceivedDate());
             dpReceivedDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsdpReceivedDate, "yyyy-MM-dd"));
             JFXUtil.updateCaretPositions(apRequirements);
@@ -540,7 +539,6 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
             } else {
                 lsPaymentMode = "";
             }
-            tfPaymentMode.setText(lsPaymentMode);
             tfPaymentMode.setText(lsPaymentMode);
             tfApplicationNo.setText(poSalesInquiryController.SalesInquiry().BankApplicationsList(pnBankApplications).getApplicationNo());
             tfBank.setText(poSalesInquiryController.SalesInquiry().BankApplicationsList(pnBankApplications).Bank().getBankName());
@@ -678,10 +676,13 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
                     switch (colIndex) {
                         case 1:
                             poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList(rowIndex).isRequired(lbisTrue);
+                            pnRequirements = rowIndex;
                             loadTableRequirements.reload();
                             break;
                         case 2:
                             poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList(rowIndex).isSubmitted(lbisTrue);
+                            poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList(rowIndex).setReceivedBy(lbisTrue ? oApp.getUserID() : "");
+                            pnRequirements = rowIndex;
                             loadTableRequirements.reload();
                             break;
                     }
@@ -789,7 +790,7 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
                                                 String.valueOf(lnIsRequired),
                                                 String.valueOf(lnIsSubmitted),
                                                 String.valueOf(poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList(lnCtr).RequirementSource().getDescription()),
-                                                String.valueOf(poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList(lnCtr).getReceivedBy()),
+                                                String.valueOf(poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList(lnCtr).SalesPerson().getFullName()),
                                                 String.valueOf(CustomCommonUtil.parseDateStringToLocalDate(lsReceivedDate, "yyyy-MM-dd"))
                                         ));
                             }
@@ -1406,7 +1407,7 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
                                     ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                     return;
                                 }
-                                
+
                                 if (ShowMessageFX.YesNo(null, pxeModuleName,
                                         "Are you sure you want to change the Purchase Type?\nPlease note that doing so will reset the Requirements & Bank Applications list.\n\nDo you wish to proceed?") == true) {
                                     poSalesInquiryController.SalesInquiry().Master().setPurchaseType(String.valueOf(selectedIndex));
@@ -1485,7 +1486,7 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
         JFXUtil.setButtonsVisibility(lbShow3, btnBrowse, btnClose);
 
         JFXUtil.setDisabled(!lbShow, taRemarks, apMaster, apDetail, apRequirements, apBankApplications);
-        JFXUtil.setDisabled(!JFXUtil.isObjectEqualTo(fnValue, EditMode.ADDNEW,EditMode.UPDATE,EditMode.READY), apBankApplicationsButtons);
+        JFXUtil.setDisabled(!JFXUtil.isObjectEqualTo(fnValue, EditMode.ADDNEW, EditMode.UPDATE, EditMode.READY), apBankApplicationsButtons);
         switch (poSalesInquiryController.SalesInquiry().Master().getTransactionStatus()) {
             case SalesInquiryStatic.QUOTED:
             case SalesInquiryStatic.SALE:
