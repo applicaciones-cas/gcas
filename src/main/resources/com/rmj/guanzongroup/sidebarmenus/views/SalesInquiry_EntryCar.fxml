@@ -603,7 +603,7 @@
         </StackPane>
     </children>
     <stylesheets>
-        <URL value="@../../css/StyleSheet.css" />
-        <URL value="@../../css/Tables.css" />
+        <URL value="@../css/StyleSheet.css" />
+        <URL value="@../css/Tables.css" />
     </stylesheets>
 </AnchorPane>
