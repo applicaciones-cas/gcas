@@ -117,6 +117,8 @@ import org.guanzon.appdriver.agent.ShowMessageFX;
 import javafx.beans.property.BooleanProperty;
 import javafx.scene.Cursor;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -2214,4 +2216,18 @@ public class JFXUtil {
         void accept(T t, U u, V v, W w);
     }
 
+    public static void clickTabByTitleText(TabPane tabPane, String title) {
+        for (Tab tab : tabPane.getTabs()) {
+            if (title.equals(tab.getText())) {
+                Tab current = tabPane.getSelectionModel().getSelectedItem();
+                if (current == tab && !tabPane.getTabs().isEmpty()) {
+                    // Temporarily select the first tab (index 0) to force deselection
+                    tabPane.getSelectionModel().select(0);
+                }
+                // Now select the target tab again
+                tabPane.getSelectionModel().select(tab);
+                break;
+            }
+        }
+    }
 }
