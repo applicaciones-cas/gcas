@@ -222,6 +222,29 @@
     -fx-text-fill: black;
 }
 
+.button_process3 {
+    -fx-background-color: #7F7F7F;
+    -fx-text-fill: white;
+    -fx-cursor: hand;
+}
+.button_process3:hover
+{
+    -fx-background-color: #A9A9A9;
+}
+.button_process3:disabled
+{
+    -fx-opacity: 1;
+}
+
+
+.button_process3 > .glyph-icon {
+    -fx-fill: white;
+}
+
+.button_process3:selected{
+    -fx-background-color: #A9A9A9;
+}
+
 .date-picker .arrow-button {
     -fx-background-color: -fx-primary-color;
     -fx-background-radius: 0;
