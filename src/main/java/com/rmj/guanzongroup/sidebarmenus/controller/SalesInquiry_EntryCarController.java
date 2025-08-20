@@ -78,7 +78,7 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
     static SalesControllers poSalesInquiryController;
     public int pnEditMode;
     boolean pbKeyPressed = false;
-
+    boolean pbPurchaseTypeChanged = false;
     private String psIndustryId = "";
     private String psCompanyId = "";
     private String psCategoryId = "";
@@ -365,23 +365,24 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
                             break;
                         case "Requirements":
                             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE || pnEditMode == EditMode.READY) {
-                                if (poSalesInquiryController.SalesInquiry().getSalesInquiryRequirementsCount() > 0) {
+                                if (poSalesInquiryController.SalesInquiry().getSalesInquiryRequirementsCount() > 0 && !pbPurchaseTypeChanged) {
                                 } else {
                                     poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList().clear();
                                     poSalesInquiryController.SalesInquiry().getRequirements(String.valueOf(cmbCustomerGroup.getSelectionModel().getSelectedIndex()));
+                                    pbPurchaseTypeChanged = false;
                                 }
                                 loadTableRequirements.reload();
                             }
                             break;
                         case "Bank Applications":
                             if (pnEditMode == EditMode.ADDNEW) {
-                                if (poSalesInquiryController.SalesInquiry().getBankApplicationsCount() > 0) {
+                                if (poSalesInquiryController.SalesInquiry().getBankApplicationsCount() > 0 && !pbPurchaseTypeChanged) {
                                 } else {
                                     poSalesInquiryController.SalesInquiry().addBankApplication();
+                                    pbPurchaseTypeChanged = false;
                                 }
-
                                 loadTableBankApplications.reload();
-                            } else if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE || pnEditMode == EditMode.READY) {
+                            } else if (pnEditMode == EditMode.UPDATE || pnEditMode == EditMode.READY) {
                                 loadTableBankApplications.reload();
                             } else {
                             }
@@ -494,16 +495,17 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
             Platform.runLater(() -> {
                 String lsActive = pnEditMode == EditMode.UNKNOWN ? "-1" : poSalesInquiryController.SalesInquiry().BankApplicationsList(pnBankApplications).getTransactionStatus();
                 Map<String, String> statusMap = new HashMap<>();
-                statusMap.put(SalesInquiryStatic.QUOTED, "QUOTED");
-                statusMap.put(SalesInquiryStatic.SALE, "SALE");
-                statusMap.put(SalesInquiryStatic.CONFIRMED, "CONFIRMED");
-                statusMap.put(SalesInquiryStatic.OPEN, "OPEN");
-                statusMap.put(SalesInquiryStatic.VOID, "VOIDED");
-                statusMap.put(SalesInquiryStatic.CANCELLED, "CANCELLED");
-                statusMap.put(SalesInquiryStatic.LOST, "LOST");
+                statusMap.put(BankApplicationStatus.OPEN, "OPEN");
+                statusMap.put(BankApplicationStatus.APPROVED, "APPROVED");
+                statusMap.put(BankApplicationStatus.DISAPPROVED, "DISAPPROVED");
+                statusMap.put(BankApplicationStatus.CANCELLED, "CANCELLED");
                 String lsStat = statusMap.getOrDefault(lsActive, "UNKNOWN"); //default
                 lblBankApplicationStatus.setText(lsStat);
             });
+            boolean lbShow = JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().BankApplicationsList(pnBankApplications).getTransactionStatus(),
+                    BankApplicationStatus.APPROVED, BankApplicationStatus.DISAPPROVED, BankApplicationStatus.CANCELLED);
+            JFXUtil.setDisabled(lbShow, tfBank);
+
             String lsPaymentMode = "";
             if (!JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Master().getPurchaseType(), null, "")) {
                 lsPaymentMode = PurchaseType.get(Integer.valueOf(poSalesInquiryController.SalesInquiry().Master().getPurchaseType()));
@@ -781,7 +783,13 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
                         int lnCtr;
                         bankapplications_data.clear();
                         try {
-
+                            if (poSalesInquiryController.SalesInquiry().getEditMode() == EditMode.ADDNEW || poSalesInquiryController.SalesInquiry().getEditMode() == EditMode.UPDATE) {
+                                try {
+                                    poSalesInquiryController.SalesInquiry().loadBankApplicationList();
+                                } catch (CloneNotSupportedException ex) {
+                                    Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
+                                }
+                            }
                             for (lnCtr = 0; lnCtr < poSalesInquiryController.SalesInquiry().getBankApplicationsCount(); lnCtr++) {
                                 String lsAppliedDate = CustomCommonUtil.formatDateToShortString(poSalesInquiryController.SalesInquiry().BankApplicationsList(lnCtr).getAppliedDate());
                                 String lsApprovedDate = CustomCommonUtil.formatDateToShortString(poSalesInquiryController.SalesInquiry().BankApplicationsList(lnCtr).getApprovedDate());
@@ -794,10 +802,13 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
                                 statusMap.put(BankApplicationStatus.CANCELLED, "CANCELLED");
                                 String lsStat = statusMap.getOrDefault(lsActive, "UNKNOWN"); //default
 
+                                String lsBank = JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().BankApplicationsList(lnCtr).Bank().getBankName(), null, "")
+                                        ? "" : poSalesInquiryController.SalesInquiry().BankApplicationsList(lnCtr).Bank().getBankName();
+
                                 bankapplications_data.add(
                                         new ModelBankApplications_Detail(String.valueOf(lnCtr + 1),
                                                 String.valueOf(poSalesInquiryController.SalesInquiry().BankApplicationsList(lnCtr).getApplicationNo()),
-                                                String.valueOf(poSalesInquiryController.SalesInquiry().BankApplicationsList(lnCtr).Bank().getBankName()),
+                                                String.valueOf(lsBank),
                                                 String.valueOf(lsAppliedDate),
                                                 String.valueOf(lsApprovedDate),
                                                 String.valueOf(lsStat)
@@ -958,6 +969,7 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
                     case "tfReceivedBy":
                         if (lsValue.isEmpty()) {
                             poJSON = poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList(pnRequirements).setReceivedBy("");
+                            loadTableRequirements.reload();
                         }
                         break;
                 }
@@ -980,6 +992,7 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
                     case "tfBank":
                         if (lsValue.isEmpty()) {
                             poJSON = poSalesInquiryController.SalesInquiry().BankApplicationsList(pnBankApplications).setBankId(lsValue);
+                            loadTableBankApplications.reload();
                         }
                         break;
                 }
@@ -1343,7 +1356,17 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
                         }
                         break;
                     case "cmbPurchaseType":
-                        poSalesInquiryController.SalesInquiry().Master().setPurchaseType(String.valueOf(selectedIndex));
+                        if (poSalesInquiryController.SalesInquiry().getSalesInquiryRequirementsCount() > 0 || poSalesInquiryController.SalesInquiry().getBankApplicationsCount() > 0) {
+                            if (!poSalesInquiryController.SalesInquiry().Master().getPurchaseType().equals(String.valueOf(cmbPurchaseType.getSelectionModel().getSelectedIndex()))) {
+                                if (ShowMessageFX.YesNo(null, pxeModuleName,
+                                        "Are you sure you want to change the Purchase Type?\nPlease note that doing so will reset the Requirements & Bank Applications list.\n\nDo you wish to proceed?") == true) {
+                                    poSalesInquiryController.SalesInquiry().Master().setPurchaseType(String.valueOf(selectedIndex));
+                                    pbPurchaseTypeChanged = true;
+                                }
+                            }
+                        } else {
+                            poSalesInquiryController.SalesInquiry().Master().setPurchaseType(String.valueOf(selectedIndex));
+                        }
                         break;
                     case "cmbCategoryType":
                         poSalesInquiryController.SalesInquiry().Master().setCategoryType(String.valueOf(selectedIndex));
