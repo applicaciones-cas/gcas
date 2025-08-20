@@ -354,7 +354,7 @@
                                                 <TableColumn fx:id="tblReservationQtyDetail" maxWidth="105.0" minWidth="8.0" prefWidth="103.0" resizable="false" text="Reservation Qty" />
                                                 <TableColumn fx:id="tblOrderQuantityDetail" maxWidth="80.0" minWidth="8.0" prefWidth="57.0" resizable="false" text="Quantity" />
                                              </columns>
-                                          </TableView>
+                                      </TableView>
                                        </children>
                                                 </GridPane>
                                             </children>
