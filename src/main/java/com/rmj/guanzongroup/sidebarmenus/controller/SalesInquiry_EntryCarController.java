@@ -195,6 +195,8 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
                             tfTransactionNo.requestFocus();
                             return;
                         }
+                        poSalesInquiryController.SalesInquiry().loadRequirements();
+                        poSalesInquiryController.SalesInquiry().loadBankApplications();
                         pnEditMode = poSalesInquiryController.SalesInquiry().getEditMode();
                         break;
                     case "btnClose":
@@ -228,6 +230,8 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                             return;
                         }
+                        poSalesInquiryController.SalesInquiry().loadRequirements();
+                        poSalesInquiryController.SalesInquiry().loadBankApplications();
                         pnEditMode = poSalesInquiryController.SalesInquiry().getEditMode();
                         break;
                     case "btnSearch":
@@ -363,6 +367,20 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
                         case "Inquiry":
                             break;
                         case "Requirements":
+//                            if (pnEditMode == EditMode.ADDNEW) {
+//                                if (poSalesInquiryController.SalesInquiry().getSalesInquiryRequirementsCount() > 0 && !pbPurchaseTypeChanged) {
+//                                } else {
+//                                    poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList().clear();
+//                                    poSalesInquiryController.SalesInquiry().getRequirements(String.valueOf(cmbCustomerGroup.getSelectionModel().getSelectedIndex()));
+//                                    pbPurchaseTypeChanged = false;
+//                                }
+//                                loadTableRequirements.reload();
+//                            } else {
+//                                if (pnEditMode == EditMode.UPDATE || pnEditMode == EditMode.READY) {
+//                                    poSalesInquiryController.SalesInquiry().loadRequirements();
+//                                }
+//                            }
+                            
                             if (pnEditMode == EditMode.ADDNEW) {
                                 if (poSalesInquiryController.SalesInquiry().getSalesInquiryRequirementsCount() > 0 && !pbPurchaseTypeChanged) {
                                 } else {
@@ -370,33 +388,38 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
                                     poSalesInquiryController.SalesInquiry().getRequirements(String.valueOf(cmbCustomerGroup.getSelectionModel().getSelectedIndex()));
                                     pbPurchaseTypeChanged = false;
                                 }
-                                loadTableRequirements.reload();
-                            } else {
-                                if (pnEditMode == EditMode.UPDATE || pnEditMode == EditMode.READY) {
-                                    poSalesInquiryController.SalesInquiry().loadRequirements();
-                                }
                             }
+                            
+                            loadTableRequirements.reload();
                             break;
                         case "Bank Applications":
+//                            if (pnEditMode == EditMode.ADDNEW) {
+//                                if (poSalesInquiryController.SalesInquiry().getBankApplicationsCount() > 0 && !pbPurchaseTypeChanged) {
+//                                } else {
+//                                    poSalesInquiryController.SalesInquiry().addBankApplication();
+//                                    pbPurchaseTypeChanged = false;
+//                                }
+//                                loadTableBankApplications.reload();
+//                            } else if (pnEditMode == EditMode.UPDATE || pnEditMode == EditMode.READY) {
+//                                poSalesInquiryController.SalesInquiry().loadBankApplications();
+//                                loadTableBankApplications.reload();
+//                            } else {
+//                            }
+                            
+                            
                             if (pnEditMode == EditMode.ADDNEW) {
                                 if (poSalesInquiryController.SalesInquiry().getBankApplicationsCount() > 0 && !pbPurchaseTypeChanged) {
                                 } else {
-                                    poSalesInquiryController.SalesInquiry().addBankApplication();
+                                    poSalesInquiryController.SalesInquiry().BankApplicationsList().clear();
                                     pbPurchaseTypeChanged = false;
                                 }
-                                loadTableBankApplications.reload();
-                            } else if (pnEditMode == EditMode.UPDATE || pnEditMode == EditMode.READY) {
-                                poSalesInquiryController.SalesInquiry().loadBankApplications();
-                                loadTableBankApplications.reload();
-                            } else {
-                            }
+                            } 
+                            loadTableBankApplications.reload();
                             break;
                     }
                 }
-            } catch (SQLException ex) {
-                Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
-            } catch (GuanzonException ex) {
-                Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
+            } catch (SQLException | GuanzonException ex) {
+                Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
             }
         });
     }
@@ -797,13 +820,7 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
                         int lnCtr;
                         bankapplications_data.clear();
                         try {
-                            if (poSalesInquiryController.SalesInquiry().getEditMode() == EditMode.ADDNEW || poSalesInquiryController.SalesInquiry().getEditMode() == EditMode.UPDATE) {
-                                try {
-                                    poSalesInquiryController.SalesInquiry().loadBankApplicationList();
-                                } catch (CloneNotSupportedException ex) {
-                                    Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
-                                }
-                            }
+                            poSalesInquiryController.SalesInquiry().loadBankApplicationList();
                             for (lnCtr = 0; lnCtr < poSalesInquiryController.SalesInquiry().getBankApplicationsCount(); lnCtr++) {
                                 String lsAppliedDate = CustomCommonUtil.formatDateToShortString(poSalesInquiryController.SalesInquiry().BankApplicationsList(lnCtr).getAppliedDate());
                                 String lsApprovedDate = CustomCommonUtil.formatDateToShortString(poSalesInquiryController.SalesInquiry().BankApplicationsList(lnCtr).getApprovedDate());
@@ -842,7 +859,7 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
                                 JFXUtil.selectAndFocusRow(tblViewBankApplications, pnBankApplications);
                                 loadRecordBankApplications();
                             }
-                        } catch (SQLException | GuanzonException ex) {
+                        } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
                             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                         }
                     });
@@ -1384,6 +1401,12 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
                     case "cmbPurchaseType":
                         if (poSalesInquiryController.SalesInquiry().getSalesInquiryRequirementsCount() > 0 || poSalesInquiryController.SalesInquiry().getBankApplicationsCount() > 0) {
                             if (!poSalesInquiryController.SalesInquiry().Master().getPurchaseType().equals(String.valueOf(cmbPurchaseType.getSelectionModel().getSelectedIndex()))) {
+                                poJSON = poSalesInquiryController.SalesInquiry().checkPendingBankApplication();
+                                if ("error".equals((String) poJSON.get("result"))) {
+                                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                    return;
+                                }
+                                
                                 if (ShowMessageFX.YesNo(null, pxeModuleName,
                                         "Are you sure you want to change the Purchase Type?\nPlease note that doing so will reset the Requirements & Bank Applications list.\n\nDo you wish to proceed?") == true) {
                                     poSalesInquiryController.SalesInquiry().Master().setPurchaseType(String.valueOf(selectedIndex));
