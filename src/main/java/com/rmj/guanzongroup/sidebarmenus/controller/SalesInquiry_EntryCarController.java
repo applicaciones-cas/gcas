@@ -11,6 +11,7 @@ import com.rmj.guanzongroup.sidebarmenus.utility.CustomCommonUtil;
 import com.rmj.guanzongroup.sidebarmenus.utility.JFXUtil;
 import java.net.URL;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
@@ -367,20 +368,6 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
                         case "Inquiry":
                             break;
                         case "Requirements":
-//                            if (pnEditMode == EditMode.ADDNEW) {
-//                                if (poSalesInquiryController.SalesInquiry().getSalesInquiryRequirementsCount() > 0 && !pbPurchaseTypeChanged) {
-//                                } else {
-//                                    poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList().clear();
-//                                    poSalesInquiryController.SalesInquiry().getRequirements(String.valueOf(cmbCustomerGroup.getSelectionModel().getSelectedIndex()));
-//                                    pbPurchaseTypeChanged = false;
-//                                }
-//                                loadTableRequirements.reload();
-//                            } else {
-//                                if (pnEditMode == EditMode.UPDATE || pnEditMode == EditMode.READY) {
-//                                    poSalesInquiryController.SalesInquiry().loadRequirements();
-//                                }
-//                            }
-
                             if (pnEditMode == EditMode.ADDNEW) {
                                 if (poSalesInquiryController.SalesInquiry().getSalesInquiryRequirementsCount() > 0 && !pbPurchaseTypeChanged) {
                                 } else {
@@ -393,19 +380,6 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
                             loadTableRequirements.reload();
                             break;
                         case "Bank Applications":
-//                            if (pnEditMode == EditMode.ADDNEW) {
-//                                if (poSalesInquiryController.SalesInquiry().getBankApplicationsCount() > 0 && !pbPurchaseTypeChanged) {
-//                                } else {
-//                                    poSalesInquiryController.SalesInquiry().addBankApplication();
-//                                    pbPurchaseTypeChanged = false;
-//                                }
-//                                loadTableBankApplications.reload();
-//                            } else if (pnEditMode == EditMode.UPDATE || pnEditMode == EditMode.READY) {
-//                                poSalesInquiryController.SalesInquiry().loadBankApplications();
-//                                loadTableBankApplications.reload();
-//                            } else {
-//                            }
-
                             if (pnEditMode == EditMode.ADDNEW) {
                                 if (poSalesInquiryController.SalesInquiry().getBankApplicationsCount() > 0 && !pbPurchaseTypeChanged) {
                                 } else {
@@ -499,6 +473,7 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
             tfModel.setText(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Model().getDescription());
             tfModelVariant.setText(poSalesInquiryController.SalesInquiry().Detail(pnDetail).ModelVariant().getDescription());
             tfColor.setText(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Color().getDescription());
+            tfSellingPrice.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Inventory().getSellingPrice(), true));
             JFXUtil.updateCaretPositions(apDetail);
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
@@ -529,9 +504,12 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
                 String lsStat = statusMap.getOrDefault(lsActive, "UNKNOWN"); //default
                 lblBankApplicationStatus.setText(lsStat);
             });
+            JFXUtil.setDisabled(poSalesInquiryController.SalesInquiry().BankApplicationsList(pnBankApplications).getEditMode() == EditMode.ADDNEW, apBankApplicationsButtons);
+
             boolean lbShow = JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().BankApplicationsList(pnBankApplications).getTransactionStatus(),
                     BankApplicationStatus.APPROVED, BankApplicationStatus.DISAPPROVED, BankApplicationStatus.CANCELLED);
-            JFXUtil.setDisabled(lbShow, tfBank);
+            boolean lbShow2 = JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().BankApplicationsList(pnBankApplications).getEditMode(), EditMode.UPDATE);
+            JFXUtil.setDisabled(lbShow || lbShow2, tfBank);
 
             String lsPaymentMode = "";
             if (!JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().BankApplicationsList(pnBankApplications).getPaymentMode(), null, "")) {
@@ -613,7 +591,6 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
             if (requirements_data.size() > 0) {
                 if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
                     pnRequirements = tblViewRequirements.getSelectionModel().getSelectedIndex();
-                    tfReceivedBy.requestFocus();
                     loadRecordRequirements();
 
                 }
@@ -682,8 +659,17 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
                         case 2:
                             poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList(rowIndex).isSubmitted(lbisTrue);
                             poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList(rowIndex).setReceivedBy(lbisTrue ? oApp.getUserID() : "");
-                            pnRequirements = rowIndex;
-                            loadTableRequirements.reload();
+                            try {
+                                SimpleDateFormat sdfFormat = new SimpleDateFormat(SQLUtil.FORMAT_SHORT_DATE);
+                                String lsDummyDate = sdfFormat.format(SQLUtil.toDate(JFXUtil.convertToIsoFormat("01/01/1900"), SQLUtil.FORMAT_SHORT_DATE));
+                                LocalDate localDate = LocalDate.parse(lsDummyDate);
+                                Timestamp timestamp = Timestamp.valueOf(localDate.atStartOfDay());
+                                poJSON = poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList(rowIndex).setReceivedDate(lbisTrue ? oApp.getServerDate() : timestamp);
+                                pnRequirements = rowIndex;
+                                loadTableRequirements.reload();
+                            } catch (SQLException ex) {
+                                Logger.getLogger(SalesInquiry_EntryCarController.class.getName()).log(Level.SEVERE, null, ex);
+                            }
                             break;
                     }
                 }, 1, 2);
@@ -779,7 +765,6 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
                         int lnCtr;
                         requirements_data.clear();
                         try {
-
                             for (lnCtr = 0; lnCtr < poSalesInquiryController.SalesInquiry().getSalesInquiryRequirementsCount(); lnCtr++) {
                                 int lnIsRequired = poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList(lnCtr).isRequired() ? 1 : 0;
                                 int lnIsSubmitted = poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList(lnCtr).isSubmitted() ? 1 : 0;
@@ -1050,7 +1035,6 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
     public void moveNextRequirements(boolean isUp) {
         apRequirements.requestFocus();
         pnRequirements = isUp ? JFXUtil.moveToPreviousRow(tblViewRequirements) : JFXUtil.moveToNextRow(tblViewRequirements);
-        tfReceivedBy.requestFocus();
         loadRecordRequirements();
     }
 
@@ -1265,7 +1249,7 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
                 DatePicker datePicker = (DatePicker) source;
                 String inputText = datePicker.getEditor().getText();
                 SimpleDateFormat sdfFormat = new SimpleDateFormat(SQLUtil.FORMAT_SHORT_DATE);
-                LocalDate currentDate = null, selectedDate = null, receivingDate = null;
+                LocalDate ldcurrentDate = null, ldselectedDate = null, ldTransactionDate = null;
                 String lsServerDate = "", lsTransDate = "", lsSelectedDate = "", lsReceivingDate = "";
 
                 JFXUtil.JFXUtilDateResult ldtResult = JFXUtil.processDate(inputText, datePicker);
@@ -1278,16 +1262,18 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
                 if (JFXUtil.isObjectEqualTo(inputText, null, "", "01/01/1900")) {
                     return;
                 }
-                selectedDate = ldtResult.selectedDate;
+                ldselectedDate = ldtResult.selectedDate;
                 lsServerDate = sdfFormat.format(oApp.getServerDate());
                 lsTransDate = sdfFormat.format(poSalesInquiryController.SalesInquiry().Master().getTransactionDate());
                 lsSelectedDate = sdfFormat.format(SQLUtil.toDate(JFXUtil.convertToIsoFormat(inputText), SQLUtil.FORMAT_SHORT_DATE));
-                currentDate = LocalDate.parse(lsTransDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
-                selectedDate = LocalDate.parse(lsSelectedDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
+
+                ldcurrentDate = LocalDate.parse(lsServerDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
+                ldTransactionDate = LocalDate.parse(lsTransDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
+                ldselectedDate = LocalDate.parse(lsSelectedDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
                 if (poSalesInquiryController.SalesInquiry().getEditMode() == EditMode.ADDNEW || poSalesInquiryController.SalesInquiry().getEditMode() == EditMode.UPDATE) {
                     switch (datePicker.getId()) {
                         case "dpTargetDate":
-                            if (selectedDate.isBefore(currentDate)) {
+                            if (ldselectedDate.isBefore(ldTransactionDate)) {
                                 JFXUtil.setJSONError(poJSON, "Target date cannot be before the transaction date.");
                                 pbSuccess = false;
                             } else {
@@ -1304,12 +1290,11 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
                             pbSuccess = true; //Set to original value
                             break;
                         case "dpReceivedDate":
-                            if (selectedDate.isBefore(currentDate)) {
+                            if (ldselectedDate.isBefore(ldTransactionDate)) {
                                 JFXUtil.setJSONError(poJSON, "Received date cannot be before the inquiry date.");
                                 pbSuccess = false;
                             } else {
                                 poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList(pnRequirements).setReceivedDate((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
-                                poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList(pnRequirements).getReceivedDate();
                             }
                             if (pbSuccess) {
                             } else {
@@ -1322,7 +1307,7 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
                             pbSuccess = true; //Set to original value
                             break;
                         case "dpAppliedDate":
-                            if (selectedDate.isBefore(currentDate)) {
+                            if (ldselectedDate.isBefore(ldTransactionDate)) {
                                 JFXUtil.setJSONError(poJSON, "Applied date cannot be before the transaction date.");
                                 pbSuccess = false;
                             } else {
@@ -1339,7 +1324,7 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
                             pbSuccess = true; //Set to original value
                             break;
                         case "dpApprovedDate":
-                            if (selectedDate.isBefore(currentDate)) {
+                            if (ldselectedDate.isBefore(ldTransactionDate)) {
                                 JFXUtil.setJSONError(poJSON, "Approved date cannot be before the transaction date.");
                                 pbSuccess = false;
                             } else {
