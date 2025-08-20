@@ -110,7 +110,7 @@ public class InventoryStockTransferIssuanceNeoController implements Initializabl
 
     @FXML
     TextField tfSearchSerial, tfSearchBarcode, tfSearchDescription, tfSupersede, tfBrand, tfModel, tfColor,
-            tfVariant, tfMeasure, tfInvType, tfCost, tfOrderQuantity, tfIssuedQty;
+            tfVariant, tfMeasure, tfInvType, tfCost, tfIssuedQty;
 
     @FXML
     Button btnNew, btnSearch, btnSave, btnCancel, btnHistory, btnRetrieve, btnClose;
@@ -257,17 +257,17 @@ public class InventoryStockTransferIssuanceNeoController implements Initializabl
                             }
                             break;
                         case "tfSearchSerial":
-                            if (pnCTransactionDetail >= 0) {
-                                if (!isJSONSuccess(poAppController.searchDetailByIssuance(pnCTransactionDetail, tfSearchSerial.getText(), false),
+                            if (pnCTransactionDetail > 0) {
+                                if (!isJSONSuccess(poAppController.searchDetailByIssuance(pnCTransactionDetail, tfSearchSerial.getText(), false, true),
                                         "Unable to Search Serial! ")) {
                                     return;
                                 }
-
+                                reloadTableDetail();
                             }
                             break;
                         case "tfSearchBarcode":
                             if (pnCTransactionDetail > 0) {
-                                if (!isJSONSuccess(poAppController.searchDetailByBarcode(pnCTransactionDetail, tfSearchBarcode.getText(), false),
+                                if (!isJSONSuccess(poAppController.searchDetailByIssuance(pnCTransactionDetail, tfSearchBarcode.getText(), true, false),
                                         "Unable to Search Barcode! ")) {
                                     return;
                                 }
@@ -276,7 +276,7 @@ public class InventoryStockTransferIssuanceNeoController implements Initializabl
                             break;
                         case "tfSearchDescription":
                             if (pnCTransactionDetail > 0) {
-                                if (!isJSONSuccess(poAppController.searchDetailByIssuance(pnCTransactionDetail, tfSearchDescription.getText(), false),
+                                if (!isJSONSuccess(poAppController.searchDetailByIssuance(pnCTransactionDetail, tfSearchDescription.getText(), false, false),
                                         "Unable to Search Description! ")) {
                                     return;
                                 }
@@ -428,9 +428,7 @@ public class InventoryStockTransferIssuanceNeoController implements Initializabl
                                             "Unable to Search Serial! ")) {
                                         return;
                                     }
-
                                     reloadTableDetail();
-
                                 }
                                 break;
                             case "tfSearchBarcode":
@@ -572,16 +570,26 @@ public class InventoryStockTransferIssuanceNeoController implements Initializabl
     }
 
     private void loadSelectedDetail() {
-        HashMap<String, Object> loMapFields = new HashMap<>();
-        loMapFields.put("tblColDetailSerial", tfSearchSerial);
-        loMapFields.put("tblColDetailBarcode", tfSearchBarcode);
-        loMapFields.put("tblColDetailDescr", tfSearchDescription);
-        loMapFields.put("tblColDetailBrand", tfBrand);
-        loMapFields.put("tblColDetailVariant", tfVariant);
-        loMapFields.put("tblColDetailCost", tfCost);
-        loMapFields.put("tblColDetailOrderQty", tfOrderQuantity);
+        try {
+            HashMap<String, Object> loMapFields = new HashMap<>();
+            loMapFields.put("tblColDetailSerial", tfSearchSerial);
+            loMapFields.put("tblColDetailBarcode", tfSearchBarcode);
+            loMapFields.put("tblColDetailDescr", tfSearchDescription);
+            loMapFields.put("tblColDetailBrand", tfBrand);
+            loMapFields.put("tblColDetailVariant", tfVariant);
+            loMapFields.put("tblColDetailCost", tfCost);
+            loMapFields.put("tblColDetailOrderQty", tfIssuedQty);
 
-        loadSelectedTableItem(pnCTransactionDetail, tblViewDetails, loMapFields);
+            loadSelectedTableItem(pnCTransactionDetail - 1, tblViewDetails, loMapFields);
+
+            tfColor.setText(poAppController.getDetail(pnCTransactionDetail).Inventory().Color().getDescription());
+            tfMeasure.setText(poAppController.getDetail(pnCTransactionDetail).Inventory().Measure().getDescription());
+            tfInvType.setText(poAppController.getDetail(pnCTransactionDetail).Inventory().InventoryType().getDescription());
+            tfSupersede.setText(poAppController.getDetail(pnCTransactionDetail).InventorySupersede().getBarCode());
+
+        } catch (SQLException | GuanzonException e) {
+            poLogWrapper.severe(psFormName, e.getMessage());
+        }
     }
 
     private void initControlEvents() {
@@ -743,8 +751,9 @@ public class InventoryStockTransferIssuanceNeoController implements Initializabl
 
         }
     }
-
+ 
     private void reloadTableDetail() {
+        System.out.print("the index is " + pnCTransactionDetail);
         List<Model_Inventory_Transfer_Detail> rawDetail = poAppController.getDetailList();
         laTransactionDetail.setAll(rawDetail);
 
@@ -755,7 +764,7 @@ public class InventoryStockTransferIssuanceNeoController implements Initializabl
 
         tblViewDetails.getSelectionModel().select(indexToSelect);
 
-        pnCTransactionDetail = tblViewDetails.getSelectionModel().getSelectedIndex() + 1; // Not focusedIndex
+        pnCTransactionDetail = tblViewDetails.getSelectionModel().getSelectedIndex()+ 1; // Not focusedIndex
 
         tblViewDetails.refresh();
     }
