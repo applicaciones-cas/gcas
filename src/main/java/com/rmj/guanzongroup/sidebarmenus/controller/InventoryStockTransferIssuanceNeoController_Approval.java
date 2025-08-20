@@ -71,7 +71,7 @@ public class InventoryStockTransferIssuanceNeoController_Approval implements Ini
     
     private GRiderCAS poApp;
     private LogWrapper poLogWrapper;
-    private String psFormName = "Issuance without ROQ";
+    private String psFormName = "Issuance without ROQ Approval";
     private String psIndustryID, psCompanyID, psCategoryID;
     private Control lastFocusedControl;
     private InventoryStockIssuanceNeo poAppController;
@@ -117,7 +117,7 @@ public class InventoryStockTransferIssuanceNeoController_Approval implements Ini
             tfVariant, tfMeasure, tfInvType, tfCost, tfOrderQuantity, tfIssuedQty;
     
     @FXML
-    Button btnNew, btnSearch, btnSave, btnCancel, btnHistory,btnRetrieve, btnClose;
+    Button btnSearch, btnUpdate, btnPrint, btnVoid, btnSave, btnCancel, btnHistory,btnRetrieve, btnClose;
     
     @FXML
     TableView<Model_Inventory_Transfer_Master> tblViewMaster;
@@ -181,8 +181,6 @@ public class InventoryStockTransferIssuanceNeoController_Approval implements Ini
                 System.err.println("Initialize value : Industry >" + psIndustryID
                         + "\nCompany :" + psCompanyID
                         + "\nCategory:" + psCategoryID);
-                
-                btnNew.fire();
             });
             
             initializeTableDetail();
@@ -300,17 +298,53 @@ public class InventoryStockTransferIssuanceNeoController_Approval implements Ini
                     }
                     break;
                     
-                case "btnNew":
-                    if (!isJSONSuccess(poAppController.NewTransaction(), "Initialize New Transaction")) {
+                case "btnUpdate":
+                    if (poAppController.getMaster().getTransactionNo() == null || poAppController.getMaster().getTransactionNo().isEmpty()) {
+                        ShowMessageFX.Information("Please load transaction before proceeding..", "Stock Request Issuance", "");
+                        return;
+                    }
+                    
+                    if (!isJSONSuccess(poAppController.UpdateTransaction(), "Initialize UPdate Transaction")) {
                         return;
                     }
                     getLoadedTransaction();
                     pnEditMode = poAppController.getEditMode();
                     break;
+                    
+                case "btnPrint":
+                    if (poAppController.getMaster().getTransactionNo() == null || poAppController.getMaster().getTransactionNo().isEmpty()) {
+                        ShowMessageFX.Information("Please load transaction before proceeding..", "Stock Request Issuance", "");
+                        return;
+                    }
+                    if (ShowMessageFX.OkayCancel(null, psFormName, "Do you want to print the transaction ?") == true) {
+                        if (!isJSONSuccess(poAppController.printRecord(),
+                                "Initialize Print Transaction")) {
+                            return;
+                        }
+                    }
+                    //refresh ui 
+                    clearAllInputs();
+                    reloadTableDetail();
+                    
+                    pnEditMode = poAppController.getEditMode();
+                break;
+                
+                case "btnVoid":
+                    if (poAppController.getMaster().getTransactionNo().isEmpty()) {
+                        ShowMessageFX.Information("Please load transaction before proceeding..", "Stock Request Issuance", "");
+                        break;
+                    }
+                    
+                    if (!isJSONSuccess(poAppController.VoidTransaction(), "Initialize Void Transaction")) {
+                        return;
+                    }
+                    getLoadedTransaction();
+                    pnEditMode = poAppController.getEditMode();
+                break;
 
                 case "btnSave":
                     if (tfTransNo.getText().isEmpty()) {
-                        ShowMessageFX.Information("Please load transaction before proceeding..", "Delivery Schedule Encoding", "");
+                        ShowMessageFX.Information("Please load transaction before proceeding..", "Stock Request Issuance", "");
                         return;
                     }
                     

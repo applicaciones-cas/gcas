@@ -242,3 +242,29 @@ Aug 19, 2025 5:15:21 PM org.guanzon.appdriver.base.LogWrapper severe
 SEVERE: Issuance without ROQ :null
 Aug 19, 2025 5:15:21 PM org.guanzon.appdriver.base.LogWrapper info
 INFO: Issuance without ROQ : Success on Initialize Transaction
+Aug 19, 2025 5:20:12 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 19, 2025 5:20:12 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 19, 2025 5:20:13 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 19, 2025 5:20:13 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize New Transaction
+Aug 19, 2025 5:20:18 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 19, 2025 5:20:18 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize Transaction
+Aug 20, 2025 9:02:07 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 20, 2025 9:02:07 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 20, 2025 9:02:07 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 20, 2025 9:02:07 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize New Transaction
+Aug 20, 2025 9:02:12 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :No record loaded.
+Aug 20, 2025 9:02:36 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 20, 2025 9:02:38 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :ph.com.guanzongroup.cas.inv.warehouse.t4.model.Model_Inventory_Transfer_Master cannot be cast to org.guanzon.cas.inv.warehouse.model.Model_Inv_Stock_Request_Master

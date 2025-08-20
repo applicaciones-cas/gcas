@@ -309,7 +309,7 @@ public class InventoryStockTransferIssuanceNeoController implements Initializabl
 
                 case "btnSave":
                     if (tfTransNo.getText().isEmpty()) {
-                        ShowMessageFX.Information("Please load transaction before proceeding..", "Delivery Schedule Encoding", "");
+                        ShowMessageFX.Information("Please load transaction before proceeding..", "Stock Request Issuance", "");
                         return;
                     }
                     
