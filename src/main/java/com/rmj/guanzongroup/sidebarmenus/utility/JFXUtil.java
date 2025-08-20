@@ -2230,4 +2230,12 @@ public class JFXUtil {
             }
         }
     }
+
+    public static void runWithDelay(double seconds, Runnable action) {
+        Platform.runLater(() -> {
+            PauseTransition delay = new PauseTransition(Duration.seconds(seconds));
+            delay.setOnFinished(e -> action.run());
+            delay.play();
+        });
+    }
 }
