@@ -85,7 +85,7 @@ public class ModelDisbursementVoucher_Main {
         this.index03 = new SimpleStringProperty(index03);
         this.index04 = new SimpleStringProperty(index04);
         this.index05 = new SimpleStringProperty(index05);
-        this.index05 = new SimpleStringProperty(index06);
+        this.index06 = new SimpleStringProperty(index06);
     }
 
     public CheckBox getSelect() {

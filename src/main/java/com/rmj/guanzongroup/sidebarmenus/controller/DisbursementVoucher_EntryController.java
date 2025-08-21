@@ -457,7 +457,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                     poJSON = poDisbursementController.SaveTransaction();
                     if (!"success".equals((String) poJSON.get("result"))) {
                         ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
-                        return;
+                        return ;
                     }
 
                     ShowMessageFX.Information((String) poJSON.get("message"), pxeModuleName, null);
@@ -1470,9 +1470,14 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                                     ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
                                     return;
                                 }
-                                tfBankAccountCheck.setText(poDisbursementController.Master().getDisbursementType().equals(DisbursementStatic.DisbursementType.CHECK) ? (poDisbursementController.CheckPayments().getModel().Bank_Account_Master().getAccountNo() != null ? poDisbursementController.CheckPayments().getModel().Bank_Account_Master().getAccountNo() : "") : "");
+                                tfBankNameCheck.setText(poDisbursementController.CheckPayments().getModel().Banks().getBankName());
+                                tfBankAccountCheck.setText(poDisbursementController.Master().getDisbursementType().equals(
+                                        DisbursementStatic.DisbursementType.CHECK)
+                                                ? (poDisbursementController.CheckPayments().getModel().Bank_Account_Master().getAccountNo() != null
+                                                ? poDisbursementController.CheckPayments().getModel().Bank_Account_Master().getAccountNo() : "") : "");
+                                chbkPrintByBank.setSelected(poDisbursementController.Master().getBankPrint().equals(Logical.YES));
                                 break;
-                            case "tfPayeeName":
+                            case "tfPayeeName": 
                                 poJSON = poDisbursementController.SearchPayee(poDisbursementController.Master().getSupplierClientID(), true);
                                 if ("error".equals((String) poJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
