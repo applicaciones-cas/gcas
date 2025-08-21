@@ -486,6 +486,9 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
             tfReceivedBy.setText(poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList(pnRequirements).SalesPerson().getFullName());
             String lsdpReceivedDate = CustomCommonUtil.formatDateToShortString(poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList(pnRequirements).getReceivedDate());
             dpReceivedDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsdpReceivedDate, "yyyy-MM-dd"));
+
+            boolean lbShow = JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList(pnRequirements).SalesPerson().getFullName(), null, "");
+            JFXUtil.setDisabled(lbShow, dpReceivedDate);
             JFXUtil.updateCaretPositions(apRequirements);
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
@@ -1293,6 +1296,9 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
                             if (ldselectedDate.isBefore(ldTransactionDate)) {
                                 JFXUtil.setJSONError(poJSON, "Received date cannot be before the inquiry date.");
                                 pbSuccess = false;
+                            } else if (ldselectedDate.isAfter(ldTransactionDate)) {
+                                JFXUtil.setJSONError(poJSON, "Received date cannot be after the inquiry date.");
+                                pbSuccess = false;
                             } else {
                                 poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList(pnRequirements).setReceivedDate((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
                             }
@@ -1463,7 +1469,7 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
         boolean lbShow3 = (fnValue == EditMode.READY || fnValue == EditMode.UNKNOWN);
         dragLock.isEnabled = lbShow;
 
-        disableRowCheckbox.set(!lbShow); // set edit mode of the transaction
+        disableRowCheckbox.set(!lbShow); // set enable/disable in checkboxes in requirements
         // Manage visibility and managed state of other buttons
         JFXUtil.setButtonsVisibility(!lbShow, btnNew);
         JFXUtil.setButtonsVisibility(lbShow, btnSearch, btnSave, btnCancel);
