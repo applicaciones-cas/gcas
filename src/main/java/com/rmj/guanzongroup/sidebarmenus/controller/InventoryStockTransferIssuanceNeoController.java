@@ -53,6 +53,8 @@ import javafx.concurrent.Task;
 import org.guanzon.appdriver.base.GuanzonException;
 import org.json.simple.JSONObject;
 import ph.com.guanzongroup.cas.inv.warehouse.t4.InventoryStockIssuanceNeo;
+import ph.com.guanzongroup.cas.inv.warehouse.t4.constant.DeliveryIssuanceType;
+import ph.com.guanzongroup.cas.inv.warehouse.t4.constant.DeliveryScheduleStatus;
 import ph.com.guanzongroup.cas.inv.warehouse.t4.constant.InventoryStockIssuanceStatus;
 import ph.com.guanzongroup.cas.inv.warehouse.t4.model.Model_Inventory_Transfer_Detail;
 import ph.com.guanzongroup.cas.inv.warehouse.t4.model.Model_Inventory_Transfer_Master;
@@ -129,7 +131,7 @@ public class InventoryStockTransferIssuanceNeoController implements Initializabl
             tblColDetailBrand, tblColDetailVariant, tblColDetailCost, tblColDetailOrderQty;
 
     @FXML
-    Label lblSource;
+    Label lblSource, lblStatus;
 
     @Override
     public void setGRider(GRiderCAS foValue) {
@@ -160,6 +162,7 @@ public class InventoryStockTransferIssuanceNeoController implements Initializabl
         try {
             poLogWrapper = new LogWrapper(psFormName, psFormName);
             poAppController = new DeliveryIssuanceControllers(poApp, poLogWrapper).InventoryStockIssuanceNeo();
+            poAppController.setTransactionStatus(DeliveryScheduleStatus.OPEN);
 
             //initlalize and validate transaction objects from class controller
             if (!isJSONSuccess(poAppController.initTransaction(), psFormName)) {
@@ -180,7 +183,6 @@ public class InventoryStockTransferIssuanceNeoController implements Initializabl
 
                 btnNew.fire();
             });
-
             initializeTableDetail();
             initControlEvents();
         } catch (SQLException | GuanzonException e) {
@@ -222,7 +224,7 @@ public class InventoryStockTransferIssuanceNeoController implements Initializabl
                                 }
                             }
                             if (!isJSONSuccess(poAppController.searchTransaction(tfSearchSourceno.getText(), true, true),
-                                    "Unable to Search Source No! ")) {
+                                    "Initialize Search Source No! ")) {
                                 return;
                             }
                             loadTransactionMasterList();
@@ -234,32 +236,29 @@ public class InventoryStockTransferIssuanceNeoController implements Initializabl
                                 }
                             }
                             if (!isJSONSuccess(poAppController.searchTransaction(tfSeacrchTransNo.getText(), true, true),
-                                    "Unable to Search Transaction! ")) {
+                                    "Initialize Search Transaction! ")) {
                                 return;
                             }
                             loadTransactionMasterList();
                             break;
                         case "tfClusterName":
-                            if (pnSelectMaster > 0) {
-                                if (!isJSONSuccess(poAppController.searchTransaction(tfClusterName.getText(), false),
-                                        "Unable to Search Destination! ")) {
-                                    return;
-                                }
+                            if (!isJSONSuccess(poAppController.searchTransactionDestination(tfClusterName.getText(), false),
+                                    "Initialize Search Destination! ")) {
+                                return;
                             }
+                            tfClusterName.setText(poAppController.getMaster().BranchDestination().getBranchName());
                             break;
                         case "tfTrucking":
-                            if (pnSelectMaster > 0) {
-                                if (!isJSONSuccess(poAppController.searchTransaction(tfTrucking.getText(), false),
-                                        "Unable to Search Trucking! ")) {
-                                    return;
-                                }
-
+                            if (!isJSONSuccess(poAppController.searchTransactionTrucking(tfTrucking.getText(), false),
+                                    "Initialize Search Trucking! ")) {
+                                return;
                             }
+                            tfTrucking.setText(poAppController.getMaster().TruckingCompany().getCompanyName());
                             break;
                         case "tfSearchSerial":
                             if (pnCTransactionDetail > 0) {
                                 if (!isJSONSuccess(poAppController.searchDetailByIssuance(pnCTransactionDetail, tfSearchSerial.getText(), false, true),
-                                        "Unable to Search Serial! ")) {
+                                        "Initialize Search Serial! ")) {
                                     return;
                                 }
                                 reloadTableDetail();
@@ -268,7 +267,7 @@ public class InventoryStockTransferIssuanceNeoController implements Initializabl
                         case "tfSearchBarcode":
                             if (pnCTransactionDetail > 0) {
                                 if (!isJSONSuccess(poAppController.searchDetailByIssuance(pnCTransactionDetail, tfSearchBarcode.getText(), true, false),
-                                        "Unable to Search Barcode! ")) {
+                                        "Initialize Search Barcode! ")) {
                                     return;
                                 }
 
@@ -277,7 +276,7 @@ public class InventoryStockTransferIssuanceNeoController implements Initializabl
                         case "tfSearchDescription":
                             if (pnCTransactionDetail > 0) {
                                 if (!isJSONSuccess(poAppController.searchDetailByIssuance(pnCTransactionDetail, tfSearchDescription.getText(), false, false),
-                                        "Unable to Search Description! ")) {
+                                        "Initialize Search Description! ")) {
                                     return;
                                 }
 
@@ -286,7 +285,7 @@ public class InventoryStockTransferIssuanceNeoController implements Initializabl
                         case "tfSupersede":
                             if (pnCTransactionDetail > 0) {
                                 if (!isJSONSuccess(poAppController.searchDetailByBarcode(pnCTransactionDetail, tfSupersede.getText(), true),
-                                        "Unable to Search Supersede! ")) {
+                                        "Initialize Search Supersede! ")) {
                                     return;
                                 }
 
@@ -321,7 +320,7 @@ public class InventoryStockTransferIssuanceNeoController implements Initializabl
                 case "btnCancel":
                     if (ShowMessageFX.OkayCancel(null, psFormName, "Do you want to disregard changes?") == true) {
                         poAppController = new DeliveryIssuanceControllers(poApp, poLogWrapper).InventoryStockIssuanceNeo();
-                        poAppController.setTransactionStatus(InventoryStockIssuanceStatus.OPEN);
+                        poAppController.setTransactionStatus(null);
 
                         if (!isJSONSuccess(poAppController.initTransaction(), "Initialize Transaction")) {
                             unloadForm appUnload = new unloadForm();
@@ -387,10 +386,10 @@ public class InventoryStockTransferIssuanceNeoController implements Initializabl
                                     }
                                 }
                                 if (!isJSONSuccess(poAppController.searchTransaction(tfSearchSourceno.getText(), true, true),
-                                        "Unable to Search Source No! ")) {
+                                        "Initialize Search Source No! ")) {
                                     return;
                                 }
-                                getLoadedTransaction();
+                                loadTransactionMasterList();
                                 break;
                             case "tfSeacrchTransNo":
                                 if (!tfSeacrchTransNo.getText().isEmpty()) {
@@ -399,33 +398,29 @@ public class InventoryStockTransferIssuanceNeoController implements Initializabl
                                     }
                                 }
                                 if (!isJSONSuccess(poAppController.searchTransaction(tfSeacrchTransNo.getText(), true, true),
-                                        "Unable to Search Transaction! ")) {
+                                        "Initialize Search Transaction! ")) {
                                     return;
                                 }
-                                getLoadedTransaction();
+                                loadTransactionMasterList();
                                 break;
                             case "tfClusterName":
-                                if (pnCTransactionDetail > 0) {
-                                    if (!isJSONSuccess(poAppController.searchTransactionDestination(tfClusterName.getText(), false),
-                                            "Unable to Search Destination! ")) {
-                                    }
+                                if (!isJSONSuccess(poAppController.searchTransactionDestination(tfClusterName.getText(), false),
+                                        "Initialize Search Destination! ")) {
                                     return;
-
                                 }
+                                tfClusterName.setText(poAppController.getMaster().BranchDestination().getBranchName());
                                 break;
                             case "tfTrucking":
-                                if (pnCTransactionDetail > 0) {
-                                    if (!isJSONSuccess(poAppController.searchTransaction(tfTrucking.getText(), false),
-                                            "Unable to Search Trucking! ")) {
-                                        return;
-                                    }
-
+                                if (!isJSONSuccess(poAppController.searchTransactionTrucking(tfTrucking.getText(), false),
+                                        "Initialize Search Trucking! ")) {
+                                    return;
                                 }
+                                tfTrucking.setText(poAppController.getMaster().TruckingCompany().getCompanyName());
                                 break;
                             case "tfSearchSerial":
                                 if (pnCTransactionDetail > 0) {
                                     if (!isJSONSuccess(poAppController.searchDetailByIssuance(pnCTransactionDetail, tfSearchSerial.getText(), false, true),
-                                            "Unable to Search Serial! ")) {
+                                            "Initialize Search Serial! ")) {
                                         return;
                                     }
                                     reloadTableDetail();
@@ -434,7 +429,7 @@ public class InventoryStockTransferIssuanceNeoController implements Initializabl
                             case "tfSearchBarcode":
                                 if (pnCTransactionDetail > 0) {
                                     if (!isJSONSuccess(poAppController.searchDetailByIssuance(pnCTransactionDetail, tfSearchBarcode.getText(), true, false),
-                                            "Unable to Search Barcode! ")) {
+                                            "Initialize Search Barcode! ")) {
                                         return;
                                     }
 
@@ -443,7 +438,7 @@ public class InventoryStockTransferIssuanceNeoController implements Initializabl
                             case "tfSearchDescription":
                                 if (pnCTransactionDetail > 0) {
                                     if (!isJSONSuccess(poAppController.searchDetailByIssuance(pnCTransactionDetail, tfSearchDescription.getText(), false, false),
-                                            "Unable to Search Description! ")) {
+                                            "Initialize Search Description! ")) {
                                         return;
                                     }
 
@@ -451,15 +446,15 @@ public class InventoryStockTransferIssuanceNeoController implements Initializabl
                                 break;
                             case "tfSupersede":
                                 if (pnCTransactionDetail > 0) {
-                                    if (!isJSONSuccess(poAppController.searchDetailByBarcode(pnCTransactionDetail, tfSupersede.getText(), false),
-                                            "Unable to Search Supersede! ")) {
+                                    if (!isJSONSuccess(poAppController.searchDetailByBarcode(pnCTransactionDetail, tfSupersede.getText(), true),
+                                            "Initialize Search Supersede! ")) {
                                         return;
                                     }
 
                                 }
                                 break;
                         }
-
+                        break;
                 }
             }
         } catch (Exception ex) {
@@ -467,6 +462,11 @@ public class InventoryStockTransferIssuanceNeoController implements Initializabl
                     .getName()).log(Level.SEVERE, null, ex);
             poLogWrapper.severe(psFormName + " :" + ex.getMessage());
         }
+    }
+    
+    private void loadDeliveryTypes(){
+        List<String> deliveryTypes = DeliveryIssuanceType.DeliveryType;
+        cbDelType.setItems(FXCollections.observableArrayList(deliveryTypes));
     }
 
     private void loadTransactionMasterList() {
@@ -535,16 +535,24 @@ public class InventoryStockTransferIssuanceNeoController implements Initializabl
     }
 
     private void loadTransactionMaster() {
-        lblSource.setText(poAppController.getMaster().getTransactionStatus());
-        tfSearchSourceno.setText(poAppController.getMaster().getDestination());
-        tfSeacrchTransNo.setText(poAppController.getMaster().getTransactionNo());
-        tfTransNo.setText(poAppController.getMaster().getTransactionNo());
-        dpTransactionDate.setValue(ParseDate(poAppController.getMaster().getTransactionDate()));
-        tfClusterName.setText(poAppController.getMaster().getDestination());
-        tfTrucking.setText(poAppController.getMaster().getTruckId());
-        tfDiscountRate.setText(String.valueOf(poAppController.getMaster().getDiscount()));
-        tfDiscountAmount.setText(String.valueOf(poAppController.getMaster().getDiscount()));
-        tfTotal.setText(String.valueOf(poAppController.getMaster().getDiscount()));
+        try {
+            lblSource.setText(poAppController.getMaster().Company().getCompanyName() == null ? "": (poAppController.getMaster().Company().getCompanyName() + " - ") + 
+                poAppController.getMaster().Industry().getDescription() == null ? "" : poAppController.getMaster().Industry().getDescription());
+            lblStatus.setText(InventoryStockIssuanceStatus.STATUS.get(Integer.parseInt(poAppController.getMaster().getTransactionStatus())) == null ? "STATUS" : 
+                    InventoryStockIssuanceStatus.STATUS.get(Integer.parseInt(poAppController.getMaster().getTransactionStatus())));
+            
+            tfSearchSourceno.setText(poAppController.getMaster().getDestination());
+            tfSeacrchTransNo.setText(poAppController.getMaster().getTransactionNo());
+            tfTransNo.setText(poAppController.getMaster().getTransactionNo());
+            dpTransactionDate.setValue(ParseDate(poAppController.getMaster().getTransactionDate()));
+            tfClusterName.setText(poAppController.getMaster().getDestination());
+            tfTrucking.setText(poAppController.getMaster().getTruckId());
+            tfDiscountRate.setText(String.valueOf(poAppController.getMaster().getDiscount()));
+            tfDiscountAmount.setText(String.valueOf(poAppController.getMaster().getDiscount()));
+            tfTotal.setText(String.valueOf(poAppController.getMaster().getDiscount()));
+        } catch (SQLException | GuanzonException e) {
+            poLogWrapper.severe(psFormName, e.getMessage());
+        }
     }
 
     private void loadSelectedTableItem(int fnRow, TableView<?> ftblSrc, HashMap<String, Object> fmapObject) {
@@ -605,6 +613,9 @@ public class InventoryStockTransferIssuanceNeoController implements Initializabl
             } else if (loControl instanceof TableView) {
                 TableView loControlField = (TableView) loControl;
                 controllerFocusTracker(loControlField);
+            } else if (loControl instanceof ComboBox) {
+                ComboBox loControlField = (ComboBox) loControl;
+                controllerFocusTracker(loControlField);
             }
         }
         clearAllInputs();
@@ -625,12 +636,16 @@ public class InventoryStockTransferIssuanceNeoController implements Initializabl
         for (Control loControl : laControls) {
             if (loControl instanceof TextField) {
                 ((TextField) loControl).clear();
-            } else if (loControl != null && loControl instanceof TableView) {
+            } else if (loControl != null && (loControl instanceof TableView)) {
                 TableView<?> table = (TableView<?>) loControl;
                 if (table.getItems() != null) {
                     table.getItems().clear();
                 }
-
+            } else if (loControl != null && (loControl instanceof ComboBox)) {
+                ComboBox cbox = (ComboBox) loControl;
+                if (cbox.getItems() != null) {
+                    cbox.getItems().clear();
+                }
             }
         }
         pnEditMode = poAppController.getEditMode();
@@ -753,7 +768,6 @@ public class InventoryStockTransferIssuanceNeoController implements Initializabl
     }
  
     private void reloadTableDetail() {
-        System.out.print("the index is " + pnCTransactionDetail);
         List<Model_Inventory_Transfer_Detail> rawDetail = poAppController.getDetailList();
         laTransactionDetail.setAll(rawDetail);
 
@@ -765,12 +779,12 @@ public class InventoryStockTransferIssuanceNeoController implements Initializabl
         tblViewDetails.getSelectionModel().select(indexToSelect);
 
         pnCTransactionDetail = tblViewDetails.getSelectionModel().getSelectedIndex()+ 1; // Not focusedIndex
-
         tblViewDetails.refresh();
     }
 
     private void getLoadedTransaction() {
         clearAllInputs();
+        loadDeliveryTypes();
         loadTransactionMaster();
         reloadTableDetail();
     }

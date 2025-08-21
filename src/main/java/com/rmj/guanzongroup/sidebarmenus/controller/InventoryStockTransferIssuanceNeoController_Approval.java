@@ -53,6 +53,8 @@ import javafx.concurrent.Task;
 import org.guanzon.appdriver.base.GuanzonException;
 import org.json.simple.JSONObject;
 import ph.com.guanzongroup.cas.inv.warehouse.t4.InventoryStockIssuanceNeo;
+import ph.com.guanzongroup.cas.inv.warehouse.t4.constant.DeliveryIssuanceType;
+import ph.com.guanzongroup.cas.inv.warehouse.t4.constant.DeliveryScheduleStatus;
 import ph.com.guanzongroup.cas.inv.warehouse.t4.constant.InventoryStockIssuanceStatus;
 import ph.com.guanzongroup.cas.inv.warehouse.t4.model.Model_Inventory_Transfer_Detail;
 import ph.com.guanzongroup.cas.inv.warehouse.t4.model.Model_Inventory_Transfer_Master;
@@ -129,7 +131,7 @@ public class InventoryStockTransferIssuanceNeoController_Approval implements Ini
             tblColDetailBrand, tblColDetailVariant, tblColDetailCost, tblColDetailOrderQty;
     
     @FXML
-    Label lblSource;
+    Label lblSource, lblStatus;
     
     @Override
     public void setGRider(GRiderCAS foValue) {
@@ -190,7 +192,7 @@ public class InventoryStockTransferIssuanceNeoController_Approval implements Ini
     @FXML
     void ontblMasterClicked(MouseEvent e){
         pnSelectMaster = tblViewMaster.getSelectionModel().getSelectedIndex() < 1 ? 1 : tblViewMaster.getSelectionModel().getSelectedIndex();
-        loadSelectedMaster();
+        getLoadedTransaction();
     }
     
     @FXML
@@ -211,7 +213,7 @@ public class InventoryStockTransferIssuanceNeoController_Approval implements Ini
                                 "Search unavailable. Please ensure a searchable field is selected or focused before proceeding..");
                         return;
                     }
-                    
+
                     switch (lastFocusedControl.getId()) {
                         case "tfSearchSourceno":
                             if (!tfSearchSourceno.getText().isEmpty()) {
@@ -220,10 +222,10 @@ public class InventoryStockTransferIssuanceNeoController_Approval implements Ini
                                 }
                             }
                             if (!isJSONSuccess(poAppController.searchTransaction(tfSearchSourceno.getText(), true, true),
-                                    "Unable to Search Source No! ")) {
+                                    "Initialize Search Source No! ")) {
                                 return;
                             }
-                            getLoadedTransaction();
+                            loadTransactionMasterList();
                             break;
                         case "tfSeacrchTransNo":
                             if (!tfSeacrchTransNo.getText().isEmpty()) {
@@ -232,65 +234,61 @@ public class InventoryStockTransferIssuanceNeoController_Approval implements Ini
                                 }
                             }
                             if (!isJSONSuccess(poAppController.searchTransaction(tfSeacrchTransNo.getText(), true, true),
-                                    "Unable to Search Transaction! ")) {
+                                    "Initialize Search Transaction! ")) {
                                 return;
                             }
-                            getLoadedTransaction();
-                        break;
+                            loadTransactionMasterList();
+                            break;
                         case "tfClusterName":
-                            if (pnSelectMaster > 0) {
-                                if (!isJSONSuccess(poAppController.searchTransaction(tfClusterName.getText(), false),
-                                        "Unable to Search Destination! ")) {
-                                }
+                            if (!isJSONSuccess(poAppController.searchTransactionDestination(tfClusterName.getText(), false),
+                                    "Initialize Search Destination! ")) {
                                 return;
-
                             }
-                        break;
+                            tfClusterName.setText(poAppController.getMaster().BranchDestination().getBranchName());
+                            break;
                         case "tfTrucking":
-                            if (pnSelectMaster > 0) {
-                                if (!isJSONSuccess(poAppController.searchTransaction(tfTrucking.getText(), false),
-                                        "Unable to Search Trucking! ")) {
-                                }
+                            if (!isJSONSuccess(poAppController.searchTransactionTrucking(tfTrucking.getText(), false),
+                                    "Initialize Search Trucking! ")) {
                                 return;
-
                             }
-                        break;
+                            tfTrucking.setText(poAppController.getMaster().TruckingCompany().getCompanyName());
+                            break;
                         case "tfSearchSerial":
-                            if (pnCTransactionDetail >= 0) {
-                                if (!isJSONSuccess(poAppController.searchDetailByIssuance(pnCTransactionDetail, tfSearchSerial.getText(), false),
-                                        "Unable to Search Serial! ")) {
+                            if (pnCTransactionDetail > 0) {
+                                if (!isJSONSuccess(poAppController.searchDetailByIssuance(pnCTransactionDetail, tfSearchSerial.getText(), false, true),
+                                        "Initialize Search Serial! ")) {
+                                    return;
                                 }
-                                return;
-
+                                reloadTableDetail();
                             }
-                        break;
+                            break;
                         case "tfSearchBarcode":
                             if (pnCTransactionDetail > 0) {
-                                if (!isJSONSuccess(poAppController.searchDetailByBarcode(pnCTransactionDetail, tfSearchBarcode.getText(), false),
-                                        "Unable to Search Barcode! ")) {
+                                if (!isJSONSuccess(poAppController.searchDetailByIssuance(pnCTransactionDetail, tfSearchBarcode.getText(), true, false),
+                                        "Initialize Search Barcode! ")) {
+                                    return;
                                 }
-                                return;
 
                             }
-                        break;
+                            break;
                         case "tfSearchDescription":
                             if (pnCTransactionDetail > 0) {
-                                if (!isJSONSuccess(poAppController.searchDetailByIssuance(pnCTransactionDetail, tfSearchDescription.getText(), false),
-                                        "Unable to Search Description! ")) {
+                                if (!isJSONSuccess(poAppController.searchDetailByIssuance(pnCTransactionDetail, tfSearchDescription.getText(), false, false),
+                                        "Initialize Search Description! ")) {
+                                    return;
                                 }
-                                return;
 
                             }
-                        break;
+                            break;
                         case "tfSupersede":
                             if (pnCTransactionDetail > 0) {
-                                if (!isJSONSuccess(poAppController.searchDetailByIssuance(pnCTransactionDetail, tfSupersede.getText(), false),
-                                        "Unable to Search Supersede! ")) {
+                                if (!isJSONSuccess(poAppController.searchDetailByBarcode(pnCTransactionDetail, tfSupersede.getText(), true),
+                                        "Initialize Search Supersede! ")) {
+                                    return;
                                 }
-                                return;
 
                             }
-                        break;
+                            break;
                     }
                     break;
                     
@@ -422,10 +420,10 @@ public class InventoryStockTransferIssuanceNeoController_Approval implements Ini
                                     }
                                 }
                                 if (!isJSONSuccess(poAppController.searchTransaction(tfSearchSourceno.getText(), true, true),
-                                        "Unable to Search Source No! ")) {
+                                        "Initialize Search Source No! ")) {
                                     return;
                                 }
-                                getLoadedTransaction();
+                                loadTransactionMasterList();
                                 break;
                             case "tfSeacrchTransNo":
                                 if (!tfSeacrchTransNo.getText().isEmpty()) {
@@ -434,67 +432,63 @@ public class InventoryStockTransferIssuanceNeoController_Approval implements Ini
                                     }
                                 }
                                 if (!isJSONSuccess(poAppController.searchTransaction(tfSeacrchTransNo.getText(), true, true),
-                                        "Unable to Search Transaction! ")) {
+                                        "Initialize Search Transaction! ")) {
                                     return;
                                 }
-                                getLoadedTransaction();
-                            break;
+                                loadTransactionMasterList();
+                                break;
                             case "tfClusterName":
-                                if (pnCTransactionDetail > 0) {
-                                    if (!isJSONSuccess(poAppController.searchTransaction(tfClusterName.getText(), false),
-                                            "Unable to Search Destination! ")) {
-                                    }
+                                if (!isJSONSuccess(poAppController.searchTransactionDestination(tfClusterName.getText(), false),
+                                        "Initialize Search Destination! ")) {
                                     return;
-
                                 }
-                            break;
+                                tfClusterName.setText(poAppController.getMaster().BranchDestination().getBranchName());
+                                break;
                             case "tfTrucking":
-                                if (pnCTransactionDetail > 0) {
-                                    if (!isJSONSuccess(poAppController.searchTransaction(tfTrucking.getText(), false),
-                                            "Unable to Search Trucking! ")) {
-                                    }
+                                if (!isJSONSuccess(poAppController.searchTransactionTrucking(tfTrucking.getText(), false),
+                                        "Initialize Search Trucking! ")) {
                                     return;
-
                                 }
-                            break;
+                                tfTrucking.setText(poAppController.getMaster().TruckingCompany().getCompanyName());
+                                break;
                             case "tfSearchSerial":
                                 if (pnCTransactionDetail > 0) {
-                                    if (!isJSONSuccess(poAppController.searchDetailBySerial(pnCTransactionDetail, tfSearchSerial.getText(), false),
-                                            "Unable to Search Serial! ")) {
+                                    if (!isJSONSuccess(poAppController.searchDetailByIssuance(pnCTransactionDetail, tfSearchSerial.getText(), false, true),
+                                            "Initialize Search Serial! ")) {
+                                        return;
                                     }
-                                    return;
-
+                                    reloadTableDetail();
                                 }
-                            break;
+                                break;
                             case "tfSearchBarcode":
                                 if (pnCTransactionDetail > 0) {
-                                    if (!isJSONSuccess(poAppController.searchDetailByBarcode(pnCTransactionDetail, tfSearchBarcode.getText(), false),
-                                            "Unable to Search Barcode! ")) {
+                                    if (!isJSONSuccess(poAppController.searchDetailByIssuance(pnCTransactionDetail, tfSearchBarcode.getText(), true, false),
+                                            "Initialize Search Barcode! ")) {
+                                        return;
                                     }
-                                    return;
 
                                 }
-                            break;
+                                break;
                             case "tfSearchDescription":
                                 if (pnCTransactionDetail > 0) {
-                                    if (!isJSONSuccess(poAppController.searchDetailByIssuance(pnCTransactionDetail, tfSearchDescription.getText(), false),
-                                            "Unable to Search Description! ")) {
+                                    if (!isJSONSuccess(poAppController.searchDetailByIssuance(pnCTransactionDetail, tfSearchDescription.getText(), false, false),
+                                            "Initialize Search Description! ")) {
+                                        return;
                                     }
-                                    return;
 
                                 }
-                            break;
+                                break;
                             case "tfSupersede":
                                 if (pnCTransactionDetail > 0) {
-                                    if (!isJSONSuccess(poAppController.searchDetailByIssuance(pnCTransactionDetail, tfSupersede.getText(), false),
-                                            "Unable to Search Supersede! ")) {
+                                    if (!isJSONSuccess(poAppController.searchDetailByBarcode(pnCTransactionDetail, tfSupersede.getText(), true),
+                                            "Initialize Search Supersede! ")) {
+                                        return;
                                     }
-                                    return;
 
                                 }
-                            break;
+                                break;
                         }
-
+                        break;
                 }
             }
         } catch (Exception ex) {
@@ -504,20 +498,25 @@ public class InventoryStockTransferIssuanceNeoController_Approval implements Ini
         }
     }
     
-    private void loadTransactionMaster(){
+    private void loadDeliveryTypes(){
+        List<String> deliveryTypes = DeliveryIssuanceType.DeliveryType;
+        cbDelType.setItems(FXCollections.observableArrayList(deliveryTypes));
+    }
+
+    private void loadTransactionMasterList() {
         StackPane overlay = getOverlayProgress(apMaster);
         ProgressIndicator pi = (ProgressIndicator) overlay.getChildren().get(0);
         overlay.setVisible(true);
         pi.setVisible(true);
-        
-        Task<ObservableList<Model_Inventory_Transfer_Master>> loadTransaction = new Task<ObservableList<Model_Inventory_Transfer_Master>>(){
+
+        Task<ObservableList<Model_Inventory_Transfer_Master>> loadTransaction = new Task<ObservableList<Model_Inventory_Transfer_Master>>() {
             @Override
             protected ObservableList<Model_Inventory_Transfer_Master> call() throws Exception {
                 if (!isJSONSuccess(poAppController.loadTransactionList(),
                         "Initialize : Load of Transaction List")) {
                     return null;
                 }
-                
+
                 List<Model_Inventory_Transfer_Master> rawList = poAppController.getMasterList();
                 return FXCollections.observableArrayList(new ArrayList<>(rawList));
             }
@@ -526,7 +525,7 @@ public class InventoryStockTransferIssuanceNeoController_Approval implements Ini
             protected void succeeded() {
                 ObservableList<Model_Inventory_Transfer_Master> laMasterList = getValue();
                 tblViewMaster.setItems(laMasterList);
-                
+
                 tblColNo.setCellValueFactory(loModel -> {
                     int index = tblViewMaster.getItems().indexOf(loModel.getValue()) + 1;
                     return new SimpleStringProperty(String.valueOf(index));
@@ -538,9 +537,9 @@ public class InventoryStockTransferIssuanceNeoController_Approval implements Ini
                     return new SimpleStringProperty(String.valueOf(loModel.getValue().getTransactionDate()));
                 });
                 tblColBranch.setCellValueFactory(loModel -> {
-                    try{
+                    try {
                         return new SimpleStringProperty(String.valueOf(loModel.getValue().Branch().getBranchName()));
-                    }catch(Exception e){
+                    } catch (Exception e) {
                         poLogWrapper.severe(psFormName, e.getMessage());
                         return new SimpleStringProperty("");
                     }
@@ -569,18 +568,23 @@ public class InventoryStockTransferIssuanceNeoController_Approval implements Ini
         thread.start();
     }
     
-    private void loadSelectedMaster(){
-        int indextoSelect = pnSelectMaster <= 0 ? 1 : pnSelectMaster;
-        
-        tfSearchSourceno.setText(tblColBranch.getCellData(indextoSelect));
-        tfSeacrchTransNo.setText(tblColTransNo.getCellData(indextoSelect));
-        tfTransNo.setText(tblColTransNo.getCellData(indextoSelect));
-        dpTransactionDate.setValue(ParseDate(poAppController.getMaster(indextoSelect).getTransactionDate()));
-        tfClusterName.setText(poAppController.getMaster(indextoSelect).getDestination());
-        tfTrucking.setText(poAppController.getMaster(indextoSelect).getTruckId());
-        tfDiscountRate.setText(String.valueOf(poAppController.getMaster(indextoSelect).getDiscount()));
-        tfDiscountAmount.setText(String.valueOf(poAppController.getMaster(indextoSelect).getDiscount()));
-        tfTotal.setText(String.valueOf(poAppController.getMaster(indextoSelect).getDiscount()));
+    private void loadTransactionMaster() {
+        try {
+            lblSource.setText(poAppController.getMaster().Company().getCompanyName() == null ? "": (poAppController.getMaster().Company().getCompanyName() + " - ") + 
+                poAppController.getMaster().Industry().getDescription() == null ? "" : poAppController.getMaster().Industry().getDescription());
+            lblStatus.setText(poAppController.getMaster().getTransactionStatus());
+            tfSearchSourceno.setText(poAppController.getMaster().getDestination());
+            tfSeacrchTransNo.setText(poAppController.getMaster().getTransactionNo());
+            tfTransNo.setText(poAppController.getMaster().getTransactionNo());
+            dpTransactionDate.setValue(ParseDate(poAppController.getMaster().getTransactionDate()));
+            tfClusterName.setText(poAppController.getMaster().getDestination());
+            tfTrucking.setText(poAppController.getMaster().getTruckId());
+            tfDiscountRate.setText(String.valueOf(poAppController.getMaster().getDiscount()));
+            tfDiscountAmount.setText(String.valueOf(poAppController.getMaster().getDiscount()));
+            tfTotal.setText(String.valueOf(poAppController.getMaster().getDiscount()));
+        } catch (SQLException | GuanzonException e) {
+            poLogWrapper.severe(psFormName, e.getMessage());
+        }
     }
     
     private void loadSelectedTableItem(int fnRow, TableView<?> ftblSrc, HashMap<String, Object> fmapObject){
@@ -631,6 +635,9 @@ public class InventoryStockTransferIssuanceNeoController_Approval implements Ini
             } else if (loControl instanceof TableView) {
                 TableView loControlField = (TableView) loControl;
                 controllerFocusTracker(loControlField);
+            } else if (loControl instanceof ComboBox) {
+                ComboBox loControlField = (ComboBox) loControl;
+                controllerFocusTracker(loControlField);
             }
         }
         clearAllInputs();
@@ -645,18 +652,22 @@ public class InventoryStockTransferIssuanceNeoController_Approval implements Ini
     }
     
     private void clearAllInputs() {
-        
+
         List<Control> laControls = getAllSupportedControls();
 
         for (Control loControl : laControls) {
             if (loControl instanceof TextField) {
                 ((TextField) loControl).clear();
-            } else if (loControl != null && loControl instanceof TableView) {
+            } else if (loControl != null && (loControl instanceof TableView)) {
                 TableView<?> table = (TableView<?>) loControl;
                 if (table.getItems() != null) {
                     table.getItems().clear();
                 }
-
+            } else if (loControl != null && (loControl instanceof ComboBox)) {
+                ComboBox cbox = (ComboBox) loControl;
+                if (cbox.getItems() != null) {
+                    cbox.getItems().clear();
+                }
             }
         }
         pnEditMode = poAppController.getEditMode();
@@ -788,6 +799,7 @@ public class InventoryStockTransferIssuanceNeoController_Approval implements Ini
     
     private void getLoadedTransaction(){
         clearAllInputs();
+        loadDeliveryTypes();
         loadTransactionMaster();
         reloadTableDetail();
     }
