@@ -485,13 +485,16 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
     public void loadRecordRequirements() {
         try {
             int lnCustomerGroup = 0;
-            if (pnEditMode != EditMode.UNKNOWN && !JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList(0).getCustomerGroup(), null, "")) {
-                lnCustomerGroup = Integer.parseInt(poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList(0).getCustomerGroup());
-            } else {
-                if (poSalesInquiryController.SalesInquiry().getSalesInquiryRequirementsCount() > 0) {
-                    poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList(0).setCustomerGroup(String.valueOf(0));
+            if (pnEditMode != EditMode.UNKNOWN && poSalesInquiryController.SalesInquiry().getSalesInquiryRequirementsCount() > 0) {
+                if (!JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList(0).getCustomerGroup(), null, "")) {
+                    lnCustomerGroup = Integer.parseInt(poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList(0).getCustomerGroup());
+                } else {
+                    if (poSalesInquiryController.SalesInquiry().getSalesInquiryRequirementsCount() > 0) {
+                        poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList(0).setCustomerGroup(String.valueOf(0));
+                    }
                 }
             }
+
             cmbCustomerGroup.getSelectionModel().select(lnCustomerGroup);
             if (pnRequirements < 0 || pnRequirements > poSalesInquiryController.SalesInquiry().getSalesInquiryRequirementsCount() - 1) { // intended to place here
                 return;
@@ -1438,7 +1441,7 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
                                     poSalesInquiryController.SalesInquiry().getRequirements(String.valueOf(selectedIndex));
                                     JFXUtil.clearTextFields(apRequirements);
                                 }
-                            } 
+                            }
                         } else {
                             poSalesInquiryController.SalesInquiry().getRequirements(String.valueOf(selectedIndex));
                         }
@@ -1496,7 +1499,7 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
         JFXUtil.setButtonsVisibility(lbShow3, btnBrowse, btnClose);
 
         JFXUtil.setDisabled(!lbShow, taRemarks, apMaster, apDetail, apRequirements, apBankApplications);
-      
+
         switch (poSalesInquiryController.SalesInquiry().Master().getTransactionStatus()) {
             case SalesInquiryStatic.QUOTED:
             case SalesInquiryStatic.SALE:
