@@ -514,6 +514,8 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
 
     public void loadRecordBankApplications() {
         try {
+            boolean lbShow1 = poSalesInquiryController.SalesInquiry().getBankApplicationsCount() > 0;
+            JFXUtil.setDisabled(!lbShow1, apBankApplicationsButtons);
             if (pnBankApplications < 0 || pnBankApplications > poSalesInquiryController.SalesInquiry().getBankApplicationsCount() - 1) {
                 return;
             }
