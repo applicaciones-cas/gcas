@@ -1503,7 +1503,7 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
         JFXUtil.setButtonsVisibility(lbShow3, btnBrowse, btnClose);
 
         JFXUtil.setDisabled(!lbShow, taRemarks, apMaster, apDetail, apRequirements, apBankApplications);
-        JFXUtil.setDisabled(!JFXUtil.isObjectEqualTo(fnValue, EditMode.ADDNEW, EditMode.UPDATE, EditMode.READY), apBankApplicationsButtons);
+      
         switch (poSalesInquiryController.SalesInquiry().Master().getTransactionStatus()) {
             case SalesInquiryStatic.QUOTED:
             case SalesInquiryStatic.SALE:
