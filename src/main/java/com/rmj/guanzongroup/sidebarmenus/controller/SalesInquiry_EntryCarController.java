@@ -864,8 +864,8 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
                                     /* FOCUS ON FIRST ROW */
                                     JFXUtil.selectAndFocusRow(tblViewBankApplications, 0);
                                     pnBankApplications = tblViewBankApplications.getSelectionModel().getSelectedIndex();
-                                    loadRecordBankApplications();
                                 }
+                                loadRecordBankApplications();
                             } else {
                                 /* FOCUS ON THE ROW THAT pnRowDetail POINTS TO */
                                 JFXUtil.selectAndFocusRow(tblViewBankApplications, pnBankApplications);
