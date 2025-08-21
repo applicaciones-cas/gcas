@@ -653,6 +653,10 @@ public class JFXUtil {
                 final String indexName = String.format("index%02d", counter++);
                 column.setCellValueFactory(new PropertyValueFactory<>(indexName));
 
+                // disable sorting and editing
+                column.setSortable(false);
+                column.setEditable(false);
+
                 // Directly set cell factory without Label
                 column.setCellFactory(col -> {
                     TableCell<Object, Object> cell = new TableCell<Object, Object>() {
