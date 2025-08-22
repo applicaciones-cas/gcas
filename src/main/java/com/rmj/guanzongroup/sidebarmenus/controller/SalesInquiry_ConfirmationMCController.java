@@ -1086,7 +1086,6 @@ public class SalesInquiry_ConfirmationMCController implements Initializable, Scr
                 String currentTitle = tabpane.getSelectionModel().getSelectedItem().getText();
                 switch (currentTitle) {
                     case "Requirements":
-                        JFXUtil.clearTextFields(apRequirements);
                         loadTableRequirements.reload();
                         break;
                     case "Bank Applications":

@@ -383,6 +383,7 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
                             loadTableRequirements.reload();
                             break;
                         case "Bank Applications":
+                            JFXUtil.clearTextFields(apBankApplications);
                             if (pnEditMode == EditMode.ADDNEW) {
                                 if (poSalesInquiryController.SalesInquiry().getBankApplicationsCount() > 0 && !pbPurchaseTypeChanged) {
                                 } else {
