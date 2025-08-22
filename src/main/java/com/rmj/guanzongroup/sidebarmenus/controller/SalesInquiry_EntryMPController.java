@@ -498,11 +498,35 @@ public class SalesInquiry_EntryMPController implements Initializable, ScreenInte
                             poSalesInquiryController.SalesInquiry().sortPriority();
                             for (lnCtr = 0; lnCtr < poSalesInquiryController.SalesInquiry().getDetailCount(); lnCtr++) {
                                 String lsBarcode = "";
+                                String lsBrand = "";
+                                String lsModel = "";
+                                String lsModelVariant = "";
+                                String lsColor = "";
                                 String lsDescription = "";
-                                if (poSalesInquiryController.SalesInquiry().Detail(lnCtr).getStockId() != null) {
+                                if (poSalesInquiryController.SalesInquiry().Detail(lnCtr).getStockId() != null 
+                                    && !"".equals(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getStockId())) {
                                     lsBarcode = poSalesInquiryController.SalesInquiry().Detail(lnCtr).Inventory().getBarCode();
-                                    lsDescription = poSalesInquiryController.SalesInquiry().Detail(lnCtr).Inventory().getDescription();
+                                    //lsDescription = poSalesInquiryController.SalesInquiry().Detail(lnCtr).Inventory().getDescription();
                                 }
+                                
+                                if (poSalesInquiryController.SalesInquiry().Detail(lnCtr).Brand().getDescription() != null) {
+                                    lsBrand = poSalesInquiryController.SalesInquiry().Detail(lnCtr).Brand().getDescription();
+                                }
+                                if (poSalesInquiryController.SalesInquiry().Detail(lnCtr).Model().getDescription() != null) {
+                                    lsModel = " " + poSalesInquiryController.SalesInquiry().Detail(lnCtr).Model().getDescription();
+                                }
+                                if (poSalesInquiryController.SalesInquiry().Detail(lnCtr).ModelVariant().getDescription() != null) {
+                                    lsModelVariant = " " + poSalesInquiryController.SalesInquiry().Detail(lnCtr).ModelVariant().getDescription();
+                                }
+                                if (poSalesInquiryController.SalesInquiry().Detail(lnCtr).Color().getDescription() != null) {
+                                    lsColor = " " + poSalesInquiryController.SalesInquiry().Detail(lnCtr).Color().getDescription();
+                                }
+
+                                lsDescription = lsBrand
+                                    + lsModel 
+                                    + lsModelVariant
+                                    + lsColor;
+                                
                                 details_data.add(
                                         new ModelSalesInquiry_Detail(
                                                 String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getPriority()),
@@ -559,52 +583,78 @@ public class SalesInquiry_EntryMPController implements Initializable, ScreenInte
                     case "tfCategory":
                         //if value is blank then reset
                         if (lsValue.equals("")) {
+                            if(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getCategory() != null 
+                                    && !"".equals(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getCategory())){
+                                poSalesInquiryController.SalesInquiry().Detail(pnDetail).setBrandId("");
+                                poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setStockId("");
+                                poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setModelId("");
+                                poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setModelVarianId("");
+                                poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setColorId("");
+                            }
+                            
                             poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setCategory("");
-                            poSalesInquiryController.SalesInquiry().Detail(pnDetail).setBrandId("");
-                            poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setStockId("");
-                            poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setModelId("");
-                            poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setColorId("");
                         }
                         break;
                     case "tfBrand":
                         //if value is blank then reset
                         if (lsValue.equals("")) {
+                            if(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getBrandId() != null 
+                                    && !"".equals(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getBrandId())){
+                                poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setStockId("");
+                                poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setModelId("");
+                                poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setModelVarianId("");
+                                poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setColorId("");
+                            }
                             poSalesInquiryController.SalesInquiry().Detail(pnDetail).setBrandId("");
-                            poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setStockId("");
-                            poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setModelId("");
-                            poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setColorId("");
-                        }
-                        break;
-                    case "tfBarcode":
-                        //if value is blank then reset
-                        if (lsValue.equals("")) {
-                            poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setStockId("");
-                            poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setModelId("");
-                            poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setColorId("");
-                        }
-                        break;
-                    case "tfDescription":
-                        //if value is blank then reset
-                        if (lsValue.equals("")) {
-                            poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setStockId("");
-                            poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setModelId("");
-                            poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setColorId("");
-                        }
-                        if (pbEntered) {
-                            moveNext(false);
-                            pbEntered = false;
                         }
                         break;
                     case "tfModel":
                         //if value is blank then reset
                         if (lsValue.equals("")) {
+                            if(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getModelId() != null 
+                                    && !"".equals(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getModelId())){
+                                poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setStockId("");
+                                poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setModelVarianId("");
+                                poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setColorId("");
+                            }
                             poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setModelId("");
                         }
                         break;
                     case "tfColor":
                         //if value is blank then reset
                         if (lsValue.equals("")) {
+                            if(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getColorId() != null 
+                                    && !"".equals(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getColorId())){
+                                poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setStockId("");
+                            }
                             poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setColorId("");
+                        }
+                        break;
+                    case "tfBarcode":
+                        //if value is blank then reset
+                        if (lsValue.equals("")) {
+                            if(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId() != null 
+                                    && !"".equals(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId())){
+                                poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setModelId("");
+                                poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setModelVarianId("");
+                                poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setColorId("");
+                            }
+                            poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setStockId("");
+                        }
+                        break;
+                    case "tfDescription":
+                        //if value is blank then reset
+                        if (lsValue.equals("")) {
+                            if(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId() != null 
+                                    && !"".equals(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId())){
+                                poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setModelId("");
+                                poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setModelVarianId("");
+                                poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setColorId("");
+                            }
+                        }
+                        if (pbEntered) {
+                            moveNext(false);
+                            pbEntered = false;
                         }
                         break;
                 }
