@@ -754,7 +754,7 @@ public class SalesInquiry_HistoryCarController implements Initializable, ScreenI
         JFXUtil.setButtonsVisibility(lbShow2, btnHistory);
         JFXUtil.setButtonsVisibility(lbShow3, btnBrowse, btnClose);
 
-        JFXUtil.setDisabled(true, taRemarks, apMaster, apDetail, apRequirements, apBankApplications);
+        JFXUtil.setDisabled(true, taRemarks, apMaster, apDetail, apRequirements, apBankApplications, apBankApplicationsButtons);
     }
 
     public void initDetailsGrid() {
