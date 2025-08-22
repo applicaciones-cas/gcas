@@ -37,13 +37,13 @@ import javafx.animation.PauseTransition;
 import javafx.animation.ScaleTransition;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.property.ReadOnlyProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -105,20 +105,24 @@ import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
-import javafx.util.Callback;
 import javafx.util.Duration;
 import javafx.util.Pair;
 import javafx.util.StringConverter;
 import org.apache.poi.ss.formula.functions.T;
 import org.json.simple.JSONObject;
 import javafx.concurrent.Task;
-import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.OverrunStyle;
 import javafx.scene.control.TableCell;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
 import org.guanzon.appdriver.agent.ShowMessageFX;
+import javafx.beans.property.BooleanProperty;
+import javafx.scene.Cursor;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.util.Callback;
 
 /**
  * Date : 4/28/2025
@@ -313,7 +317,6 @@ public class JFXUtil {
 
     public static void setDatePickerFormat(DatePicker... datePickers) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
         for (DatePicker datePicker : datePickers) {
             datePicker.setConverter(new StringConverter<LocalDate>() {
                 @Override
@@ -650,6 +653,10 @@ public class JFXUtil {
                 final String indexName = String.format("index%02d", counter++);
                 column.setCellValueFactory(new PropertyValueFactory<>(indexName));
 
+                // disable sorting and editing
+                column.setSortable(false);
+                column.setEditable(false);
+
                 // Directly set cell factory without Label
                 column.setCellFactory(col -> {
                     TableCell<Object, Object> cell = new TableCell<Object, Object>() {
@@ -659,7 +666,7 @@ public class JFXUtil {
                             if (empty || item == null) {
                                 setText(null);
                             } else {
-                                String text = item.toString().replaceAll("\\r?\\n", " ");
+                                String text = item.toString().replaceAll("\\r?\\n", "");
                                 setText(text);
                             }
                         }
@@ -1982,12 +1989,12 @@ public class JFXUtil {
 //    }
 //
     //sample usage
-//    JFXUtil.ReloadableTableTask loadTableDetail = new JFXUtil.ReloadableTableTask(
-//            tblViewTransDetails,
-//            details_data,
-//            () -> {
-//            }
-//    );
+// JFXUtil.ReloadableTableTask loadTableDetail;
+//        loadTableMain = new JFXUtil.ReloadableTableTask(
+//                tblViewTransDetails,
+//                details_data,
+//                () -> {
+//                } );
     public static class ReloadableTableTask {
 
         private final TableView<?> tableView;
@@ -2001,7 +2008,7 @@ public class JFXUtil {
         }
 
         public void reload() {
-            JFXUtil.LoadScreenComponents loading = JFXUtil.createLoadingComponents();
+            LoadScreenComponents loading = createLoadingComponents();
             tableView.setPlaceholder(loading.loadingPane);
             loading.progressIndicator.setVisible(true);
 
@@ -2082,10 +2089,11 @@ public class JFXUtil {
         }
     }
 
-//    ChangeListener<Boolean> txtArea_Focus = JFXUtil.createFocusListener(TextArea.class,
+// sample usage
+//    ChangeListener<Boolean> txtArea_Focus = JFXUtil.FocusListener(TextArea.class,
 //            (lsID, lsValue) -> {
 //            });
-    public static ChangeListener<Boolean> createFocusListener(Class<? extends TextInputControl> nodeType, BiConsumer<String, String> onLostFocus) {
+    public static ChangeListener<Boolean> FocusListener(Class<? extends TextInputControl> nodeType, BiConsumer<String, String> onLostFocus) {
         return (observable, oldValue, newValue) -> {
             Object bean = ((ReadOnlyBooleanPropertyBase) observable).getBean();
             if (!nodeType.isInstance(bean)) {
@@ -2106,4 +2114,132 @@ public class JFXUtil {
         };
     }
 
+    public static <T> void disableArrowNavigation(TableView<T> table) {
+        table.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            if (event.getCode() == KeyCode.UP || event.getCode() == KeyCode.DOWN) {
+                event.consume(); // Prevents moving up/down between rows
+            }
+        });
+    }
+
+    public static <T> void addCheckboxColumns(
+            Class<T> modelClass,
+            TableView<T> table,
+            BooleanProperty disableAll,
+            TriConsumer<T, Integer, Integer, Boolean> onChange,
+            int... columnIndexes) {
+
+        for (int colIndex : columnIndexes) {
+            @SuppressWarnings("unchecked")
+            TableColumn<T, ?> baseCol = table.getColumns().get(colIndex);
+
+            @SuppressWarnings("unchecked")
+            TableColumn<T, Boolean> column = (TableColumn<T, Boolean>) baseCol;
+
+            final int finalColIndex = colIndex;
+
+            column.setCellValueFactory(cellData -> {
+                T row = cellData.getValue();
+                try {
+                    // Expect getters: getIndex01, getIndex02, etc.
+                    String getterName = "getIndex" + String.format("%02d", colIndex + 1);
+                    Method getter = modelClass.getMethod(getterName);
+
+                    String value = (String) getter.invoke(row);
+                    boolean boolVal = "1".equals(value);
+                    return new javafx.beans.property.SimpleBooleanProperty(boolVal);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return new javafx.beans.property.SimpleBooleanProperty(false);
+                }
+            });
+
+            column.setCellFactory(new Callback<TableColumn<T, Boolean>, TableCell<T, Boolean>>() {
+                @Override
+                public TableCell<T, Boolean> call(TableColumn<T, Boolean> param) {
+                    return new TableCell<T, Boolean>() {
+                        private final CheckBox checkBox = new CheckBox();
+
+                        {
+                            // Center checkbox
+                            setStyle("-fx-alignment: CENTER;");
+
+                            // Cursor binding
+                            checkBox.cursorProperty().bind(
+                                    Bindings.when(disableAll)
+                                            .then(Cursor.DEFAULT)
+                                            .otherwise(Cursor.HAND)
+                            );
+
+                            // Disable binding
+                            checkBox.disableProperty().bind(disableAll);
+
+                            // Only trigger on user click
+                            checkBox.setOnAction(evt -> {
+                                if (getTableRow() != null && getTableRow().getItem() != null) {
+                                    @SuppressWarnings("unchecked")
+                                    T row = (T) getTableRow().getItem();
+                                    int rowIndex = getTableRow().getIndex();
+
+                                    try {
+                                        // Reflect setter e.g. setIndex01
+                                        String setterName = "setIndex" + String.format("%02d", finalColIndex + 1);
+                                        Method setter = modelClass.getMethod(setterName, String.class);
+                                        setter.invoke(row, checkBox.isSelected() ? "1" : "0");
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+
+                                    if (onChange != null) {
+                                        onChange.accept(row, rowIndex, finalColIndex, checkBox.isSelected());
+                                    }
+                                }
+                            });
+                        }
+
+                        @Override
+                        protected void updateItem(Boolean item, boolean empty) {
+                            super.updateItem(item, empty);
+                            if (empty) {
+                                setGraphic(null);
+                            } else {
+                                checkBox.setSelected(item != null && item);
+                                setGraphic(checkBox);
+                            }
+                        }
+                    };
+                }
+            });
+        }
+    }
+
+    @FunctionalInterface
+    public interface TriConsumer<T, U, V, W> {
+
+        void accept(T t, U u, V v, W w);
+    }
+
+    public static void clickTabByTitleText(TabPane tabPane, String title) {
+        for (Tab tab : tabPane.getTabs()) {
+            if (title.equals(tab.getText())) {
+                Tab current = tabPane.getSelectionModel().getSelectedItem();
+                if (current == tab && !tabPane.getTabs().isEmpty()) {
+                    // Temporarily select the first tab (index 0) to force deselection
+                    tabPane.getSelectionModel().select(0);
+                }
+                // Now select the target tab again
+                tabPane.getSelectionModel().select(tab);
+                break;
+            }
+        }
+    }
+
+    public static void runWithDelay(double seconds, Runnable action) {
+        Platform.runLater(() -> {
+            PauseTransition delay = new PauseTransition(Duration.seconds(seconds));
+            delay.setOnFinished(e -> action.run());
+            delay.play();
+        });
+    }
 }

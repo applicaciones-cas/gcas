@@ -5,7 +5,6 @@
 package com.rmj.guanzongroup.sidebarmenus.table.model;
 
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -13,34 +12,8 @@ import javafx.collections.ObservableList;
  *
  * @author User
  */
-public class ModelSalesInquiry_Detail {
+public class ModelBankApplications_Detail {
 
-    public static ObservableList<String> ClientType = FXCollections.observableArrayList(
-            "Individual",
-            "Corporate"
-    );
-    public static ObservableList<String> PurchaseType = FXCollections.observableArrayList(
-            "Cash",
-            "Cash Balance",
-            "Installment",
-            "PO",
-            "Financing",
-            "Insurance",
-            "Term"
-    );
-    public static ObservableList<String> CategoryType = FXCollections.observableArrayList(
-            "New",
-            "Sold/Repo",
-            "BNOS",
-            "Demo"
-    );
-    public static ObservableList<String> CustomerGroup = FXCollections.observableArrayList(
-            "Any",
-            "Employee",
-            "OFW",
-            "SEAMAN",
-            "Business"
-    );
     public SimpleStringProperty index01;
     public SimpleStringProperty index02;
     public SimpleStringProperty index03;
@@ -52,7 +25,20 @@ public class ModelSalesInquiry_Detail {
     public SimpleStringProperty index09;
     public SimpleStringProperty index10;
 
-    public ModelSalesInquiry_Detail(String index01,
+    public ModelBankApplications_Detail(String index01,
+            String index02,
+            String index03,
+            String index04,
+            String index05) {
+
+        this.index01 = new SimpleStringProperty(index01);
+        this.index02 = new SimpleStringProperty(index02);
+        this.index03 = new SimpleStringProperty(index03);
+        this.index04 = new SimpleStringProperty(index04);
+        this.index05 = new SimpleStringProperty(index05);
+    }
+
+    public ModelBankApplications_Detail(String index01,
             String index02,
             String index03,
             String index04,
@@ -75,14 +61,15 @@ public class ModelSalesInquiry_Detail {
         this.index10 = new SimpleStringProperty(index10);
     }
 
-    public ModelSalesInquiry_Detail(
+    public ModelBankApplications_Detail(
             String index01,
             String index02,
             String index03,
             String index04,
             String index05,
             String index06,
-            String index07
+            String index07,
+            String index08
     ) {
 
         this.index01 = new SimpleStringProperty(index01);
@@ -92,30 +79,24 @@ public class ModelSalesInquiry_Detail {
         this.index05 = new SimpleStringProperty(index05);
         this.index06 = new SimpleStringProperty(index06);
         this.index07 = new SimpleStringProperty(index07);
+        this.index08 = new SimpleStringProperty(index08);
     }
 
-    public ModelSalesInquiry_Detail(
+    public ModelBankApplications_Detail(
             String index01,
             String index02,
-            String index03
+            String index03,
+            String index04,
+            String index05,
+            String index06
     ) {
 
         this.index01 = new SimpleStringProperty(index01);
         this.index02 = new SimpleStringProperty(index02);
         this.index03 = new SimpleStringProperty(index03);
-
-    }
-
-    public StringProperty index01Property() { // for Drag Drop purpose Sales Inquiry
-        return index01;
-    }
-
-    public StringProperty index03Property() { // for Drag Drop purpose Sales Inquiry
-        return index03;
-    }
-
-    public StringProperty index04Property() { // for Drag Drop purpose Sales Inquiry
-        return index04;
+        this.index04 = new SimpleStringProperty(index04);
+        this.index05 = new SimpleStringProperty(index05);
+        this.index06 = new SimpleStringProperty(index06);
     }
 
     public String getIndex01() {
@@ -189,13 +170,4 @@ public class ModelSalesInquiry_Detail {
     public void setIndex09(String index09) {
         this.index09.set(index09);
     }
-
-    public String getIndex10() {
-        return index10.get();
-    }
-
-    public void setIndex10(String index10) {
-        this.index10.set(index10);
-    }
-
 }

@@ -192,6 +192,11 @@
             <version>0.2-SNAPSHOT</version>
             <type>jar</type>
         </dependency>
+        <dependency>
+            <groupId>ph.com.guanzongroup</groupId>
+            <artifactId>cas-sales-t1</artifactId>
+            <version>0.2-SNAPSHOT</version>
+        </dependency>
     </dependencies>
     <distributionManagement>
         <repository>

@@ -829,26 +829,10 @@ public class SIPosting_HistoryMPController implements Initializable, ScreenInter
             tfVatAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getVatAmount().doubleValue(), true));
             tfZeroVatSales.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getZeroVatSales().doubleValue(), true));
             tfVatExemptSales.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getVatExemptSales().doubleValue(), true));
-            //Net Total = Vat Amount - Tax Amount
-            double ldblNetTotal = 0.00;
-            if (poPurchaseReceivingController.PurchaseOrderReceiving().Master().isVatTaxable()) {
-                //Net VAT Amount : VAT Sales - VAT Amount
-                //Net Total : VAT Sales - Withholding Tax
-                ldblNetTotal = poPurchaseReceivingController.PurchaseOrderReceiving().Master().getVatSales().doubleValue() - poPurchaseReceivingController.PurchaseOrderReceiving().Master().getWithHoldingTax().doubleValue();
-            } else {
-                //Net VAT Amount : VAT Sales + VAT Amount
-                //Net Total : Net VAT Amount - Withholding Tax
-                ldblNetTotal = (poPurchaseReceivingController.PurchaseOrderReceiving().Master().getVatSales().doubleValue()
-                        + poPurchaseReceivingController.PurchaseOrderReceiving().Master().getVatAmount().doubleValue())
-                        - poPurchaseReceivingController.PurchaseOrderReceiving().Master().getWithHoldingTax().doubleValue();
+            tfNetTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.PurchaseOrderReceiving().getNetTotal(), true));
 
-            }
-
-            tfNetTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(ldblNetTotal, true));
             JFXUtil.updateCaretPositions(apMaster);
-        } catch (SQLException ex) {
-            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } catch (GuanzonException ex) {
+        } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
 
