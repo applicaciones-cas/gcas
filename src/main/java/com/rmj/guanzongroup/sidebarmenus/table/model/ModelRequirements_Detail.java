@@ -5,13 +5,15 @@
 package com.rmj.guanzongroup.sidebarmenus.table.model;
 
 import javafx.beans.property.SimpleStringProperty;
-import javafx.scene.control.CheckBox;
+import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 /**
  *
  * @author User
  */
-public class ModelDisbursementVoucher_Main {
+public class ModelRequirements_Detail {
 
     public SimpleStringProperty index01;
     public SimpleStringProperty index02;
@@ -23,44 +25,8 @@ public class ModelDisbursementVoucher_Main {
     public SimpleStringProperty index08;
     public SimpleStringProperty index09;
     public SimpleStringProperty index10;
-    private CheckBox select;
 
-    public ModelDisbursementVoucher_Main(
-            String index01,
-            String index02,
-            String index03,
-            String index04,
-            String index05,
-            String index06,
-            String index07,
-            String index08,
-            String index09,
-            String index10) {
-
-        this.index01 = new SimpleStringProperty(index01);
-        this.select = new CheckBox();
-        this.index02 = new SimpleStringProperty(index02);
-        this.index03 = new SimpleStringProperty(index03);
-        this.index04 = new SimpleStringProperty(index04);
-        this.index05 = new SimpleStringProperty(index05);
-        this.index06 = new SimpleStringProperty(index06);
-        this.index07 = new SimpleStringProperty(index07);
-        this.index08 = new SimpleStringProperty(index08);
-        this.index09 = new SimpleStringProperty(index09);
-        this.index10 = new SimpleStringProperty(index10);
-    }
-
-    public ModelDisbursementVoucher_Main(String index01,
-            String index02,
-            String index03,
-            String index04) {
-
-        this.index01 = new SimpleStringProperty(index01);
-        this.index02 = new SimpleStringProperty(index02);
-        this.index03 = new SimpleStringProperty(index03);
-        this.index04 = new SimpleStringProperty(index04);
-    } 
-    public ModelDisbursementVoucher_Main(String index01,
+    public ModelRequirements_Detail(String index01,
             String index02,
             String index03,
             String index04,
@@ -73,12 +39,16 @@ public class ModelDisbursementVoucher_Main {
         this.index05 = new SimpleStringProperty(index05);
     }
 
-    public ModelDisbursementVoucher_Main(String index01,
+    public ModelRequirements_Detail(String index01,
             String index02,
             String index03,
             String index04,
             String index05,
-            String index06) {
+            String index06,
+            String index07,
+            String index08,
+            String index09,
+            String index10) {
 
         this.index01 = new SimpleStringProperty(index01);
         this.index02 = new SimpleStringProperty(index02);
@@ -86,14 +56,48 @@ public class ModelDisbursementVoucher_Main {
         this.index04 = new SimpleStringProperty(index04);
         this.index05 = new SimpleStringProperty(index05);
         this.index06 = new SimpleStringProperty(index06);
+        this.index07 = new SimpleStringProperty(index07);
+        this.index08 = new SimpleStringProperty(index08);
+        this.index09 = new SimpleStringProperty(index09);
+        this.index10 = new SimpleStringProperty(index10);
     }
 
-    public CheckBox getSelect() {
-        return select;
+    public ModelRequirements_Detail(
+            String index01,
+            String index02,
+            String index03,
+            String index04,
+            String index05,
+            String index06,
+            String index07,
+            String index08
+    ) {
+
+        this.index01 = new SimpleStringProperty(index01);
+        this.index02 = new SimpleStringProperty(index02);
+        this.index03 = new SimpleStringProperty(index03);
+        this.index04 = new SimpleStringProperty(index04);
+        this.index05 = new SimpleStringProperty(index05);
+        this.index06 = new SimpleStringProperty(index06);
+        this.index07 = new SimpleStringProperty(index07);
+        this.index08 = new SimpleStringProperty(index08);
     }
 
-    public void setSelect(CheckBox select) {
-        this.select = select;
+    public ModelRequirements_Detail(
+            String index01,
+            String index02,
+            String index03,
+            String index04,
+            String index05,
+            String index06
+    ) {
+
+        this.index01 = new SimpleStringProperty(index01);
+        this.index02 = new SimpleStringProperty(index02);
+        this.index03 = new SimpleStringProperty(index03);
+        this.index04 = new SimpleStringProperty(index04);
+        this.index05 = new SimpleStringProperty(index05);
+        this.index06 = new SimpleStringProperty(index06);
     }
 
     public String getIndex01() {
@@ -168,12 +172,12 @@ public class ModelDisbursementVoucher_Main {
         this.index09.set(index09);
     }
 
-    public String getIndex10() {
-        return index10.get();
+    public StringProperty index02Property() {
+        return index02;
     }
 
-    public void setIndex10(String index10) {
-        this.index10.set(index10);
+    public StringProperty index03Property() {
+        return index03;
     }
 
 }

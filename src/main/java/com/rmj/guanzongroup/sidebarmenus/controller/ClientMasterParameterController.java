@@ -530,6 +530,7 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
                         break;
                 }
             } catch (SQLException | GuanzonException ex) {
+
                 Logger.getLogger(ClientMasterParameterController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
