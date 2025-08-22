@@ -54,7 +54,6 @@ import org.guanzon.appdriver.base.GuanzonException;
 import org.json.simple.JSONObject;
 import ph.com.guanzongroup.cas.inv.warehouse.t4.InventoryStockIssuanceNeo;
 import ph.com.guanzongroup.cas.inv.warehouse.t4.constant.DeliveryIssuanceType;
-import ph.com.guanzongroup.cas.inv.warehouse.t4.constant.DeliveryScheduleStatus;
 import ph.com.guanzongroup.cas.inv.warehouse.t4.constant.InventoryStockIssuanceStatus;
 import ph.com.guanzongroup.cas.inv.warehouse.t4.model.Model_Inventory_Transfer_Detail;
 import ph.com.guanzongroup.cas.inv.warehouse.t4.model.Model_Inventory_Transfer_Master;
@@ -115,7 +114,7 @@ public class InventoryStockTransferIssuanceNeoController implements Initializabl
             tfVariant, tfMeasure, tfInvType, tfCost, tfIssuedQty;
 
     @FXML
-    Button btnNew, btnSearch, btnSave, btnCancel, btnHistory, btnRetrieve, btnClose;
+    Button btnNew, btnUpdate, btnSearch, btnSave, btnCancel, btnHistory, btnRetrieve, btnClose;
 
     @FXML
     TableView<Model_Inventory_Transfer_Master> tblViewMaster;
@@ -162,7 +161,7 @@ public class InventoryStockTransferIssuanceNeoController implements Initializabl
         try {
             poLogWrapper = new LogWrapper(psFormName, psFormName);
             poAppController = new DeliveryIssuanceControllers(poApp, poLogWrapper).InventoryStockIssuanceNeo();
-            poAppController.setTransactionStatus(DeliveryScheduleStatus.OPEN);
+            poAppController.setTransactionStatus(InventoryStockIssuanceStatus.OPEN);
 
             //initlalize and validate transaction objects from class controller
             if (!isJSONSuccess(poAppController.initTransaction(), psFormName)) {
@@ -194,7 +193,31 @@ public class InventoryStockTransferIssuanceNeoController implements Initializabl
     @FXML
     void ontblMasterClicked(MouseEvent e) {
         pnSelectMaster = tblViewMaster.getSelectionModel().getSelectedIndex() < 1 ? 1 : tblViewMaster.getSelectionModel().getSelectedIndex();
-        getLoadedTransaction();
+            if (pnSelectMaster < 0) {
+                return;
+            }
+            
+            if (e.getClickCount() == 1 && !e.isConsumed()) {
+                if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                    if (ShowMessageFX.OkayCancel(null, psFormName, "Do you want to disregard changes?") != true) {
+                        return;
+                    }
+                }
+                try {
+                    e.consume();
+                    if (!isJSONSuccess(poAppController.OpenTransaction(tblColTransNo.getCellData(pnSelectMaster)), psFormName)) {
+                        ShowMessageFX.Information("Failed to open transaction", psFormName,null);
+                    }
+                    
+                    getLoadedTransaction();
+                } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
+                    Logger.getLogger(DeliverySchedule_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+                    poLogWrapper.severe(psFormName + " :" + ex.getMessage());
+
+                }
+
+            }
+            return;
     }
 
     @FXML
@@ -296,6 +319,19 @@ public class InventoryStockTransferIssuanceNeoController implements Initializabl
 
                 case "btnNew":
                     if (!isJSONSuccess(poAppController.NewTransaction(), "Initialize New Transaction")) {
+                        return;
+                    }
+                    getLoadedTransaction();
+                    pnEditMode = poAppController.getEditMode();
+                    break;
+                    
+                case "btnUpdate":
+                    if (poAppController.getMaster().getTransactionNo() == null || poAppController.getMaster().getTransactionNo().isEmpty()) {
+                        ShowMessageFX.Information("Please load transaction before proceeding..", "Stock Request Issuance", "");
+                        return;
+                    }
+
+                    if (!isJSONSuccess(poAppController.UpdateTransaction(), "Initialize UPdate Transaction")) {
                         return;
                     }
                     getLoadedTransaction();
@@ -484,6 +520,7 @@ public class InventoryStockTransferIssuanceNeoController implements Initializabl
                 }
 
                 List<Model_Inventory_Transfer_Master> rawList = poAppController.getMasterList();
+                System.out.print("The size of list is " + rawList.size());
                 return FXCollections.observableArrayList(new ArrayList<>(rawList));
             }
 
@@ -510,6 +547,11 @@ public class InventoryStockTransferIssuanceNeoController implements Initializabl
                         return new SimpleStringProperty("");
                     }
                 });
+                
+                getLoadedTransaction();
+                    
+                overlay.setVisible(false);
+                pi.setVisible(false);
             }
 
             @Override
@@ -619,6 +661,7 @@ public class InventoryStockTransferIssuanceNeoController implements Initializabl
             }
         }
         clearAllInputs();
+        loadDeliveryTypes();
     }
 
     private void controllerFocusTracker(Control control) {
@@ -660,7 +703,7 @@ public class InventoryStockTransferIssuanceNeoController implements Initializabl
 
         // Show-only based on mode
         initButtonControls(lbShow, "btnSave", "btnCancel");
-        initButtonControls(!lbShow, "btnNew");
+        initButtonControls(!lbShow, "btnNew", "btnUpdate");
 
         apMaster.setDisable(!lbShow);
         apDetail.setDisable(!lbShow);
@@ -783,10 +826,9 @@ public class InventoryStockTransferIssuanceNeoController implements Initializabl
     }
 
     private void getLoadedTransaction() {
-        clearAllInputs();
-        loadDeliveryTypes();
         loadTransactionMaster();
         reloadTableDetail();
+        loadSelectedDetail();
     }
 
     private boolean isJSONSuccess(JSONObject loJSON, String fsModule) {

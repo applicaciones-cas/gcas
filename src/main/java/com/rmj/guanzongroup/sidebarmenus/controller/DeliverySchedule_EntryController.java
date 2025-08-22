@@ -363,7 +363,7 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
         if (pnTransaction < 0) {
             return;
         }
-        if (event.getClickCount() == 2 && !event.isConsumed()) {
+        if (event.getClickCount() == 1 && !event.isConsumed()) {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 if (ShowMessageFX.OkayCancel(null, psFormName, "Do you want to disregard changes?") != true) {
                     return;

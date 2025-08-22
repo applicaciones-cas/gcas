@@ -101,6 +101,17 @@
                                     <Font size="12.0" />
                                  </font>
                               </Button>
+                              <Button fx:id="btnUpdate" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="70.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Update">
+                                 <effect>
+                                    <Blend />
+                                 </effect>
+                                 <graphic>
+                                    <FontAwesomeIconView glyphName="EDIT" size="20" />
+                                 </graphic>
+                                 <font>
+                                    <Font size="12.0" />
+                                 </font>
+                              </Button>
                               <Button fx:id="btnSave" contentDisplay="TOP" ellipsisString="" layoutX="100.0" layoutY="15.0" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="70.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Save">
                                  <effect>
                                     <Blend />
@@ -254,9 +265,9 @@
                                                 <DatePicker fx:id="dpTransactionDate" GridPane.columnIndex="7" GridPane.columnSpan="2" />
                                             <TextField fx:id="tfClusterName" maxHeight="25.0" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.columnSpan="7" GridPane.rowIndex="2" />
                                             <TextField fx:id="tfTrucking" maxHeight="25.0" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="4" />
-                                                <TextField fx:id="tfDiscountRate" alignment="CENTER_RIGHT" promptText="0.0000" GridPane.columnIndex="12" GridPane.rowIndex="2" />
-                                                <TextField fx:id="tfDiscountAmount" alignment="CENTER_RIGHT" promptText="0.0000" GridPane.columnIndex="12" GridPane.rowIndex="3" />
-                                                <TextField fx:id="tfTotal" alignment="CENTER_RIGHT" disable="true" promptText="0.0000" styleClass="DisabledTextField" GridPane.columnIndex="12" GridPane.rowIndex="5" />
+                                                <TextField fx:id="tfDiscountRate" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="12" GridPane.rowIndex="2" />
+                                                <TextField fx:id="tfDiscountAmount" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="12" GridPane.rowIndex="3" />
+                                                <TextField fx:id="tfTotal" alignment="CENTER_RIGHT" disable="true" promptText="0.00" styleClass="DisabledTextField" GridPane.columnIndex="12" GridPane.rowIndex="5" />
                         <TextArea fx:id="taRemarks" prefHeight="27.0" GridPane.columnIndex="2" GridPane.columnSpan="7" GridPane.rowIndex="5">
                            <GridPane.margin>
                               <Insets top="1.0" />
@@ -356,7 +367,7 @@
                                             <TextField fx:id="tfSearchBarcode" maxHeight="25.0" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="1" />
                                             <TextField fx:id="tfSearchDescription" alignment="TOP_LEFT" maxHeight="1.7976931348623157E308" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.columnSpan="7" GridPane.rowIndex="2" />
                                                 <TextField fx:id="tfSupersede" promptText="Press F3: Search" GridPane.columnIndex="7" GridPane.columnSpan="2" GridPane.rowIndex="1" />
-                        <TextField fx:id="tfCost" alignment="CENTER_RIGHT" promptText="0.0000" GridPane.columnIndex="12" GridPane.rowIndex="4" />
+                        <TextField fx:id="tfCost" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="12" GridPane.rowIndex="4" />
                         <TextField fx:id="tfIssuedQty" alignment="CENTER_RIGHT" GridPane.columnIndex="12" GridPane.rowIndex="5" />
                                             <TextField fx:id="tfBrand" disable="true" maxHeight="25.0" styleClass="DisabledTextField" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="4" />
                                             <TextField fx:id="tfColor" disable="true" maxHeight="25.0" styleClass="DisabledTextField" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="6" />

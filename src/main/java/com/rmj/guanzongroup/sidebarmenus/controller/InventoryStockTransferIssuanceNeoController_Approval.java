@@ -50,11 +50,13 @@ import org.guanzon.appdriver.base.GRiderCAS;
 import org.guanzon.appdriver.base.LogWrapper;
 import org.guanzon.appdriver.constant.EditMode;
 import javafx.concurrent.Task;
+import static javafx.scene.input.KeyCode.ENTER;
+import static javafx.scene.input.KeyCode.F3;
+import static javafx.scene.input.KeyCode.TAB;
 import org.guanzon.appdriver.base.GuanzonException;
 import org.json.simple.JSONObject;
 import ph.com.guanzongroup.cas.inv.warehouse.t4.InventoryStockIssuanceNeo;
 import ph.com.guanzongroup.cas.inv.warehouse.t4.constant.DeliveryIssuanceType;
-import ph.com.guanzongroup.cas.inv.warehouse.t4.constant.DeliveryScheduleStatus;
 import ph.com.guanzongroup.cas.inv.warehouse.t4.constant.InventoryStockIssuanceStatus;
 import ph.com.guanzongroup.cas.inv.warehouse.t4.model.Model_Inventory_Transfer_Detail;
 import ph.com.guanzongroup.cas.inv.warehouse.t4.model.Model_Inventory_Transfer_Master;
@@ -112,7 +114,7 @@ public class InventoryStockTransferIssuanceNeoController_Approval implements Ini
     
     @FXML
     TextField tfSearchSerial, tfSearchBarcode, tfSearchDescription, tfSupersede, tfBrand, tfModel, tfColor,
-            tfVariant, tfMeasure, tfInvType, tfCost, tfOrderQuantity, tfIssuedQty;
+            tfVariant, tfMeasure, tfInvType, tfCost, tfIssuedQty;
     
     @FXML
     Button btnSearch, btnUpdate, btnPrint, btnVoid, btnSave, btnCancel, btnHistory,btnRetrieve, btnClose;
@@ -158,10 +160,11 @@ public class InventoryStockTransferIssuanceNeoController_Approval implements Ini
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        
-        try{
+
+        try {
             poLogWrapper = new LogWrapper(psFormName, psFormName);
             poAppController = new DeliveryIssuanceControllers(poApp, poLogWrapper).InventoryStockIssuanceNeo();
+            poAppController.setTransactionStatus(InventoryStockIssuanceStatus.OPEN);
 
             //initlalize and validate transaction objects from class controller
             if (!isJSONSuccess(poAppController.initTransaction(), psFormName)) {
@@ -179,28 +182,28 @@ public class InventoryStockTransferIssuanceNeoController_Approval implements Ini
                 System.err.println("Initialize value : Industry >" + psIndustryID
                         + "\nCompany :" + psCompanyID
                         + "\nCategory:" + psCategoryID);
+
             });
-            
             initializeTableDetail();
             initControlEvents();
-        }catch(SQLException | GuanzonException e){
+        } catch (SQLException | GuanzonException e) {
             Logger.getLogger(InventoryStockIssuanceNeo.class.getName()).log(Level.SEVERE, null, e);
             poLogWrapper.severe(psFormName + " :" + e.getMessage());
         }
     }
-    
+
     @FXML
-    void ontblMasterClicked(MouseEvent e){
+    void ontblMasterClicked(MouseEvent e) {
         pnSelectMaster = tblViewMaster.getSelectionModel().getSelectedIndex() < 1 ? 1 : tblViewMaster.getSelectionModel().getSelectedIndex();
         getLoadedTransaction();
     }
-    
+
     @FXML
-    void ontblDetailClicked(MouseEvent e){
-        pnCTransactionDetail = tblViewDetails.getSelectionModel().getSelectedIndex();
+    void ontblDetailClicked(MouseEvent e) {
+        pnCTransactionDetail = tblViewDetails.getSelectionModel().getSelectedIndex() + 1;
         loadSelectedDetail();
     }
-    
+
     @FXML
     private void cmdButton_Click(ActionEvent event) {
         try {
@@ -396,7 +399,7 @@ public class InventoryStockTransferIssuanceNeoController_Approval implements Ini
             poLogWrapper.severe(psFormName + " :" + e.getMessage());
         }
     }
-    
+
     private void txtField_KeyPressed(KeyEvent event) {
         TextField loTxtField = (TextField) event.getSource();
         String txtFieldID = ((TextField) event.getSource()).getId();
@@ -567,12 +570,14 @@ public class InventoryStockTransferIssuanceNeoController_Approval implements Ini
         thread.setDaemon(true);
         thread.start();
     }
-    
+
     private void loadTransactionMaster() {
         try {
             lblSource.setText(poAppController.getMaster().Company().getCompanyName() == null ? "": (poAppController.getMaster().Company().getCompanyName() + " - ") + 
                 poAppController.getMaster().Industry().getDescription() == null ? "" : poAppController.getMaster().Industry().getDescription());
-            lblStatus.setText(poAppController.getMaster().getTransactionStatus());
+            lblStatus.setText(InventoryStockIssuanceStatus.STATUS.get(Integer.parseInt(poAppController.getMaster().getTransactionStatus())) == null ? "STATUS" : 
+                    InventoryStockIssuanceStatus.STATUS.get(Integer.parseInt(poAppController.getMaster().getTransactionStatus())));
+            
             tfSearchSourceno.setText(poAppController.getMaster().getDestination());
             tfSeacrchTransNo.setText(poAppController.getMaster().getTransactionNo());
             tfTransNo.setText(poAppController.getMaster().getTransactionNo());
@@ -586,21 +591,21 @@ public class InventoryStockTransferIssuanceNeoController_Approval implements Ini
             poLogWrapper.severe(psFormName, e.getMessage());
         }
     }
-    
-    private void loadSelectedTableItem(int fnRow, TableView<?> ftblSrc, HashMap<String, Object> fmapObject){
+
+    private void loadSelectedTableItem(int fnRow, TableView<?> ftblSrc, HashMap<String, Object> fmapObject) {
         //iterate to table columns
-        for(TableColumn<?, ?> column: ftblSrc.getColumns()){
+        for (TableColumn<?, ?> column : ftblSrc.getColumns()) {
             String lscolumnID = column.getId(); //get column id
             Object loField = fmapObject.get(lscolumnID); //get assigned object and validate type of object that will display the cell value
-            
+
             //display value to field if object is not empty
-            if(loField instanceof TextField){
+            if (loField instanceof TextField) {
                 if (loField != null) {
                     ((TextField) loField).setText(column.getCellData(fnRow) == null ? "" : column.getCellData(fnRow).toString());
                 }
             }
-            
-            if(loField instanceof DatePicker){
+
+            if (loField instanceof DatePicker) {
                 if (loField != null) {
                     ((DatePicker) loField).setValue(CustomCommonUtil.parseDateStringToLocalDate(
                             column.getCellData(fnRow) == null ? "" : column.getCellData(fnRow).toString(), "yyyy-MM-dd"));
@@ -608,20 +613,30 @@ public class InventoryStockTransferIssuanceNeoController_Approval implements Ini
             }
         }
     }
-    
-    private void loadSelectedDetail(){
-        HashMap<String, Object> loMapFields = new HashMap<>();
-        loMapFields.put("tblColDetailSerial", tfSearchSerial);
-        loMapFields.put("tblColDetailBarcode", tfSearchBarcode);
-        loMapFields.put("tblColDetailDescr", tfSearchDescription);
-        loMapFields.put("tblColDetailBrand", tfBrand);
-        loMapFields.put("tblColDetailVariant", tfVariant);
-        loMapFields.put("tblColDetailCost", tfCost);
-        loMapFields.put("tblColDetailOrderQty", tfOrderQuantity);
-        
-        loadSelectedTableItem(pnCTransactionDetail, tblViewDetails, loMapFields);
+
+    private void loadSelectedDetail() {
+        try {
+            HashMap<String, Object> loMapFields = new HashMap<>();
+            loMapFields.put("tblColDetailSerial", tfSearchSerial);
+            loMapFields.put("tblColDetailBarcode", tfSearchBarcode);
+            loMapFields.put("tblColDetailDescr", tfSearchDescription);
+            loMapFields.put("tblColDetailBrand", tfBrand);
+            loMapFields.put("tblColDetailVariant", tfVariant);
+            loMapFields.put("tblColDetailCost", tfCost);
+            loMapFields.put("tblColDetailOrderQty", tfIssuedQty);
+
+            loadSelectedTableItem(pnCTransactionDetail - 1, tblViewDetails, loMapFields);
+
+            tfColor.setText(poAppController.getDetail(pnCTransactionDetail).Inventory().Color().getDescription());
+            tfMeasure.setText(poAppController.getDetail(pnCTransactionDetail).Inventory().Measure().getDescription());
+            tfInvType.setText(poAppController.getDetail(pnCTransactionDetail).Inventory().InventoryType().getDescription());
+            tfSupersede.setText(poAppController.getDetail(pnCTransactionDetail).InventorySupersede().getBarCode());
+
+        } catch (SQLException | GuanzonException e) {
+            poLogWrapper.severe(psFormName, e.getMessage());
+        }
     }
-    
+
     private void initControlEvents() {
         List<Control> laControls = getAllSupportedControls();
 
@@ -642,7 +657,7 @@ public class InventoryStockTransferIssuanceNeoController_Approval implements Ini
         }
         clearAllInputs();
     }
-    
+
     private void controllerFocusTracker(Control control) {
         control.focusedProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal) {
@@ -650,7 +665,7 @@ public class InventoryStockTransferIssuanceNeoController_Approval implements Ini
             }
         });
     }
-    
+
     private void clearAllInputs() {
 
         List<Control> laControls = getAllSupportedControls();
@@ -673,7 +688,7 @@ public class InventoryStockTransferIssuanceNeoController_Approval implements Ini
         pnEditMode = poAppController.getEditMode();
         initButtonDisplay(poAppController.getEditMode());
     }
-    
+
     private void initButtonDisplay(int fnEditMode) {
         boolean lbShow = (fnEditMode == EditMode.ADDNEW || fnEditMode == EditMode.UPDATE);
 
@@ -682,10 +697,12 @@ public class InventoryStockTransferIssuanceNeoController_Approval implements Ini
 
         // Show-only based on mode
         initButtonControls(lbShow, "btnSave", "btnCancel");
-        initButtonControls(!lbShow, "btnNew");
+        initButtonControls(!lbShow, "btnNew", "btnUpdate");
+
+        apMaster.setDisable(!lbShow);
         apDetail.setDisable(!lbShow);
     }
-    
+
     private void initButtonControls(boolean visible, String... buttonFxIdsToShow) {
         Set<String> showOnly = new HashSet<>(Arrays.asList(buttonFxIdsToShow));
 
@@ -710,77 +727,83 @@ public class InventoryStockTransferIssuanceNeoController_Approval implements Ini
             }
         }
     }
-    
-    private void initializeTableDetail(){
+
+    private void initializeTableDetail() {
         if (laTransactionDetail == null) {
             laTransactionDetail = FXCollections.observableArrayList();
-            
+
             tblViewDetails.setItems(laTransactionDetail);
-            
+
             tblColDetailCost.setStyle("-fx-alignment: CENTER-RIGHT; -fx-padding: 0 5 0 0;");
             tblColDetailOrderQty.setStyle("-fx-alignment: CENTER; -fx-padding: 0 5 0 0;");
-            
+
             tblColDetailNo.setCellValueFactory((loModel) -> {
                 int index = tblViewDetails.getItems().indexOf(loModel.getValue()) + 1;
                 return new SimpleStringProperty(String.valueOf(index));
             });
-            
+
             tblColDetailOrderNo.setCellValueFactory((loModel) -> new SimpleStringProperty(loModel.getValue().getOrderNo()));
-            
+
             tblColDetailSerial.setCellValueFactory((loModel) -> {
-            try{
-                return new SimpleStringProperty(loModel.getValue().InventorySerial().getSerial01()
-                 + " "+ loModel.getValue().InventorySerial().getSerial02());
-            }catch(SQLException | GuanzonException e){
-                poLogWrapper.severe(psFormName, e.getMessage());
-                return new SimpleStringProperty("");
-            }});
-            
+                try {
+                    return new SimpleStringProperty(loModel.getValue().InventorySerial().getSerial01()
+                            + " " + loModel.getValue().InventorySerial().getSerial02());
+                } catch (SQLException | GuanzonException e) {
+                    poLogWrapper.severe(psFormName, e.getMessage());
+                    return new SimpleStringProperty("");
+                }
+            });
+
             tblColDetailBarcode.setCellValueFactory((loModel) -> {
-            try{
-                return new SimpleStringProperty(loModel.getValue().Inventory().getBarCode());
-            }catch(SQLException | GuanzonException e){
-                poLogWrapper.severe(psFormName, e.getMessage());
-                return new SimpleStringProperty("");
-            }});
-            
+                try {
+                    return new SimpleStringProperty(loModel.getValue().Inventory().getBarCode());
+                } catch (SQLException | GuanzonException e) {
+                    poLogWrapper.severe(psFormName, e.getMessage());
+                    return new SimpleStringProperty("");
+                }
+            });
+
             tblColDetailDescr.setCellValueFactory((loModel) -> {
-            try{
-                return new SimpleStringProperty(loModel.getValue().Inventory().getDescription());
-            }catch(SQLException | GuanzonException e){
-                poLogWrapper.severe(psFormName, e.getMessage());
-                return new SimpleStringProperty("");
-            }});
-            
+                try {
+                    return new SimpleStringProperty(loModel.getValue().Inventory().getDescription());
+                } catch (SQLException | GuanzonException e) {
+                    poLogWrapper.severe(psFormName, e.getMessage());
+                    return new SimpleStringProperty("");
+                }
+            });
+
             tblColDetailBrand.setCellValueFactory((loModel) -> {
-            try{
-                return new SimpleStringProperty(loModel.getValue().Inventory().Brand().getDescription());
-            }catch(SQLException | GuanzonException e){
-                poLogWrapper.severe(psFormName, e.getMessage());
-                return new SimpleStringProperty("");
-            }});
-            
+                try {
+                    return new SimpleStringProperty(loModel.getValue().Inventory().Brand().getDescription());
+                } catch (SQLException | GuanzonException e) {
+                    poLogWrapper.severe(psFormName, e.getMessage());
+                    return new SimpleStringProperty("");
+                }
+            });
+
             tblColDetailVariant.setCellValueFactory((loModel) -> {
-            try{
-                return new SimpleStringProperty(loModel.getValue().Inventory().Variant().getDescription());
-            }catch(SQLException | GuanzonException e){
-                poLogWrapper.severe(psFormName, e.getMessage());
-                return new SimpleStringProperty("");
-            }});
-            
+                try {
+                    return new SimpleStringProperty(loModel.getValue().Inventory().Variant().getDescription());
+                } catch (SQLException | GuanzonException e) {
+                    poLogWrapper.severe(psFormName, e.getMessage());
+                    return new SimpleStringProperty("");
+                }
+            });
+
             tblColDetailCost.setCellValueFactory((loModel) -> {
-            try{
-                return new SimpleStringProperty(String.valueOf(loModel.getValue().Inventory().getCost()));
-            }catch(SQLException | GuanzonException e){
-                poLogWrapper.severe(psFormName, e.getMessage());
-                return new SimpleStringProperty("");
-            }});
-            
+                try {
+                    return new SimpleStringProperty(String.valueOf(loModel.getValue().Inventory().getCost()));
+                } catch (SQLException | GuanzonException e) {
+                    poLogWrapper.severe(psFormName, e.getMessage());
+                    return new SimpleStringProperty("");
+                }
+            });
+
             tblColDetailOrderQty.setCellValueFactory((loModel) -> new SimpleStringProperty(String.valueOf(loModel.getValue().getQuantity())));
-  
+
         }
     }
-    
+ 
     private void reloadTableDetail() {
         List<Model_Inventory_Transfer_Detail> rawDetail = poAppController.getDetailList();
         laTransactionDetail.setAll(rawDetail);
@@ -792,18 +815,17 @@ public class InventoryStockTransferIssuanceNeoController_Approval implements Ini
 
         tblViewDetails.getSelectionModel().select(indexToSelect);
 
-        pnCTransactionDetail = tblViewDetails.getSelectionModel().getSelectedIndex(); // Not focusedIndex
-
+        pnCTransactionDetail = tblViewDetails.getSelectionModel().getSelectedIndex()+ 1; // Not focusedIndex
         tblViewDetails.refresh();
     }
-    
-    private void getLoadedTransaction(){
+
+    private void getLoadedTransaction() {
         clearAllInputs();
         loadDeliveryTypes();
         loadTransactionMaster();
         reloadTableDetail();
     }
-    
+
     private boolean isJSONSuccess(JSONObject loJSON, String fsModule) {
         String result = (String) loJSON.get("result");
         if ("error".equals(result)) {
@@ -826,7 +848,7 @@ public class InventoryStockTransferIssuanceNeoController_Approval implements Ini
         return true;
 
     }
-    
+
     private LocalDate ParseDate(Date date) {
         if (date == null) {
             return null;
@@ -834,7 +856,7 @@ public class InventoryStockTransferIssuanceNeoController_Approval implements Ini
         Date loDate = new java.util.Date(date.getTime());
         return loDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
     }
-    
+
     private StackPane getOverlayProgress(AnchorPane foAnchorPane) {
         ProgressIndicator localIndicator = null;
         StackPane localOverlay = null;
@@ -875,7 +897,7 @@ public class InventoryStockTransferIssuanceNeoController_Approval implements Ini
 
         return localOverlay;
     }
-    
+
     private List<Control> getAllSupportedControls() {
         List<Control> controls = new ArrayList<>();
         for (Field field : getClass().getDeclaredFields()) {

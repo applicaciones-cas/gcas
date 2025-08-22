@@ -1703,12 +1703,12 @@ public class DashboardController implements Initializable {
                     psCategoryID = "0009";
                     return "Stock Request Approval Monarch Hospitality";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockTransferIssuanceNeo.fxml":
-                    psIndustryID = "02";
-                    psCategoryID = "0003";
-                    return "Issuance without ROQ";
+                    return "Issuance without ROQ Entry";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockTransferIssuanceNeo_Approval.fxml":
+                    return "Issuance without ROQ Approval";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockTransferIssuanceNeo_History.fxml":
+                    return "Issuance without ROQ History";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockTransferIssuance.fxml":
-                    psIndustryID = "02";
-                    psCategoryID = "0003";
                     return "Issuance with ROQ";
 
                 //Update
@@ -3218,6 +3218,10 @@ public class DashboardController implements Initializable {
                     return new InventoryStockTransferIssuanceNeoController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockTransferIssuance.fxml":
                     return new InventoryStockTransferIssuanceController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockTransferIssuanceNeo_Approval.fxml":
+                    return new InventoryStockTransferIssuanceNeoController_Approval();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockTransferIssuanceNeo_History.fxml":
+                    return new InventoryStockTransferIssuanceNeoController_History();
 
 //                UPDATE
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CheckStatusUpdate.fxml":
@@ -5139,8 +5143,10 @@ public class DashboardController implements Initializable {
                 + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Stock Request Approval LP Food\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/InventoryRequest_ApprovalLPFood.fxml\",\"controller_path\":\"\",\"menu_id\":\"019\",\"menu_parent\":\"008\"},"
                 //Stock Transfer
                 + "{\"access_level\":\"01 02 03 04 05 06 07\",\"menu_name\":\"Stock Transfer\",\"fxml_path\":\"Stock Transfer\",\"controller_path\":\"stocktransfer.controller\",\"menu_id\":\"020\",\"menu_parent\":\"001\"},"
-                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Issuance without ROQ\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockTransferIssuanceNeo.fxml\",\"controller_path\":\"\",\"menu_id\":\"021\",\"menu_parent\":\"020\"},"
-                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Issuance with ROQ\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockTransferIssuance.fxml\",\"controller_path\":\"\",\"menu_id\":\"022\",\"menu_parent\":\"020\"}"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Issuance without ROQ Entry\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockTransferIssuanceNeo.fxml\",\"controller_path\":\"\",\"menu_id\":\"021\",\"menu_parent\":\"020\"},"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Issuance with ROQ\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockTransferIssuance.fxml\",\"controller_path\":\"\",\"menu_id\":\"022\",\"menu_parent\":\"020\"},"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Issuance without ROQ Approval\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockTransferIssuanceNeo_Approval.fxml\",\"controller_path\":\"\",\"menu_id\":\"023\",\"menu_parent\":\"020\"},"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Issuance without ROQ History\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockTransferIssuanceNeo_History.fxml\",\"controller_path\":\"\",\"menu_id\":\"024\",\"menu_parent\":\"020\"}"
                 + "]";
         JSONParser parser = new JSONParser();
         try {
