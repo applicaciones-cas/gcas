@@ -11,6 +11,9 @@ import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.time.LocalDate;
@@ -53,18 +56,14 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
-import javafx.scene.control.TableView;
 import javafx.scene.control.ScrollBar;
-import javafx.scene.control.TableColumn;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
-import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ComboBoxBase;
 import javafx.scene.control.Control;
@@ -112,7 +111,6 @@ import org.apache.poi.ss.formula.functions.T;
 import org.json.simple.JSONObject;
 import javafx.concurrent.Task;
 import javafx.scene.control.OverrunStyle;
-import javafx.scene.control.TableCell;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import javafx.beans.property.BooleanProperty;
 import javafx.scene.Cursor;
@@ -2164,7 +2162,7 @@ public class JFXUtil {
                         {
                             // Center checkbox
                             setStyle("-fx-alignment: CENTER;");
-
+                            setCheckboxStyle("#7B8182", checkBox);
                             // Cursor binding
                             checkBox.cursorProperty().bind(
                                     Bindings.when(disableAll)
@@ -2241,5 +2239,59 @@ public class JFXUtil {
             delay.setOnFinished(e -> action.run());
             delay.play();
         });
+    }
+
+    public static void setCheckboxStyle(String hexColor, CheckBox... checkBoxes) {
+        for (CheckBox cb : checkBoxes) {
+            if (!cb.getStyleClass().contains("modern")) {
+                cb.getStyleClass().add("modern");
+            }
+            cb.setStyle("-c-accent: " + hexColor + ";");
+
+            cb.skinProperty().addListener((obs, oldSkin, newSkin) -> {
+                if (newSkin != null) {
+                    setupCheckAnimation(cb);
+                }
+            });
+            Platform.runLater(() -> setupCheckAnimation(cb));
+        }
+    }
+
+    private static void setupCheckAnimation(CheckBox cb) {
+        Node mark = cb.lookup(".mark");
+        if (mark == null) {
+            return;
+        }
+
+        ScaleTransition popIn = new ScaleTransition(Duration.millis(140), mark);
+        popIn.setFromX(0.6);
+        popIn.setFromY(0.6);
+        popIn.setToX(1.0);
+        popIn.setToY(1.0);
+
+        cb.selectedProperty().addListener((o, was, isNow) -> {
+            if (isNow) {
+                mark.setScaleX(0.6);
+                mark.setScaleY(0.6);
+                popIn.stop();
+                popIn.playFromStart();
+            } else {
+                mark.setScaleX(0.0);
+                mark.setScaleY(0.0);
+            }
+        });
+    }
+
+    private static void syncMarkScale(CheckBox cb) {
+        Node mark = cb.lookup(".mark");
+        if (mark != null) {
+            if (cb.isSelected()) {
+                mark.setScaleX(1.0);
+                mark.setScaleY(1.0);
+            } else {
+                mark.setScaleX(0.0);
+                mark.setScaleY(0.0);
+            }
+        }
     }
 }
