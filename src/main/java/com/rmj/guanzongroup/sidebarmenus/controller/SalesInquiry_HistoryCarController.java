@@ -603,7 +603,9 @@ public class SalesInquiry_HistoryCarController implements Initializable, ScreenI
                         int lnCtr;
                         bankapplications_data.clear();
                         try {
-                            poSalesInquiryController.SalesInquiry().loadBankApplicationList();
+                            if(pnEditMode != EditMode.UNKNOWN){
+                                poSalesInquiryController.SalesInquiry().loadBankApplicationList();
+                            }
                             for (lnCtr = 0; lnCtr < poSalesInquiryController.SalesInquiry().getBankApplicationsCount(); lnCtr++) {
                                 String lsAppliedDate = CustomCommonUtil.formatDateToShortString(poSalesInquiryController.SalesInquiry().BankApplicationsList(lnCtr).getAppliedDate());
                                 String lsApprovedDate = CustomCommonUtil.formatDateToShortString(poSalesInquiryController.SalesInquiry().BankApplicationsList(lnCtr).getApprovedDate());
