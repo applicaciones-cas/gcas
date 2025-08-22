@@ -184,6 +184,8 @@ public class SalesInquiry_HistoryCarController implements Initializable, ScreenI
                             tfTransactionNo.requestFocus();
                             return;
                         }
+                        poSalesInquiryController.SalesInquiry().loadRequirements();
+                        poSalesInquiryController.SalesInquiry().loadBankApplications();
                         pnEditMode = poSalesInquiryController.SalesInquiry().getEditMode();
 
                         break;
@@ -752,8 +754,7 @@ public class SalesInquiry_HistoryCarController implements Initializable, ScreenI
         JFXUtil.setButtonsVisibility(lbShow2, btnHistory);
         JFXUtil.setButtonsVisibility(lbShow3, btnBrowse, btnClose);
 
-        JFXUtil.setDisabled(true, taRemarks, apMaster, apDetail);
-
+        JFXUtil.setDisabled(true, taRemarks, apMaster, apDetail, apRequirements, apBankApplications);
     }
 
     public void initDetailsGrid() {
