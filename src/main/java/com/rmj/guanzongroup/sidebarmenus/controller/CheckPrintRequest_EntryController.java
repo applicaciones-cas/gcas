@@ -62,7 +62,9 @@ import org.guanzon.appdriver.base.GRiderCAS;
 import org.guanzon.appdriver.base.GuanzonException;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
+import org.guanzon.appdriver.constant.UserRight;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
 import ph.com.guanzongroup.cas.cashflow.CheckPrintingRequest;
 import ph.com.guanzongroup.cas.cashflow.services.CashflowControllers;
 import ph.com.guanzongroup.cas.cashflow.status.CheckPrintRequestStatus;
@@ -286,10 +288,29 @@ public class CheckPrintRequest_EntryController implements Initializable, ScreenI
                     poJSON = poCheckPrintingRequestController.SaveTransaction();
                     if (!"success".equals((String) poJSON.get("result"))) {
                         ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
-                        return;
+                        break;
                     }
                     ShowMessageFX.Information((String) poJSON.get("message"), pxeModuleName, null);
-//                    poJSON = poCheckPrintingRequestController.OpenTransaction(poCheckPrintingRequestController.Master().getTransactionNo());
+                    poJSON = poCheckPrintingRequestController.OpenTransaction(poCheckPrintingRequestController.Master().getTransactionNo());
+                    if ("success".equals(poJSON.get("result"))) {
+                        pnEditMode = poCheckPrintingRequestController.getEditMode();
+                        
+                        initFields(pnEditMode);
+                        initButton(pnEditMode);
+                    }
+                    if (pnEditMode == EditMode.READY) {
+                        if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to confirm this transaction?")) {
+                            if (oApp.getUserLevel() >= UserRight.ENCODER) {
+                                poJSON = poCheckPrintingRequestController.ConfirmTransaction("");
+                                if ("error".equals((String) poJSON.get("result"))) {
+                                    ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
+                                    return;
+                                } else {
+                                    ShowMessageFX.Information((String) poJSON.get("message"), pxeModuleName, null);
+                                }
+                            }
+                        }
+                    }
                     Platform.runLater(() -> btnNew.fire());
                     break;
                 case "btnCancel":
@@ -346,6 +367,8 @@ public class CheckPrintRequest_EntryController implements Initializable, ScreenI
             initFields(pnEditMode);
             initButton(pnEditMode);
         } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
+            Logger.getLogger(CheckPrintRequest_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ParseException ex) {
             Logger.getLogger(CheckPrintRequest_EntryController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

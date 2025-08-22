@@ -33,6 +33,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Pagination;
 import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -101,7 +102,7 @@ public class CheckAuthorizationController implements Initializable, ScreenInterf
     @FXML
     private TableColumn<ModelDisbursementVoucher_Main, String> tblRowNo, tblDVNo, tblDate, tblSupplier, tblPayeeName, tblBankName, tblBankAccount, tblTransAmount;
     @FXML
-    private TableColumn<ModelDisbursementVoucher_Main, Boolean> tblCheckBox;
+    private TableColumn<ModelDisbursementVoucher_Main, CheckBox> tblCheckBox;
     @FXML
     private CheckBox chckSelectAll;
     @FXML
@@ -258,7 +259,7 @@ public class CheckAuthorizationController implements Initializable, ScreenInterf
                     chckSelectAll.setSelected(false);
                     getSelectedItems.clear();
                     break;
-                case "dissapprove":
+                case "disapprove":
                     poJSON = poDisbursementController.DisapprovedTransaction("Disapproved", getSelectedItems);
                     if (!"success".equals((String) poJSON.get("result"))) {
                         ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
@@ -358,8 +359,8 @@ public class CheckAuthorizationController implements Initializable, ScreenInterf
                                             poDisbursementController.poDisbursementMaster(lnCntr).Payee().getPayeeName(),
                                             poDisbursementController.poDisbursementMaster(lnCntr).CheckPayments().Banks().getBankName(),
                                             poDisbursementController.poDisbursementMaster(lnCntr).CheckPayments().Bank_Account_Master().getAccountNo(),
-                                            "",
-                                            CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.poDisbursementMaster(lnCntr).getNetTotal(), true)
+                                            CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.poDisbursementMaster(lnCntr).getNetTotal(), true),
+                                            ""
                                     ));
                                 }
                             } else {
@@ -419,6 +420,17 @@ public class CheckAuthorizationController implements Initializable, ScreenInterf
         JFXUtil.setColumnRight(tblTransAmount);
         JFXUtil.setColumnsIndexAndDisableReordering(tblVwMain);
         tblCheckBox.setCellValueFactory(new PropertyValueFactory<>("select"));
+        tblCheckBox.setCellFactory(col -> new TableCell<ModelDisbursementVoucher_Main, CheckBox>() {
+            @Override
+            protected void updateItem(CheckBox item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setGraphic(null);
+                } else {
+                    setGraphic(item); // show the actual checkbox
+                }
+            }
+        });
 
         tblVwMain.getItems().forEach(item -> {
             CheckBox selectCheckBox = item.getSelect();
