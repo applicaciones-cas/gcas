@@ -411,7 +411,7 @@
                                                         <TableView fx:id="tblViewTransDetails" prefHeight="200.0" prefWidth="200.0">
                                                             <columns>
                                                                 <TableColumn fx:id="tblRowNoDetail" editable="false" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="No." />
-                                                                <TableColumn fx:id="tblBrandDetail" editable="false" maxWidth="140.0" minWidth="140.0" prefWidth="140.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Brand" />
+                                                                <TableColumn fx:id="tblBarcodeDetail" editable="false" maxWidth="140.0" minWidth="140.0" prefWidth="140.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Barcode" />
                                                                 <TableColumn fx:id="tblDescriptionDetail" editable="false" maxWidth="500.0" minWidth="-1.0" prefWidth="500.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Description" />
                                                             </columns>
                                              <columnResizePolicy>
