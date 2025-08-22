@@ -873,39 +873,20 @@ public class SalesInquiry_ConfirmationMCController implements Initializable, Scr
 
     public void initTabPane() {
         tabpane.getSelectionModel().selectedItemProperty().addListener((obs, oldTab, newTab) -> {
-//            try {
             if (newTab != null) {
                 String tabTitle = newTab.getText();
                 switch (tabTitle) {
                     case "Inquiry":
                         break;
                     case "Requirements":
-//                            if (pnEditMode == EditMode.ADDNEW) {
-//                                if (poSalesInquiryController.SalesInquiry().getSalesInquiryRequirementsCount() > 0 && !pbPurchaseTypeChanged) {
-//                                } else {
-//                                    poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList().clear();
-//                                    poSalesInquiryController.SalesInquiry().getRequirements(String.valueOf(cmbCustomerGroup.getSelectionModel().getSelectedIndex()));
-//                                    pbPurchaseTypeChanged = false;
-//                                }
-//                            }
-
+                        JFXUtil.clearTextFields(apRequirements);
                         loadTableRequirements.reload();
                         break;
                     case "Bank Applications":
-//                            if (pnEditMode == EditMode.ADDNEW) {
-//                                if (poSalesInquiryController.SalesInquiry().getBankApplicationsCount() > 0 && !pbPurchaseTypeChanged) {
-//                                } else {
-//                                    poSalesInquiryController.SalesInquiry().BankApplicationsList().clear();
-//                                    pbPurchaseTypeChanged = false;
-//                                }
-//                            }
                         loadTableBankApplications.reload();
                         break;
                 }
             }
-//            } catch (SQLException | GuanzonException ex) {
-//                Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-//            }
         });
     }
 
@@ -1105,6 +1086,7 @@ public class SalesInquiry_ConfirmationMCController implements Initializable, Scr
                 String currentTitle = tabpane.getSelectionModel().getSelectedItem().getText();
                 switch (currentTitle) {
                     case "Requirements":
+                        JFXUtil.clearTextFields(apRequirements);
                         loadTableRequirements.reload();
                         break;
                     case "Bank Applications":
@@ -1293,7 +1275,7 @@ public class SalesInquiry_ConfirmationMCController implements Initializable, Scr
                         int lnCtr;
                         bankapplications_data.clear();
                         try {
-                            if(pnEditMode != EditMode.UNKNOWN){
+                            if (pnEditMode != EditMode.UNKNOWN) {
                                 poSalesInquiryController.SalesInquiry().loadBankApplicationList();
                             }
                             for (lnCtr = 0; lnCtr < poSalesInquiryController.SalesInquiry().getBankApplicationsCount(); lnCtr++) {
@@ -1388,6 +1370,11 @@ public class SalesInquiry_ConfirmationMCController implements Initializable, Scr
                                     if (ShowMessageFX.YesNo(null, pxeModuleName,
                                             "Are you sure you want to change the Purchase Type?\nPlease note that doing so will reset the Requirements & Bank Applications list.\n\nDo you wish to proceed?") == true) {
                                         poSalesInquiryController.SalesInquiry().Master().setPurchaseType(String.valueOf(selectedIndex));
+                                        poJSON = poSalesInquiryController.SalesInquiry().getRequirements(String.valueOf(selectedIndex));
+                                        if ("error".equals((String) poJSON.get("result"))) {
+                                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                            break;
+                                        }
                                         pbPurchaseTypeChanged = true;
                                     }
                                 }
