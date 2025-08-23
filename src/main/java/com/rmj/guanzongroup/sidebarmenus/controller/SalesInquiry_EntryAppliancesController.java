@@ -62,7 +62,7 @@ import org.guanzon.appdriver.constant.UserRight;
 
 /**
  *
- * @author Arsiela
+ * @author Team 2
  */
 public class SalesInquiry_EntryAppliancesController implements Initializable, ScreenInterface {
 
@@ -424,31 +424,12 @@ public class SalesInquiry_EntryAppliancesController implements Initializable, Sc
 
     public void initTableOnClick() {
         tblViewTransDetails.setOnMouseClicked(event -> {
-            try {
-                if (details_data.size() > 0) {
-                    if (event.getClickCount() == 1) {
-                        // Detect single click (or use another condition for double click)
-                        pnDetail = tblViewTransDetails.getSelectionModel().getSelectedIndex();
-                        if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Category2().getCategoryId(), null, "")) {
-                            tfCategory.requestFocus();
-                        } else if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Brand().getBrandId(), null, "")) {
-                            tfBrand.requestFocus();
-                        } else if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Inventory().getBarCode(), null, "")) {
-                            tfBarcode.requestFocus();
-                        } else if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Inventory().Model().getModelId(), null, "")) {
-                            tfModel.requestFocus();
-                        } else if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Inventory().Color().getColorId(), null, "")) {
-                            tfColor.requestFocus();
-                        } else {
-                            tfCategory.requestFocus();
-                        }
-                        loadRecordDetail();
-                    }
+            if (details_data.size() > 0) {
+                if (event.getClickCount() == 1) {
+                    // Detect single click (or use another condition for double click)
+                    pnDetail = tblViewTransDetails.getSelectionModel().getSelectedIndex();
+                    moveNext(false, false);
                 }
-            } catch (SQLException ex) {
-                Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
-            } catch (GuanzonException ex) {
-                Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
             }
         });
 
@@ -503,12 +484,12 @@ public class SalesInquiry_EntryAppliancesController implements Initializable, Sc
                                 String lsModelVariant = "";
                                 String lsColor = "";
                                 String lsDescription = "";
-                                if (poSalesInquiryController.SalesInquiry().Detail(lnCtr).getStockId() != null 
-                                    && !"".equals(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getStockId())) {
+                                if (poSalesInquiryController.SalesInquiry().Detail(lnCtr).getStockId() != null
+                                        && !"".equals(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getStockId())) {
                                     lsBarcode = poSalesInquiryController.SalesInquiry().Detail(lnCtr).Inventory().getBarCode();
                                     //lsDescription = poSalesInquiryController.SalesInquiry().Detail(lnCtr).Inventory().getDescription();
                                 }
-                                
+
                                 if (poSalesInquiryController.SalesInquiry().Detail(lnCtr).Brand().getDescription() != null) {
                                     lsBrand = poSalesInquiryController.SalesInquiry().Detail(lnCtr).Brand().getDescription();
                                 }
@@ -523,10 +504,10 @@ public class SalesInquiry_EntryAppliancesController implements Initializable, Sc
                                 }
 
                                 lsDescription = lsBrand
-                                    + lsModel 
-                                    + lsModelVariant
-                                    + lsColor;
-                                
+                                        + lsModel
+                                        + lsModelVariant
+                                        + lsColor;
+
                                 details_data.add(
                                         new ModelSalesInquiry_Detail(
                                                 String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getPriority()),
@@ -583,23 +564,23 @@ public class SalesInquiry_EntryAppliancesController implements Initializable, Sc
                     case "tfCategory":
                         //if value is blank then reset
                         if (lsValue.equals("")) {
-                            if(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getCategory() != null 
-                                    && !"".equals(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getCategory())){
+                            if (poSalesInquiryController.SalesInquiry().Detail(pnDetail).getCategory() != null
+                            && !"".equals(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getCategory())) {
                                 poSalesInquiryController.SalesInquiry().Detail(pnDetail).setBrandId("");
                                 poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setStockId("");
                                 poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setModelId("");
                                 poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setModelVarianId("");
                                 poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setColorId("");
                             }
-                            
+
                             poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setCategory("");
                         }
                         break;
                     case "tfBrand":
                         //if value is blank then reset
                         if (lsValue.equals("")) {
-                            if(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getBrandId() != null 
-                                    && !"".equals(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getBrandId())){
+                            if (poSalesInquiryController.SalesInquiry().Detail(pnDetail).getBrandId() != null
+                            && !"".equals(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getBrandId())) {
                                 poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setStockId("");
                                 poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setModelId("");
                                 poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setModelVarianId("");
@@ -611,8 +592,8 @@ public class SalesInquiry_EntryAppliancesController implements Initializable, Sc
                     case "tfModel":
                         //if value is blank then reset
                         if (lsValue.equals("")) {
-                            if(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getModelId() != null 
-                                    && !"".equals(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getModelId())){
+                            if (poSalesInquiryController.SalesInquiry().Detail(pnDetail).getModelId() != null
+                            && !"".equals(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getModelId())) {
                                 poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setStockId("");
                                 poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setModelVarianId("");
                                 poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setColorId("");
@@ -623,8 +604,8 @@ public class SalesInquiry_EntryAppliancesController implements Initializable, Sc
                     case "tfColor":
                         //if value is blank then reset
                         if (lsValue.equals("")) {
-                            if(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getColorId() != null 
-                                    && !"".equals(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getColorId())){
+                            if (poSalesInquiryController.SalesInquiry().Detail(pnDetail).getColorId() != null
+                            && !"".equals(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getColorId())) {
                                 poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setStockId("");
                             }
                             poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setColorId("");
@@ -633,8 +614,8 @@ public class SalesInquiry_EntryAppliancesController implements Initializable, Sc
                     case "tfBarcode":
                         //if value is blank then reset
                         if (lsValue.equals("")) {
-                            if(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId() != null 
-                                    && !"".equals(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId())){
+                            if (poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId() != null
+                            && !"".equals(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId())) {
                                 poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setModelId("");
                                 poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setModelVarianId("");
                                 poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setColorId("");
@@ -645,15 +626,15 @@ public class SalesInquiry_EntryAppliancesController implements Initializable, Sc
                     case "tfDescription":
                         //if value is blank then reset
                         if (lsValue.equals("")) {
-                            if(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId() != null 
-                                    && !"".equals(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId())){
+                            if (poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId() != null
+                            && !"".equals(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId())) {
                                 poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setModelId("");
                                 poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setModelVarianId("");
                                 poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setColorId("");
                             }
                         }
                         if (pbEntered) {
-                            moveNext(false);
+                            moveNext(false, true);
                             pbEntered = false;
                         }
                         break;
@@ -722,10 +703,12 @@ public class SalesInquiry_EntryAppliancesController implements Initializable, Sc
                 loadRecordMaster();
             });
 
-    public void moveNext(boolean isUp) {
+    public void moveNext(boolean isUp, boolean continueNext) {
         try {
-            apDetail.requestFocus();
-            pnDetail = isUp ? JFXUtil.moveToPreviousRow(tblViewTransDetails) : JFXUtil.moveToNextRow(tblViewTransDetails);
+            if (continueNext) {
+                apDetail.requestFocus();
+                pnDetail = isUp ? JFXUtil.moveToPreviousRow(tblViewTransDetails) : JFXUtil.moveToNextRow(tblViewTransDetails);
+            }
             loadRecordDetail();
             if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Category2().getCategoryId(), null, "")) {
                 tfCategory.requestFocus();
@@ -770,7 +753,7 @@ public class SalesInquiry_EntryAppliancesController implements Initializable, Sc
                         case "tfCategory":
                         case "tfBrand":
                         case "tfBarcode":
-                            moveNext(true);
+                            moveNext(true, true);
                             event.consume();
                             break;
                     }
@@ -780,7 +763,7 @@ public class SalesInquiry_EntryAppliancesController implements Initializable, Sc
                         case "tfCategory":
                         case "tfBrand":
                         case "tfBarcode":
-                            moveNext(false);
+                            moveNext(false, true);
                             event.consume();
                             break;
                         default:
@@ -882,7 +865,7 @@ public class SalesInquiry_EntryAppliancesController implements Initializable, Sc
                                 Platform.runLater(() -> {
                                     PauseTransition delay = new PauseTransition(Duration.seconds(0.70));
                                     delay.setOnFinished(event1 -> {
-                                        moveNext(false);
+                                        moveNext(false, true);
                                     });
                                     delay.play();
                                 });
@@ -899,7 +882,7 @@ public class SalesInquiry_EntryAppliancesController implements Initializable, Sc
                                 Platform.runLater(() -> {
                                     PauseTransition delay = new PauseTransition(Duration.seconds(0.70));
                                     delay.setOnFinished(event1 -> {
-                                        moveNext(false);
+                                        moveNext(false, true);
                                     });
                                     delay.play();
                                 });
@@ -916,7 +899,7 @@ public class SalesInquiry_EntryAppliancesController implements Initializable, Sc
                                 Platform.runLater(() -> {
                                     PauseTransition delay = new PauseTransition(Duration.seconds(0.70));
                                     delay.setOnFinished(event1 -> {
-                                        moveNext(false);
+                                        moveNext(false, true);
                                     });
                                     delay.play();
                                 });
@@ -933,7 +916,7 @@ public class SalesInquiry_EntryAppliancesController implements Initializable, Sc
                                 Platform.runLater(() -> {
                                     PauseTransition delay = new PauseTransition(Duration.seconds(0.70));
                                     delay.setOnFinished(event1 -> {
-                                        moveNext(false);
+                                        moveNext(false, true);
                                     });
                                     delay.play();
                                 });
@@ -1060,7 +1043,7 @@ public class SalesInquiry_EntryAppliancesController implements Initializable, Sc
     };
 
     private void initComboBoxes() {
-        
+
         JFXUtil.setComboBoxItems(new JFXUtil.Pairs<>(ClientType, cmbClientType),
                 new JFXUtil.Pairs<>(PurchaseType, cmbPurchaseType)
         );
