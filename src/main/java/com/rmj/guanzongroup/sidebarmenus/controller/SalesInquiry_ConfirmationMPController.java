@@ -961,6 +961,12 @@ public class SalesInquiry_ConfirmationMPController implements Initializable, Scr
                                 if (poSalesInquiryController.SalesInquiry().Detail(lnCtr).Color().getDescription() != null) {
                                     lsColor = " " + poSalesInquiryController.SalesInquiry().Detail(lnCtr).Color().getDescription();
                                 }
+                                
+                                lsDescription = lsBrand
+                                    + lsModel 
+                                    + lsModelVariant
+                                    + lsColor;
+                                
                                 details_data.add(
                                         new ModelSalesInquiry_Detail(
                                                 String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getPriority()),
