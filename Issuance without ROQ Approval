@@ -152,3 +152,7 @@ Aug 22, 2025 3:50:29 PM org.guanzon.appdriver.base.LogWrapper severe
 SEVERE: Issuance without ROQ Approval :null
 Aug 22, 2025 3:50:29 PM org.guanzon.appdriver.base.LogWrapper info
 INFO: Issuance without ROQ Approval : Success on Issuance without ROQ Approval
+Aug 23, 2025 9:25:20 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ Approval :null
+Aug 23, 2025 9:25:20 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ Approval : Success on Issuance without ROQ Approval
