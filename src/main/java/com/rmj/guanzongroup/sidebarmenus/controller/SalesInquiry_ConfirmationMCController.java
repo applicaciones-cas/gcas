@@ -322,6 +322,18 @@ public class SalesInquiry_ConfirmationMCController implements Initializable, Scr
                     loadTableBankApplications.reload();
                     return;
                 }
+                if (JFXUtil.isObjectEqualTo(lsButton, "btnSave", "btnConfirm", "btnReturn", "btnVoid", "btnCancel")) {
+                    poSalesInquiryController.SalesInquiry().resetMaster();
+                    poSalesInquiryController.SalesInquiry().Detail().clear();
+                    poSalesInquiryController.SalesInquiry().resetOthers();
+                    pnEditMode = EditMode.UNKNOWN;
+                    clearTextFields();
+
+                    poSalesInquiryController.SalesInquiry().Master().setIndustryId(psIndustryId);
+                    poSalesInquiryController.SalesInquiry().Master().setCompanyId(psCompanyId);
+                    poSalesInquiryController.SalesInquiry().Master().setCategoryCode(psCategoryId);
+//                    poSalesInquiryController.SalesInquiry().initFields();
+                }
                 String currentTitle = tabpane.getSelectionModel().getSelectedItem().getText();
                 switch (currentTitle) {
                     case "Requirements":
@@ -334,30 +346,17 @@ public class SalesInquiry_ConfirmationMCController implements Initializable, Scr
                 if (JFXUtil.isObjectEqualTo(lsButton, "btnSave", "btnCancel")) {
                     JFXUtil.clickTabByTitleText(tabpane, "Inquiry");
                 }
-
-                if (JFXUtil.isObjectEqualTo(lsButton, "btnSave", "btnConfirm", "btnReturn", "btnVoid", "btnCancel")) {
-                    poSalesInquiryController.SalesInquiry().resetMaster();
-                    poSalesInquiryController.SalesInquiry().Detail().clear();
-                    pnEditMode = EditMode.UNKNOWN;
-                    clearTextFields();
-
-                    poSalesInquiryController.SalesInquiry().Master().setIndustryId(psIndustryId);
-                    poSalesInquiryController.SalesInquiry().Master().setCompanyId(psCompanyId);
-                    poSalesInquiryController.SalesInquiry().Master().setCategoryCode(psCategoryId);
-//                    poSalesInquiryController.SalesInquiry().initFields();
-                }
-
                 if (JFXUtil.isObjectEqualTo(lsButton, "btnPrint", "btnAddAttachment", "btnRemoveAttachment",
                         "btnArrowRight", "btnArrowLeft", "btnRetrieve")) {
                 } else {
                     loadRecordMaster();
                     loadTableDetail.reload();
-                    loadTableBankApplications.reload();
-                    loadTableRequirements.reload();
                 }
                 initButton(pnEditMode);
                 if (lsButton.equals("btnUpdate")) {
-                    if (poSalesInquiryController.SalesInquiry().Detail(pnDetail).getBrandId() == null || "".equals(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getBrandId())) {
+                    if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId(), null, "")) {
+                        tfBrand.requestFocus();
+                    } else {
                         tfBrand.requestFocus();
                     }
                 }
@@ -433,7 +432,7 @@ public class SalesInquiry_ConfirmationMCController implements Initializable, Scr
                             poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setStockId("");
                         }
                         if (pbEntered) {
-                            moveNext(false);
+                            moveNext(false, true);
                             pbEntered = false;
                         }
                         break;
@@ -536,30 +535,35 @@ public class SalesInquiry_ConfirmationMCController implements Initializable, Scr
                 loadRecordSearch();
             });
 
-    public void moveNext(boolean isUp) {
+    public void moveNext(boolean isUp, boolean continueNext) {
         apDetail.requestFocus();
-        pnDetail = isUp ? JFXUtil.moveToPreviousRow(tblViewTransDetails) : JFXUtil.moveToNextRow(tblViewTransDetails);
+        if (continueNext) {
+            pnDetail = isUp ? JFXUtil.moveToPreviousRow(tblViewTransDetails) : JFXUtil.moveToNextRow(tblViewTransDetails);
+        }
         loadRecordDetail();
-        if (!JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getBrandId(), null, "")) {
-            if (!JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getModelId(), null, "")) {
-                tfColor.requestFocus();
-            } else {
-                tfModel.requestFocus();
-            }
-        } else {
+        if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getBrandId(), null, "")) {
             tfBrand.requestFocus();
+        } else if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getModelId(), null, "")) {
+            tfModel.requestFocus();
+        } else {
+            tfColor.requestFocus();
         }
     }
 
-    public void moveNextRequirements(boolean isUp) {
-        apRequirements.requestFocus();
-        pnRequirements = isUp ? JFXUtil.moveToPreviousRow(tblViewRequirements) : JFXUtil.moveToNextRow(tblViewRequirements);
+    public void moveNextRequirements(boolean isUp, boolean continueNext) {
+        if (continueNext) {
+            apRequirements.requestFocus();
+            pnRequirements = isUp ? JFXUtil.moveToPreviousRow(tblViewRequirements) : JFXUtil.moveToNextRow(tblViewRequirements);
+        }
         loadRecordRequirements();
     }
 
-    public void moveNextBankApplications(boolean isUp) {
-        apBankApplications.requestFocus();
-        pnBankApplications = isUp ? JFXUtil.moveToPreviousRow(tblViewBankApplications) : JFXUtil.moveToNextRow(tblViewBankApplications);
+    public void moveNextBankApplications(boolean isUp, boolean continueNext) {
+        if (continueNext) {
+            apBankApplications.requestFocus();
+            pnBankApplications = isUp ? JFXUtil.moveToPreviousRow(tblViewBankApplications) : JFXUtil.moveToNextRow(tblViewBankApplications);
+        }
+        loadRecordBankApplications();
         if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().BankApplicationsList(pnBankApplications).getApplicationNo(), null, "")) {
             tfApplicationNo.requestFocus();
         } else if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().BankApplicationsList(pnBankApplications).getBankId(), null, "")) {
@@ -567,7 +571,6 @@ public class SalesInquiry_ConfirmationMCController implements Initializable, Scr
         } else {
             tfApplicationNo.requestFocus();
         }
-        loadRecordBankApplications();
     }
 
     private void txtField_KeyPressed(KeyEvent event) {
@@ -593,17 +596,17 @@ public class SalesInquiry_ConfirmationMCController implements Initializable, Scr
                         case "tfBrand":
                         case "tfModel":
                         case "tfColor":
-                            moveNext(true);
+                            moveNext(true, true);
                             event.consume();
                             break;
                         case "tfRequirement":
                         case "tfReceivedBy":
-                            moveNextRequirements(true);
+                            moveNextRequirements(true, true);
                             event.consume();
                             break;
                         case "tfApplicationNo":
                         case "tfBank":
-                            moveNextBankApplications(true);
+                            moveNextBankApplications(true, true);
                             event.consume();
                             break;
                     }
@@ -613,17 +616,17 @@ public class SalesInquiry_ConfirmationMCController implements Initializable, Scr
                         case "tfBrand":
                         case "tfModel":
                         case "tfColor":
-                            moveNext(false);
+                            moveNext(false, true);
                             event.consume();
                             break;
                         case "tfRequirement":
                         case "tfReceivedBy":
-                            moveNextRequirements(false);
+                            moveNextRequirements(false, true);
                             event.consume();
                             break;
                         case "tfApplicationNo":
                         case "tfBank":
-                            moveNextBankApplications(false);
+                            moveNextBankApplications(false, true);
                             event.consume();
                             break;
                         default:
@@ -720,7 +723,7 @@ public class SalesInquiry_ConfirmationMCController implements Initializable, Scr
                                 Platform.runLater(() -> {
                                     PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
                                     delay.setOnFinished(event1 -> {
-                                        moveNext(false);
+                                        moveNext(false, true);
                                     });
                                     delay.play();
                                 });
@@ -1460,16 +1463,7 @@ public class SalesInquiry_ConfirmationMCController implements Initializable, Scr
             if (details_data.size() > 0) {
                 if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
                     pnDetail = tblViewTransDetails.getSelectionModel().getSelectedIndex();
-                    loadRecordDetail();
-                    if (!JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getBrandId(), null, "")) {
-                        if (!JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getModelId(), null, "")) {
-                            tfColor.requestFocus();
-                        } else {
-                            tfModel.requestFocus();
-                        }
-                    } else {
-                        tfBrand.requestFocus();
-                    }
+                    moveNext(false, false);
                 }
             }
         });
@@ -1477,8 +1471,7 @@ public class SalesInquiry_ConfirmationMCController implements Initializable, Scr
             if (requirements_data.size() > 0) {
                 if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
                     pnRequirements = tblViewRequirements.getSelectionModel().getSelectedIndex();
-                    loadRecordRequirements();
-
+                    moveNextRequirements(false, false);
                 }
             }
         });
@@ -1486,14 +1479,7 @@ public class SalesInquiry_ConfirmationMCController implements Initializable, Scr
             if (bankapplications_data.size() > 0) {
                 if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
                     pnBankApplications = tblViewBankApplications.getSelectionModel().getSelectedIndex();
-                    if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().BankApplicationsList(pnBankApplications).getApplicationNo(), null, "")) {
-                        tfApplicationNo.requestFocus();
-                    } else if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().BankApplicationsList(pnBankApplications).getBankId(), null, "")) {
-                        tfBank.requestFocus();
-                    } else {
-                        tfApplicationNo.requestFocus();
-                    }
-                    loadRecordBankApplications();
+                    moveNextBankApplications(false, false);
                 }
             }
         });
@@ -1522,7 +1508,6 @@ public class SalesInquiry_ConfirmationMCController implements Initializable, Scr
                                 Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                             }
                             try {
-                                /*System.out.println(d.getIndex02() +" - "+priorityStr);*/
                                 poSalesInquiryController.SalesInquiry().Detail(i).setPriority(Integer.parseInt(priorityStr));
                             } catch (NumberFormatException e) {
                                 System.err.println("Invalid priority: " + priorityStr);

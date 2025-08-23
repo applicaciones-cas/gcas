@@ -243,7 +243,6 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
                             //Clear data
                             poSalesInquiryController.SalesInquiry().resetMaster();
                             poSalesInquiryController.SalesInquiry().Detail().clear();
-
                             poSalesInquiryController.SalesInquiry().resetOthers();
                             clearTextFields();
 
@@ -342,14 +341,11 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
                 } else {
                     loadRecordMaster();
                     loadTableDetail.reload();
-                    loadTableBankApplications.reload();
-                    loadTableRequirements.reload();
                 }
 
                 initButton(pnEditMode);
-
                 if (lsButton.equals("btnUpdate")) {
-                    if (poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId() != null && !"".equals(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId())) {
+                    if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId(), null, "")) {
                         tfBrand.requestFocus();
                     } else {
                         tfBrand.requestFocus();
@@ -601,16 +597,7 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
             if (details_data.size() > 0) {
                 if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
                     pnDetail = tblViewTransDetails.getSelectionModel().getSelectedIndex();
-                    loadRecordDetail();
-                    if (!JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getBrandId(), null, "")) {
-                        if (!JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getModelId(), null, "")) {
-                            tfColor.requestFocus();
-                        } else {
-                            tfModel.requestFocus();
-                        }
-                    } else {
-                        tfBrand.requestFocus();
-                    }
+                    moveNext(false, false);
                 }
             }
         });
@@ -618,8 +605,7 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
             if (requirements_data.size() > 0) {
                 if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
                     pnRequirements = tblViewRequirements.getSelectionModel().getSelectedIndex();
-                    loadRecordRequirements();
-
+                    moveNextRequirements(false, false);
                 }
             }
         });
@@ -627,14 +613,7 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
             if (bankapplications_data.size() > 0) {
                 if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
                     pnBankApplications = tblViewBankApplications.getSelectionModel().getSelectedIndex();
-                    if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().BankApplicationsList(pnBankApplications).getApplicationNo(), null, "")) {
-                        tfApplicationNo.requestFocus();
-                    } else if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().BankApplicationsList(pnBankApplications).getBankId(), null, "")) {
-                        tfBank.requestFocus();
-                    } else {
-                        tfApplicationNo.requestFocus();
-                    }
-                    loadRecordBankApplications();
+                    moveNextBankApplications(false, false);
                 }
             }
         });
@@ -662,7 +641,6 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
                                 Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                             }
                             try {
-                                /*System.out.println(d.getIndex02() +" - "+priorityStr);*/
                                 poSalesInquiryController.SalesInquiry().Detail(i).setPriority(Integer.parseInt(priorityStr));
                             } catch (NumberFormatException e) {
                                 System.err.println("Invalid priority: " + priorityStr);
@@ -935,7 +913,7 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
                             poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setStockId("");
                         }
                         if (pbEntered) {
-                            moveNext(false);
+                            moveNext(false, true);
                             pbEntered = false;
                         }
                         break;
@@ -1047,30 +1025,35 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
                 loadRecordBankApplications();
             });
 
-    public void moveNext(boolean isUp) {
+    public void moveNext(boolean isUp, boolean continueNext) {
         apDetail.requestFocus();
-        pnDetail = isUp ? JFXUtil.moveToPreviousRow(tblViewTransDetails) : JFXUtil.moveToNextRow(tblViewTransDetails);
+        if (continueNext) {
+            pnDetail = isUp ? JFXUtil.moveToPreviousRow(tblViewTransDetails) : JFXUtil.moveToNextRow(tblViewTransDetails);
+        }
         loadRecordDetail();
-        if (!JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getBrandId(), null, "")) {
-            if (!JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getModelId(), null, "")) {
-                tfColor.requestFocus();
-            } else {
-                tfModel.requestFocus();
-            }
-        } else {
+        if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getBrandId(), null, "")) {
             tfBrand.requestFocus();
+        } else if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getModelId(), null, "")) {
+            tfModel.requestFocus();
+        } else {
+            tfColor.requestFocus();
         }
     }
 
-    public void moveNextRequirements(boolean isUp) {
-        apRequirements.requestFocus();
-        pnRequirements = isUp ? JFXUtil.moveToPreviousRow(tblViewRequirements) : JFXUtil.moveToNextRow(tblViewRequirements);
+    public void moveNextRequirements(boolean isUp, boolean continueNext) {
+        if (continueNext) {
+            apRequirements.requestFocus();
+            pnRequirements = isUp ? JFXUtil.moveToPreviousRow(tblViewRequirements) : JFXUtil.moveToNextRow(tblViewRequirements);
+        }
         loadRecordRequirements();
     }
 
-    public void moveNextBankApplications(boolean isUp) {
-        apBankApplications.requestFocus();
-        pnBankApplications = isUp ? JFXUtil.moveToPreviousRow(tblViewBankApplications) : JFXUtil.moveToNextRow(tblViewBankApplications);
+    public void moveNextBankApplications(boolean isUp, boolean continueNext) {
+        if (continueNext) {
+            apBankApplications.requestFocus();
+            pnBankApplications = isUp ? JFXUtil.moveToPreviousRow(tblViewBankApplications) : JFXUtil.moveToNextRow(tblViewBankApplications);
+        }
+        loadRecordBankApplications();
         if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().BankApplicationsList(pnBankApplications).getApplicationNo(), null, "")) {
             tfApplicationNo.requestFocus();
         } else if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().BankApplicationsList(pnBankApplications).getBankId(), null, "")) {
@@ -1078,7 +1061,6 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
         } else {
             tfApplicationNo.requestFocus();
         }
-        loadRecordBankApplications();
     }
 
     private void txtField_KeyPressed(KeyEvent event) {
@@ -1104,17 +1086,17 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
                         case "tfBrand":
                         case "tfModel":
                         case "tfColor":
-                            moveNext(true);
+                            moveNext(true, true);
                             event.consume();
                             break;
                         case "tfRequirement":
                         case "tfReceivedBy":
-                            moveNextRequirements(true);
+                            moveNextRequirements(true, true);
                             event.consume();
                             break;
                         case "tfApplicationNo":
                         case "tfBank":
-                            moveNextBankApplications(true);
+                            moveNextBankApplications(true, true);
                             event.consume();
                             break;
                     }
@@ -1124,17 +1106,17 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
                         case "tfBrand":
                         case "tfModel":
                         case "tfColor":
-                            moveNext(false);
+                            moveNext(false, true);
                             event.consume();
                             break;
                         case "tfRequirement":
                         case "tfReceivedBy":
-                            moveNextRequirements(false);
+                            moveNextRequirements(false, true);
                             event.consume();
                             break;
                         case "tfApplicationNo":
                         case "tfBank":
-                            moveNextBankApplications(false);
+                            moveNextBankApplications(false, true);
                             event.consume();
                             break;
                         default:
@@ -1233,7 +1215,7 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
                                 Platform.runLater(() -> {
                                     PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
                                     delay.setOnFinished(event1 -> {
-                                        moveNext(false);
+                                        moveNext(false, true);
                                     });
                                     delay.play();
                                 });
