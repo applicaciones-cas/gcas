@@ -475,6 +475,9 @@ public class SalesInquiry_HistoryCarController implements Initializable, ScreenI
         });
         JFXUtil.setKeyEventFilter(this::tableKeyEvents, tblViewTransDetails, tblViewRequirements, tblViewBankApplications);
         JFXUtil.adjustColumnForScrollbar(tblViewTransDetails, tblViewRequirements, tblViewBankApplications);  // need to use computed-size in min-width of the column to work
+        JFXUtil.addCheckboxColumns(ModelRequirements_Detail.class, tblViewRequirements, disableRowCheckbox,
+                (row, rowIndex, colIndex, newVal) -> {
+                }, 1, 2);
     }
 
     public void initLoadTable() {
@@ -603,7 +606,7 @@ public class SalesInquiry_HistoryCarController implements Initializable, ScreenI
                         int lnCtr;
                         bankapplications_data.clear();
                         try {
-                            if(pnEditMode != EditMode.UNKNOWN){
+                            if (pnEditMode != EditMode.UNKNOWN) {
                                 poSalesInquiryController.SalesInquiry().loadBankApplicationList();
                             }
                             for (lnCtr = 0; lnCtr < poSalesInquiryController.SalesInquiry().getBankApplicationsCount(); lnCtr++) {
@@ -733,7 +736,7 @@ public class SalesInquiry_HistoryCarController implements Initializable, ScreenI
     }
 
     private void initComboBoxes() {
-        // Set the items of the ComboBox to the list of genders
+        
         JFXUtil.setComboBoxItems(new JFXUtil.Pairs<>(ClientType, cmbClientType), new JFXUtil.Pairs<>(PurchaseType, cmbPurchaseType),
                 new JFXUtil.Pairs<>(CategoryType, cmbCategoryType), new JFXUtil.Pairs<>(CustomerGroup, cmbCustomerGroup));
         JFXUtil.initComboBoxCellDesignColor("#FF8201", cmbClientType, cmbPurchaseType, cmbCategoryType, cmbCustomerGroup);
@@ -763,7 +766,7 @@ public class SalesInquiry_HistoryCarController implements Initializable, ScreenI
         JFXUtil.setColumnCenter(tblRowNoDetail);
         JFXUtil.setColumnLeft(tblBrandDetail, tblDescriptionDetail);
         JFXUtil.setColumnsIndexAndDisableReordering(tblViewTransDetails);
-
+        disableRowCheckbox.setValue(true);
         filteredDataDetail = new FilteredList<>(details_data, b -> true);
         SortedList<ModelSalesInquiry_Detail> sortedData = new SortedList<>(filteredDataDetail);
         sortedData.comparatorProperty().bind(tblViewTransDetails.comparatorProperty());

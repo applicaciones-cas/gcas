@@ -953,7 +953,7 @@ public class SalesInquiry_ConfirmationLPController implements Initializable, Scr
     };
 
     private void initComboBoxes() {
-        // Set the items of the ComboBox to the list of genders
+        
         JFXUtil.setComboBoxItems(new JFXUtil.Pairs<>(ClientType, cmbClientType),
                 new JFXUtil.Pairs<>(PurchaseType, cmbPurchaseType));
         JFXUtil.setComboBoxActionListener(comboBoxActionListener, cmbClientType, cmbPurchaseType);
