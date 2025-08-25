@@ -2238,3 +2238,785 @@ Aug 23, 2025 11:35:42 AM org.guanzon.appdriver.base.LogWrapper severe
 SEVERE: Issuance without ROQ :null
 Aug 23, 2025 11:35:42 AM org.guanzon.appdriver.base.LogWrapper info
 INFO: Issuance without ROQ : Success on Initialize New Transaction
+Aug 25, 2025 9:21:02 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 9:21:02 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 9:21:02 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 9:21:02 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize New Transaction
+Aug 25, 2025 9:26:20 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 9:26:20 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 9:26:20 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 9:26:20 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize New Transaction
+Aug 25, 2025 9:26:33 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 9:26:33 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize Search Source No! 
+Aug 25, 2025 9:26:33 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 9:26:33 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize : Load of Transaction List
+Aug 25, 2025 9:26:43 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 9:26:43 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize Search Transaction! 
+Aug 25, 2025 9:26:43 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 9:26:43 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize : Load of Transaction List
+Aug 25, 2025 9:27:02 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 9:27:02 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 9:27:04 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 9:27:04 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 9:39:01 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 9:39:01 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 9:39:02 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 9:39:02 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize New Transaction
+Aug 25, 2025 9:39:10 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 9:39:10 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize Search Source No! 
+Aug 25, 2025 9:39:10 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 9:39:10 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize : Load of Transaction List
+Aug 25, 2025 9:39:24 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 9:39:24 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize New Transaction
+Aug 25, 2025 9:44:59 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 9:44:59 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 9:44:59 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 9:44:59 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize New Transaction
+Aug 25, 2025 9:45:08 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 9:45:08 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize Search Source No! 
+Aug 25, 2025 9:45:08 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 9:45:08 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize : Load of Transaction List
+Aug 25, 2025 9:45:13 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 9:45:13 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize New Transaction
+Aug 25, 2025 9:45:31 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 9:45:31 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize Search Source No! 
+Aug 25, 2025 9:45:31 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 9:45:31 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize : Load of Transaction List
+Aug 25, 2025 9:45:51 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 9:45:51 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize Search Transaction! 
+Aug 25, 2025 9:45:51 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 9:45:51 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize : Load of Transaction List
+Aug 25, 2025 9:45:59 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 9:45:59 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 9:46:01 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 9:46:01 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 9:46:16 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 9:46:16 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize Search Transaction! 
+Aug 25, 2025 9:46:16 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 9:46:16 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize : Load of Transaction List
+Aug 25, 2025 9:46:30 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 9:46:30 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize Search Transaction! 
+Aug 25, 2025 9:46:30 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 9:46:30 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize : Load of Transaction List
+Aug 25, 2025 9:46:43 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 9:46:43 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize Search Transaction! 
+Aug 25, 2025 9:46:43 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 9:46:43 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize : Load of Transaction List
+Aug 25, 2025 9:51:06 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 9:51:06 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 9:51:08 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 9:51:08 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 9:51:17 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 9:51:17 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize Search Transaction! 
+Aug 25, 2025 9:51:17 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 9:51:17 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize : Load of Transaction List
+Aug 25, 2025 9:51:20 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 9:51:20 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 9:51:22 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 9:51:22 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 9:51:26 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 9:51:26 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 9:51:32 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 9:51:32 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize Search Transaction! 
+Aug 25, 2025 9:51:32 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 9:51:32 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize : Load of Transaction List
+Aug 25, 2025 9:51:35 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 9:51:35 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 9:51:37 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 9:51:37 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 9:51:43 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 9:51:43 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 9:51:45 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 9:51:45 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 9:51:55 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 9:51:55 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize Search Transaction! 
+Aug 25, 2025 9:51:55 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 9:51:55 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize : Load of Transaction List
+Aug 25, 2025 9:51:59 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 9:51:59 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 9:52:01 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 9:52:01 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 9:53:55 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 9:53:55 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 9:53:55 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 9:53:55 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize New Transaction
+Aug 25, 2025 9:54:04 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 9:54:04 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize Search Transaction! 
+Aug 25, 2025 9:54:04 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 9:54:04 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize : Load of Transaction List
+Aug 25, 2025 9:54:07 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :Unable to open transaction master record.
+Aug 25, 2025 9:54:12 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :Unable to open transaction master record.
+Aug 25, 2025 9:54:15 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :Unable to open transaction master record.
+Aug 25, 2025 9:54:19 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 9:54:19 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 9:54:22 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :Unable to open transaction master record.
+Aug 25, 2025 10:07:21 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 10:07:21 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 10:07:21 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 10:07:21 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize New Transaction
+Aug 25, 2025 10:07:28 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 10:07:28 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize Search Transaction! 
+Aug 25, 2025 10:07:28 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 10:07:28 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize : Load of Transaction List
+Aug 25, 2025 10:07:32 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 10:07:32 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 10:07:34 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 10:07:34 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 10:07:36 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 10:07:36 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 10:07:47 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 10:07:47 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize Search Transaction! 
+Aug 25, 2025 10:07:48 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 10:07:48 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize : Load of Transaction List
+Aug 25, 2025 10:07:51 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 10:07:51 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 10:07:53 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 10:07:53 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 10:56:23 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 10:56:23 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 10:56:24 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 10:56:24 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize New Transaction
+Aug 25, 2025 10:56:30 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 10:56:30 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize Search Source No! 
+Aug 25, 2025 10:56:30 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 10:56:30 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize : Load of Transaction List
+Aug 25, 2025 10:56:39 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 10:56:39 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 10:56:42 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 10:56:42 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 10:56:45 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 10:56:45 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 10:56:46 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 10:56:46 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 10:56:54 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 10:56:54 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize Search Source No! 
+Aug 25, 2025 10:56:54 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 10:56:54 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize : Load of Transaction List
+Aug 25, 2025 10:56:59 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 10:56:59 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 10:57:02 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 10:57:02 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 10:57:09 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 10:57:09 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 10:57:11 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 10:57:11 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 10:58:21 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 10:58:21 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 10:58:22 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 10:58:22 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize New Transaction
+Aug 25, 2025 10:58:28 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 10:58:28 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize Search Transaction! 
+Aug 25, 2025 10:58:28 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 10:58:28 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize : Load of Transaction List
+Aug 25, 2025 10:58:39 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 10:58:39 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize Search Transaction! 
+Aug 25, 2025 10:58:39 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 10:58:39 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize : Load of Transaction List
+Aug 25, 2025 10:58:46 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 10:58:46 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize Search Transaction! 
+Aug 25, 2025 10:58:46 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 10:58:46 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize : Load of Transaction List
+Aug 25, 2025 10:58:53 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 10:58:53 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize Search Transaction! 
+Aug 25, 2025 10:58:53 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 10:58:53 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize : Load of Transaction List
+Aug 25, 2025 10:59:00 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 10:59:00 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize Search Transaction! 
+Aug 25, 2025 10:59:00 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 10:59:00 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize : Load of Transaction List
+Aug 25, 2025 10:59:04 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 10:59:04 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 10:59:07 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 10:59:07 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 11:00:56 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:00:56 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 11:00:57 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:00:57 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize New Transaction
+Aug 25, 2025 11:01:03 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:01:03 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize Search Transaction! 
+Aug 25, 2025 11:01:03 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:01:03 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize : Load of Transaction List
+Aug 25, 2025 11:01:11 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:01:11 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize Search Transaction! 
+Aug 25, 2025 11:01:12 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:01:12 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize : Load of Transaction List
+Aug 25, 2025 11:01:15 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:01:15 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 11:01:17 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :Unable to open transaction master record.
+Aug 25, 2025 11:01:30 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:01:30 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 11:01:32 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :Unable to open transaction master record.
+Aug 25, 2025 11:03:35 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:03:35 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 11:03:35 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:03:35 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize New Transaction
+Aug 25, 2025 11:04:49 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:04:49 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize Search Transaction! 
+Aug 25, 2025 11:04:49 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:04:49 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize : Load of Transaction List
+Aug 25, 2025 11:04:58 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:04:58 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize Search Transaction! 
+Aug 25, 2025 11:04:58 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:04:58 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize : Load of Transaction List
+Aug 25, 2025 11:05:06 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:05:06 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize Search Transaction! 
+Aug 25, 2025 11:05:06 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:05:06 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize : Load of Transaction List
+Aug 25, 2025 11:05:14 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:05:14 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize Search Transaction! 
+Aug 25, 2025 11:05:14 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:05:14 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize : Load of Transaction List
+Aug 25, 2025 11:05:17 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :Unable to open transaction master record.
+Aug 25, 2025 11:05:28 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:05:28 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 11:05:43 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :Unable to open transaction master record.
+Aug 25, 2025 11:05:50 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:05:50 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 11:11:00 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:11:00 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 11:11:03 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :Unable to open transaction master record.
+Aug 25, 2025 11:13:03 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:13:03 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 11:13:04 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:13:04 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize New Transaction
+Aug 25, 2025 11:13:10 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:13:10 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize Search Transaction! 
+Aug 25, 2025 11:13:10 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:13:10 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize : Load of Transaction List
+Aug 25, 2025 11:13:30 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:13:30 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 11:13:45 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :Unable to open transaction master record.
+Aug 25, 2025 11:14:34 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:14:34 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 11:14:34 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:14:34 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize New Transaction
+Aug 25, 2025 11:14:41 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:14:41 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize Search Transaction! 
+Aug 25, 2025 11:14:41 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:14:41 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize : Load of Transaction List
+Aug 25, 2025 11:14:46 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:14:46 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 11:14:49 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:14:49 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 11:14:52 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:14:52 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 11:14:54 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:14:54 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 11:14:56 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:14:56 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 11:14:59 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:14:59 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 11:15:02 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:15:02 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 11:15:04 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:15:04 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 11:15:09 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:15:09 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 11:15:11 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:15:11 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 11:24:39 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:24:39 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 11:24:39 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:24:39 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize New Transaction
+Aug 25, 2025 11:24:45 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:24:45 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize Search Transaction! 
+Aug 25, 2025 11:24:45 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:24:45 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize : Load of Transaction List
+Aug 25, 2025 11:24:54 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:24:54 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 11:30:15 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:30:15 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 11:30:15 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:30:15 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize New Transaction
+Aug 25, 2025 11:30:26 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :No record loaded.
+Aug 25, 2025 11:30:33 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:30:33 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize Search Source No! 
+Aug 25, 2025 11:30:33 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:30:33 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize : Load of Transaction List
+Aug 25, 2025 11:30:44 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:30:44 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 11:30:47 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:30:47 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 11:30:50 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:30:50 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 11:30:52 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:30:52 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 11:31:11 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:31:11 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize New Transaction
+Aug 25, 2025 11:31:17 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:31:17 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize Search Transaction! 
+Aug 25, 2025 11:31:17 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:31:17 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize : Load of Transaction List
+Aug 25, 2025 11:31:20 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:31:20 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize UPdate Transaction
+Aug 25, 2025 11:39:01 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:39:01 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 11:39:01 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:39:01 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize New Transaction
+Aug 25, 2025 11:39:08 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:39:08 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize Search Source No! 
+Aug 25, 2025 11:39:08 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:39:08 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize : Load of Transaction List
+Aug 25, 2025 11:39:11 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:39:11 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 11:39:13 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:39:13 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 11:39:20 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:39:20 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize UPdate Transaction
+Aug 25, 2025 11:41:58 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:41:58 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 11:41:59 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:41:59 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize New Transaction
+Aug 25, 2025 11:42:06 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:42:06 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize Search Source No! 
+Aug 25, 2025 11:42:06 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:42:06 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize : Load of Transaction List
+Aug 25, 2025 11:42:11 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 11:42:11 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize UPdate Transaction
+Aug 25, 2025 3:34:13 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 3:34:13 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 3:34:13 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 3:34:13 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize New Transaction
+Aug 25, 2025 3:34:24 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 3:34:24 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize Search Source No! 
+Aug 25, 2025 3:34:24 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 3:34:24 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize : Load of Transaction List
+Aug 25, 2025 3:34:27 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 3:34:27 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 3:34:30 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 3:34:30 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 3:34:35 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 3:34:35 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize UPdate Transaction
+Aug 25, 2025 3:35:10 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :Transaction saved successfully.
+Aug 25, 2025 3:35:10 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize Save Transaction
+Aug 25, 2025 3:49:58 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 3:49:58 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 3:49:58 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 3:49:58 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize New Transaction
+Aug 25, 2025 4:11:39 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 4:11:39 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 4:11:39 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 4:11:39 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize New Transaction
+Aug 25, 2025 4:27:40 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 4:27:40 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 4:27:40 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 4:27:40 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize New Transaction
+Aug 25, 2025 4:40:21 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 4:40:21 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 4:40:21 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 4:40:21 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize New Transaction
+Aug 25, 2025 4:41:53 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 4:41:53 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize Search Source No! 
+Aug 25, 2025 4:41:53 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 4:41:53 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize : Load of Transaction List
+Aug 25, 2025 4:41:57 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 4:41:57 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 4:41:58 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 4:41:58 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize UPdate Transaction
+Aug 25, 2025 4:43:44 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 4:43:44 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 4:43:44 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 4:43:44 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize New Transaction
+Aug 25, 2025 4:48:36 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 4:48:36 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 4:53:18 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 4:53:18 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 4:53:31 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 4:53:31 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 4:55:19 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 4:55:19 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Issuance without ROQ
+Aug 25, 2025 4:55:57 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 4:55:57 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize Search Source No! 
+Aug 25, 2025 4:55:57 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ :null
+Aug 25, 2025 4:55:57 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ : Success on Initialize : Load of Transaction List

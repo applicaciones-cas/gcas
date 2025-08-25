@@ -156,3 +156,61 @@ Aug 23, 2025 9:25:20 AM org.guanzon.appdriver.base.LogWrapper severe
 SEVERE: Issuance without ROQ Approval :null
 Aug 23, 2025 9:25:20 AM org.guanzon.appdriver.base.LogWrapper info
 INFO: Issuance without ROQ Approval : Success on Issuance without ROQ Approval
+Aug 25, 2025 4:48:45 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ Approval :null
+Aug 25, 2025 4:48:45 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ Approval : Success on Issuance without ROQ Approval
+Aug 25, 2025 4:48:49 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ Approval :null
+Aug 25, 2025 4:48:49 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ Approval : Success on Initialize Search Source No! 
+Aug 25, 2025 4:48:49 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ Approval :null
+Aug 25, 2025 4:48:49 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ Approval : Success on Initialize : Load of Transaction List
+Aug 25, 2025 4:49:02 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ Approval :Unable to open transaction master record.
+Aug 25, 2025 4:49:07 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ Approval :null
+Aug 25, 2025 4:49:07 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ Approval : Success on Initialize Search Source No! 
+Aug 25, 2025 4:49:07 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ Approval :null
+Aug 25, 2025 4:49:07 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ Approval : Success on Initialize : Load of Transaction List
+Aug 25, 2025 4:55:49 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ Approval :null
+Aug 25, 2025 4:55:49 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ Approval : Success on Issuance without ROQ Approval
+Aug 25, 2025 5:00:14 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ Approval :null
+Aug 25, 2025 5:00:14 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ Approval : Success on Issuance without ROQ Approval
+Aug 25, 2025 5:00:17 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ Approval :null
+Aug 25, 2025 5:00:17 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ Approval : Success on Initialize Search Source No! 
+Aug 25, 2025 5:00:17 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ Approval :null
+Aug 25, 2025 5:00:17 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ Approval : Success on Initialize : Load of Transaction List
+Aug 25, 2025 5:02:43 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ Approval :null
+Aug 25, 2025 5:02:43 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ Approval : Success on Issuance without ROQ Approval
+Aug 25, 2025 5:02:47 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ Approval :null
+Aug 25, 2025 5:02:47 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ Approval : Success on Initialize Search Source No! 
+Aug 25, 2025 5:02:47 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ Approval :null
+Aug 25, 2025 5:02:47 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ Approval : Success on Initialize : Load of Transaction List
+Aug 25, 2025 5:03:15 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ Approval :null
+Aug 25, 2025 5:03:15 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ Approval : Success on Initialize Search Transaction! 
+Aug 25, 2025 5:03:15 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance without ROQ Approval :null
+Aug 25, 2025 5:03:15 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance without ROQ Approval : Success on Initialize : Load of Transaction List
