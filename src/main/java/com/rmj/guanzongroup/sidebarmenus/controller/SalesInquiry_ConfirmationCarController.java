@@ -1411,23 +1411,6 @@ public class SalesInquiry_ConfirmationCarController implements Initializable, Sc
                             poSalesInquiryController.SalesInquiry().Master().setCategoryType(String.valueOf(selectedIndex));
                             break;
                         case "cmbCustomerGroup":
-//                            if (pnEditMode == EditMode.UPDATE && poSalesInquiryController.SalesInquiry().getSalesInquiryRequirementsCount() > 0) {
-//                                if (!poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList(0).getCustomerGroup().equals(String.valueOf(selectedIndex))) {
-//                                    if (ShowMessageFX.YesNo(null, pxeModuleName,
-//                                            "Are you sure you want to change the Customer group?\nPlease note that doing so will delete all requirements list.\n\nDo you wish to proceed?") == true) {
-//                                        poSalesInquiryController.SalesInquiry().getRequirements(String.valueOf(selectedIndex));
-//                                        JFXUtil.clearTextFields(apRequirements);
-//                                    }
-//                                } else {
-//                                    poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList(0).setCustomerGroup(String.valueOf(selectedIndex));
-//                                }
-//                            } else {
-//                                poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList().clear();
-//                                poSalesInquiryController.SalesInquiry().getRequirements(String.valueOf(selectedIndex));
-//                            }
-//                            if (poSalesInquiryController.SalesInquiry().getSalesInquiryRequirementsCount() > 0) {
-//                                poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList(0).setCustomerGroup(String.valueOf(selectedIndex));
-//                            }
                             if (pnEditMode == EditMode.UPDATE) {
                                 if (poSalesInquiryController.SalesInquiry().getSalesInquiryRequirementsCount() > 0) {
                                     if (!poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList(0).getCustomerGroup().equals(String.valueOf(selectedIndex))) {
@@ -1441,7 +1424,10 @@ public class SalesInquiry_ConfirmationCarController implements Initializable, Sc
                                         }
                                     }
                                 } else {
-                                    poSalesInquiryController.SalesInquiry().getRequirements(String.valueOf(selectedIndex));
+                                    poJSON = poSalesInquiryController.SalesInquiry().getRequirements(String.valueOf(selectedIndex));
+                                    if ("error".equals((String) poJSON.get("result"))) {
+                                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                    }
                                 }
                             }
                             loadTableRequirements.reload();
