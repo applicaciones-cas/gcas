@@ -1373,7 +1373,7 @@ public class SalesInquiry_ConfirmationMCController implements Initializable, Scr
                                     if (ShowMessageFX.YesNo(null, pxeModuleName,
                                             "Are you sure you want to change the Purchase Type?\nPlease note that doing so will reset the Requirements & Bank Applications list.\n\nDo you wish to proceed?") == true) {
                                         poSalesInquiryController.SalesInquiry().Master().setPurchaseType(String.valueOf(selectedIndex));
-                                        poJSON = poSalesInquiryController.SalesInquiry().getRequirements(String.valueOf(selectedIndex));
+                                        poJSON = poSalesInquiryController.SalesInquiry().removeRequirements();
                                         if ("error".equals((String) poJSON.get("result"))) {
                                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                             break;
@@ -1389,23 +1389,41 @@ public class SalesInquiry_ConfirmationMCController implements Initializable, Scr
                             poSalesInquiryController.SalesInquiry().Master().setCategoryType(String.valueOf(selectedIndex));
                             break;
                         case "cmbCustomerGroup":
-                            if (pnEditMode == EditMode.UPDATE && poSalesInquiryController.SalesInquiry().getSalesInquiryRequirementsCount() > 0) {
-                                if (!poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList(0).getCustomerGroup().equals(String.valueOf(selectedIndex))) {
-                                    if (ShowMessageFX.YesNo(null, pxeModuleName,
-                                            "Are you sure you want to change the Customer group?\nPlease note that doing so will delete all requirements list.\n\nDo you wish to proceed?") == true) {
-                                        poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList().clear();
-                                        poSalesInquiryController.SalesInquiry().getRequirements(String.valueOf(selectedIndex));
-                                        JFXUtil.clearTextFields(apRequirements);
+//                            if (pnEditMode == EditMode.UPDATE && poSalesInquiryController.SalesInquiry().getSalesInquiryRequirementsCount() > 0) {
+//                                if (!poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList(0).getCustomerGroup().equals(String.valueOf(selectedIndex))) {
+//                                    if (ShowMessageFX.YesNo(null, pxeModuleName,
+//                                            "Are you sure you want to change the Customer group?\nPlease note that doing so will delete all requirements list.\n\nDo you wish to proceed?") == true) {
+//                                        poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList().clear();
+//                                        poSalesInquiryController.SalesInquiry().getRequirements(String.valueOf(selectedIndex));
+//                                        JFXUtil.clearTextFields(apRequirements);
+//                                    }
+//                                } else {
+//                                    poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList(0).setCustomerGroup(String.valueOf(selectedIndex));
+//                                }
+//                            } else {
+//                                poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList().clear();
+//                                poSalesInquiryController.SalesInquiry().getRequirements(String.valueOf(selectedIndex));
+//                            }
+//                            if (poSalesInquiryController.SalesInquiry().getSalesInquiryRequirementsCount() > 0) {
+//                                poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList(0).setCustomerGroup(String.valueOf(selectedIndex));
+//                            }
+//                            loadTableRequirements.reload();
+                            
+                            if (pnEditMode == EditMode.UPDATE){
+                                if (poSalesInquiryController.SalesInquiry().getSalesInquiryRequirementsCount() > 0) {
+                                    if (!poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList(0).getCustomerGroup().equals(String.valueOf(selectedIndex))) {
+                                        if (ShowMessageFX.YesNo(null, pxeModuleName,
+                                                "Are you sure you want to change the Customer group?\nPlease note that doing so will delete all requirements list.\n\nDo you wish to proceed?") == true) {
+                                            poJSON = poSalesInquiryController.SalesInquiry().getRequirements(String.valueOf(selectedIndex));
+                                            if ("error".equals((String) poJSON.get("result"))) {
+                                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                            }
+                                            JFXUtil.clearTextFields(apRequirements);
+                                        }
                                     }
                                 } else {
-                                    poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList(0).setCustomerGroup(String.valueOf(selectedIndex));
+                                    poSalesInquiryController.SalesInquiry().getRequirements(String.valueOf(selectedIndex));
                                 }
-                            } else {
-                                poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList().clear();
-                                poSalesInquiryController.SalesInquiry().getRequirements(String.valueOf(selectedIndex));
-                            }
-                            if (poSalesInquiryController.SalesInquiry().getSalesInquiryRequirementsCount() > 0) {
-                                poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList(0).setCustomerGroup(String.valueOf(selectedIndex));
                             }
                             loadTableRequirements.reload();
                             break;

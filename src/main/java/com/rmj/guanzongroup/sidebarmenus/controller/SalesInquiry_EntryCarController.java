@@ -1411,7 +1411,7 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
                                 if (ShowMessageFX.YesNo(null, pxeModuleName,
                                         "Are you sure you want to change the Purchase Type?\nPlease note that doing so will reset the Requirements & Bank Applications list.\n\nDo you wish to proceed?") == true) {
                                     poSalesInquiryController.SalesInquiry().Master().setPurchaseType(String.valueOf(selectedIndex));
-                                    poJSON = poSalesInquiryController.SalesInquiry().getRequirements(String.valueOf(selectedIndex));
+                                    poJSON = poSalesInquiryController.SalesInquiry().removeRequirements();
                                     if ("error".equals((String) poJSON.get("result"))) {
                                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                         break;
@@ -1434,8 +1434,8 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
                                     poJSON = poSalesInquiryController.SalesInquiry().getRequirements(String.valueOf(selectedIndex));
                                     if ("error".equals((String) poJSON.get("result"))) {
                                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                        break;
                                     }
+                                    JFXUtil.clearTextFields(apRequirements);
 
                                 }
                             }
