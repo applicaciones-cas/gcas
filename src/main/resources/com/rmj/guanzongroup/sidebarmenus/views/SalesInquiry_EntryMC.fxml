@@ -472,7 +472,7 @@
                                              </children></AnchorPane>
                                        </content>
                                     </Tab>
-                                    <Tab closable="false" style="-fx-font-weight: bold;" text="Bank Applications">
+                                    <Tab fx:id="tabBankApplication" closable="false" disable="true" style="-fx-font-weight: bold;" text="Bank Applications">
                                        <content>
                                           <AnchorPane prefHeight="200.0" prefWidth="200.0">
                                              <children>

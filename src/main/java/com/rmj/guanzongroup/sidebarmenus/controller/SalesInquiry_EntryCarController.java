@@ -57,6 +57,7 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.EventHandler;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import org.guanzon.appdriver.base.GRiderCAS;
 import org.json.simple.JSONObject;
@@ -108,6 +109,8 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
     private Button btnBrowse, btnNew, btnUpdate, btnSearch, btnSave, btnCancel, btnHistory, btnClose, btnApprove, btnDisApprove, btnCancelApplication;
     @FXML
     private TabPane tabpane;
+    @FXML
+    private Tab tabBankApplication;
     @FXML
     private TextField tfTransactionNo, tfBranch, tfSalesPerson, tfReferralAgent, tfInquiryStatus, tfInquiryType, tfClient, tfAddress, tfContactNo, tfBrand, tfModel, tfColor, tfModelVariant, tfSellingPrice, tfRequirement, tfReceivedBy, tfPaymentMode, tfApplicationNo, tfBank;
     @FXML
@@ -518,6 +521,10 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
 
     public void loadRecordBankApplications() {
         try {
+            
+            tabBankApplication.setDisable(!(poSalesInquiryController.SalesInquiry().Master().getPurchaseType().equals(SalesInquiryStatic.PurchaseType.PO)
+                            || poSalesInquiryController.SalesInquiry().Master().getPurchaseType().equals(SalesInquiryStatic.PurchaseType.FINANCING)));
+            
             boolean lbShow1 = poSalesInquiryController.SalesInquiry().getBankApplicationsCount() > 0;
             JFXUtil.setDisabled(!lbShow1, apBankApplicationsButtons);
             if (pnBankApplications < 0 || pnBankApplications > poSalesInquiryController.SalesInquiry().getBankApplicationsCount() - 1) {
@@ -1428,6 +1435,9 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
                         } else {
                             poSalesInquiryController.SalesInquiry().Master().setPurchaseType(String.valueOf(selectedIndex));
                         }
+                        
+                        tabBankApplication.setDisable(!(poSalesInquiryController.SalesInquiry().Master().getPurchaseType().equals(SalesInquiryStatic.PurchaseType.PO)
+                            || poSalesInquiryController.SalesInquiry().Master().getPurchaseType().equals(SalesInquiryStatic.PurchaseType.FINANCING)));
                         break;
                     case "cmbCategoryType":
                         poSalesInquiryController.SalesInquiry().Master().setCategoryType(String.valueOf(selectedIndex));
