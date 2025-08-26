@@ -367,11 +367,10 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                         lsTransType = "PRF";
                         break;
                     case SOATaggingStatic.CachePayable: {
-
                         lsTransNoBasis = poSOATaggingController.SOATagging().Detail(lnCtr).CachePayableMaster().getTransactionNo();
-
+                        lsTransType = "Cache Payable";
                     }
-                    lsTransType = "Cache Payable";
+
                     break;
 
                 }
