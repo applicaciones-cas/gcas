@@ -110,8 +110,6 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
     @FXML
     private TabPane tabpane;
     @FXML
-    private Tab tabBankApplication;
-    @FXML
     private TextField tfTransactionNo, tfBranch, tfSalesPerson, tfReferralAgent, tfInquiryStatus, tfInquiryType, tfClient, tfAddress, tfContactNo, tfBrand, tfModel, tfColor, tfModelVariant, tfSellingPrice, tfRequirement, tfReceivedBy, tfPaymentMode, tfApplicationNo, tfBank;
     @FXML
     private DatePicker dpTransactionDate, dpTargetDate, dpReceivedDate, dpAppliedDate, dpApprovedDate;
@@ -375,11 +373,8 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
                                 if (poSalesInquiryController.SalesInquiry().getSalesInquiryRequirementsCount() > 0 && !pbPurchaseTypeChanged) {
                                 } else {
                                     poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList().clear();
-                                    poJSON = poSalesInquiryController.SalesInquiry().getRequirements(String.valueOf(cmbCustomerGroup.getSelectionModel().getSelectedIndex()));
+                                    poSalesInquiryController.SalesInquiry().getRequirements(String.valueOf(cmbCustomerGroup.getSelectionModel().getSelectedIndex()));
                                     pbPurchaseTypeChanged = false;
-                                    if ("error".equals((String) poJSON.get("result"))) {
-                                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                    }
                                 }
                             }
                             loadTableRequirements.reload();
@@ -521,10 +516,6 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
 
     public void loadRecordBankApplications() {
         try {
-            
-            tabBankApplication.setDisable(!(poSalesInquiryController.SalesInquiry().Master().getPurchaseType().equals(SalesInquiryStatic.PurchaseType.PO)
-                            || poSalesInquiryController.SalesInquiry().Master().getPurchaseType().equals(SalesInquiryStatic.PurchaseType.FINANCING)));
-            
             boolean lbShow1 = poSalesInquiryController.SalesInquiry().getBankApplicationsCount() > 0;
             JFXUtil.setDisabled(!lbShow1, apBankApplicationsButtons);
             if (pnBankApplications < 0 || pnBankApplications > poSalesInquiryController.SalesInquiry().getBankApplicationsCount() - 1) {
@@ -1435,9 +1426,6 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
                         } else {
                             poSalesInquiryController.SalesInquiry().Master().setPurchaseType(String.valueOf(selectedIndex));
                         }
-                        
-                        tabBankApplication.setDisable(!(poSalesInquiryController.SalesInquiry().Master().getPurchaseType().equals(SalesInquiryStatic.PurchaseType.PO)
-                            || poSalesInquiryController.SalesInquiry().Master().getPurchaseType().equals(SalesInquiryStatic.PurchaseType.FINANCING)));
                         break;
                     case "cmbCategoryType":
                         poSalesInquiryController.SalesInquiry().Master().setCategoryType(String.valueOf(selectedIndex));
