@@ -901,6 +901,3 @@
 .check-box.modern:pressed > .box {
     -fx-background-color: derive(-c-accent, -15%);
 }
-.check-box.modern:disabled {
-    -fx-opacity: 0.55;
-}
