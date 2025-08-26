@@ -4,6 +4,8 @@
     -fx-light-grey-color: gray;
 
     -fx-focus-color: -fx-secondary-color;
+    -c-fg: #222222;       /* For Custom checkbox */
+    -c-border: #cccccc;   /* For Custom checkbox */
 }
 /* HEADER CSS */
 .toolbar{
