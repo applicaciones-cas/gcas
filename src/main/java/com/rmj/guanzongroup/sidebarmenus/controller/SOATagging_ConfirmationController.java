@@ -153,6 +153,7 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
             poSOATaggingController.SOATagging().setCompanyId(psCompanyId);
             poSOATaggingController.SOATagging().initFields();
             poSOATaggingController.SOATagging().setWithUI(true);
+            poSOATaggingController.SOATagging().validatePayment(true);
             loadRecordSearch();
         });
 

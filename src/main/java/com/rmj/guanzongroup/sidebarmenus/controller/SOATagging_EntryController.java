@@ -164,6 +164,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
             poSOATaggingController.SOATagging().setCategoryId(psCategoryId);
             poSOATaggingController.SOATagging().initFields();
             poSOATaggingController.SOATagging().setWithUI(true);
+            poSOATaggingController.SOATagging().validatePayment(true);
             loadRecordSearch();
             btnNew.fire();
         });
