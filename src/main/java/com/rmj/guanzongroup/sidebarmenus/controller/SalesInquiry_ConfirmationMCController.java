@@ -874,7 +874,6 @@ public class SalesInquiry_ConfirmationMCController implements Initializable, Scr
         }
     }
 
-
     public void initTabPane() {
         tabpane.getSelectionModel().selectedItemProperty().addListener((obs, oldTab, newTab) -> {
             try {
@@ -889,11 +888,8 @@ public class SalesInquiry_ConfirmationMCController implements Initializable, Scr
                                 if (poSalesInquiryController.SalesInquiry().getSalesInquiryRequirementsCount() > 0 && !pbPurchaseTypeChanged) {
                                 } else {
                                     poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList().clear();
-                                    poJSON = poSalesInquiryController.SalesInquiry().getRequirements(String.valueOf(cmbCustomerGroup.getSelectionModel().getSelectedIndex()));
+                                    poSalesInquiryController.SalesInquiry().getRequirements(String.valueOf(cmbCustomerGroup.getSelectionModel().getSelectedIndex()));
                                     pbPurchaseTypeChanged = false;
-                                    if ("error".equals((String) poJSON.get("result"))) {
-                                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                    }
                                 }
                             }
                             loadTableRequirements.reload();
@@ -1026,7 +1022,7 @@ public class SalesInquiry_ConfirmationMCController implements Initializable, Scr
             cmbCustomerGroup.setOnAction(null);
             cmbCustomerGroup.getSelectionModel().select(lnCustomerGroup);
             cmbCustomerGroup.setOnAction(comboBoxActionListener);
-            
+
             if (pnRequirements < 0 || pnRequirements > poSalesInquiryController.SalesInquiry().getSalesInquiryRequirementsCount() - 1) { // intended to place here
                 return;
             }

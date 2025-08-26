@@ -888,11 +888,8 @@ public class SalesInquiry_ConfirmationCarController implements Initializable, Sc
                                 if (poSalesInquiryController.SalesInquiry().getSalesInquiryRequirementsCount() > 0 && !pbPurchaseTypeChanged) {
                                 } else {
                                     poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList().clear();
-                                    poJSON = poSalesInquiryController.SalesInquiry().getRequirements(String.valueOf(cmbCustomerGroup.getSelectionModel().getSelectedIndex()));
+                                    poSalesInquiryController.SalesInquiry().getRequirements(String.valueOf(cmbCustomerGroup.getSelectionModel().getSelectedIndex()));
                                     pbPurchaseTypeChanged = false;
-                                    if ("error".equals((String) poJSON.get("result"))) {
-                                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                    }
                                 }
                             }
                             loadTableRequirements.reload();
