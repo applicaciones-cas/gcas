@@ -204,6 +204,7 @@ public class InventoryStockTransferIssuanceNeoController_Approval implements Ini
                         + "\nCategory:" + psCategoryID);
 
             });
+            
             initializeTableDetail();
             initControlEvents();
         } catch (SQLException | GuanzonException e) {
@@ -254,6 +255,7 @@ public class InventoryStockTransferIssuanceNeoController_Approval implements Ini
         try {
              //get button id
             String btnID = ((Button) event.getSource()).getId();
+            String transactionStatus = poAppController.getMaster().getTransactionStatus();
             switch(btnID){
                 case "btnSearch":
                     if (lastFocusedControl == null) {
@@ -342,7 +344,12 @@ public class InventoryStockTransferIssuanceNeoController_Approval implements Ini
                     
                 case "btnUpdate":
                     if (poAppController.getMaster().getTransactionNo() == null || poAppController.getMaster().getTransactionNo().isEmpty()) {
-                        ShowMessageFX.Information("Please load transaction before proceeding..", "Stock Request Issuance", "");
+                        ShowMessageFX.Information("Please load transaction before proceeding..", "Stock Request Issuance Approval", "");
+                        return;
+                    }
+                    
+                    if (!transactionStatus.equals(InventoryStockIssuanceStatus.OPEN)) {
+                        ShowMessageFX.Information("Transaction already "+ transactionStatus, "Stock Request Issuance Approval", "");
                         return;
                     }
                     
@@ -355,7 +362,7 @@ public class InventoryStockTransferIssuanceNeoController_Approval implements Ini
                     
                 case "btnPrint":
                     if (poAppController.getMaster().getTransactionNo() == null || poAppController.getMaster().getTransactionNo().isEmpty()) {
-                        ShowMessageFX.Information("Please load transaction before proceeding..", "Stock Request Issuance", "");
+                        ShowMessageFX.Information("Please load transaction before proceeding..", "Stock Request Issuance Approval", "");
                         return;
                     }
                     if (ShowMessageFX.OkayCancel(null, psFormName, "Do you want to print the transaction ?") == true) {
@@ -373,13 +380,20 @@ public class InventoryStockTransferIssuanceNeoController_Approval implements Ini
                 
                 case "btnVoid":
                     if (poAppController.getMaster().getTransactionNo().isEmpty()) {
-                        ShowMessageFX.Information("Please load transaction before proceeding..", "Stock Request Issuance", "");
+                        ShowMessageFX.Information("Please load transaction before proceeding..", "Stock Request Issuance Approval", "");
                         break;
+                    }
+                    
+                    if (transactionStatus.equals(InventoryStockIssuanceStatus.VOID)) {
+                        ShowMessageFX.Information("Transaction already "+ transactionStatus, "Stock Request Issuance Approval", "");
+                        return;
                     }
                     
                     if (!isJSONSuccess(poAppController.VoidTransaction(), "Initialize Void Transaction")) {
                         return;
                     }
+                    
+                    clearAllInputs();
                     getLoadedTransaction();
                     pnEditMode = poAppController.getEditMode();
                 break;
@@ -773,7 +787,7 @@ public class InventoryStockTransferIssuanceNeoController_Approval implements Ini
 
         // Show-only based on mode
         initButtonControls(lbShow, "btnSave", "btnCancel");
-        initButtonControls(!lbShow, "btnNew", "btnUpdate");
+        initButtonControls(!lbShow, "btnNew", "btnUpdate", "btnPrint", "btnVoid");
 
         apMaster.setDisable(!lbShow);
         apDetail.setDisable(!lbShow);

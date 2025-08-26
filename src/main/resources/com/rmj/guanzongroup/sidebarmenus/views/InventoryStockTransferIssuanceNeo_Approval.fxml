@@ -378,7 +378,7 @@
                                             <TextField fx:id="tfSearchBarcode" maxHeight="25.0" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="1" />
                                             <TextField fx:id="tfSearchDescription" alignment="TOP_LEFT" maxHeight="1.7976931348623157E308" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.columnSpan="7" GridPane.rowIndex="2" />
                                                 <TextField fx:id="tfSupersede" promptText="Press F3: Search" GridPane.columnIndex="7" GridPane.columnSpan="2" GridPane.rowIndex="1" />
-                        <TextField fx:id="tfCost" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="12" GridPane.rowIndex="4" />
+                        <TextField fx:id="tfCost" alignment="CENTER_RIGHT" editable="false" promptText="0.00" GridPane.columnIndex="12" GridPane.rowIndex="4" />
                         <TextField fx:id="tfIssuedQty" alignment="CENTER_RIGHT" GridPane.columnIndex="12" GridPane.rowIndex="5" />
                                             <TextField fx:id="tfBrand" disable="true" maxHeight="25.0" styleClass="DisabledTextField" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="4" />
                                             <TextField fx:id="tfColor" disable="true" maxHeight="25.0" styleClass="DisabledTextField" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="6" />
@@ -436,7 +436,7 @@
                               </AnchorPane>
                   <AnchorPane>
                       <children>
-                              <AnchorPane fx:id="apMaster" maxHeight="1.7976931348623157E308" style="-fx-border-color: FF8201;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <AnchorPane fx:id="" maxHeight="1.7976931348623157E308" style="-fx-border-color: FF8201;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <children>
                                 <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                     <columnConstraints>
