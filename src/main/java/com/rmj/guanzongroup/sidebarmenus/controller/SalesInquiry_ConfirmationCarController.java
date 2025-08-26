@@ -886,6 +886,7 @@ public class SalesInquiry_ConfirmationCarController implements Initializable, Sc
                         loadTableRequirements.reload();
                         break;
                     case "Bank Applications":
+                        JFXUtil.clearTextFields(apBankApplications);
                         loadTableBankApplications.reload();
                         break;
                 }
@@ -999,8 +1000,10 @@ public class SalesInquiry_ConfirmationCarController implements Initializable, Sc
                     }
                 }
             }
-
+            cmbCustomerGroup.setOnAction(null);
             cmbCustomerGroup.getSelectionModel().select(lnCustomerGroup);
+            cmbCustomerGroup.setOnAction(comboBoxActionListener);
+
             if (pnRequirements < 0 || pnRequirements > poSalesInquiryController.SalesInquiry().getSalesInquiryRequirementsCount() - 1) { // intended to place here
                 return;
             }
@@ -1406,7 +1409,7 @@ public class SalesInquiry_ConfirmationCarController implements Initializable, Sc
 //                            if (poSalesInquiryController.SalesInquiry().getSalesInquiryRequirementsCount() > 0) {
 //                                poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList(0).setCustomerGroup(String.valueOf(selectedIndex));
 //                            }
-                            if (pnEditMode == EditMode.UPDATE){
+                            if (pnEditMode == EditMode.UPDATE) {
                                 if (poSalesInquiryController.SalesInquiry().getSalesInquiryRequirementsCount() > 0) {
                                     if (!poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList(0).getCustomerGroup().equals(String.valueOf(selectedIndex))) {
                                         if (ShowMessageFX.YesNo(null, pxeModuleName,

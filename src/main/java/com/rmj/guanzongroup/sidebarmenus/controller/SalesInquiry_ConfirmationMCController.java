@@ -874,6 +874,7 @@ public class SalesInquiry_ConfirmationMCController implements Initializable, Scr
         }
     }
 
+
     public void initTabPane() {
         tabpane.getSelectionModel().selectedItemProperty().addListener((obs, oldTab, newTab) -> {
             if (newTab != null) {
@@ -886,6 +887,7 @@ public class SalesInquiry_ConfirmationMCController implements Initializable, Scr
                         loadTableRequirements.reload();
                         break;
                     case "Bank Applications":
+                        JFXUtil.clearTextFields(apBankApplications);
                         loadTableBankApplications.reload();
                         break;
                 }
@@ -999,8 +1001,10 @@ public class SalesInquiry_ConfirmationMCController implements Initializable, Scr
                     }
                 }
             }
-
+            cmbCustomerGroup.setOnAction(null);
             cmbCustomerGroup.getSelectionModel().select(lnCustomerGroup);
+            cmbCustomerGroup.setOnAction(comboBoxActionListener);
+            
             if (pnRequirements < 0 || pnRequirements > poSalesInquiryController.SalesInquiry().getSalesInquiryRequirementsCount() - 1) { // intended to place here
                 return;
             }
@@ -1393,7 +1397,6 @@ public class SalesInquiry_ConfirmationMCController implements Initializable, Scr
 //                                if (!poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList(0).getCustomerGroup().equals(String.valueOf(selectedIndex))) {
 //                                    if (ShowMessageFX.YesNo(null, pxeModuleName,
 //                                            "Are you sure you want to change the Customer group?\nPlease note that doing so will delete all requirements list.\n\nDo you wish to proceed?") == true) {
-//                                        poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList().clear();
 //                                        poSalesInquiryController.SalesInquiry().getRequirements(String.valueOf(selectedIndex));
 //                                        JFXUtil.clearTextFields(apRequirements);
 //                                    }
@@ -1407,9 +1410,7 @@ public class SalesInquiry_ConfirmationMCController implements Initializable, Scr
 //                            if (poSalesInquiryController.SalesInquiry().getSalesInquiryRequirementsCount() > 0) {
 //                                poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList(0).setCustomerGroup(String.valueOf(selectedIndex));
 //                            }
-//                            loadTableRequirements.reload();
-                            
-                            if (pnEditMode == EditMode.UPDATE){
+                            if (pnEditMode == EditMode.UPDATE) {
                                 if (poSalesInquiryController.SalesInquiry().getSalesInquiryRequirementsCount() > 0) {
                                     if (!poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList(0).getCustomerGroup().equals(String.valueOf(selectedIndex))) {
                                         if (ShowMessageFX.YesNo(null, pxeModuleName,
