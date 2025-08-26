@@ -369,7 +369,7 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
                             break;
                         case "Requirements":
                             JFXUtil.clearTextFields(apRequirements);
-                            if (pnEditMode == EditMode.ADDNEW) {
+                            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                                 if (poSalesInquiryController.SalesInquiry().getSalesInquiryRequirementsCount() > 0 && !pbPurchaseTypeChanged) {
                                 } else {
                                     poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList().clear();
@@ -381,7 +381,7 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
                             break;
                         case "Bank Applications":
                             JFXUtil.clearTextFields(apBankApplications);
-                            if (pnEditMode == EditMode.ADDNEW) {
+                            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                                 if (poSalesInquiryController.SalesInquiry().getBankApplicationsCount() > 0 && !pbPurchaseTypeChanged) {
                                 } else {
                                     poSalesInquiryController.SalesInquiry().BankApplicationsList().clear();
