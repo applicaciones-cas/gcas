@@ -384,7 +384,6 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
                             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                                 if (poSalesInquiryController.SalesInquiry().getBankApplicationsCount() > 0 && !pbPurchaseTypeChanged) {
                                 } else {
-                                    poSalesInquiryController.SalesInquiry().BankApplicationsList().clear();
                                     pbPurchaseTypeChanged = false;
                                 }
                             }

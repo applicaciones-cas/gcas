@@ -899,7 +899,6 @@ public class SalesInquiry_ConfirmationMCController implements Initializable, Scr
                             if (pnEditMode == EditMode.UPDATE) {
                                 if (poSalesInquiryController.SalesInquiry().getBankApplicationsCount() > 0 && !pbPurchaseTypeChanged) {
                                 } else {
-                                    poSalesInquiryController.SalesInquiry().BankApplicationsList().clear();
                                     pbPurchaseTypeChanged = false;
                                 }
                             }
