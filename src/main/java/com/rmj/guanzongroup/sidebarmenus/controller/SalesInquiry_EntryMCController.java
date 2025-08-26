@@ -372,7 +372,7 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
                             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                                 if (poSalesInquiryController.SalesInquiry().getSalesInquiryRequirementsCount() > 0 && !pbPurchaseTypeChanged) {
                                 } else {
-                                    poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList().clear();
+                                    
                                     poSalesInquiryController.SalesInquiry().getRequirements(String.valueOf(cmbCustomerGroup.getSelectionModel().getSelectedIndex()));
                                     pbPurchaseTypeChanged = false;
                                 }

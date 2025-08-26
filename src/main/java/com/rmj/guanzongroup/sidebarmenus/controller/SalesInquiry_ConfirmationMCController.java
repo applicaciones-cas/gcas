@@ -887,7 +887,7 @@ public class SalesInquiry_ConfirmationMCController implements Initializable, Scr
                             if (pnEditMode == EditMode.UPDATE) {
                                 if (poSalesInquiryController.SalesInquiry().getSalesInquiryRequirementsCount() > 0 && !pbPurchaseTypeChanged) {
                                 } else {
-                                    poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList().clear();
+                                    
                                     poSalesInquiryController.SalesInquiry().getRequirements(String.valueOf(cmbCustomerGroup.getSelectionModel().getSelectedIndex()));
                                     pbPurchaseTypeChanged = false;
                                 }
