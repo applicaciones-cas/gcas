@@ -372,8 +372,11 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
                                 if (poSalesInquiryController.SalesInquiry().getSalesInquiryRequirementsCount() > 0 && !pbPurchaseTypeChanged) {
                                 } else {
                                     poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList().clear();
-                                    poSalesInquiryController.SalesInquiry().getRequirements(String.valueOf(cmbCustomerGroup.getSelectionModel().getSelectedIndex()));
+                                    poJSON = poSalesInquiryController.SalesInquiry().getRequirements(String.valueOf(cmbCustomerGroup.getSelectionModel().getSelectedIndex()));
                                     pbPurchaseTypeChanged = false;
+                                    if ("error".equals((String) poJSON.get("result"))) {
+                                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                    }
                                 }
                             }
                             loadTableRequirements.reload();
@@ -493,7 +496,10 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
                 }
             }
 
+            cmbCustomerGroup.setOnAction(null);
             cmbCustomerGroup.getSelectionModel().select(lnCustomerGroup);
+            cmbCustomerGroup.setOnAction(comboBoxActionListener);
+
             if (pnRequirements < 0 || pnRequirements > poSalesInquiryController.SalesInquiry().getSalesInquiryRequirementsCount() - 1) { // intended to place here
                 return;
             }
@@ -1439,7 +1445,10 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
                                 }
                             }
                         } else {
-                            poSalesInquiryController.SalesInquiry().getRequirements(String.valueOf(selectedIndex));
+                            poJSON = poSalesInquiryController.SalesInquiry().getRequirements(String.valueOf(selectedIndex));
+                            if ("error".equals((String) poJSON.get("result"))) {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                            }
                         }
                         loadTableRequirements.reload();
                         break;
