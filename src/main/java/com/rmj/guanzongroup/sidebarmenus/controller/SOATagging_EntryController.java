@@ -357,36 +357,30 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
     }
 
     public void loadHighlightFromDetail() {
-        try {
-            String lsTransNoBasis = "";
-            for (int lnCtr = 0; lnCtr < poSOATaggingController.SOATagging().getDetailCount(); lnCtr++) {
-                switch (poSOATaggingController.SOATagging().Detail(lnCtr).getSourceCode()) {
-                    case SOATaggingStatic.PaymentRequest:
-                        lsTransNoBasis = poSOATaggingController.SOATagging().Detail(lnCtr).PaymentRequestMaster().getSeriesNo();
-                        break;
-                    case SOATaggingStatic.CachePayable:
-                        lsTransNoBasis = poSOATaggingController.SOATagging().Detail(lnCtr).CachePayableMaster().getReferNo();
-                        break;
-                }
-                if (!JFXUtil.isObjectEqualTo(poSOATaggingController.SOATagging().Detail(lnCtr).getAppliedAmount(), null, "")) {
-                    if (poSOATaggingController.SOATagging().Detail(lnCtr).getAppliedAmount().doubleValue() > 0.0000) {
-                        plOrderNoPartial.add(new Pair<>(lsTransNoBasis, "1"));
-                    } else {
-                        plOrderNoPartial.add(new Pair<>(lsTransNoBasis, "0"));
-                    }
+        String lsTransNoBasis = "";
+        for (int lnCtr = 0; lnCtr < poSOATaggingController.SOATagging().getDetailCount(); lnCtr++) {
+            switch (poSOATaggingController.SOATagging().PayableType(lnCtr)) {
+                case SOATaggingStatic.PaymentRequest:
+                    lsTransNoBasis = poSOATaggingController.SOATagging().PaymentRequestList(lnCtr).getTransactionNo();
+                    break;
+                case SOATaggingStatic.CachePayable:
+                    lsTransNoBasis = poSOATaggingController.SOATagging().CachePayableList(lnCtr).getTransactionNo();
+                    break;
+            }
+            if (!JFXUtil.isObjectEqualTo(poSOATaggingController.SOATagging().Detail(lnCtr).getAppliedAmount(), null, "")) {
+                if (poSOATaggingController.SOATagging().Detail(lnCtr).getAppliedAmount().doubleValue() > 0.0000) {
+                    plOrderNoPartial.add(new Pair<>(lsTransNoBasis, "1"));
+                } else {
+                    plOrderNoPartial.add(new Pair<>(lsTransNoBasis, "0"));
                 }
             }
-            for (Pair<String, String> pair : plOrderNoPartial) {
-                if (!"".equals(pair.getKey()) && pair.getKey() != null) {
-                    JFXUtil.highlightByKey(tblViewMainList, pair.getKey(), "#A7C7E7", highlightedRowsMain);
-                }
-            }
-            JFXUtil.showRetainedHighlight(false, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, false);
-        } catch (SQLException ex) {
-            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
-        } catch (GuanzonException ex) {
-            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
         }
+        for (Pair<String, String> pair : plOrderNoPartial) {
+            if (!"".equals(pair.getKey()) && pair.getKey() != null) {
+                JFXUtil.highlightByKey(tblViewMainList, pair.getKey(), "#A7C7E7", highlightedRowsMain);
+            }
+        }
+        JFXUtil.showRetainedHighlight(false, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, false);
     }
 
     public void retrievePayables(boolean isInReferenceNo) {
