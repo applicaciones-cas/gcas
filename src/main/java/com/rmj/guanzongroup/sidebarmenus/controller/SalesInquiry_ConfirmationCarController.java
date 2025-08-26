@@ -876,20 +876,39 @@ public class SalesInquiry_ConfirmationCarController implements Initializable, Sc
 
     public void initTabPane() {
         tabpane.getSelectionModel().selectedItemProperty().addListener((obs, oldTab, newTab) -> {
-            if (newTab != null) {
-                String tabTitle = newTab.getText();
-                switch (tabTitle) {
-                    case "Inquiry":
-                        break;
-                    case "Requirements":
-                        JFXUtil.clearTextFields(apRequirements);
-                        loadTableRequirements.reload();
-                        break;
-                    case "Bank Applications":
-                        JFXUtil.clearTextFields(apBankApplications);
-                        loadTableBankApplications.reload();
-                        break;
+            try {
+                if (newTab != null) {
+                    String tabTitle = newTab.getText();
+                    switch (tabTitle) {
+                        case "Inquiry":
+                            break;
+                        case "Requirements":
+                            JFXUtil.clearTextFields(apRequirements);
+                            if (pnEditMode == EditMode.UPDATE) {
+                                if (poSalesInquiryController.SalesInquiry().getSalesInquiryRequirementsCount() > 0 && !pbPurchaseTypeChanged) {
+                                } else {
+                                    poSalesInquiryController.SalesInquiry().SalesInquiryRequimentsList().clear();
+                                    poSalesInquiryController.SalesInquiry().getRequirements(String.valueOf(cmbCustomerGroup.getSelectionModel().getSelectedIndex()));
+                                    pbPurchaseTypeChanged = false;
+                                }
+                            }
+                            loadTableRequirements.reload();
+                            break;
+                        case "Bank Applications":
+                            JFXUtil.clearTextFields(apBankApplications);
+                            if (pnEditMode == EditMode.UPDATE) {
+                                if (poSalesInquiryController.SalesInquiry().getBankApplicationsCount() > 0 && !pbPurchaseTypeChanged) {
+                                } else {
+                                    poSalesInquiryController.SalesInquiry().BankApplicationsList().clear();
+                                    pbPurchaseTypeChanged = false;
+                                }
+                            }
+                            loadTableBankApplications.reload();
+                            break;
+                    }
                 }
+            } catch (SQLException | GuanzonException ex) {
+                Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
             }
         });
     }
