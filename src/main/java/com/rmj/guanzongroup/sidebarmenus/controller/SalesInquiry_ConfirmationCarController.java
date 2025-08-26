@@ -887,7 +887,7 @@ public class SalesInquiry_ConfirmationCarController implements Initializable, Sc
                             if (pnEditMode == EditMode.UPDATE) {
                                 if (poSalesInquiryController.SalesInquiry().getSalesInquiryRequirementsCount() > 0 && !pbPurchaseTypeChanged) {
                                 } else {
-                                    
+
                                     poSalesInquiryController.SalesInquiry().getRequirements(String.valueOf(cmbCustomerGroup.getSelectionModel().getSelectedIndex()));
                                     pbPurchaseTypeChanged = false;
                                 }
@@ -1418,6 +1418,7 @@ public class SalesInquiry_ConfirmationCarController implements Initializable, Sc
                                             poJSON = poSalesInquiryController.SalesInquiry().getRequirements(String.valueOf(selectedIndex));
                                             if ("error".equals((String) poJSON.get("result"))) {
                                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                                poSalesInquiryController.SalesInquiry().getRequirements(String.valueOf(0));
                                             }
                                             JFXUtil.clearTextFields(apRequirements);
                                         }
@@ -1426,6 +1427,7 @@ public class SalesInquiry_ConfirmationCarController implements Initializable, Sc
                                     poJSON = poSalesInquiryController.SalesInquiry().getRequirements(String.valueOf(selectedIndex));
                                     if ("error".equals((String) poJSON.get("result"))) {
                                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                        poSalesInquiryController.SalesInquiry().getRequirements(String.valueOf(0));
                                     }
                                 }
                             }
