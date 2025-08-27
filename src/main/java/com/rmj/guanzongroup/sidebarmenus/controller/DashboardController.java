@@ -1702,14 +1702,59 @@ public class DashboardController implements Initializable {
                     psIndustryID = "04";
                     psCategoryID = "0009";
                     return "Stock Request Approval Monarch Hospitality";
-                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockTransferIssuanceNeo.fxml":
-                    return "Issuance without ROQ Entry";
-                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockTransferIssuanceNeo_Approval.fxml":
-                    return "Issuance without ROQ Approval";
-                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockTransferIssuanceNeo_History.fxml":
-                    return "Issuance without ROQ History";
-                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockTransferIssuance.fxml":
-                    return "Issuance with ROQ";
+
+                //Issuance Neo Entry 
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockIssuanceNeo.fxml":
+                    psIndustryID = "";
+                    psCategoryID = "0007";
+                    return "Issuance Entry";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockIssuanceNeoAppliance.fxml":
+                    psIndustryID = "07";
+                    psCategoryID = "0002";
+                    return "Issuance Entry Appliance";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockIssuanceNeoCar.fxml":
+                    psIndustryID = "03";
+                    psCategoryID = "0005";
+                    return "Issuance Entry Car";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockIssuanceNeoCar_SP.fxml":
+                    psIndustryID = "03";
+                    psCategoryID = "0006";
+                    return "Issuance Entry Car SP";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockIssuanceNeoLP_Food.fxml":
+                    psIndustryID = "05";
+                    psCategoryID = "0008";
+                    return "Issuance Entry LP Food";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockIssuanceNeoMC.fxml":
+                    psIndustryID = "02";
+                    psCategoryID = "0003";
+                    return "Issuance Entry MC";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockIssuanceNeoMC_SP.fxml":
+                    psIndustryID = "02";
+                    psCategoryID = "0004";
+                    return "Issuance Entry MC SP";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockIssuanceNeoMP.fxml":
+                    psIndustryID = "01";
+                    psCategoryID = "0001";
+                    return "Issuance Entry MP";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockIssuanceNeoMonarch_Food.fxml":
+                    psIndustryID = "04";
+                    psCategoryID = "0009";
+                    return "Issuance Entry Monarch Food";
+
+                //Issuance Neo Approval
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockIssuanceNeo_Approval.fxml":
+                    psIndustryID = "02";
+                    psCategoryID = "0003";
+                    return "Issuance Approval";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockIssuanceNeo_History.fxml":
+                    psIndustryID = "02";
+                    psCategoryID = "0003";
+                    return "Issuance History";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockIssuance.fxml":
+                    return "Clustered Issuance";
+                //Posting   
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockIssuancePosting.fxml":
+                    return "Issuance Posting";
 
                 //Update
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CheckStatusUpdate.fxml":
@@ -1817,7 +1862,7 @@ public class DashboardController implements Initializable {
                 /* ACCOUNTS/ACCOUNTS/ACCOUNTS RECEIVABLE */
                 case "/com/rmj/guanzongroup/sidebarmenus/views/AccountsReceivable.fxml":
                     return "Accounts Receivable";
-                
+
                 /*START SALES RESERVATION*/
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_EntryMC.fxml":
                     psIndustryID = "02";
@@ -1831,7 +1876,7 @@ public class DashboardController implements Initializable {
                     psIndustryID = "02";
                     psCategoryID = "0003";
                     return "Sales Reservation History MC";
-                    
+
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_EntryCar.fxml":
                     psIndustryID = "03";
                     psCategoryID = "0005";
@@ -1844,7 +1889,7 @@ public class DashboardController implements Initializable {
                     psIndustryID = "02";
                     psCategoryID = "0005";
                     return "Sales Reservation History Car";
-                
+
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_EntryMP.fxml":
                     psIndustryID = "01";
                     psCategoryID = "0001";
@@ -1856,9 +1901,8 @@ public class DashboardController implements Initializable {
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_HistoryMP.fxml":
                     psIndustryID = "01";
                     psCategoryID = "0001";
-                    return "Sales Reservation History MP";  
-                    
-                
+                    return "Sales Reservation History MP";
+
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_EntryAppliances.fxml":
                     psIndustryID = "07";
                     psCategoryID = "0001";
@@ -1870,8 +1914,8 @@ public class DashboardController implements Initializable {
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_HistoryAppliances.fxml":
                     psIndustryID = "07";
                     psCategoryID = "0001";
-                    return "Sales Reservation History Appliances"; 
-                    
+                    return "Sales Reservation History Appliances";
+
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_EntrySPMC.fxml":
                     psIndustryID = "02";
                     psCategoryID = "0004";
@@ -1883,8 +1927,8 @@ public class DashboardController implements Initializable {
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_HistorySPMC.fxml":
                     psIndustryID = "02";
                     psCategoryID = "0004";
-                    return "Sales Reservation History SPMC"; 
-                
+                    return "Sales Reservation History SPMC";
+
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_EntrySPCar.fxml":
                     psIndustryID = "03";
                     psCategoryID = "0006";
@@ -1896,8 +1940,8 @@ public class DashboardController implements Initializable {
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_HistorySPCar.fxml":
                     psIndustryID = "03";
                     psCategoryID = "0006";
-                    return "Sales Reservation History SPCar"; 
-                    
+                    return "Sales Reservation History SPCar";
+
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_EntryLP.fxml":
                     psIndustryID = "05";
                     psCategoryID = "0008";
@@ -1909,8 +1953,8 @@ public class DashboardController implements Initializable {
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_HistoryLP.fxml":
                     psIndustryID = "05";
                     psCategoryID = "0008";
-                    return "Sales Reservation History LP";     
-                
+                    return "Sales Reservation History LP";
+
                 default:
                     return null;
             }
@@ -2694,63 +2738,63 @@ public class DashboardController implements Initializable {
             case "Sales Inquiry History MH":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/SalesInquiry_HistoryMonarchHospitality.fxml";
             /*END SALES INQUIRY*/
-                
-                /*START SALES RESERVATION*/    
-                case "Sales Reservation Entry MC":
-                    return "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_EntryMC.fxml";
-                case "Sales Reservation Confirmation MC":
-                    return "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_ConfirmationMC.fxml";
-                case "Sales Reservation History MC":
-                    return "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_HistoryMC.fxml";
-                    
-                case "Sales Reservation Entry Car":
-                    return "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_EntryCar.fxml";
-                case "Sales Reservation Confirmation Car":
-                    return "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_ConfirmationCar.fxml";
-                case "Sales Reservation History Car":
-                    return "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_HistoryCar.fxml";
-                
-                case "Sales Reservation Entry MP":
-                    return "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_EntryMP.fxml";
-                case "Sales Reservation Confirmation MP":
-                    return "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_ConfirmationMP.fxml";
-                case "Sales Reservation History MP":
-                    return "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_HistoryMP.fxml";
-                    
-                case "Sales Reservation Entry Appliances":
-                    return "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_EntryAppliances.fxml";
-                case "Sales Reservation Confirmation Appliances":
-                    return "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_ConfirmationAppliances.fxml";
-                case "Sales Reservation History Appliances":
-                    return "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_HistoryAppliances.fxml";
-                 
-                case "Sales Reservation Entry SPMC":
-                    return "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_EntrySPMC.fxml";
-                case "Sales Reservation Confirmation SPMC":
-                    return "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_ConfirmationSPMC.fxml";
-                case "Sales Reservation History SPMC":
-                    return "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_HistorySPMC.fxml";
-                
-                case "Sales Reservation Entry SPCar":
-                    return "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_EntrySPCar.fxml";
-                case "Sales Reservation Confirmation SPCar":
-                    return "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_ConfirmationSPCar.fxml";
-                case "Sales Reservation History SPCar":
-                    return "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_HistorySPCar.fxml";
-                    
-                case "Sales Reservation Entry LP":
-                    return "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_EntryLP.fxml";
-                case "Sales Reservation Confirmation LP":
-                    return "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_ConfirmationLP.fxml";
-                case "Sales Reservation History LP":
-                    return "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_HistoryLP.fxml";
-                    
-                 case "Sales Reservation Entry Monarch Food":
-                    return "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_EntryMonarchFood.fxml";
-                case "Sales Reservation Confirmation Monarch Food":
-                    return "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_ConfirmationMonarchFood.fxml";
-                case "Sales Reservation History Monarch Food":
-                    return "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_HistoryMonarchFood.fxml";
+
+ /*START SALES RESERVATION*/
+            case "Sales Reservation Entry MC":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_EntryMC.fxml";
+            case "Sales Reservation Confirmation MC":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_ConfirmationMC.fxml";
+            case "Sales Reservation History MC":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_HistoryMC.fxml";
+
+            case "Sales Reservation Entry Car":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_EntryCar.fxml";
+            case "Sales Reservation Confirmation Car":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_ConfirmationCar.fxml";
+            case "Sales Reservation History Car":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_HistoryCar.fxml";
+
+            case "Sales Reservation Entry MP":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_EntryMP.fxml";
+            case "Sales Reservation Confirmation MP":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_ConfirmationMP.fxml";
+            case "Sales Reservation History MP":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_HistoryMP.fxml";
+
+            case "Sales Reservation Entry Appliances":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_EntryAppliances.fxml";
+            case "Sales Reservation Confirmation Appliances":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_ConfirmationAppliances.fxml";
+            case "Sales Reservation History Appliances":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_HistoryAppliances.fxml";
+
+            case "Sales Reservation Entry SPMC":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_EntrySPMC.fxml";
+            case "Sales Reservation Confirmation SPMC":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_ConfirmationSPMC.fxml";
+            case "Sales Reservation History SPMC":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_HistorySPMC.fxml";
+
+            case "Sales Reservation Entry SPCar":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_EntrySPCar.fxml";
+            case "Sales Reservation Confirmation SPCar":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_ConfirmationSPCar.fxml";
+            case "Sales Reservation History SPCar":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_HistorySPCar.fxml";
+
+            case "Sales Reservation Entry LP":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_EntryLP.fxml";
+            case "Sales Reservation Confirmation LP":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_ConfirmationLP.fxml";
+            case "Sales Reservation History LP":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_HistoryLP.fxml";
+
+            case "Sales Reservation Entry Monarch Food":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_EntryMonarchFood.fxml";
+            case "Sales Reservation Confirmation Monarch Food":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_ConfirmationMonarchFood.fxml";
+            case "Sales Reservation History Monarch Food":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_HistoryMonarchFood.fxml";
             /*END SALES RESeRVATION*/
 
         }
@@ -3213,15 +3257,35 @@ public class DashboardController implements Initializable {
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryRequest_ApprovalMonarchHospitality.fxml":
                     return new InventoryRequest_ApprovalMonarchHospitalityController();
 
-                //Issuance
-                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockTransferIssuanceNeo.fxml":
-                    return new InventoryStockTransferIssuanceNeoController();
-                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockTransferIssuance.fxml":
+                //Issuance Neo Entry
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockIssuanceNeo.fxml":
+                    return new InventoryStockIssuanceNeoController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockIssuanceNeoAppliance.fxml":
+                    return new InventoryStockIssuanceNeoControllerAppliance();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockIssuanceNeoCar.fxml":
+                    return new InventoryStockIssuanceNeoControllerCar();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockIssuanceNeoCar_SP.fxml":
+                    return new InventoryStockIssuanceNeoControllerCar_SP();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockIssuanceNeoLP_Food.fxml":
+                    return new InventoryStockIssuanceNeoControllerLP_Food();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockIssuanceNeoMC.fxml":
+                    return new InventoryStockIssuanceNeoControllerMC();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockIssuanceNeoMC_SP.fxml":
+                    return new InventoryStockIssuanceNeoControllerMC_SP();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockIssuanceNeoMP.fxml":
+                    return new InventoryStockIssuanceNeoControllerMP();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockIssuanceNeoMonarch_Food.fxml":
+                    return new InventoryStockIssuanceNeoControllerMonarach_Food();
+
+                //Issuance Neo Approval
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockIssuance.fxml":
                     return new InventoryStockTransferIssuanceController();
-                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockTransferIssuanceNeo_Approval.fxml":
-                    return new InventoryStockTransferIssuanceNeoController_Approval();
-                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockTransferIssuanceNeo_History.fxml":
-                    return new InventoryStockTransferIssuanceNeoController_History();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockIssuanceNeo_Approval.fxml":
+                    return new InventoryStockIssuanceNeoController_Approval();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockIssuanceNeo_History.fxml":
+                    return new InventoryStockIssuanceNeoController_History();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockIssuancePosting.fxml":
+                    return new InventoryStockIssuance_PostingController();
 
 //                UPDATE
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CheckStatusUpdate.fxml":
@@ -3629,66 +3693,65 @@ public class DashboardController implements Initializable {
 //                /* ACOUNTS/ACOUNTS/ACOUNTS RECEIVABLE */
 //                case "/com/rmj/guanzongroup/sidebarmenus/views/AccountsReceivable.fxml":
 //                    return new AccountsReceivableController();
-                    
-                    /*START SALES RESERVATION ORDER */
+
+                /*START SALES RESERVATION ORDER */
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_EntryMC.fxml":
                     return new SalesReservation_EntryMCController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_ConfirmationMC.fxml":
                     return new SalesReservation_ConfirmationMCController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_HistoryMC.fxml":
                     return new SalesReservation_HistoryMCController();
-                    
+
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_EntryCar.fxml":
                     return new SalesReservation_EntryCarController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_ConfirmationCar.fxml":
                     return new SalesReservation_ConfirmationCarController();
-                    case "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_HistoryCar.fxml":
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_HistoryCar.fxml":
                     return new SalesReservation_HistoryCarController();
-                    
+
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_EntryMP.fxml":
                     return new SalesReservation_EntryMPController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_ConfirmationMP.fxml":
                     return new SalesReservation_ConfirmationMPController();
-                    case "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_HistoryMP.fxml":
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_HistoryMP.fxml":
                     return new SalesReservation_HistoryMPController();
-                    
+
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_EntryAppliances.fxml":
-                    return new SalesReservation_EntryAppliancesController(); 
+                    return new SalesReservation_EntryAppliancesController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_ConfirmationAppliances.fxml":
                     return new SalesReservation_ConfirmationAppliancesController();
-                    case "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_HistoryAppliances.fxml":
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_HistoryAppliances.fxml":
                     return new SalesReservation_HistoryAppliancesController();
-                
+
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_EntrySPMC.fxml":
-                    return new SalesReservation_EntrySPMCController(); 
+                    return new SalesReservation_EntrySPMCController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_ConfirmationSPMC.fxml":
-                    return new SalesReservation_ConfirmationSPMCController(); 
-                    case "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_HistorySPMC.fxml":
+                    return new SalesReservation_ConfirmationSPMCController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_HistorySPMC.fxml":
                     return new SalesReservation_HistorySPMCController();
-                
+
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_EntrySPCar.fxml":
-                    return new SalesReservation_EntrySPCarController(); 
+                    return new SalesReservation_EntrySPCarController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_ConfirmationSPCar.fxml":
-                    return new SalesReservation_ConfirmationSPCarController(); 
-                    case "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_HistorySPCar.fxml":
+                    return new SalesReservation_ConfirmationSPCarController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_HistorySPCar.fxml":
                     return new SalesReservation_HistorySPCarController();
-                
+
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_EntryLP.fxml":
-                    return new SalesReservation_EntryLPController(); 
+                    return new SalesReservation_EntryLPController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_ConfirmationLP.fxml":
                     return new SalesReservation_ConfirmationLPController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_HistoryLP.fxml":
                     return new SalesReservation_HistoryLPController();
-                
+
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_EntryMonarchFood.fxml":
-                    return new SalesReservation_EntryMonarchFoodController(); 
+                    return new SalesReservation_EntryMonarchFoodController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_ConfirmationMonarchFood.fxml":
                     return new SalesReservation_ConfirmationMonarchFoodController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_HistoryMonarchFood.fxml":
                     return new SalesReservation_HistoryMonarchFoodController();
-                
-                  
-                  /*END SALES RESERVATION ORDER */
+
+                /*END SALES RESERVATION ORDER */
                 default:
                     return null;
             }
@@ -4826,7 +4889,6 @@ public class DashboardController implements Initializable {
         String jsonString = "["
                 + "{\"access_level\":\"01 02 03 04 05 06 07\",\"menu_name\":\"Sales\",\"fxml_path\":\"Sales\",\"controller_path\":\"sales.controller\",\"menu_id\":\"001\",\"menu_parent\":\"\"},"
                 + "{\"access_level\":\"01 02 03 04 05 06 07\",\"menu_name\":\"Entry\",\"fxml_path\":\"Entry\",\"controller_path\":\"entry.controller\",\"menu_id\":\"002\",\"menu_parent\":\"001\"},"
-                
                 // Sales Inquiry Entry
                 + "{\"access_level\":\"01 02 03 04 05 06 07\",\"menu_name\":\"Sales Inquiry\",\"fxml_path\":\"Sales Inquiry\",\"controller_path\":\"sales.controller\",\"menu_id\":\"003\",\"menu_parent\":\"002\"},"
                 + "{\"access_level\":\"07\",\"menu_name\":\"Appliances\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SalesInquiry_EntryAppliances.fxml\",\"controller_path\":\"SalesInquiry_EntryAppliances.controller\",\"menu_id\":\"122\",\"menu_parent\":\"003\"},"
@@ -4839,7 +4901,6 @@ public class DashboardController implements Initializable {
                 + "{\"access_level\":\"01\",\"menu_name\":\"Mobile Phone\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SalesInquiry_EntryMP.fxml\",\"controller_path\":\"SalesInquiry_EntryMP.controller\",\"menu_id\":\"010\",\"menu_parent\":\"003\"},"
                 + "{\"access_level\":\"03\",\"menu_name\":\"Spare Parts Car\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SalesInquiry_EntrySPCar.fxml\",\"controller_path\":\"SalesInquiry_EntrySPCar.controller\",\"menu_id\":\"01 02 03 04 05 06\",\"menu_parent\":\"003\"},"
                 + "{\"access_level\":\"02\",\"menu_name\":\"Spare Parts Motorycle\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SalesInquiry_EntrySPMC.fxml\",\"controller_path\":\"SalesInquiry_EntrySPMC.controller\",\"menu_id\":\"012\",\"menu_parent\":\"003\"},"
-                
                 // Sales Qoutation Entry
                 + "{\"access_level\":\"01 02 03 04 05 06 07\",\"menu_name\":\"Sales Qoutation\",\"fxml_path\":\"Sales Qoutation\",\"controller_path\":\"sales.controller\",\"menu_id\":\"013\",\"menu_parent\":\"002\"},"
                 + "{\"access_level\":\"07\",\"menu_name\":\"Appliances\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SalesQoutation_EntryAppliances.fxml\",\"controller_path\":\"SalesQoutation_EntryAppliances.controller\",\"menu_id\":\"119\",\"menu_parent\":\"013\"},"
@@ -4852,8 +4913,7 @@ public class DashboardController implements Initializable {
                 + "{\"access_level\":\"01\",\"menu_name\":\"Mobile Phone\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SalesQoutation_EntryMP.fxml\",\"controller_path\":\"SalesQoutation_EntryMP.controller\",\"menu_id\":\"020\",\"menu_parent\":\"013\"},"
                 + "{\"access_level\":\"03\",\"menu_name\":\"Spare Parts Car\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SalesQoutation_EntrySPCar.fxml\",\"controller_path\":\"DeliveryAcceptance_SPCar.controller\",\"menu_id\":\"021\",\"menu_parent\":\"013\"},"
                 + "{\"access_level\":\"02\",\"menu_name\":\"Spare Parts Motorycle\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SalesQoutation_EntrySPMC.fxml\",\"controller_path\":\"SalesQoutation_EntrySPMC.controller\",\"menu_id\":\"022\",\"menu_parent\":\"013\"},"
-                
-                 /*START SALES RESERVATION ENTRY */
+                /*START SALES RESERVATION ENTRY */
                 + "{\"access_level\":\"01 02 03 04 05 06 07\",\"menu_name\":\"Sales Reservation\",\"fxml_path\":\"Sales Reservation\",\"controller_path\":\"sales.controller\",\"menu_id\":\"086\",\"menu_parent\":\"002\"},"
                 + "{\"access_level\":\"07\",\"menu_name\":\"Appliances\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_EntryAppliances.fxml\",\"controller_path\":\"SalesReservation_EntryAppliances.controller\",\"menu_id\":\"087\",\"menu_parent\":\"086\"},"
                 + "{\"access_level\":\"03\",\"menu_name\":\"Car\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_EntryCar.fxml\",\"controller_path\":\"SalesReservation_EntryCar.controller\",\"menu_id\":\"088\",\"menu_parent\":\"086\"},"
@@ -4865,7 +4925,6 @@ public class DashboardController implements Initializable {
                 + "{\"access_level\":\"01\",\"menu_name\":\"Mobile Phone\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_EntryMP.fxml\",\"controller_path\":\"SalesReservation_EntryMP.controller\",\"menu_id\":\"094\",\"menu_parent\":\"086\"},"
                 + "{\"access_level\":\"03\",\"menu_name\":\"Spare Parts Car\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_EntrySPCar.fxml\",\"controller_path\":\"PurchaseOrderReturn_SPCar.controller\",\"menu_id\":\"095\",\"menu_parent\":\"086\"},"
                 + "{\"access_level\":\"02\",\"menu_name\":\"Spare Parts Motorycle\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_EntrySPMC.fxml\",\"controller_path\":\"SalesReservation_EntrySPMC.controller\",\"menu_id\":\"096\",\"menu_parent\":\"086\"},"
-    
                 // Sales Inquiry Confirmation
                 + "{\"access_level\":\"01 02 03 04 05 06 07\",\"menu_name\":\"Confirmation\",\"fxml_path\":\"Confirmation\",\"controller_path\":\"confirmation.controller\",\"menu_id\":\"023\",\"menu_parent\":\"001\"},"
                 + "{\"access_level\":\"01 02 03 04 05 06 07\",\"menu_name\":\"Sales Inquiry\",\"fxml_path\":\"Sales Inquiry\",\"controller_path\":\"sales.controller\",\"menu_id\":\"024\",\"menu_parent\":\"023\"},"
@@ -4879,7 +4938,6 @@ public class DashboardController implements Initializable {
                 + "{\"access_level\":\"01\",\"menu_name\":\"Mobile Phone\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SalesInquiry_ConfirmationMP.fxml\",\"controller_path\":\"SalesInquiry_ConfirmationMP.controller\",\"menu_id\":\"031\",\"menu_parent\":\"024\"},"
                 + "{\"access_level\":\"03\",\"menu_name\":\"Spare Parts Car\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SalesInquiry_ConfirmationSPCar.fxml\",\"controller_path\":\"SalesInquiry_ConfirmationSPCar.controller\",\"menu_id\":\"032\",\"menu_parent\":\"024\"},"
                 + "{\"access_level\":\"02\",\"menu_name\":\"Spare Parts Motorycle\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SalesInquiry_ConfirmationSPMC.fxml\",\"controller_path\":\"SalesInquiry_ConfirmationSPMC.controller\",\"menu_id\":\"033\",\"menu_parent\":\"024\"},"
-                
                 // Sales Qoutation Confirmation
                 + "{\"access_level\":\"01 02 03 04 05 06 07\",\"menu_name\":\"Sales Qoutation\",\"fxml_path\":\"Sales Qoutation\",\"controller_path\":\"sales.controller\",\"menu_id\":\"034\",\"menu_parent\":\"023\"},"
                 + "{\"access_level\":\"07\",\"menu_name\":\"Appliances\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SalesQoutation_ConfirmationAppliances.fxml\",\"controller_path\":\"SalesQoutation_ConfirmationAppliances.controller\",\"menu_id\":\"120\",\"menu_parent\":\"034\"},"
@@ -4892,7 +4950,6 @@ public class DashboardController implements Initializable {
                 + "{\"access_level\":\"01\",\"menu_name\":\"Mobile Phone\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SalesQoutation_ConfirmationMP.fxml\",\"controller_path\":\"SalesQoutation_ConfirmationMP.controller\",\"menu_id\":\"041\",\"menu_parent\":\"034\"},"
                 + "{\"access_level\":\"03\",\"menu_name\":\"Spare Parts Car\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SalesQoutation_ConfirmationSPCar.fxml\",\"controller_path\":\"SalesQoutation_ConfirmationSPCar.controller\",\"menu_id\":\"042\",\"menu_parent\":\"034\"},"
                 + "{\"access_level\":\"02\",\"menu_name\":\"Spare Parts Motorycle\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SalesQoutation_ConfirmationSPMC.fxml\",\"controller_path\":\"SalesQoutation_ConfirmationSPMC.controller\",\"menu_id\":\"043\",\"menu_parent\":\"034\"},"
-                    
                 // Sales Reservation Confirmation
                 + "{\"access_level\":\"01 02 03 04 05 06 07\",\"menu_name\":\"Sales Reservation\",\"fxml_path\":\"Sales Reservation\",\"controller_path\":\"sales.controller\",\"menu_id\":\"097\",\"menu_parent\":\"023\"},"
                 + "{\"access_level\":\"07\",\"menu_name\":\"Appliances\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_ConfirmationAppliances.fxml\",\"controller_path\":\"SalesReservation_ConfirmationAppliances.controller\",\"menu_id\":\"098\",\"menu_parent\":\"097\"},"
@@ -4905,8 +4962,7 @@ public class DashboardController implements Initializable {
                 + "{\"access_level\":\"01\",\"menu_name\":\"Mobile Phone\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_ConfirmationMP.fxml\",\"controller_path\":\"SalesReservation_ConfirmationMP.controller\",\"menu_id\":\"105\",\"menu_parent\":\"097\"},"
                 + "{\"access_level\":\"03\",\"menu_name\":\"Spare Parts Car\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_ConfirmationSPCar.fxml\",\"controller_path\":\"PurchaseOrderReturn_SPCar.controller\",\"menu_id\":\"106\",\"menu_parent\":\"097\"},"
                 + "{\"access_level\":\"02\",\"menu_name\":\"Spare Parts Motorycle\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_ConfirmationSPMC.fxml\",\"controller_path\":\"SalesReservation_ConfirmationSPMC.controller\",\"menu_id\":\"107\",\"menu_parent\":\"097\"},"
-                
-                 // Sales Inquiry History
+                // Sales Inquiry History
                 + "{\"access_level\":\"01 02 03 04 05 06 07\",\"menu_name\":\"History\",\"fxml_path\":\"History\",\"controller_path\":\"history.controller\",\"menu_id\":\"065\",\"menu_parent\":\"001\"},"
                 + "{\"access_level\":\"01 02 03 04 05 06 07\",\"menu_name\":\"Sales Inquiry\",\"fxml_path\":\"Sales Inquiry\",\"controller_path\":\"sales.controller\",\"menu_id\":\"066\",\"menu_parent\":\"065\"},"
                 + "{\"access_level\":\"07\",\"menu_name\":\"Appliances\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SalesInquiry_HistoryAppliances.fxml\",\"controller_path\":\"SalesInquiry_HistoryAppliances.controller\",\"menu_id\":\"125\",\"menu_parent\":\"066\"},"
@@ -4919,7 +4975,6 @@ public class DashboardController implements Initializable {
                 + "{\"access_level\":\"01\",\"menu_name\":\"Mobile Phone\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SalesInquiry_HistoryMP.fxml\",\"controller_path\":\"SalesInquiry_HistoryMP.controller\",\"menu_id\":\"073\",\"menu_parent\":\"066\"},"
                 + "{\"access_level\":\"03\",\"menu_name\":\"Spare Parts Car\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SalesInquiry_HistorySPCar.fxml\",\"controller_path\":\"SalesInquiry_HistorySPCar.controller\",\"menu_id\":\"074\",\"menu_parent\":\"066\"},"
                 + "{\"access_level\":\"02\",\"menu_name\":\"Spare Parts Motorycle\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SalesInquiry_HistorySPMC.fxml\",\"controller_path\":\"SalesInquiry_HistorySPMC.controller\",\"menu_id\":\"075\",\"menu_parent\":\"066\"},"
-                
                 // Sales Qoutation History
                 + "{\"access_level\":\"01 02 03 04 05 06 07\",\"menu_name\":\"Sales Qouttaion\",\"fxml_path\":\"Sales Qouttaion\",\"controller_path\":\"sales.controller\",\"menu_id\":\"076\",\"menu_parent\":\"065\"},"
                 + "{\"access_level\":\"07\",\"menu_name\":\"Appliances\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DSalesQoutation_HistoryAppliances.fxml\",\"controller_path\":\"DSalesQoutation_HistoryAppliances.controller\",\"menu_id\":\"121\",\"menu_parent\":\"076\"},"
@@ -4932,7 +4987,6 @@ public class DashboardController implements Initializable {
                 + "{\"access_level\":\"01\",\"menu_name\":\"Mobile Phone\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DSalesQoutation_HistoryMP.fxml\",\"controller_path\":\"DSalesQoutation_HistoryMP.controller\",\"menu_id\":\"083\",\"menu_parent\":\"076\"},"
                 + "{\"access_level\":\"03\",\"menu_name\":\"Spare Parts Car\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DSalesQoutation_HistorySPCar.fxml\",\"controller_path\":\"DSalesQoutation_HistorySPCar.controller\",\"menu_id\":\"084\",\"menu_parent\":\"076\"},"
                 + "{\"access_level\":\"02\",\"menu_name\":\"Spare Parts Motorycle\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DSalesQoutation_HistorySPMC.fxml\",\"controller_path\":\"DSalesQoutation_HistorySPMC.controller\",\"menu_id\":\"085\",\"menu_parent\":\"076\"},"
-                
                 //  Sales Reservation History
                 + "{\"access_level\":\"01 02 03 04 05 06 07\",\"menu_name\":\"Sales Reservation\",\"fxml_path\":\"Sales Reservation\",\"controller_path\":\"sales.controller\",\"menu_id\":\"108\",\"menu_parent\":\"065\"},"
                 + "{\"access_level\":\"07\",\"menu_name\":\"Appliances\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_HistoryAppliances.fxml\",\"controller_path\":\"SalesReservation_HistoryAppliances.controller\",\"menu_id\":\"109\",\"menu_parent\":\"108\"},"
@@ -4945,7 +4999,7 @@ public class DashboardController implements Initializable {
                 + "{\"access_level\":\"01\",\"menu_name\":\"Mobile Phone\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_HistoryMP.fxml\",\"controller_path\":\"SalesReservation_HistoryMP.controller\",\"menu_id\":\"116\",\"menu_parent\":\"108\"},"
                 + "{\"access_level\":\"03\",\"menu_name\":\"Spare Parts Car\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_HistorySPCar.fxml\",\"controller_path\":\"PurchaseOrderReturn_SPCar.controller\",\"menu_id\":\"117\",\"menu_parent\":\"108\"},"
                 + "{\"access_level\":\"02\",\"menu_name\":\"Spare Parts Motorycle\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SalesReservation_HistorySPMC.fxml\",\"controller_path\":\"SalesReservation_HistorySPMC.controller\",\"menu_id\":\"118\",\"menu_parent\":\"108\"}"
-                 + "{\"access_level\":\"01 02 03 04 05 06 07\",\"menu_name\":\"Sales\",\"fxml_path\":\"Sales\",\"controller_path\":\"sales.controller\",\"menu_id\":\"001\",\"menu_parent\":\"\"},"
+                + "{\"access_level\":\"01 02 03 04 05 06 07\",\"menu_name\":\"Sales\",\"fxml_path\":\"Sales\",\"controller_path\":\"sales.controller\",\"menu_id\":\"001\",\"menu_parent\":\"\"},"
                 + "]";
 
 //                "["
@@ -5127,26 +5181,38 @@ public class DashboardController implements Initializable {
                 + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Delivery Confirmation\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DeliverySchedule_Confirmation.fxml\",\"controller_path\":\"DeliveryScheduleConfirmation.controller\",\"menu_id\":\"006\",\"menu_parent\":\"003\"},"
                 //History
                 + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"History\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"004\",\"menu_parent\":\"001\"},"
-                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Delivery History\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DeliverySchedule_History.fxml\",\"controller_path\":\"DeliveryScheduleHistory.controller\",\"menu_id\":\"007\",\"menu_parent\":\"004\"},"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Delivery Schedule\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DeliverySchedule_History.fxml\",\"controller_path\":\"DeliveryScheduleHistory.controller\",\"menu_id\":\"007\",\"menu_parent\":\"004\"},"
                 //Stock Request Approval
-                + "{\"access_level\":\"01 02 03 04 05 06 07\",\"menu_name\":\"Stock Request\",\"fxml_path\":\"Stock Request\",\"controller_path\":\"stockrequest.controller\",\"menu_id\":\"008\",\"menu_parent\":\"001\"},"
-                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Stock Request Approval\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/InventoryRequest_Approval.fxml\",\"controller_path\":\"\",\"menu_id\":\"009\",\"menu_parent\":\"008\"},"
-                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Stock Request Approval Appliance\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/InventoryRequest_ApprovalAppliance.fxml\",\"controller_path\":\"\",\"menu_id\":\"010\",\"menu_parent\":\"008\"},"
-                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Stock Request Approval Car\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/InventoryRequest_ApprovalCar.fxml\",\"controller_path\":\"\",\"menu_id\":\"011\",\"menu_parent\":\"008\"},"
-                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Stock Request Approval Car SP\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/InventoryRequest_ApprovalCar_SP.fxml\",\"controller_path\":\"\",\"menu_id\":\"012\",\"menu_parent\":\"008\"},"
-                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Stock Request Approval LP\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/InventoryRequest_ApprovalLP.fxml\",\"controller_path\":\"\",\"menu_id\":\"013\",\"menu_parent\":\"008\"},"
-                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Stock Request Approval MC\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/InventoryRequest_ApprovalMC.fxml\",\"controller_path\":\"\",\"menu_id\":\"014\",\"menu_parent\":\"008\"},"
-                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Stock Request Approval MC SP\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/InventoryRequest_ApprovalMC_SP.fxml\",\"controller_path\":\"\",\"menu_id\":\"015\",\"menu_parent\":\"008\"},"
-                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Stock Request Approval MP\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/InventoryRequest_ApprovalMP.fxml\",\"controller_path\":\"\",\"menu_id\":\"016\",\"menu_parent\":\"008\"},"
-                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Stock Request Approval Monarch Food\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/InventoryRequest_ApprovalMonarchFood.fxml\",\"controller_path\":\"\",\"menu_id\":\"017\",\"menu_parent\":\"008\"},"
-                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Stock Request Approval Monarch Hospitality\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/InventoryRequest_ApprovalMonarchHospitality.fxml\",\"controller_path\":\"\",\"menu_id\":\"018\",\"menu_parent\":\"008\"},"
-                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Stock Request Approval LP Food\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/InventoryRequest_ApprovalLPFood.fxml\",\"controller_path\":\"\",\"menu_id\":\"019\",\"menu_parent\":\"008\"},"
+                + "{\"access_level\":\"01 02 03 04 05 06 07\",\"menu_name\":\"Stock Request Approval\",\"fxml_path\":\"Approval\",\"controller_path\":\"stockrequest.controller\",\"menu_id\":\"008\",\"menu_parent\":\"001\"},"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Stock Request\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/InventoryRequest_Approval.fxml\",\"controller_path\":\"\",\"menu_id\":\"009\",\"menu_parent\":\"008\"},"
+                + "{\"access_level\":\"07\",\"menu_name\":\"Stock Request Appliance\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/InventoryRequest_ApprovalAppliance.fxml\",\"controller_path\":\"\",\"menu_id\":\"010\",\"menu_parent\":\"008\"},"
+                + "{\"access_level\":\"03\",\"menu_name\":\"Stock Request Car\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/InventoryRequest_ApprovalCar.fxml\",\"controller_path\":\"\",\"menu_id\":\"011\",\"menu_parent\":\"008\"},"
+                + "{\"access_level\":\"03\",\"menu_name\":\"Stock Request Car SP\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/InventoryRequest_ApprovalCar_SP.fxml\",\"controller_path\":\"\",\"menu_id\":\"012\",\"menu_parent\":\"008\"},"
+                + "{\"access_level\":\"02\",\"menu_name\":\"Stock Request MC\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/InventoryRequest_ApprovalMC.fxml\",\"controller_path\":\"\",\"menu_id\":\"014\",\"menu_parent\":\"008\"},"
+                + "{\"access_level\":\"02\",\"menu_name\":\"Stock Request MC SP\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/InventoryRequest_ApprovalMC_SP.fxml\",\"controller_path\":\"\",\"menu_id\":\"015\",\"menu_parent\":\"008\"},"
+                + "{\"access_level\":\"01\",\"menu_name\":\"Stock Request MP\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/InventoryRequest_ApprovalMP.fxml\",\"controller_path\":\"\",\"menu_id\":\"016\",\"menu_parent\":\"008\"},"
+                + "{\"access_level\":\"04\",\"menu_name\":\"Stock Request Monarch Food\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/InventoryRequest_ApprovalMonarchFood.fxml\",\"controller_path\":\"\",\"menu_id\":\"017\",\"menu_parent\":\"008\"},"
+                + "{\"access_level\":\"05\",\"menu_name\":\"Stock Request LP Food\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/InventoryRequest_ApprovalLPFood.fxml\",\"controller_path\":\"\",\"menu_id\":\"019\",\"menu_parent\":\"008\"},"
                 //Stock Transfer
-                + "{\"access_level\":\"01 02 03 04 05 06 07\",\"menu_name\":\"Stock Transfer\",\"fxml_path\":\"Stock Transfer\",\"controller_path\":\"stocktransfer.controller\",\"menu_id\":\"020\",\"menu_parent\":\"001\"},"
-                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Issuance without ROQ Entry\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockTransferIssuanceNeo.fxml\",\"controller_path\":\"\",\"menu_id\":\"021\",\"menu_parent\":\"020\"},"
-                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Issuance with ROQ\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockTransferIssuance.fxml\",\"controller_path\":\"\",\"menu_id\":\"022\",\"menu_parent\":\"020\"},"
-                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Issuance without ROQ Approval\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockTransferIssuanceNeo_Approval.fxml\",\"controller_path\":\"\",\"menu_id\":\"023\",\"menu_parent\":\"020\"},"
-                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Issuance without ROQ History\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockTransferIssuanceNeo_History.fxml\",\"controller_path\":\"\",\"menu_id\":\"024\",\"menu_parent\":\"020\"}"
+                + "{\"access_level\":\"01 02 03 04 05 06 07\",\"menu_name\":\"Stock Issuance \",\"fxml_path\":\"Stock Transfer\",\"controller_path\":\"stocktransfer.controller\",\"menu_id\":\"020\",\"menu_parent\":\"001\"},"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Entry\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"021\",\"menu_parent\":\"020\"},"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Clustered Issuance Entry\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockIssuance.fxml\",\"controller_path\":\"\",\"menu_id\":\"022\",\"menu_parent\":\"021\"},"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Issuance\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockIssuanceNeo.fxml\",\"controller_path\":\"\",\"menu_id\":\"023\",\"menu_parent\":\"021\"},"
+                + "{\"access_level\":\"07\",\"menu_name\":\"Issuance Appliance\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockIssuanceNeoAppliance.fxml\",\"controller_path\":\"\",\"menu_id\":\"024\",\"menu_parent\":\"021\"},"
+                + "{\"access_level\":\"03\",\"menu_name\":\"Issuance Car\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockIssuanceNeoCar.fxml\",\"controller_path\":\"\",\"menu_id\":\"025\",\"menu_parent\":\"021\"},"
+                + "{\"access_level\":\"03\",\"menu_name\":\"Issuance Car SP\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockIssuanceNeoCar_SP.fxml\",\"controller_path\":\"\",\"menu_id\":\"026\",\"menu_parent\":\"021\"},"
+                + "{\"access_level\":\"05\",\"menu_name\":\"Issuance LP Food\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockIssuanceNeoLP_Food.fxml\",\"controller_path\":\"\",\"menu_id\":\"027\",\"menu_parent\":\"021\"},"
+                + "{\"access_level\":\"02\",\"menu_name\":\"Issuance MC\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockIssuanceNeoMC.fxml\",\"controller_path\":\"\",\"menu_id\":\"028\",\"menu_parent\":\"021\"},"
+                + "{\"access_level\":\"02\",\"menu_name\":\"Issuance MC SP\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockIssuanceNeoMC_SP.fxml\",\"controller_path\":\"\",\"menu_id\":\"029\",\"menu_parent\":\"021\"},"
+                + "{\"access_level\":\"01\",\"menu_name\":\"Issuance MP\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockIssuanceNeoMP.fxml\",\"controller_path\":\"\",\"menu_id\":\"030\",\"menu_parent\":\"021\"},"
+                + "{\"access_level\":\"04\",\"menu_name\":\"Issuance Monarch Food\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockIssuanceNeoMonarch_Food.fxml\",\"controller_path\":\"\",\"menu_id\":\"031\",\"menu_parent\":\"021\"},"
+                
+                //Issuance Approval
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Approval\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"032\",\"menu_parent\":\"020\"},"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Issuance Approval\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockIssuanceNeo_Approval.fxml\",\"controller_path\":\"\",\"menu_id\":\"033\",\"menu_parent\":\"032\"},"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Issuance History\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockIssuanceNeo_History.fxml\",\"controller_path\":\"\",\"menu_id\":\"034\",\"menu_parent\":\"020\"}"
+                //Stock Issuance Posting
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Issuance Posting \",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockIssuancePosting.fxml\",\"controller_path\":\"\",\"menu_id\":\"035\",\"menu_parent\":\"020\"}"
                 + "]";
         JSONParser parser = new JSONParser();
         try {

@@ -50,9 +50,6 @@ import org.guanzon.appdriver.base.GRiderCAS;
 import org.guanzon.appdriver.base.LogWrapper;
 import org.guanzon.appdriver.constant.EditMode;
 import javafx.concurrent.Task;
-import static javafx.scene.input.KeyCode.ENTER;
-import static javafx.scene.input.KeyCode.F3;
-import static javafx.scene.input.KeyCode.TAB;
 import org.guanzon.appdriver.base.GuanzonException;
 import org.json.simple.JSONObject;
 import ph.com.guanzongroup.cas.inv.warehouse.t4.InventoryStockIssuanceNeo;
@@ -67,18 +64,18 @@ import ph.com.guanzongroup.cas.inv.warehouse.t4.model.services.DeliveryIssuanceC
  *
  * @author User
  */
-public class InventoryStockTransferIssuanceNeoController_Approval implements Initializable, ScreenInterface {
-    
+public class InventoryStockIssuanceNeoController_History implements Initializable, ScreenInterface {
+
     private GRiderCAS poApp;
     private LogWrapper poLogWrapper;
-    private String psFormName = "Issuance without ROQ Approval";
+    private String psFormName = "Issuance History";
     private String psIndustryID, psCompanyID, psCategoryID;
     private Control lastFocusedControl;
     private InventoryStockIssuanceNeo poAppController;
     private ObservableList<Model_Inventory_Transfer_Master> laTransactionMaster;
     private ObservableList<Model_Inventory_Transfer_Detail> laTransactionDetail;
     private int pnSelectMaster, pnEditMode, pnCTransactionDetail;
-    
+
     private final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
         TextField loTextField = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
         String lsTextFieldID = loTextField.getId();
@@ -91,70 +88,50 @@ public class InventoryStockTransferIssuanceNeoController_Approval implements Ini
         if (!nv) {
             /*Lost Focus*/
             switch (lsTextFieldID) {
-                case "tfDiscountRate":
-                    if(lsValue.isEmpty()){
-                        ShowMessageFX.Information("Imvalid freight amount", psFormName, null);
-                        loTextField.requestFocus();
-                        return;
-                    }
-
-                    poAppController.getMaster().setFreight(Double.parseDouble(lsValue));
-                    break;
-                    
-                case "tfDiscountAmount":
-                    if(lsValue.isEmpty()){
-                        ShowMessageFX.Information("Imvalid discount amount", psFormName, null);
-                        loTextField.requestFocus();
-                        return;
-                    }
-
-                    poAppController.getMaster().setDiscount(Double.parseDouble(lsValue));
-                    break;
             }
-            getLoadedTransaction();
         } else {
             loTextField.selectAll();
         }
     };
-    
+
     @FXML
     AnchorPane apMainAnchor, apMaster, apDetail, apDelivery;
 
     @FXML
     TextField tfSearchSourceno, tfSeacrchTransNo, tfTransNo, tfClusterName, tfTrucking, tfDiscountRate, tfDiscountAmount, tfTotal;
-    
+
     @FXML
     DatePicker dpTransactionDate, dpDelDate;
-    
+
     @FXML
     ComboBox cbDelType;
-    
+
     @FXML
     TextArea taRemarks;
-    
+
     @FXML
     TextField tfSearchSerial, tfSearchBarcode, tfSearchDescription, tfSupersede, tfBrand, tfModel, tfColor,
-            tfVariant, tfMeasure, tfInvType, tfCost, tfIssuedQty;
-    
+            tfVariant, tfMeasure, tfInvType, tfCost, tfOrderQuantity, tfIssuedQty;
+
     @FXML
-    Button btnSearch, btnUpdate, btnPrint, btnVoid, btnSave, btnCancel, btnHistory,btnRetrieve, btnClose;
-    
+    Button btnNew, btnSearch, btnHistory, btnRetrieve, btnClose;
+
     @FXML
     TableView<Model_Inventory_Transfer_Master> tblViewMaster;
-    
+
     @FXML
     TableView<Model_Inventory_Transfer_Detail> tblViewDetails;
-    
+
     @FXML
     TableColumn<Model_Inventory_Transfer_Master, String> tblColNo, tblColTransNo, tblColTransDate, tblColBranch;
-    
+
     @FXML
-    TableColumn<Model_Inventory_Transfer_Detail, String> tblColDetailNo, tblColDetailOrderNo, tblColDetailSerial, tblColDetailBarcode, tblColDetailDescr, 
+    TableColumn<Model_Inventory_Transfer_Detail, String> tblColDetailNo, tblColDetailOrderNo, tblColDetailSerial, tblColDetailBarcode, tblColDetailDescr,
             tblColDetailBrand, tblColDetailVariant, tblColDetailCost, tblColDetailOrderQty;
-    
+
     @FXML
     Label lblSource, lblStatus;
-    
+
     @Override
     public void setGRider(GRiderCAS foValue) {
         poApp = foValue;
@@ -184,7 +161,6 @@ public class InventoryStockTransferIssuanceNeoController_Approval implements Ini
         try {
             poLogWrapper = new LogWrapper(psFormName, psFormName);
             poAppController = new DeliveryIssuanceControllers(poApp, poLogWrapper).InventoryStockIssuanceNeo();
-            poAppController.setTransactionStatus(InventoryStockIssuanceStatus.OPEN);
 
             //initlalize and validate transaction objects from class controller
             if (!isJSONSuccess(poAppController.initTransaction(), psFormName)) {
@@ -195,6 +171,7 @@ public class InventoryStockTransferIssuanceNeoController_Approval implements Ini
             //background thread
             Platform.runLater(() -> {
 
+                poAppController.setTransactionStatus("12340");
                 //initialize logged in category
                 poAppController.setIndustryID(psIndustryID);
                 poAppController.setCompanyID(psCompanyID);
@@ -203,8 +180,9 @@ public class InventoryStockTransferIssuanceNeoController_Approval implements Ini
                         + "\nCompany :" + psCompanyID
                         + "\nCategory:" + psCategoryID);
 
+                btnNew.fire();
             });
-            
+
             initializeTableDetail();
             initControlEvents();
         } catch (SQLException | GuanzonException e) {
@@ -215,48 +193,22 @@ public class InventoryStockTransferIssuanceNeoController_Approval implements Ini
 
     @FXML
     void ontblMasterClicked(MouseEvent e) {
-        pnSelectMaster = tblViewMaster.getSelectionModel().getSelectedIndex();
-            if (pnSelectMaster < 0) {
-                return;
-            }
-            
-            if (e.getClickCount() == 1 && !e.isConsumed()) {
-                if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                    if (ShowMessageFX.OkayCancel(null, psFormName, "Do you want to disregard changes?") != true) {
-                        return;
-                    }
-                }
-                try {
-                    e.consume();
-                    if (!isJSONSuccess(poAppController.OpenTransaction(tblColTransNo.getCellData(pnSelectMaster)), psFormName)) {
-                        ShowMessageFX.Information("Failed to open transaction", psFormName,null);
-                        return;
-                    }
-                    
-                    getLoadedTransaction();
-                } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
-                    Logger.getLogger(DeliverySchedule_EntryController.class.getName()).log(Level.SEVERE, null, ex);
-                    poLogWrapper.severe(psFormName + " :" + ex.getMessage());
-
-                }
-
-            }
-            return;
+        pnSelectMaster = tblViewMaster.getSelectionModel().getSelectedIndex() < 1 ? 1 : tblViewMaster.getSelectionModel().getSelectedIndex();
+        getLoadedTransaction();
     }
 
     @FXML
     void ontblDetailClicked(MouseEvent e) {
-        pnCTransactionDetail = tblViewDetails.getSelectionModel().getSelectedIndex() + 1;
+        pnCTransactionDetail = tblViewDetails.getSelectionModel().getSelectedIndex();
         loadSelectedDetail();
     }
 
     @FXML
     private void cmdButton_Click(ActionEvent event) {
         try {
-             //get button id
+            //get button id
             String btnID = ((Button) event.getSource()).getId();
-            String transactionStatus = poAppController.getMaster().getTransactionStatus();
-            switch(btnID){
+            switch (btnID) {
                 case "btnSearch":
                     if (lastFocusedControl == null) {
                         ShowMessageFX.Information(null, psFormName,
@@ -265,30 +217,7 @@ public class InventoryStockTransferIssuanceNeoController_Approval implements Ini
                     }
 
                     switch (lastFocusedControl.getId()) {
-                        case "tfSearchSourceno":
-                            if (!tfSearchSourceno.getText().isEmpty()) {
-                                if (ShowMessageFX.OkayCancel(null, "Search Transaction! by Trasaction", "Are you sure you want replace loaded Transaction?") == false) {
-                                    return;
-                                }
-                            }
-                            if (!isJSONSuccess(poAppController.searchTransaction(tfSearchSourceno.getText(), true, true),
-                                    "Initialize Search Source No! ")) {
-                                return;
-                            }
-                            loadTransactionMasterList();
-                            break;
-                        case "tfSeacrchTransNo":
-                            if (!tfSeacrchTransNo.getText().isEmpty()) {
-                                if (ShowMessageFX.OkayCancel(null, "Search Transaction! by Trasaction", "Are you sure you want replace loaded Transaction?") == false) {
-                                    return;
-                                }
-                            }
-                            if (!isJSONSuccess(poAppController.searchTransaction(tfSeacrchTransNo.getText(), true, true),
-                                    "Initialize Search Transaction! ")) {
-                                return;
-                            }
-                            loadTransactionMasterList();
-                            break;
+
                         case "tfClusterName":
                             if (!isJSONSuccess(poAppController.searchTransactionDestination(tfClusterName.getText(), false),
                                     "Initialize Search Destination! ")) {
@@ -341,99 +270,6 @@ public class InventoryStockTransferIssuanceNeoController_Approval implements Ini
                             break;
                     }
                     break;
-                    
-                case "btnUpdate":
-                    if (poAppController.getMaster().getTransactionNo() == null || poAppController.getMaster().getTransactionNo().isEmpty()) {
-                        ShowMessageFX.Information("Please load transaction before proceeding..", "Stock Request Issuance Approval", "");
-                        return;
-                    }
-                    
-                    if (!transactionStatus.equals(InventoryStockIssuanceStatus.OPEN)) {
-                        ShowMessageFX.Information("Transaction already "+ transactionStatus, "Stock Request Issuance Approval", "");
-                        return;
-                    }
-                    
-                    if (!isJSONSuccess(poAppController.UpdateTransaction(), "Initialize UPdate Transaction")) {
-                        return;
-                    }
-                    getLoadedTransaction();
-                    pnEditMode = poAppController.getEditMode();
-                    break;
-                    
-                case "btnPrint":
-                    if (poAppController.getMaster().getTransactionNo() == null || poAppController.getMaster().getTransactionNo().isEmpty()) {
-                        ShowMessageFX.Information("Please load transaction before proceeding..", "Stock Request Issuance Approval", "");
-                        return;
-                    }
-                    if (ShowMessageFX.OkayCancel(null, psFormName, "Do you want to print the transaction ?") == true) {
-                        if (!isJSONSuccess(poAppController.printRecord(),
-                                "Initialize Print Transaction")) {
-                            return;
-                        }
-                    }
-                    //refresh ui 
-                    clearAllInputs();
-                    reloadTableDetail();
-                    
-                    pnEditMode = poAppController.getEditMode();
-                break;
-                
-                case "btnVoid":
-                    if (poAppController.getMaster().getTransactionNo().isEmpty()) {
-                        ShowMessageFX.Information("Please load transaction before proceeding..", "Stock Request Issuance Approval", "");
-                        break;
-                    }
-                    
-                    if (transactionStatus.equals(InventoryStockIssuanceStatus.VOID)) {
-                        ShowMessageFX.Information("Transaction already "+ transactionStatus, "Stock Request Issuance Approval", "");
-                        return;
-                    }
-                    
-                    if (!isJSONSuccess(poAppController.VoidTransaction(), "Initialize Void Transaction")) {
-                        return;
-                    }
-                    
-                    clearAllInputs();
-                    getLoadedTransaction();
-                    pnEditMode = poAppController.getEditMode();
-                break;
-
-                case "btnSave":
-                    if (tfTransNo.getText().isEmpty()) {
-                        ShowMessageFX.Information("Please load transaction before proceeding..", "Stock Request Issuance", "");
-                        return;
-                    }
-                    
-                    if (!isJSONSuccess(poAppController.SaveTransaction(), "Initialize Save Transaction")) {
-                        return;
-                    }
-                    reloadTableDetail();
-                    clearAllInputs();
-                    pnEditMode = poAppController.getEditMode();
-                    
-                    break;
-                    
-                case "btnCancel":
-                    if (ShowMessageFX.OkayCancel(null, psFormName, "Do you want to disregard changes?") == true) {
-                        poAppController = new DeliveryIssuanceControllers(poApp, poLogWrapper).InventoryStockIssuanceNeo();
-                        poAppController.setTransactionStatus(InventoryStockIssuanceStatus.OPEN);
-
-                        if (!isJSONSuccess(poAppController.initTransaction(), "Initialize Transaction")) {
-                            unloadForm appUnload = new unloadForm();
-                            appUnload.unloadForm(apMainAnchor, poApp, psFormName);
-                        }
-
-                        Platform.runLater(() -> {
-                            poAppController.getMaster().setIndustryId(psIndustryID);
-                            poAppController.setIndustryID(psIndustryID);
-                            poAppController.setCompanyID(psCompanyID);
-                            poAppController.setCategoryID(psCategoryID);
-                            clearAllInputs();
-                        });
-                        pnEditMode = poAppController.getEditMode();
-                        break;
-                    }
-                    break;
 
                 case "btnHistory":
                     ShowMessageFX.Information(null, psFormName,
@@ -441,6 +277,47 @@ public class InventoryStockTransferIssuanceNeoController_Approval implements Ini
                     break;
 
                 case "btnRetrieve":
+                    if (lastFocusedControl == null) {
+                        ShowMessageFX.Information(null, psFormName,
+                                "Search unavailable. Please ensure a searchable field is selected or focused before proceeding..");
+                        return;
+                    }
+
+                    switch (lastFocusedControl.getId()) {
+                        case "tfSearchSourceno":
+                            if (!tfTransNo.getText().isEmpty()) {
+                                if (ShowMessageFX.OkayCancel(null, "Search Transaction! by Trasaction", "Are you sure you want replace loaded Transaction?") == false) {
+                                    return;
+                                }
+                            }
+                            if (!isJSONSuccess(poAppController.searchTransaction(tfSearchSourceno.getText(), true, true),
+                                    "Initialize Search Source No! ")) {
+                                return;
+                            }
+
+                            tfSearchSourceno.setText(poAppController.getMaster().Branch().getBranchName());
+                            loadTransactionMasterList(tfSearchSourceno.getText(), "d.sBranchNm");
+                            getLoadedTransaction();
+                            initButtonDisplay(poAppController.getEditMode());
+                            break;
+                        case "tfSeacrchTransNo":
+                            if (!tfTransNo.getText().isEmpty()) {
+                                if (ShowMessageFX.OkayCancel(null, "Search Transaction! by Trasaction", "Are you sure you want replace loaded Transaction?") == false) {
+                                    return;
+                                }
+                            }
+                            if (!isJSONSuccess(poAppController.searchTransaction(tfSeacrchTransNo.getText(), true, true),
+                                    "Initialize Search Transaction! ")) {
+                                return;
+                            }
+
+                            tfSeacrchTransNo.setText(poAppController.getMaster().getTransactionNo());
+
+                            loadTransactionMasterList(tfSeacrchTransNo.getText(), "a.sTransNox");
+                            getLoadedTransaction();
+                            initButtonDisplay(poAppController.getEditMode());
+                            break;
+                    }
                     break;
 
                 case "btnClose":
@@ -450,9 +327,9 @@ public class InventoryStockTransferIssuanceNeoController_Approval implements Ini
                     }
                     break;
             }
-            
+
             initButtonDisplay(poAppController.getEditMode());
-            
+
         } catch (Exception e) {
             Logger.getLogger(DeliverySchedule_EntryController.class.getName()).log(Level.SEVERE, null, e);
             poLogWrapper.severe(psFormName + " :" + e.getMessage());
@@ -473,30 +350,10 @@ public class InventoryStockTransferIssuanceNeoController_Approval implements Ini
                 switch (event.getCode()) {
                     case TAB:
                     case ENTER:
-                        switch (txtFieldID) {
-                            case "tfDiscountRate":
-                                if(lsValue.isEmpty()){
-                                    ShowMessageFX.Information("Imvalid freight amount", psFormName, null);
-                                    loTxtField.requestFocus();
-                                    return;
-                                }
-                                
-                                poAppController.getMaster().setFreight(Double.parseDouble(lsValue));
-                                break;
-                            case "tfDiscountAmount":
-                                if(lsValue.isEmpty()){
-                                    ShowMessageFX.Information("Imvalid discount amount", psFormName, null);
-                                    loTxtField.requestFocus();
-                                    return;
-                                }
-                                
-                                poAppController.getMaster().setDiscount(Double.parseDouble(lsValue));
-                                break;
-                        }
                     case F3:
                         switch (txtFieldID) {
                             case "tfSearchSourceno":
-                                if (!tfTransNo.getText().isEmpty()) {
+                                if (!tfSearchSourceno.getText().isEmpty()) {
                                     if (ShowMessageFX.OkayCancel(null, "Search Transaction! by Trasaction", "Are you sure you want replace loaded Transaction?") == false) {
                                         return;
                                     }
@@ -505,13 +362,10 @@ public class InventoryStockTransferIssuanceNeoController_Approval implements Ini
                                         "Initialize Search Source No! ")) {
                                     return;
                                 }
-                                
-                                tfSearchSourceno.setText(poAppController.getMaster().Branch().getBranchName());
-                                loadTransactionMasterList();
-                                initButtonDisplay(poAppController.getEditMode());
+//                                loadTransactionMasterList();
                                 break;
                             case "tfSeacrchTransNo":
-                                if (!tfTransNo.getText().isEmpty()) {
+                                if (!tfSeacrchTransNo.getText().isEmpty()) {
                                     if (ShowMessageFX.OkayCancel(null, "Search Transaction! by Trasaction", "Are you sure you want replace loaded Transaction?") == false) {
                                         return;
                                     }
@@ -520,10 +374,7 @@ public class InventoryStockTransferIssuanceNeoController_Approval implements Ini
                                         "Initialize Search Transaction! ")) {
                                     return;
                                 }
-                                
-                                tfSeacrchTransNo.setText(poAppController.getMaster().getTransactionNo());
-                                loadTransactionMasterList();
-                                initButtonDisplay(poAppController.getEditMode());
+//                                loadTransactionMasterList();
                                 break;
                             case "tfClusterName":
                                 if (!isJSONSuccess(poAppController.searchTransactionDestination(tfClusterName.getText(), false),
@@ -585,13 +436,13 @@ public class InventoryStockTransferIssuanceNeoController_Approval implements Ini
             poLogWrapper.severe(psFormName + " :" + ex.getMessage());
         }
     }
-    
-    private void loadDeliveryTypes(){
+
+    private void loadDeliveryTypes() {
         List<String> deliveryTypes = DeliveryIssuanceType.DeliveryType;
         cbDelType.setItems(FXCollections.observableArrayList(deliveryTypes));
     }
 
-    private void loadTransactionMasterList() {
+    private void loadTransactionMasterList(String value, String fsColumn) {
         StackPane overlay = getOverlayProgress(apMaster);
         ProgressIndicator pi = (ProgressIndicator) overlay.getChildren().get(0);
         overlay.setVisible(true);
@@ -600,13 +451,12 @@ public class InventoryStockTransferIssuanceNeoController_Approval implements Ini
         Task<ObservableList<Model_Inventory_Transfer_Master>> loadTransaction = new Task<ObservableList<Model_Inventory_Transfer_Master>>() {
             @Override
             protected ObservableList<Model_Inventory_Transfer_Master> call() throws Exception {
-                if (!isJSONSuccess(poAppController.loadTransactionList(),
+                if (!isJSONSuccess(poAppController.loadTransactionList(value, fsColumn),
                         "Initialize : Load of Transaction List")) {
                     return null;
                 }
 
                 List<Model_Inventory_Transfer_Master> rawList = poAppController.getMasterList();
-                System.out.print("The size of list is " + rawList.size());
                 return FXCollections.observableArrayList(new ArrayList<>(rawList));
             }
 
@@ -633,11 +483,6 @@ public class InventoryStockTransferIssuanceNeoController_Approval implements Ini
                         return new SimpleStringProperty("");
                     }
                 });
-                
-                getLoadedTransaction();
-                    
-                overlay.setVisible(false);
-                pi.setVisible(false);
             }
 
             @Override
@@ -664,18 +509,18 @@ public class InventoryStockTransferIssuanceNeoController_Approval implements Ini
 
     private void loadTransactionMaster() {
         try {
-            lblSource.setText(poAppController.getMaster().Company().getCompanyName() == null ? "": (poAppController.getMaster().Company().getCompanyName() + " - ") + 
-                poAppController.getMaster().Industry().getDescription() == null ? "" : poAppController.getMaster().Industry().getDescription());
-            lblStatus.setText(InventoryStockIssuanceStatus.STATUS.get(Integer.parseInt(poAppController.getMaster().getTransactionStatus())) == null ? "STATUS" : 
-                    InventoryStockIssuanceStatus.STATUS.get(Integer.parseInt(poAppController.getMaster().getTransactionStatus())));
-            
+            lblSource.setText(poAppController.getMaster().Company().getCompanyName() == null ? "" : (poAppController.getMaster().Company().getCompanyName() + " - ")
+                    + poAppController.getMaster().Industry().getDescription() == null ? "" : poAppController.getMaster().Industry().getDescription());
+            lblStatus.setText(poAppController.getMaster().getTransactionStatus());
+            tfSearchSourceno.setText(poAppController.getMaster().getDestination());
+            tfSeacrchTransNo.setText(poAppController.getMaster().getTransactionNo());
             tfTransNo.setText(poAppController.getMaster().getTransactionNo());
             dpTransactionDate.setValue(ParseDate(poAppController.getMaster().getTransactionDate()));
             tfClusterName.setText(poAppController.getMaster().getDestination());
             tfTrucking.setText(poAppController.getMaster().getTruckId());
             tfDiscountRate.setText(String.valueOf(poAppController.getMaster().getDiscount()));
             tfDiscountAmount.setText(String.valueOf(poAppController.getMaster().getDiscount()));
-            tfTotal.setText(String.valueOf(poAppController.getMaster().getTransactionTotal()));
+            tfTotal.setText(String.valueOf(poAppController.getMaster().getDiscount()));
         } catch (SQLException | GuanzonException e) {
             poLogWrapper.severe(psFormName, e.getMessage());
         }
@@ -704,26 +549,16 @@ public class InventoryStockTransferIssuanceNeoController_Approval implements Ini
     }
 
     private void loadSelectedDetail() {
-        try {
-            HashMap<String, Object> loMapFields = new HashMap<>();
-            loMapFields.put("tblColDetailSerial", tfSearchSerial);
-            loMapFields.put("tblColDetailBarcode", tfSearchBarcode);
-            loMapFields.put("tblColDetailDescr", tfSearchDescription);
-            loMapFields.put("tblColDetailBrand", tfBrand);
-            loMapFields.put("tblColDetailVariant", tfVariant);
-            loMapFields.put("tblColDetailCost", tfCost);
-            loMapFields.put("tblColDetailOrderQty", tfIssuedQty);
+        HashMap<String, Object> loMapFields = new HashMap<>();
+        loMapFields.put("tblColDetailSerial", tfSearchSerial);
+        loMapFields.put("tblColDetailBarcode", tfSearchBarcode);
+        loMapFields.put("tblColDetailDescr", tfSearchDescription);
+        loMapFields.put("tblColDetailBrand", tfBrand);
+        loMapFields.put("tblColDetailVariant", tfVariant);
+        loMapFields.put("tblColDetailCost", tfCost);
+        loMapFields.put("tblColDetailOrderQty", tfOrderQuantity);
 
-            loadSelectedTableItem(pnCTransactionDetail - 1, tblViewDetails, loMapFields);
-
-            tfColor.setText(poAppController.getDetail(pnCTransactionDetail).Inventory().Color().getDescription());
-            tfMeasure.setText(poAppController.getDetail(pnCTransactionDetail).Inventory().Measure().getDescription());
-            tfInvType.setText(poAppController.getDetail(pnCTransactionDetail).Inventory().InventoryType().getDescription());
-            tfSupersede.setText(poAppController.getDetail(pnCTransactionDetail).InventorySupersede().getBarCode());
-
-        } catch (SQLException | GuanzonException e) {
-            poLogWrapper.severe(psFormName, e.getMessage());
-        }
+        loadSelectedTableItem(pnCTransactionDetail, tblViewDetails, loMapFields);
     }
 
     private void initControlEvents() {
@@ -739,13 +574,9 @@ public class InventoryStockTransferIssuanceNeoController_Approval implements Ini
             } else if (loControl instanceof TableView) {
                 TableView loControlField = (TableView) loControl;
                 controllerFocusTracker(loControlField);
-            } else if (loControl instanceof ComboBox) {
-                ComboBox loControlField = (ComboBox) loControl;
-                controllerFocusTracker(loControlField);
             }
         }
         clearAllInputs();
-        loadDeliveryTypes();
     }
 
     private void controllerFocusTracker(Control control) {
@@ -763,16 +594,12 @@ public class InventoryStockTransferIssuanceNeoController_Approval implements Ini
         for (Control loControl : laControls) {
             if (loControl instanceof TextField) {
                 ((TextField) loControl).clear();
-            } else if (loControl != null && (loControl instanceof TableView)) {
+            } else if (loControl != null && loControl instanceof TableView) {
                 TableView<?> table = (TableView<?>) loControl;
                 if (table.getItems() != null) {
                     table.getItems().clear();
                 }
-            } else if (loControl != null && (loControl instanceof ComboBox)) {
-                ComboBox cbox = (ComboBox) loControl;
-                if (cbox.getItems() != null) {
-                    cbox.getItems().clear();
-                }
+
             }
         }
         pnEditMode = poAppController.getEditMode();
@@ -787,9 +614,7 @@ public class InventoryStockTransferIssuanceNeoController_Approval implements Ini
 
         // Show-only based on mode
         initButtonControls(lbShow, "btnSave", "btnCancel");
-        initButtonControls(!lbShow, "btnNew", "btnUpdate", "btnPrint", "btnVoid");
-
-        apMaster.setDisable(!lbShow);
+        initButtonControls(!lbShow, "btnNew");
         apDetail.setDisable(!lbShow);
     }
 
@@ -893,7 +718,7 @@ public class InventoryStockTransferIssuanceNeoController_Approval implements Ini
 
         }
     }
- 
+
     private void reloadTableDetail() {
         List<Model_Inventory_Transfer_Detail> rawDetail = poAppController.getDetailList();
         laTransactionDetail.setAll(rawDetail);
@@ -905,14 +730,16 @@ public class InventoryStockTransferIssuanceNeoController_Approval implements Ini
 
         tblViewDetails.getSelectionModel().select(indexToSelect);
 
-        pnCTransactionDetail = tblViewDetails.getSelectionModel().getSelectedIndex() + 1; // Not focusedIndex
+        pnCTransactionDetail = tblViewDetails.getSelectionModel().getSelectedIndex(); // Not focusedIndex
+
         tblViewDetails.refresh();
     }
 
     private void getLoadedTransaction() {
+        clearAllInputs();
+        loadDeliveryTypes();
         loadTransactionMaster();
         reloadTableDetail();
-        loadSelectedDetail();
     }
 
     private boolean isJSONSuccess(JSONObject loJSON, String fsModule) {

@@ -217,12 +217,12 @@
                                                          </font>
                                                       </Label>
                                                   <TextField fx:id="tfTransactionNo" disable="true" editable="false" maxHeight="25.0" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="139.0" style="-fx-font-weight: bold;" styleClass="DisabledTextField" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="2" />
-                                                      <DatePicker fx:id="dpTransactionDate" disable="true" GridPane.columnIndex="2" GridPane.rowIndex="4" />
-                                                  <TextField fx:id="tfTrucking" disable="true" maxHeight="25.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="7" />
-                                                  <TextField fx:id="tfBranch" disable="true" maxHeight="25.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="6" />
-                                                      <TextField fx:id="tfFreight" alignment="CENTER_RIGHT" disable="true" GridPane.columnIndex="9" GridPane.rowIndex="5" />
-                                                      <TextField fx:id="tfDiscount" alignment="CENTER_RIGHT" disable="true" GridPane.columnIndex="9" GridPane.rowIndex="6" />
-                                                      <TextField fx:id="tfTotal" alignment="CENTER_RIGHT" disable="true" styleClass="DisabledTextField" GridPane.columnIndex="9" GridPane.rowIndex="7" />
+                                                      <DatePicker fx:id="dpTransactionDate" disable="true" editable="false" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                                                  <TextField fx:id="tfTrucking" disable="true" editable="false" maxHeight="25.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="7" />
+                                                  <TextField fx:id="tfBranch" disable="true" editable="false" maxHeight="25.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="6" />
+                                                      <TextField fx:id="tfFreight" alignment="CENTER_RIGHT" disable="true" editable="false" GridPane.columnIndex="9" GridPane.rowIndex="5" />
+                                                      <TextField fx:id="tfDiscount" alignment="CENTER_RIGHT" disable="true" editable="false" GridPane.columnIndex="9" GridPane.rowIndex="6" />
+                                                      <TextField fx:id="tfTotal" alignment="CENTER_RIGHT" disable="true" editable="false" styleClass="DisabledTextField" GridPane.columnIndex="9" GridPane.rowIndex="7" />
                               <TextArea fx:id="taRemarks" disable="true" editable="false" minHeight="-Infinity" prefHeight="27.0" GridPane.columnIndex="2" GridPane.columnSpan="2147483647" GridPane.rowIndex="8">
                                  <GridPane.margin>
                                     <Insets top="1.0" />
@@ -267,8 +267,11 @@
                                                       <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="100.0" />
                                                       <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
                                                       <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="120.0" />
-                                                      <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="32.0" />
-                                                      <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefWidth="10.0" />
+                                                      <ColumnConstraints fillWidth="false" halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="45.0" />
+                                                      <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" />
+                                                      <ColumnConstraints fillWidth="false" halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" prefWidth="120.0" />
+                                                      <ColumnConstraints fillWidth="false" halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
+                                                      <ColumnConstraints fillWidth="false" halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="80.0" />
                                                       <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="100.0" />
                                                       <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
                                                       <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="80.0" />
@@ -282,6 +285,7 @@
                                                       <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
                                                       <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
                                                       <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
+                                                      <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                    </rowConstraints>
                                                    <children>
                                                       <Label text="Order No.">
@@ -329,33 +333,33 @@
                                                             <Font size="12.0" />
                                                          </font>
                                                       </Label>
-                                                      <Label text="Cost" GridPane.columnIndex="9" GridPane.rowIndex="3">
+                                                      <Label text="Cost" GridPane.columnIndex="12" GridPane.rowIndex="3">
                                                          <font>
                                                             <Font size="12.0" />
                                                          </font>
                                                       </Label>
-                                                      <Label text="Quantity" GridPane.columnIndex="9" GridPane.rowIndex="6">
+                                                      <Label text="Quantity" GridPane.columnIndex="12" GridPane.rowIndex="5">
                                                          <font>
                                                             <Font name="System Bold" size="12.0" />
                                                          </font>
                                                       </Label>
-                                                      <Label text="Received Qty" GridPane.columnIndex="9" GridPane.rowIndex="7">
+                                                      <Label text="Received Qty" GridPane.columnIndex="9" GridPane.rowIndex="5">
                                                          <font>
-                                                            <Font name="System Bold" size="15.0" />
+                                                            <Font name="System Bold" size="13.0" />
                                                          </font>
                                                       </Label>
                                                       <TextField fx:id="tfOrderNo" disable="true" editable="false" GridPane.columnIndex="2" />
                                                       <TextField fx:id="tfBarcode" disable="true" editable="false" maxHeight="25.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="2" />
                                                       <TextField fx:id="tfDescription" disable="true" editable="false" GridPane.columnIndex="2" GridPane.columnSpan="6" GridPane.rowIndex="3" />
                                                       <TextField fx:id="tfSupersede" disable="true" editable="false" GridPane.columnIndex="6" GridPane.columnSpan="2" GridPane.rowIndex="2" />
-                                                      <TextField fx:id="tfCost" alignment="CENTER_RIGHT" disable="true" editable="false" GridPane.columnIndex="11" GridPane.rowIndex="3" />
-                                                      <TextField fx:id="tfReceiveQuantity" alignment="CENTER_RIGHT" disable="true" editable="false" GridPane.columnIndex="11" GridPane.rowIndex="7" />
-                                                      <TextField fx:id="tfBrand" disable="true" maxHeight="25.0" styleClass="DisabledTextField" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="5" />
-                                                      <TextField fx:id="tfColor" disable="true" maxHeight="25.0" styleClass="DisabledTextField" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="7" />
-                                                      <TextField fx:id="tfMeasure" disable="true" maxHeight="25.0" styleClass="DisabledTextField" GridPane.columnIndex="6" GridPane.columnSpan="2" GridPane.rowIndex="6" />
-                                                      <TextField fx:id="tfVariant" disable="true" styleClass="DisabledTextField" GridPane.columnIndex="6" GridPane.columnSpan="2" GridPane.rowIndex="5" />
-                                                      <TextField fx:id="tfQuantity" alignment="CENTER_RIGHT" disable="true" styleClass="DisabledTextField" GridPane.columnIndex="11" GridPane.rowIndex="6" />
-                                                      <TextField fx:id="tfModel" disable="true" maxHeight="25.0" styleClass="DisabledTextField" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="6" />
+                                                      <TextField fx:id="tfCost" alignment="CENTER_RIGHT" disable="true" editable="false" GridPane.columnIndex="14" GridPane.rowIndex="3" />
+                                                      <TextField fx:id="tfReceiveQuantity" alignment="CENTER_RIGHT" promptText="0.0" GridPane.columnIndex="11" GridPane.rowIndex="5" />
+                                                      <TextField fx:id="tfBrand" disable="true" editable="false" maxHeight="25.0" styleClass="DisabledTextField" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="5" />
+                                                      <TextField fx:id="tfColor" disable="true" editable="false" maxHeight="25.0" styleClass="DisabledTextField" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="7" />
+                                                      <TextField fx:id="tfMeasure" disable="true" editable="false" maxHeight="25.0" styleClass="DisabledTextField" GridPane.columnIndex="6" GridPane.columnSpan="2" GridPane.rowIndex="6" />
+                                                      <TextField fx:id="tfVariant" disable="true" editable="false" styleClass="DisabledTextField" GridPane.columnIndex="6" GridPane.columnSpan="2" GridPane.rowIndex="5" />
+                                                      <TextField fx:id="tfQuantity" alignment="CENTER_RIGHT" disable="true" editable="false" styleClass="DisabledTextField" GridPane.columnIndex="14" GridPane.rowIndex="5" />
+                                                      <TextField fx:id="tfModel" disable="true" editable="false" maxHeight="25.0" styleClass="DisabledTextField" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="6" />
                                                       <Label text="Serial No" GridPane.rowIndex="1">
                                                          <font>
                                                             <Font size="12.0" />
@@ -367,7 +371,13 @@
                                                             <Font size="12.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField fx:id="tfInvType" disable="true" maxHeight="25.0" styleClass="DisabledTextField" GridPane.columnIndex="6" GridPane.columnSpan="2" GridPane.rowIndex="7" />
+                                                      <TextField fx:id="tfInvType" disable="true" editable="false" maxHeight="25.0" styleClass="DisabledTextField" GridPane.columnIndex="6" GridPane.columnSpan="2" GridPane.rowIndex="7" />
+                                                      <Label text="Receiver Note" GridPane.columnIndex="9" GridPane.rowIndex="6">
+                                                         <font>
+                                                            <Font name="System Bold" size="13.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextArea fx:id="taNote" promptText="(optional)" GridPane.columnIndex="11" GridPane.columnSpan="2147483647" GridPane.rowIndex="6" GridPane.rowSpan="2" />
                                                    </children>
                                                 </GridPane>
                                              </children>
@@ -377,7 +387,7 @@
                                                 <Insets />
                                              </VBox.margin>
                                              <children>
-                                                <TableView fx:id="tblViewTransactionDetail" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+                                                <TableView fx:id="tblViewTransactionDetail" onMouseClicked="#tblViewTransactionDetail_MouseClicked" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
                                                    <columns>
                                                       <TableColumn fx:id="tblColDetailNo" editable="false" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="No." />
                                                       <TableColumn fx:id="tblColDetailOrderNo" editable="false" maxWidth="120.0" minWidth="100.0" prefWidth="-1.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Order No." />
@@ -423,7 +433,7 @@
                                                 <Insets left="5.0" right="5.0" top="5.0" />
                                              </GridPane.margin>
                                           </AnchorPane>
-                                          <TableView fx:id="tblViewTransaction" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.rowIndex="1">
+                                          <TableView fx:id="tblViewTransaction" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#tblViewTransaction_MouseClicked" GridPane.rowIndex="1">
                                              <columns>
                                                 <TableColumn fx:id="tblColMasterNo" editable="false" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="No." />
                                                 <TableColumn fx:id="tblColMasterTransaction" editable="false" maxWidth="120.0" minWidth="100.0" prefWidth="-1.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Transaction No" />

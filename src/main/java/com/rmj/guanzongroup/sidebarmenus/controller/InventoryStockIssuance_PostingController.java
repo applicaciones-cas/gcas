@@ -4,6 +4,8 @@ import java.lang.reflect.Field;
 import java.net.URL;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -73,11 +75,11 @@ public class InventoryStockIssuance_PostingController implements Initializable, 
     private LogWrapper poLogWrapper;
     private int pnEditMode;
     private InventoryStockIssuanceNeo poAppController;
-    private String psFormName = "Delivery Schedule Request";
+    private String psFormName = "Issuance Posting";
 
     private String psTransactionNoOld = "";
 
-    private int pnClusterDetail = -1;
+    private int pnDetailRow = -1;
     private int pnTransaction = -1;
     private int pnBranchList = -1;
     private Control lastFocusedControl = null;
@@ -104,7 +106,7 @@ public class InventoryStockIssuance_PostingController implements Initializable, 
     @FXML
     private Button btnHistory, btnRetrieve, btnPost, btnClose;
     @FXML
-    private TextArea taRemarks;
+    private TextArea taRemarks, taNote;
     @FXML
     private TableView<Model_Inventory_Transfer_Detail> tblViewTransactionDetail;
     @FXML
@@ -150,7 +152,7 @@ public class InventoryStockIssuance_PostingController implements Initializable, 
             }
 
             Platform.runLater(() -> {
-
+                poAppController.setTransactionStatus("1");
                 poAppController.setIndustryID(psIndustryID);
                 poAppController.setCompanyID(psCompanyID);
                 poAppController.setCategoryID(psCategoryID);
@@ -180,7 +182,7 @@ public class InventoryStockIssuance_PostingController implements Initializable, 
                     }
 
                     if (dpReceivedDate.getValue() == null) {
-                        ShowMessageFX.Information("Please load transaction before proceeding..", "Inventory Stock Issuance Posting", "");
+                        ShowMessageFX.Information("Please input date received before proceeding..", "Inventory Stock Issuance Posting", "");
                         return;
                     }
                     if (!isJSONSuccess(poAppController.PostTransaction(), "Initialize Post Transaction")) {
@@ -199,11 +201,11 @@ public class InventoryStockIssuance_PostingController implements Initializable, 
                     switch (lastFocusedControl.getId()) {
                         //Master Retrieve
                         case "tfSearchSource":
-                            loadTransaction(tfSearchSource.getText(), "sTransNox");
+                            loadTransaction(tfSearchSource.getText(), "d.sBranchNm");
                             break;
 
                         case "tfSearchTransaction":
-                            loadTransaction(tfSearchTransaction.getText(), "sTransNox");
+                            loadTransaction(tfSearchTransaction.getText(), "a.sTransNox");
                             break;
                     }
                     break;
@@ -228,7 +230,7 @@ public class InventoryStockIssuance_PostingController implements Initializable, 
     }
 
     @FXML
-    private void tblTransaction_MouseClicked(MouseEvent event) {
+    private void tblViewTransaction_MouseClicked(MouseEvent event) {
         pnTransaction = tblViewTransaction.getSelectionModel().getSelectedIndex();
         if (pnTransaction < 0) {
             return;
@@ -258,15 +260,15 @@ public class InventoryStockIssuance_PostingController implements Initializable, 
     }
 
     @FXML
-    private void tblClusterDetail_MouseClicked(MouseEvent event) {
+    private void tblViewTransactionDetail_MouseClicked(MouseEvent event) {
 
         try {
-            pnClusterDetail = tblViewTransactionDetail.getSelectionModel().getSelectedIndex() + 1;
-            if (pnClusterDetail <= 0) {
+            pnDetailRow = tblViewTransactionDetail.getSelectionModel().getSelectedIndex() + 1;
+            if (pnDetailRow <= 0) {
                 return;
             }
 
-            loadSelectedTransactionDetail(pnClusterDetail);
+            loadSelectedTransactionDetail(pnDetailRow);
         } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
             Logger.getLogger(InventoryStockIssuance_PostingController.class.getName()).log(Level.SEVERE, null, ex);
             poLogWrapper.severe(psFormName + " :" + ex.getMessage());
@@ -322,11 +324,6 @@ public class InventoryStockIssuance_PostingController implements Initializable, 
             }
         }
 
-        cbDeliveryTp.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal != null) {
-//                poAppController.getMaster().set(String.valueOf(newVal));
-            }
-        });
         clearAllInputs();
     }
 
@@ -360,6 +357,7 @@ public class InventoryStockIssuance_PostingController implements Initializable, 
         }
 
         cbDeliveryTp.setItems(FXCollections.observableArrayList(DeliveryIssuanceType.DeliveryType));
+        cbDeliveryTp.getSelectionModel().select(0);
         pnEditMode = poAppController.getEditMode();
 
         initButtonDisplay(poAppController.getEditMode());
@@ -410,13 +408,47 @@ public class InventoryStockIssuance_PostingController implements Initializable, 
         if (lsValue == null) {
             return;
         }
+        try {
 
-        if (!nv) {
-            /*Lost Focus*/
-            switch (lsTextFieldID) {
+            if (!nv) {
+                /*Lost Focus*/
+                switch (lsTextFieldID) {
+                    case "tfReceiveQuantity":
+                        double lnReceived;
+                        try {
+                            lnReceived = Double.parseDouble(lsValue);
+                        } catch (NumberFormatException e) {
+                            lnReceived = 0.0; // default if parsing fails
+                            poAppController.getDetail(pnDetailRow).setReceivedQuantity(lnReceived);
+                            reloadTableDetail();
+                            loadSelectedTransactionDetail(pnDetailRow);
+                            loTextField.requestFocus();
+                        }
+                        if (lnReceived < 0.00) {
+                            return;
+                        }
+                        //check if Serialize
+                        if (lnReceived > 1.00 && lnReceived < 1.00) {
+                            if (poAppController.getDetail(pnDetailRow).Inventory().isSerialized()) {
+                                ShowMessageFX.Information("Invalid quantity for serialize item", psFormName, null);
+                                lnReceived = 1;
+                            }
+                        }
+
+                        poAppController.getDetail(pnDetailRow).setReceivedQuantity(lnReceived);
+
+                        reloadTableDetail();
+                        loadSelectedTransactionDetail(pnDetailRow);
+
+                        break;
+                }
+            } else {
+                loTextField.selectAll();
             }
-        } else {
-            loTextField.selectAll();
+        } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
+            Logger.getLogger(DeliverySchedule_EntryController.class
+                    .getName()).log(Level.SEVERE, null, ex);
+            poLogWrapper.severe(psFormName + " :" + ex.getMessage());
         }
     };
 
@@ -429,26 +461,52 @@ public class InventoryStockIssuance_PostingController implements Initializable, 
         } else {
             lsValue = loTxtField.getText();
         }
-        if (null != event.getCode()) {
-            switch (event.getCode()) {
-                case TAB:
-                case ENTER:
-                case F3:
-                    switch (txtFieldID) {
-                        default:
-                            CommonUtils.SetNextFocus((TextField) event.getSource());
-                            return;
-                    }
-                case UP:
-                    CommonUtils.SetPreviousFocus((TextField) event.getSource());
-                    return;
-                case DOWN:
-                    CommonUtils.SetNextFocus(loTxtField);
-                    return;
+        try {
+            if (null != event.getCode()) {
+                switch (event.getCode()) {
+                    case TAB:
+                    case ENTER:
+                    case F3:
+                        switch (txtFieldID) {
+                            case "tfSearchSource":
+                                if (!tfTransactionNo.getText().isEmpty()) {
+                                    if (ShowMessageFX.OkayCancel(null, "Search Transaction! by Transaction ", "Are you sure you want replace loaded Transaction?") == false) {
+                                        return;
+                                    }
+                                }
+                                if (!isJSONSuccess(poAppController.searchTransactionPosting(lsValue, false, true),
+                                        "Initialize Search Source! ")) {
+                                    return;
+                                }
 
+                                getLoadedTransaction();
+                                initButtonDisplay(poAppController.getEditMode());
+
+                                return;
+
+                            case "tfSearchTransaction":
+                                if (!isJSONSuccess(poAppController.searchTransactionPosting(lsValue, true, true),
+                                        "Initialize Search Source! ")) {
+                                    return;
+                                }
+                            default:
+                                CommonUtils.SetNextFocus((TextField) event.getSource());
+                                return;
+                        }
+                    case UP:
+                        CommonUtils.SetPreviousFocus((TextField) event.getSource());
+                        return;
+                    case DOWN:
+                        CommonUtils.SetNextFocus(loTxtField);
+                        return;
+
+                }
             }
+        } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
+            Logger.getLogger(DeliverySchedule_EntryController.class
+                    .getName()).log(Level.SEVERE, null, ex);
+            poLogWrapper.severe(psFormName + " :" + ex.getMessage());
         }
-
     }
 
     final ChangeListener<? super Boolean> txtArea_Focus = (o, ov, nv) -> {
@@ -458,12 +516,28 @@ public class InventoryStockIssuance_PostingController implements Initializable, 
         if (lsValue == null) {
             return;
         }
-        if (!nv) {
-            /*Lost Focus*/
-            switch (lsTextAreaID) {
+
+        try {
+
+            if (!nv) {
+                /*Lost Focus*/
+                switch (lsTextAreaID) {
+                    case "taNote":
+
+                        poAppController.getDetail(pnDetailRow).setNote(lsValue);
+
+                        reloadTableDetail();
+                        loadSelectedTransactionDetail(pnDetailRow);
+                        break;
+                }
+            } else {
+                loTextArea.selectAll();
             }
-        } else {
-            loTextArea.selectAll();
+
+        } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
+            Logger.getLogger(DeliverySchedule_EntryController.class
+                    .getName()).log(Level.SEVERE, null, ex);
+            poLogWrapper.severe(psFormName + " :" + ex.getMessage());
         }
     };
 
@@ -494,15 +568,14 @@ public class InventoryStockIssuance_PostingController implements Initializable, 
         if (loValue == null) {
             return;
         }
+
+        LocalDateTime ldDateTimeValue = loValue.atTime(LocalTime.now());
         Date ldDateValue = Date.from(loValue.atStartOfDay(ZoneId.systemDefault()).toInstant());
         if (!nv) {
             /*Lost Focus*/
             switch (lsDatePickerID) {
-                case "dpTransactionDate":
-                    poAppController.getMaster().setTransactionDate((ldDateValue));
-                    return;
-                case "dpScheduleDate":
-                    poAppController.getMaster().setReceivedDate((ldDateValue));
+                case "dpReceivedDate":
+                    poAppController.getMaster().setReceivedDate((ldDateTimeValue));
                     return;
 
             }
@@ -515,63 +588,25 @@ public class InventoryStockIssuance_PostingController implements Initializable, 
         String loDatePickerID = ((DatePicker) loTxtField.getParent()).getId(); // cautious cast
         String loValue = loTxtField.getText();
         String lsValue = "";
-        try {
-            if (loValue != null && !loValue.isEmpty()) {
-                Date toDateValue = SQLUtil.toDate(loValue, "dd/MM/yyyy");
-                lsValue = SQLUtil.dateFormat(toDateValue, SQLUtil.FORMAT_SHORT_DATE);
+        if (loValue != null && !loValue.isEmpty()) {
+            Date toDateValue = SQLUtil.toDate(loValue, "dd/MM/yyyy");
+            lsValue = SQLUtil.dateFormat(toDateValue, SQLUtil.FORMAT_SHORT_DATE);
 
-            }
-
-            if (event.getCode() != null) {
-                switch (event.getCode()) {
-                    case TAB:
-                    case ENTER:
-                    case F3:
-                        event.consume();
-                        switch (loDatePickerID) {
-                            case "dpSearchDate":
-
-                                if (!tfTransactionNo.getText().isEmpty()) {
-                                    if (ShowMessageFX.OkayCancel(null, "Search Transaction! by Date", "Are you sure you want replace loaded Transaction?") == false) {
-                                        event.consume();
-                                        return;
-                                    }
-                                }
-                                if (!isJSONSuccess(poAppController.searchTransaction(lsValue, false, true),
-                                        "Search Transaction!! BY Date")) {
-                                    event.consume();
-                                    return;
-                                }
-                                getLoadedTransaction();
-                                initButtonDisplay(poAppController.getEditMode());
-
-                                break;
-
-                            case "dpSearchScheduleDate":
-
-                                if (!tfTransactionNo.getText().isEmpty()) {
-                                    if (ShowMessageFX.OkayCancel(null, "Search Transaction! by Schedule Date", "Are you sure you want replace loaded Transaction?") == false) {
-                                        return;
-                                    }
-                                }
-                                if (!isJSONSuccess(poAppController.searchTransaction(lsValue, false, false),
-                                        "Search Transaction!! BY Schedule Date")) {
-                                    return;
-                                }
-                                getLoadedTransaction();
-                                initButtonDisplay(poAppController.getEditMode());
-
-                                break;
-                        }
-                }
-            }
-            event.consume();
-
-        } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
-            Logger.getLogger(InventoryStockIssuance_PostingController.class
-                    .getName()).log(Level.SEVERE, null, ex);
-            poLogWrapper.severe(psFormName + " :" + ex.getMessage());
         }
+
+        if (event.getCode() != null) {
+            switch (event.getCode()) {
+                case TAB:
+                case ENTER:
+                case F3:
+                    event.consume();
+                    switch (loDatePickerID) {
+
+                    }
+            }
+        }
+        event.consume();
+
     }
 
     private boolean isJSONSuccess(JSONObject loJSON, String fsModule) {
@@ -599,12 +634,23 @@ public class InventoryStockIssuance_PostingController implements Initializable, 
 
     private void loadTransactionMaster() throws GuanzonException, SQLException {
         tfTransactionNo.setText(poAppController.getMaster().getTransactionNo());
+        cbDeliveryTp.getSelectionModel().select((poAppController.getMaster().getDeliveryType() != null
+                && !poAppController.getMaster().getDeliveryType().isEmpty())
+                ? Integer.parseInt(poAppController.getMaster().getDeliveryType())
+                : 0);
+        tfBranch.setText(poAppController.getMaster().Branch().getBranchName());
+        tfTrucking.setText(poAppController.getMaster().TruckingCompany().getCompanyName());
+        tfFreight.setText(String.valueOf(poAppController.getMaster().getFreight()));
+        tfDiscount.setText(String.valueOf(poAppController.getMaster().getDiscount()));
+        tfTotal.setText(String.valueOf(poAppController.getMaster().getTransactionTotal()));
         dpTransactionDate.setValue(ParseDate(poAppController.getMaster().getTransactionDate()));
+
         dpReceivedDate.setValue(
-                poAppController.getMaster().getReceivedDate() != null ? ParseDate(poAppController.getMaster().getReceivedDate()) : null);
+                poAppController.getMaster().getReceivedDate() != null ? ParseDate(poAppController.getMaster().getReceivedDate()) : LocalDate.now());
         taRemarks.setText(poAppController.getMaster().getRemarks());
         lblStatus.setText(InventoryStockIssuanceStatus.STATUS.get(Integer.parseInt(poAppController.getMaster().getTransactionStatus())));
         lblSource.setText(poAppController.getMaster().Company().getCompanyName() + " - " + poAppController.getMaster().Industry().getDescription());
+        dpReceivedDate.requestFocus();
     }
 
     private LocalDate ParseDate(Date date) {
@@ -628,6 +674,7 @@ public class InventoryStockIssuance_PostingController implements Initializable, 
         tfQuantity.setText(tblColDetailQty.getCellData(tblIndex));
         tfReceiveQuantity.setText(tblColDetailRecQty.getCellData(tblIndex));
 
+        taNote.setText(poAppController.getDetail(fnRow).getNote());
         tfSupersede.setText(poAppController.getDetail(fnRow).InventorySupersede().getBarCode());
         tfModel.setText(poAppController.getDetail(fnRow).Inventory().Model().getDescription());
         tfColor.setText(poAppController.getDetail(fnRow).Inventory().Color().getDescription());
@@ -657,9 +704,14 @@ public class InventoryStockIssuance_PostingController implements Initializable, 
 
             tblColDetailSerialNo.setCellValueFactory(loModel -> {
                 try {
-                    String xserialname = loModel.getValue().InventorySerial().getSerial01() + "/ " + loModel.getValue().InventorySerial().getSerial02();
-                    return new SimpleStringProperty(xserialname != null ? xserialname : "");
+                    String s1 = loModel.getValue().InventorySerial().getSerial01();
+                    String s2 = loModel.getValue().InventorySerial().getSerial02();
 
+                    String xserialname = (s1 != null && !s1.isEmpty() ? s1 : "")
+                            + ((s1 != null && !s1.isEmpty() && s2 != null && !s2.isEmpty()) ? " / " : "")
+                            + (s2 != null && !s2.isEmpty() ? s2 : "");
+
+                    return new SimpleStringProperty(xserialname);
                 } catch (SQLException | GuanzonException ex) {
                     Logger.getLogger(InventoryStockIssuance_PostingController.class
                             .getName()).log(Level.SEVERE, null, ex);
@@ -750,15 +802,23 @@ public class InventoryStockIssuance_PostingController implements Initializable, 
 
     private void reloadTableDetail() {
         List<Model_Inventory_Transfer_Detail> rawDetail = poAppController.getDetailList();
+
+        //remove auto added detail
+        for (int lnCtr = 0; lnCtr < rawDetail.size(); lnCtr++) {
+            if (rawDetail.get(lnCtr).getStockId() == null
+                    || rawDetail.get(lnCtr).getStockId().isEmpty()) {
+                rawDetail.remove(lnCtr);
+            }
+        }
         laTransactionDetail.setAll(rawDetail);
 
         // Restore or select last row
-        int indexToSelect = (pnClusterDetail >= 0 && pnClusterDetail < laTransactionDetail.size())
-                ? pnClusterDetail
+        int indexToSelect = (pnDetailRow >= 1 && pnDetailRow < laTransactionDetail.size())
+                ? pnDetailRow - 1
                 : laTransactionDetail.size() - 1;
 
         tblViewTransactionDetail.getSelectionModel().select(indexToSelect);
-        pnClusterDetail = tblViewTransactionDetail.getSelectionModel().getSelectedIndex() + 1; // Not focusedIndex
+        pnDetailRow = tblViewTransactionDetail.getSelectionModel().getSelectedIndex() + 1; // Not focusedIndex
 
         tblViewTransactionDetail.refresh();
     }
@@ -773,7 +833,7 @@ public class InventoryStockIssuance_PostingController implements Initializable, 
             @Override
             protected ObservableList<Model_Inventory_Transfer_Master> call() throws Exception {
 
-                if (!isJSONSuccess(poAppController.loadTransactionListPosting(),
+                if (!isJSONSuccess(poAppController.loadTransactionListPosting(value, fsColumn),
                         "Initialize : Load of Transaction List")) {
                     return null;
                 }
@@ -882,6 +942,6 @@ public class InventoryStockIssuance_PostingController implements Initializable, 
         clearAllInputs();
         loadTransactionMaster();
         reloadTableDetail();
-        loadSelectedTransactionDetail(pnClusterDetail);
+        loadSelectedTransactionDetail(pnDetailRow);
     }
 }
