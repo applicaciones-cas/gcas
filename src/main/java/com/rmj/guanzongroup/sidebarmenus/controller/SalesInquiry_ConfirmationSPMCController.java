@@ -389,7 +389,7 @@ public class SalesInquiry_ConfirmationSPMCController implements Initializable, S
                             poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setColorId("");
                         }
                         if (pbEntered) {
-                            moveNext(false);
+                            moveNext(false, true);
                             pbEntered = false;
                         }
                         break;
@@ -461,22 +461,20 @@ public class SalesInquiry_ConfirmationSPMCController implements Initializable, S
         }
     };
 
-    public void moveNext(boolean isUp) {
+    public void moveNext(boolean isUp, boolean continueNext) {
         try {
-            apDetail.requestFocus();
-            pnDetail = isUp ? JFXUtil.moveToPreviousRow(tblViewTransDetails) : JFXUtil.moveToNextRow(tblViewTransDetails);
+            if (continueNext) {
+                apDetail.requestFocus();
+                pnDetail = isUp ? JFXUtil.moveToPreviousRow(tblViewTransDetails) : JFXUtil.moveToNextRow(tblViewTransDetails);
+            }
             loadRecordDetail();
-            if (!JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getBrandId(), null, "")) {
-                if (!JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Inventory().getBarCode(), null, "")) {
-                    tfBrand.requestFocus();
-                } else {
-                    tfBarcode.requestFocus();
-                }
-
+            if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getBrandId(), null, "")) {
+                tfBrand.requestFocus();
+            } else if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Inventory().getBarCode(), null, "")) {
+                tfBarcode.requestFocus();
             } else {
                 tfBrand.requestFocus();
             }
-
         } catch (SQLException ex) {
             Logger.getLogger(SalesInquiry_EntrySPMCController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {
@@ -506,7 +504,7 @@ public class SalesInquiry_ConfirmationSPMCController implements Initializable, S
                         case "tfBrand":
                         case "tfBarcode":
                         case "tfDescription":
-                            moveNext(true);
+                            moveNext(true, true);
                             event.consume();
                             break;
                     }
@@ -516,7 +514,7 @@ public class SalesInquiry_ConfirmationSPMCController implements Initializable, S
                         case "tfBrand":
                         case "tfBarcode":
                         case "tfDescription":
-                            moveNext(false);
+                            moveNext(false, true);
                             event.consume();
                             break;
                         default:
@@ -605,7 +603,7 @@ public class SalesInquiry_ConfirmationSPMCController implements Initializable, S
                                 Platform.runLater(() -> {
                                     PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
                                     delay.setOnFinished(event1 -> {
-                                        moveNext(false);
+                                        moveNext(false, true);
                                     });
                                     delay.play();
                                 });
@@ -622,7 +620,7 @@ public class SalesInquiry_ConfirmationSPMCController implements Initializable, S
                                 Platform.runLater(() -> {
                                     PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
                                     delay.setOnFinished(event1 -> {
-                                        moveNext(false);
+                                        moveNext(false, true);
                                     });
                                     delay.play();
                                 });
@@ -959,7 +957,7 @@ public class SalesInquiry_ConfirmationSPMCController implements Initializable, S
     };
 
     private void initComboBoxes() {
-        // Set the items of the ComboBox to the list of genders
+
         JFXUtil.setComboBoxItems(new JFXUtil.Pairs<>(ClientType, cmbClientType),
                 new JFXUtil.Pairs<>(PurchaseType, cmbPurchaseType));
         JFXUtil.setComboBoxActionListener(comboBoxActionListener, cmbClientType, cmbPurchaseType);
@@ -989,23 +987,7 @@ public class SalesInquiry_ConfirmationSPMCController implements Initializable, S
             if (details_data.size() > 0) {
                 if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
                     pnDetail = tblViewTransDetails.getSelectionModel().getSelectedIndex();
-                    if (!JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getBrandId(), null, "")) {
-                        try {
-                            if (!JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Inventory().getBarCode(), null, "")) {
-                                tfBrand.requestFocus();
-                            } else {
-                                tfBarcode.requestFocus();
-                            }
-                        } catch (SQLException ex) {
-                            Logger.getLogger(SalesInquiry_EntrySPMCController.class.getName()).log(Level.SEVERE, null, ex);
-                        } catch (GuanzonException ex) {
-                            Logger.getLogger(SalesInquiry_EntrySPMCController.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-
-                    } else {
-                        tfBrand.requestFocus();
-                    }
-                    loadRecordDetail();
+                    moveNext(false, false);
                 }
             }
         });

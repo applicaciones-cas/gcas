@@ -242,9 +242,11 @@ public class SalesInquiry_HistoryCarController implements Initializable, ScreenI
                     case "Inquiry":
                         break;
                     case "Requirements":
+                        JFXUtil.clearTextFields(apRequirements);
                         loadTableRequirements.reload();
                         break;
                     case "Bank Applications":
+                        JFXUtil.clearTextFields(apBankApplications);
                         loadTableBankApplications.reload();
                         break;
                 }
@@ -369,7 +371,6 @@ public class SalesInquiry_HistoryCarController implements Initializable, ScreenI
     public void loadRecordBankApplications() {
         try {
             boolean lbShow1 = poSalesInquiryController.SalesInquiry().getBankApplicationsCount() > 0;
-            JFXUtil.setDisabled(!lbShow1, apBankApplicationsButtons);
             if (pnBankApplications < 0 || pnBankApplications > poSalesInquiryController.SalesInquiry().getBankApplicationsCount() - 1) {
                 return;
             }
@@ -384,7 +385,6 @@ public class SalesInquiry_HistoryCarController implements Initializable, ScreenI
                 lblBankApplicationStatus.setText(lsStat);
             });
 
-            JFXUtil.setDisabled(poSalesInquiryController.SalesInquiry().BankApplicationsList(pnBankApplications).getEditMode() == EditMode.ADDNEW, apBankApplicationsButtons);
             boolean lbShow = JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().BankApplicationsList(pnBankApplications).getTransactionStatus(),
                     BankApplicationStatus.APPROVED, BankApplicationStatus.DISAPPROVED, BankApplicationStatus.CANCELLED);
             boolean lbShow2 = JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().BankApplicationsList(pnBankApplications).getEditMode(), EditMode.UPDATE);
@@ -475,6 +475,9 @@ public class SalesInquiry_HistoryCarController implements Initializable, ScreenI
         });
         JFXUtil.setKeyEventFilter(this::tableKeyEvents, tblViewTransDetails, tblViewRequirements, tblViewBankApplications);
         JFXUtil.adjustColumnForScrollbar(tblViewTransDetails, tblViewRequirements, tblViewBankApplications);  // need to use computed-size in min-width of the column to work
+        JFXUtil.addCheckboxColumns(ModelRequirements_Detail.class, tblViewRequirements, disableRowCheckbox,
+                (row, rowIndex, colIndex, newVal) -> {
+                }, 1, 2);
     }
 
     public void initLoadTable() {
@@ -603,7 +606,7 @@ public class SalesInquiry_HistoryCarController implements Initializable, ScreenI
                         int lnCtr;
                         bankapplications_data.clear();
                         try {
-                            if(pnEditMode != EditMode.UNKNOWN){
+                            if (pnEditMode != EditMode.UNKNOWN) {
                                 poSalesInquiryController.SalesInquiry().loadBankApplicationList();
                             }
                             for (lnCtr = 0; lnCtr < poSalesInquiryController.SalesInquiry().getBankApplicationsCount(); lnCtr++) {
@@ -704,10 +707,21 @@ public class SalesInquiry_HistoryCarController implements Initializable, ScreenI
                                 tfSearchReferenceNo.setText("");
                                 break;
                             } else {
+                                poSalesInquiryController.SalesInquiry().loadRequirements();
+                                poSalesInquiryController.SalesInquiry().loadBankApplications();
                                 pnEditMode = poSalesInquiryController.SalesInquiry().getEditMode();
                                 loadRecordMaster();
                                 loadTableDetail.reload();
                                 initButton(pnEditMode);
+                            }
+                            String currentTitle = tabpane.getSelectionModel().getSelectedItem().getText();
+                            switch (currentTitle) {
+                                case "Requirements":
+                                    JFXUtil.clickTabByTitleText(tabpane, "Requirements");
+                                    break;
+                                case "Bank Applications":
+                                    JFXUtil.clickTabByTitleText(tabpane, "Bank Applications");
+                                    break;
                             }
                             loadRecordSearch();
                             return;
@@ -733,7 +747,7 @@ public class SalesInquiry_HistoryCarController implements Initializable, ScreenI
     }
 
     private void initComboBoxes() {
-        // Set the items of the ComboBox to the list of genders
+
         JFXUtil.setComboBoxItems(new JFXUtil.Pairs<>(ClientType, cmbClientType), new JFXUtil.Pairs<>(PurchaseType, cmbPurchaseType),
                 new JFXUtil.Pairs<>(CategoryType, cmbCategoryType), new JFXUtil.Pairs<>(CustomerGroup, cmbCustomerGroup));
         JFXUtil.initComboBoxCellDesignColor("#FF8201", cmbClientType, cmbPurchaseType, cmbCategoryType, cmbCustomerGroup);
@@ -763,7 +777,7 @@ public class SalesInquiry_HistoryCarController implements Initializable, ScreenI
         JFXUtil.setColumnCenter(tblRowNoDetail);
         JFXUtil.setColumnLeft(tblBrandDetail, tblDescriptionDetail);
         JFXUtil.setColumnsIndexAndDisableReordering(tblViewTransDetails);
-
+        disableRowCheckbox.setValue(true);
         filteredDataDetail = new FilteredList<>(details_data, b -> true);
         SortedList<ModelSalesInquiry_Detail> sortedData = new SortedList<>(filteredDataDetail);
         sortedData.comparatorProperty().bind(tblViewTransDetails.comparatorProperty());

@@ -62,7 +62,7 @@ import org.guanzon.appdriver.constant.UserRight;
 
 /**
  *
- * @author Arsiela
+ * @author Team 2
  */
 public class SalesInquiry_EntryLPController implements Initializable, ScreenInterface {
 
@@ -416,23 +416,7 @@ public class SalesInquiry_EntryLPController implements Initializable, ScreenInte
             if (details_data.size() > 0) {
                 if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
                     pnDetail = tblViewTransDetails.getSelectionModel().getSelectedIndex();
-                    if (!JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getBrandId(), null, "")) {
-                        try {
-                            if (!JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Inventory().getBarCode(), null, "")) {
-                                tfBrand.requestFocus();
-                            } else {
-                                tfBarcode.requestFocus();
-                            }
-                        } catch (SQLException ex) {
-                            Logger.getLogger(SalesInquiry_EntrySPMCController.class.getName()).log(Level.SEVERE, null, ex);
-                        } catch (GuanzonException ex) {
-                            Logger.getLogger(SalesInquiry_EntrySPMCController.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-
-                    } else {
-                        tfBrand.requestFocus();
-                    }
-                    loadRecordDetail();
+                    moveNext(false, false);
                 }
             }
         });
@@ -561,7 +545,7 @@ public class SalesInquiry_EntryLPController implements Initializable, ScreenInte
                             poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setStockId("");
                         }
                         if (pbEntered) {
-                            moveNext(false);
+                            moveNext(false, true);
                             pbEntered = false;
                         }
                         break;
@@ -605,22 +589,20 @@ public class SalesInquiry_EntryLPController implements Initializable, ScreenInte
                 loadRecordMaster();
             });
 
-    public void moveNext(boolean isUp) {
+    public void moveNext(boolean isUp, boolean continueNext) {
         try {
-            apDetail.requestFocus();
-            pnDetail = isUp ? JFXUtil.moveToPreviousRow(tblViewTransDetails) : JFXUtil.moveToNextRow(tblViewTransDetails);
+            if (continueNext) {
+                apDetail.requestFocus();
+                pnDetail = isUp ? JFXUtil.moveToPreviousRow(tblViewTransDetails) : JFXUtil.moveToNextRow(tblViewTransDetails);
+            }
             loadRecordDetail();
-            if (!JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getBrandId(), null, "")) {
-                if (!JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Inventory().getBarCode(), null, "")) {
-                    tfBrand.requestFocus();
-                } else {
-                    tfBarcode.requestFocus();
-                }
-
+            if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getBrandId(), null, "")) {
+                tfBrand.requestFocus();
+            } else if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Inventory().getBarCode(), null, "")) {
+                tfBarcode.requestFocus();
             } else {
                 tfBrand.requestFocus();
             }
-
         } catch (SQLException ex) {
             Logger.getLogger(SalesInquiry_EntrySPMCController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {
@@ -651,7 +633,7 @@ public class SalesInquiry_EntryLPController implements Initializable, ScreenInte
                         case "tfBrand":
                         case "tfBarcode":
                         case "tfDescription":
-                            moveNext(true);
+                            moveNext(true, true);
                             event.consume();
                             break;
                     }
@@ -661,7 +643,7 @@ public class SalesInquiry_EntryLPController implements Initializable, ScreenInte
                         case "tfBrand":
                         case "tfBarcode":
                         case "tfDescription":
-                            moveNext(false);
+                            moveNext(false, true);
                             event.consume();
                             break;
                         default:
@@ -737,7 +719,7 @@ public class SalesInquiry_EntryLPController implements Initializable, ScreenInte
                                 Platform.runLater(() -> {
                                     PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
                                     delay.setOnFinished(event1 -> {
-                                        moveNext(false);
+                                        moveNext(false, true);
                                     });
                                     delay.play();
                                 });
@@ -754,7 +736,7 @@ public class SalesInquiry_EntryLPController implements Initializable, ScreenInte
                                 Platform.runLater(() -> {
                                     PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
                                     delay.setOnFinished(event1 -> {
-                                        moveNext(false);
+                                        moveNext(false, true);
                                     });
                                     delay.play();
                                 });
@@ -866,7 +848,7 @@ public class SalesInquiry_EntryLPController implements Initializable, ScreenInte
     };
 
     private void initComboBoxes() {
-        // Set the items of the ComboBox to the list of genders
+
         JFXUtil.setComboBoxItems(new JFXUtil.Pairs<>(ClientType, cmbClientType),
                 new JFXUtil.Pairs<>(PurchaseType, cmbPurchaseType)
         );
@@ -881,8 +863,8 @@ public class SalesInquiry_EntryLPController implements Initializable, ScreenInte
 
     public void initTextFields() {
         JFXUtil.setFocusListener(txtArea_Focus, taRemarks);
-        JFXUtil.setFocusListener(txtMaster_Focus, tfClient, tfSalesPerson, tfReferralAgent,tfInquiryType);
-        JFXUtil.setFocusListener(txtDetail_Focus, tfBrand,tfBarcode, tfDescription);
+        JFXUtil.setFocusListener(txtMaster_Focus, tfClient, tfSalesPerson, tfReferralAgent, tfInquiryType);
+        JFXUtil.setFocusListener(txtDetail_Focus, tfBrand, tfBarcode, tfDescription);
 
         JFXUtil.setKeyPressedListener(this::txtField_KeyPressed, apBrowse, apMaster, apDetail);
         JFXUtil.setDisabled(oApp.getUserLevel() <= UserRight.ENCODER, tfSalesPerson);
