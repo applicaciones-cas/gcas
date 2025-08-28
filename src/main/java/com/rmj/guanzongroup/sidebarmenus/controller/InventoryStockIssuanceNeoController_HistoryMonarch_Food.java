@@ -64,7 +64,7 @@ import ph.com.guanzongroup.cas.inv.warehouse.t4.model.services.DeliveryIssuanceC
  *
  * @author User
  */
-public class InventoryStockIssuanceNeoController_History implements Initializable, ScreenInterface {
+public class InventoryStockIssuanceNeoController_HistoryMonarch_Food implements Initializable, ScreenInterface {
 
     private GRiderCAS poApp;
     private LogWrapper poLogWrapper;
@@ -214,7 +214,7 @@ public class InventoryStockIssuanceNeoController_History implements Initializabl
 
             loadSelectedTransactionDetail(pnTransactionDetail);
         } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
-            Logger.getLogger(InventoryStockIssuanceNeoController_History.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(InventoryStockIssuanceNeoController_HistoryMonarch_Food.class.getName()).log(Level.SEVERE, null, ex);
             poLogWrapper.severe(psFormName + " :" + ex.getMessage());
         }
     }
@@ -472,7 +472,7 @@ public class InventoryStockIssuanceNeoController_History implements Initializabl
                 pi.setVisible(false);
                 Throwable ex = getException();
                 Logger
-                        .getLogger(InventoryStockIssuanceNeoController_History.class
+                        .getLogger(InventoryStockIssuanceNeoController_HistoryMonarch_Food.class
                                 .getName()).log(Level.SEVERE, null, ex);
                 poLogWrapper.severe(psFormName + " : " + ex.getMessage());
             }
@@ -660,7 +660,7 @@ public class InventoryStockIssuanceNeoController_History implements Initializabl
 
                     return new SimpleStringProperty(xserialname);
                 } catch (SQLException | GuanzonException ex) {
-                    Logger.getLogger(InventoryStockIssuanceNeoController_History.class
+                    Logger.getLogger(InventoryStockIssuanceNeoController_HistoryMonarch_Food.class
                             .getName()).log(Level.SEVERE, null, ex);
                     poLogWrapper.severe(psFormName + " :" + ex.getMessage());
                     return new SimpleStringProperty("");

@@ -65,7 +65,7 @@ import ph.com.guanzongroup.cas.inv.warehouse.t4.model.services.DeliveryIssuanceC
  *
  * @author 12mnv 08-22-2025
  */
-public class InventoryStockIssuance_PostingController implements Initializable, ScreenInterface {
+public class InventoryStockIssuance_PostingControllerAppliance implements Initializable, ScreenInterface {
 
     private GRiderCAS poApp;
     private String psIndustryID = "";
@@ -164,7 +164,7 @@ public class InventoryStockIssuance_PostingController implements Initializable, 
             initializeTableDetail();
             initControlEvents();
         } catch (SQLException | GuanzonException ex) {
-            Logger.getLogger(InventoryStockIssuance_PostingController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(InventoryStockIssuance_PostingControllerAppliance.class.getName()).log(Level.SEVERE, null, ex);
             poLogWrapper.severe(psFormName + " :" + ex.getMessage());
         }
     }
@@ -223,7 +223,7 @@ public class InventoryStockIssuance_PostingController implements Initializable, 
             initButtonDisplay(poAppController.getEditMode());
 
         } catch (GuanzonException | SQLException | CloneNotSupportedException ex) {
-            Logger.getLogger(InventoryStockIssuance_PostingController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(InventoryStockIssuance_PostingControllerAppliance.class.getName()).log(Level.SEVERE, null, ex);
             poLogWrapper.severe(psFormName + " :" + ex.getMessage());
 
         }
@@ -250,7 +250,7 @@ public class InventoryStockIssuance_PostingController implements Initializable, 
                 }
                 getLoadedTransaction();
             } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
-                Logger.getLogger(InventoryStockIssuance_PostingController.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(InventoryStockIssuance_PostingControllerAppliance.class.getName()).log(Level.SEVERE, null, ex);
                 poLogWrapper.severe(psFormName + " :" + ex.getMessage());
 
             }
@@ -270,7 +270,7 @@ public class InventoryStockIssuance_PostingController implements Initializable, 
 
             loadSelectedTransactionDetail(pnDetailRow);
         } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
-            Logger.getLogger(InventoryStockIssuance_PostingController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(InventoryStockIssuance_PostingControllerAppliance.class.getName()).log(Level.SEVERE, null, ex);
             poLogWrapper.severe(psFormName + " :" + ex.getMessage());
         }
     }
@@ -446,7 +446,7 @@ public class InventoryStockIssuance_PostingController implements Initializable, 
                 loTextField.selectAll();
             }
         } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
-            Logger.getLogger(InventoryStockIssuance_PostingController.class
+            Logger.getLogger(InventoryStockIssuance_PostingControllerAppliance.class
                     .getName()).log(Level.SEVERE, null, ex);
             poLogWrapper.severe(psFormName + " :" + ex.getMessage());
         }
@@ -503,7 +503,7 @@ public class InventoryStockIssuance_PostingController implements Initializable, 
                 }
             }
         } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
-            Logger.getLogger(InventoryStockIssuance_PostingController.class
+            Logger.getLogger(InventoryStockIssuance_PostingControllerAppliance.class
                     .getName()).log(Level.SEVERE, null, ex);
             poLogWrapper.severe(psFormName + " :" + ex.getMessage());
         }
@@ -535,7 +535,7 @@ public class InventoryStockIssuance_PostingController implements Initializable, 
             }
 
         } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
-            Logger.getLogger(InventoryStockIssuance_PostingController.class
+            Logger.getLogger(InventoryStockIssuance_PostingControllerAppliance.class
                     .getName()).log(Level.SEVERE, null, ex);
             poLogWrapper.severe(psFormName + " :" + ex.getMessage());
         }
@@ -713,7 +713,7 @@ public class InventoryStockIssuance_PostingController implements Initializable, 
 
                     return new SimpleStringProperty(xserialname);
                 } catch (SQLException | GuanzonException ex) {
-                    Logger.getLogger(InventoryStockIssuance_PostingController.class
+                    Logger.getLogger(InventoryStockIssuance_PostingControllerAppliance.class
                             .getName()).log(Level.SEVERE, null, ex);
                     poLogWrapper.severe(psFormName + " :" + ex.getMessage());
                     return new SimpleStringProperty("");
@@ -726,7 +726,7 @@ public class InventoryStockIssuance_PostingController implements Initializable, 
                     return new SimpleStringProperty(barcode != null ? barcode : "");
 
                 } catch (SQLException | GuanzonException ex) {
-                    Logger.getLogger(InventoryStockIssuance_PostingController.class
+                    Logger.getLogger(InventoryStockIssuance_PostingControllerAppliance.class
                             .getName()).log(Level.SEVERE, null, ex);
                     poLogWrapper.severe(psFormName + " :" + ex.getMessage());
                     return new SimpleStringProperty("");
@@ -739,7 +739,7 @@ public class InventoryStockIssuance_PostingController implements Initializable, 
                     return new SimpleStringProperty(description != null ? description : "");
 
                 } catch (SQLException | GuanzonException ex) {
-                    Logger.getLogger(InventoryStockIssuance_PostingController.class
+                    Logger.getLogger(InventoryStockIssuance_PostingControllerAppliance.class
                             .getName()).log(Level.SEVERE, null, ex);
                     poLogWrapper.severe(psFormName + " :" + ex.getMessage());
                     return new SimpleStringProperty("");
@@ -752,7 +752,7 @@ public class InventoryStockIssuance_PostingController implements Initializable, 
                     return new SimpleStringProperty(lsObject != null ? lsObject : "");
 
                 } catch (SQLException | GuanzonException ex) {
-                    Logger.getLogger(InventoryStockIssuance_PostingController.class
+                    Logger.getLogger(InventoryStockIssuance_PostingControllerAppliance.class
                             .getName()).log(Level.SEVERE, null, ex);
                     poLogWrapper.severe(psFormName + " :" + ex.getMessage());
                     return new SimpleStringProperty("");
@@ -765,7 +765,7 @@ public class InventoryStockIssuance_PostingController implements Initializable, 
                     return new SimpleStringProperty(lsObject != null ? lsObject : "");
 
                 } catch (SQLException | GuanzonException ex) {
-                    Logger.getLogger(InventoryStockIssuance_PostingController.class
+                    Logger.getLogger(InventoryStockIssuance_PostingControllerAppliance.class
                             .getName()).log(Level.SEVERE, null, ex);
                     poLogWrapper.severe(psFormName + " :" + ex.getMessage());
                     return new SimpleStringProperty("");
@@ -778,7 +778,7 @@ public class InventoryStockIssuance_PostingController implements Initializable, 
                     return new SimpleStringProperty(lsObject != null ? lsObject : "");
 
                 } catch (SQLException | GuanzonException ex) {
-                    Logger.getLogger(InventoryStockIssuance_PostingController.class
+                    Logger.getLogger(InventoryStockIssuance_PostingControllerAppliance.class
                             .getName()).log(Level.SEVERE, null, ex);
                     poLogWrapper.severe(psFormName + " :" + ex.getMessage());
                     return new SimpleStringProperty("");
@@ -864,7 +864,7 @@ public class InventoryStockIssuance_PostingController implements Initializable, 
                         return new SimpleStringProperty(lsObject != null ? lsObject : "");
 
                     } catch (SQLException | GuanzonException ex) {
-                        Logger.getLogger(InventoryStockIssuance_PostingController.class
+                        Logger.getLogger(InventoryStockIssuance_PostingControllerAppliance.class
                                 .getName()).log(Level.SEVERE, null, ex);
                         poLogWrapper.severe(psFormName + " :" + ex.getMessage());
                         return new SimpleStringProperty("");
@@ -880,7 +880,7 @@ public class InventoryStockIssuance_PostingController implements Initializable, 
                 pi.setVisible(false);
                 Throwable ex = getException();
                 Logger
-                        .getLogger(InventoryStockIssuance_PostingController.class
+                        .getLogger(InventoryStockIssuance_PostingControllerAppliance.class
                                 .getName()).log(Level.SEVERE, null, ex);
                 poLogWrapper.severe(psFormName + " : " + ex.getMessage());
             }

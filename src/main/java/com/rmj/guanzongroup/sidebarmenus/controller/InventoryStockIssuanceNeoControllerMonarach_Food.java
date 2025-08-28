@@ -65,19 +65,19 @@ public class InventoryStockIssuanceNeoControllerMonarach_Food implements Initial
 
     private GRiderCAS poApp;
     private LogWrapper poLogWrapper;
-    private String psFormName = "Issuance Entry";
+    private String psFormName = "Issuance Monarch Food Entry";
     private String psIndustryID, psCompanyID, psCategoryID;
     private Control lastFocusedControl;
     private InventoryStockIssuanceNeo poAppController;
     private ObservableList<Model_Inventory_Transfer_Master> laTransactionMaster;
     private ObservableList<Model_Inventory_Transfer_Detail> laTransactionDetail;
-    private int pnSelectMaster, pnEditMode, pnCTransactionDetail;
+    private int pnSelectMaster, pnEditMode, pnTransactionDetail;
 
     @FXML
     AnchorPane apMainAnchor, apMaster, apDetail, apDelivery;
 
     @FXML
-    TextField tfSearchSourceno, tfSeacrchTransNo, tfTransNo, tfClusterName, tfTrucking, tfDiscountRate, tfDiscountAmount, tfTotal;
+    TextField tfSearchSourceno, tfSearchTransNo, tfTransNo, tfClusterName, tfTrucking, tfDiscountRate, tfDiscountAmount, tfTotal;
 
     @FXML
     DatePicker dpTransactionDate, dpDelDate;
@@ -203,12 +203,12 @@ public class InventoryStockIssuanceNeoControllerMonarach_Food implements Initial
     @FXML
     void ontblDetailClicked(MouseEvent e) {
         try {
-            pnCTransactionDetail = tblViewDetails.getSelectionModel().getSelectedIndex() + 1;
-            if (pnCTransactionDetail <= 0) {
+            pnTransactionDetail = tblViewDetails.getSelectionModel().getSelectedIndex() + 1;
+            if (pnTransactionDetail <= 0) {
                 return;
             }
 
-            loadSelectedTransactionDetail(pnCTransactionDetail);
+            loadSelectedTransactionDetail(pnTransactionDetail);
         } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
             Logger.getLogger(InventoryStockIssuance_PostingController.class.getName()).log(Level.SEVERE, null, ex);
             poLogWrapper.severe(psFormName + " :" + ex.getMessage());
@@ -245,43 +245,43 @@ public class InventoryStockIssuanceNeoControllerMonarach_Food implements Initial
                             tfTrucking.setText(poAppController.getMaster().TruckingCompany().getCompanyName());
                             break;
                         case "tfSearchSerial":
-                            if (pnCTransactionDetail > 0) {
-                                if (!isJSONSuccess(poAppController.searchDetailByIssuance(pnCTransactionDetail, tfSearchSerial.getText(), false, true),
+                            if (pnTransactionDetail > 0) {
+                                if (!isJSONSuccess(poAppController.searchDetailByIssuance(pnTransactionDetail, tfSearchSerial.getText(), false, true),
                                         "Initialize Search Serial! ")) {
                                     return;
                                 }
                                 reloadTableDetail();
-                                loadSelectedTransactionDetail(pnCTransactionDetail);
+                                loadSelectedTransactionDetail(pnTransactionDetail);
                             }
                             break;
                         case "tfSearchBarcode":
-                            if (pnCTransactionDetail > 0) {
-                                if (!isJSONSuccess(poAppController.searchDetailByIssuance(pnCTransactionDetail, tfSearchBarcode.getText(), true, false),
+                            if (pnTransactionDetail > 0) {
+                                if (!isJSONSuccess(poAppController.searchDetailByIssuance(pnTransactionDetail, tfSearchBarcode.getText(), true, false),
                                         "Initialize Search Barcode! ")) {
                                     return;
                                 }
                                 reloadTableDetail();
-                                loadSelectedTransactionDetail(pnCTransactionDetail);
+                                loadSelectedTransactionDetail(pnTransactionDetail);
                             }
                             break;
                         case "tfSearchDescription":
-                            if (pnCTransactionDetail > 0) {
-                                if (!isJSONSuccess(poAppController.searchDetailByIssuance(pnCTransactionDetail, tfSearchDescription.getText(), false, false),
+                            if (pnTransactionDetail > 0) {
+                                if (!isJSONSuccess(poAppController.searchDetailByIssuance(pnTransactionDetail, tfSearchDescription.getText(), false, false),
                                         "Initialize Search Description! ")) {
                                     return;
                                 }
                                 reloadTableDetail();
-                                loadSelectedTransactionDetail(pnCTransactionDetail);
+                                loadSelectedTransactionDetail(pnTransactionDetail);
                             }
                             break;
                         case "tfSupersede":
-                            if (pnCTransactionDetail > 0) {
-                                if (!isJSONSuccess(poAppController.searchDetailByBarcode(pnCTransactionDetail, tfSupersede.getText(), true),
+                            if (pnTransactionDetail > 0) {
+                                if (!isJSONSuccess(poAppController.searchDetailByBarcode(pnTransactionDetail, tfSupersede.getText(), true),
                                         "Initialize Search Supersede! ")) {
                                     return;
                                 }
                                 reloadTableDetail();
-                                loadSelectedTransactionDetail(pnCTransactionDetail);
+                                loadSelectedTransactionDetail(pnTransactionDetail);
                             }
                             break;
                     }
@@ -378,20 +378,20 @@ public class InventoryStockIssuanceNeoControllerMonarach_Food implements Initial
                             getLoadedTransaction();
                             initButtonDisplay(poAppController.getEditMode());
                             break;
-                        case "tfSeacrchTransNo":
+                        case "tfSearchTransNo":
                             if (!tfTransNo.getText().isEmpty()) {
                                 if (ShowMessageFX.OkayCancel(null, "Search Transaction! by Trasaction", "Are you sure you want replace loaded Transaction?") == false) {
                                     return;
                                 }
                             }
-                            if (!isJSONSuccess(poAppController.searchTransaction(tfSeacrchTransNo.getText(), true, true),
+                            if (!isJSONSuccess(poAppController.searchTransaction(tfSearchTransNo.getText(), true, true),
                                     "Initialize Search Transaction! ")) {
                                 return;
                             }
 
-                            tfSeacrchTransNo.setText(poAppController.getMaster().getTransactionNo());
+                            tfSearchTransNo.setText(poAppController.getMaster().getTransactionNo());
 
-                            loadTransactionMasterList(tfSeacrchTransNo.getText(), "a.sTransNox");
+                            loadTransactionMasterList(tfSearchTransNo.getText(), "a.sTransNox");
                             getLoadedTransaction();
                             initButtonDisplay(poAppController.getEditMode());
                             break;
@@ -456,9 +456,9 @@ public class InventoryStockIssuanceNeoControllerMonarach_Food implements Initial
                             loTextField.requestFocus();
                             return;
                         }
-                        poAppController.getDetail(pnCTransactionDetail).setQuantity(Double.parseDouble(lsValue));
+                        poAppController.getDetail(pnTransactionDetail).setQuantity(Double.parseDouble(lsValue));
                         reloadTableDetail();
-                        loadSelectedTransactionDetail(pnCTransactionDetail);
+                        loadSelectedTransactionDetail(pnTransactionDetail);
                         break;
                 }
             } else {
@@ -517,10 +517,10 @@ public class InventoryStockIssuanceNeoControllerMonarach_Food implements Initial
                                     loTxtField.requestFocus();
                                     return;
                                 }
-                                poAppController.getDetail(pnCTransactionDetail).setQuantity(Double.parseDouble(lsValue));
+                                poAppController.getDetail(pnTransactionDetail).setQuantity(Double.parseDouble(lsValue));
                                 reloadTableDetail();
 
-                                loadSelectedTransactionDetail(pnCTransactionDetail);
+                                loadSelectedTransactionDetail(pnTransactionDetail);
                                 break;
                         }
                     case F3:
@@ -540,7 +540,7 @@ public class InventoryStockIssuanceNeoControllerMonarach_Food implements Initial
                                 getLoadedTransaction();
                                 initButtonDisplay(poAppController.getEditMode());
                                 break;
-                            case "tfSeacrchTransNo":
+                            case "tfSearchTransNo":
                                 if (!tfTransNo.getText().isEmpty()) {
                                     if (ShowMessageFX.OkayCancel(null, "Search Transaction! by Trasaction", "Are you sure you want replace loaded Transaction?") == false) {
                                         return;
@@ -551,7 +551,7 @@ public class InventoryStockIssuanceNeoControllerMonarach_Food implements Initial
                                     return;
                                 }
 
-//                                tfSeacrchTransNo.setText(poAppController.getMaster().getTransactionNo());
+//                                tfSearchTransNo.setText(poAppController.getMaster().getTransactionNo());
                                 getLoadedTransaction();
                                 initButtonDisplay(poAppController.getEditMode());
                                 break;
@@ -570,46 +570,46 @@ public class InventoryStockIssuanceNeoControllerMonarach_Food implements Initial
                                 tfTrucking.setText(poAppController.getMaster().TruckingCompany().getCompanyName());
                                 break;
                             case "tfSearchSerial":
-                                if (pnCTransactionDetail > 0) {
-                                    if (!isJSONSuccess(poAppController.searchDetailByIssuance(pnCTransactionDetail, tfSearchSerial.getText(), false, true),
+                                if (pnTransactionDetail > 0) {
+                                    if (!isJSONSuccess(poAppController.searchDetailByIssuance(pnTransactionDetail, tfSearchSerial.getText(), false, true),
                                             "Initialize Search Serial! ")) {
                                         return;
                                     }
                                     reloadTableDetail();
 
-                                    loadSelectedTransactionDetail(pnCTransactionDetail);
+                                    loadSelectedTransactionDetail(pnTransactionDetail);
                                 }
                                 break;
                             case "tfSearchBarcode":
-                                if (pnCTransactionDetail > 0) {
-                                    if (!isJSONSuccess(poAppController.searchDetailByIssuance(pnCTransactionDetail, tfSearchBarcode.getText(), true, false),
+                                if (pnTransactionDetail > 0) {
+                                    if (!isJSONSuccess(poAppController.searchDetailByIssuance(pnTransactionDetail, tfSearchBarcode.getText(), true, false),
                                             "Initialize Search Barcode! ")) {
                                         return;
                                     }
                                     reloadTableDetail();
 
-                                    loadSelectedTransactionDetail(pnCTransactionDetail);
+                                    loadSelectedTransactionDetail(pnTransactionDetail);
                                 }
                                 break;
                             case "tfSearchDescription":
-                                if (pnCTransactionDetail > 0) {
-                                    if (!isJSONSuccess(poAppController.searchDetailByIssuance(pnCTransactionDetail, tfSearchDescription.getText(), false, false),
+                                if (pnTransactionDetail > 0) {
+                                    if (!isJSONSuccess(poAppController.searchDetailByIssuance(pnTransactionDetail, tfSearchDescription.getText(), false, false),
                                             "Initialize Search Description! ")) {
                                         return;
                                     }
                                     reloadTableDetail();
 
-                                    loadSelectedTransactionDetail(pnCTransactionDetail);
+                                    loadSelectedTransactionDetail(pnTransactionDetail);
                                 }
                                 break;
                             case "tfSupersede":
-                                if (pnCTransactionDetail > 0) {
-                                    if (!isJSONSuccess(poAppController.searchDetailByBarcode(pnCTransactionDetail, tfSupersede.getText(), true),
+                                if (pnTransactionDetail > 0) {
+                                    if (!isJSONSuccess(poAppController.searchDetailByBarcode(pnTransactionDetail, tfSupersede.getText(), true),
                                             "Initialize Search Supersede! ")) {
                                         return;
                                     }
                                     reloadTableDetail();
-                                    loadSelectedTransactionDetail(pnCTransactionDetail);
+                                    loadSelectedTransactionDetail(pnTransactionDetail);
                                 }
                                 break;
                         }
@@ -776,12 +776,12 @@ public class InventoryStockIssuanceNeoControllerMonarach_Food implements Initial
 //            loMapFields.put("tblColDetailCost", tfCost);
 //            loMapFields.put("tblColDetailOrderQty", tfIssuedQty);
 //
-//            loadSelectedTableItem(pnCTransactionDetail - 1, tblViewDetails, loMapFields);
+//            loadSelectedTableItem(pnTransactionDetail - 1, tblViewDetails, loMapFields);
 //
-//            tfColor.setText(poAppController.getDetail(pnCTransactionDetail).Inventory().Color().getDescription());
-//            tfMeasure.setText(poAppController.getDetail(pnCTransactionDetail).Inventory().Measure().getDescription());
-//            tfInvType.setText(poAppController.getDetail(pnCTransactionDetail).Inventory().InventoryType().getDescription());
-//            tfSupersede.setText(poAppController.getDetail(pnCTransactionDetail).InventorySupersede().getBarCode());
+//            tfColor.setText(poAppController.getDetail(pnTransactionDetail).Inventory().Color().getDescription());
+//            tfMeasure.setText(poAppController.getDetail(pnTransactionDetail).Inventory().Measure().getDescription());
+//            tfInvType.setText(poAppController.getDetail(pnTransactionDetail).Inventory().InventoryType().getDescription());
+//            tfSupersede.setText(poAppController.getDetail(pnTransactionDetail).InventorySupersede().getBarCode());
 //
 //        } catch (SQLException | GuanzonException e) {
 //            poLogWrapper.severe(psFormName, e.getMessage());
@@ -982,13 +982,13 @@ public class InventoryStockIssuanceNeoControllerMonarach_Food implements Initial
         laTransactionDetail.setAll(rawDetail);
 
         // Restore or select last row
-        int indexToSelect = (pnCTransactionDetail >= 1 && pnCTransactionDetail < laTransactionDetail.size())
-                ? pnCTransactionDetail - 1
+        int indexToSelect = (pnTransactionDetail >= 1 && pnTransactionDetail < laTransactionDetail.size())
+                ? pnTransactionDetail - 1
                 : laTransactionDetail.size() - 1;
 
         tblViewDetails.getSelectionModel().select(indexToSelect);
 
-        pnCTransactionDetail = tblViewDetails.getSelectionModel().getSelectedIndex() + 1; // Not focusedIndex
+        pnTransactionDetail = tblViewDetails.getSelectionModel().getSelectedIndex() + 1; // Not focusedIndex
         tblViewDetails.refresh();
     }
 
@@ -996,7 +996,7 @@ public class InventoryStockIssuanceNeoControllerMonarach_Food implements Initial
         clearAllInputs();
         loadTransactionMaster();
         reloadTableDetail();
-        loadSelectedTransactionDetail(pnCTransactionDetail);
+        loadSelectedTransactionDetail(pnTransactionDetail);
     }
 
     private boolean isJSONSuccess(JSONObject loJSON, String fsModule) {

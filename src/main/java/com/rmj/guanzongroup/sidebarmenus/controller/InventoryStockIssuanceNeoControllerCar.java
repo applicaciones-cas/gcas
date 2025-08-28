@@ -65,7 +65,7 @@ public class InventoryStockIssuanceNeoControllerCar implements Initializable, Sc
 
     private GRiderCAS poApp;
     private LogWrapper poLogWrapper;
-    private String psFormName = "Issuance Entry";
+    private String psFormName = "Issuance Car Entry";
     private String psIndustryID, psCompanyID, psCategoryID;
     private Control lastFocusedControl;
     private InventoryStockIssuanceNeo poAppController;
@@ -77,7 +77,7 @@ public class InventoryStockIssuanceNeoControllerCar implements Initializable, Sc
     AnchorPane apMainAnchor, apMaster, apDetail, apDelivery;
 
     @FXML
-    TextField tfSearchSourceno, tfSeacrchTransNo, tfTransNo, tfClusterName, tfTrucking, tfDiscountRate, tfDiscountAmount, tfTotal;
+    TextField tfSearchSourceno, tfSearchTransNo, tfTransNo, tfClusterName, tfTrucking, tfDiscountRate, tfDiscountAmount, tfTotal;
 
     @FXML
     DatePicker dpTransactionDate, dpDelDate;
@@ -368,30 +368,18 @@ public class InventoryStockIssuanceNeoControllerCar implements Initializable, Sc
                                     return;
                                 }
                             }
-                            if (!isJSONSuccess(poAppController.searchTransaction(tfSearchSourceno.getText(), true, true),
-                                    "Initialize Search Source No! ")) {
-                                return;
-                            }
-
-                            tfSearchSourceno.setText(poAppController.getMaster().Branch().getBranchName());
                             loadTransactionMasterList(tfSearchSourceno.getText(), "e.sBranchNm");
                             getLoadedTransaction();
                             initButtonDisplay(poAppController.getEditMode());
                             break;
-                        case "tfSeacrchTransNo":
+                        case "tfSearchTransNo":
                             if (!tfTransNo.getText().isEmpty()) {
                                 if (ShowMessageFX.OkayCancel(null, "Search Transaction! by Trasaction", "Are you sure you want replace loaded Transaction?") == false) {
                                     return;
                                 }
                             }
-                            if (!isJSONSuccess(poAppController.searchTransaction(tfSeacrchTransNo.getText(), true, true),
-                                    "Initialize Search Transaction! ")) {
-                                return;
-                            }
 
-                            tfSeacrchTransNo.setText(poAppController.getMaster().getTransactionNo());
-
-                            loadTransactionMasterList(tfSeacrchTransNo.getText(), "a.sTransNox");
+                            loadTransactionMasterList(tfSearchTransNo.getText(), "a.sTransNox");
                             getLoadedTransaction();
                             initButtonDisplay(poAppController.getEditMode());
                             break;
@@ -540,7 +528,7 @@ public class InventoryStockIssuanceNeoControllerCar implements Initializable, Sc
                                 getLoadedTransaction();
                                 initButtonDisplay(poAppController.getEditMode());
                                 break;
-                            case "tfSeacrchTransNo":
+                            case "tfSearchTransNo":
                                 if (!tfTransNo.getText().isEmpty()) {
                                     if (ShowMessageFX.OkayCancel(null, "Search Transaction! by Trasaction", "Are you sure you want replace loaded Transaction?") == false) {
                                         return;
@@ -551,7 +539,7 @@ public class InventoryStockIssuanceNeoControllerCar implements Initializable, Sc
                                     return;
                                 }
 
-//                                tfSeacrchTransNo.setText(poAppController.getMaster().getTransactionNo());
+//                                tfSearchTransNo.setText(poAppController.getMaster().getTransactionNo());
                                 getLoadedTransaction();
                                 initButtonDisplay(poAppController.getEditMode());
                                 break;
