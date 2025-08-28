@@ -65,7 +65,7 @@ import ph.com.guanzongroup.cas.inv.warehouse.t4.parameter.model.Model_Branch_Oth
  *
  * @author 12mnv
  */
-public class DeliverySchedule_EntryController implements Initializable, ScreenInterface {
+public class DeliverySchedule_EntryControllerCar implements Initializable, ScreenInterface {
 
     private GRiderCAS poApp;
     private String psIndustryID = "";
@@ -169,7 +169,7 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
             initializeTableDetail();
             initControlEvents();
         } catch (SQLException | GuanzonException ex) {
-            Logger.getLogger(DeliverySchedule_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliverySchedule_EntryControllerCar.class.getName()).log(Level.SEVERE, null, ex);
             poLogWrapper.severe(psFormName + " :" + ex.getMessage());
         }
     }
@@ -350,7 +350,7 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
             initButtonDisplay(poAppController.getEditMode());
 
         } catch (GuanzonException | SQLException | CloneNotSupportedException ex) {
-            Logger.getLogger(DeliverySchedule_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliverySchedule_EntryControllerCar.class.getName()).log(Level.SEVERE, null, ex);
             poLogWrapper.severe(psFormName + " :" + ex.getMessage());
 
         }
@@ -378,7 +378,7 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
                 }
                 getLoadedTransaction();
             } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
-                Logger.getLogger(DeliverySchedule_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(DeliverySchedule_EntryControllerCar.class.getName()).log(Level.SEVERE, null, ex);
                 poLogWrapper.severe(psFormName + " :" + ex.getMessage());
 
             }
@@ -403,7 +403,7 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
                 loadSelectedTransactionDetail(pnClusterDetail);
             }
         } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
-            Logger.getLogger(DeliverySchedule_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliverySchedule_EntryControllerCar.class.getName()).log(Level.SEVERE, null, ex);
             poLogWrapper.severe(psFormName + " :" + ex.getMessage());
         }
     }
@@ -626,7 +626,7 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
                 }
             }
         } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
-            Logger.getLogger(DeliverySchedule_EntryController.class
+            Logger.getLogger(DeliverySchedule_EntryControllerCar.class
                     .getName()).log(Level.SEVERE, null, ex);
             poLogWrapper.severe(psFormName + " :" + ex.getMessage());
         }
@@ -756,7 +756,7 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
             event.consume();
 
         } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
-            Logger.getLogger(DeliverySchedule_EntryController.class
+            Logger.getLogger(DeliverySchedule_EntryControllerCar.class
                     .getName()).log(Level.SEVERE, null, ex);
             poLogWrapper.severe(psFormName + " :" + ex.getMessage());
         }
@@ -840,7 +840,7 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
                     return new SimpleStringProperty(desc != null ? desc : "");
 
                 } catch (SQLException | GuanzonException ex) {
-                    Logger.getLogger(DeliverySchedule_EntryController.class
+                    Logger.getLogger(DeliverySchedule_EntryControllerCar.class
                             .getName()).log(Level.SEVERE, null, ex);
                     poLogWrapper.severe(psFormName + " :" + ex.getMessage());
                     return new SimpleStringProperty("");
@@ -862,7 +862,7 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
                         }
                     }
                 } catch (Exception ex) {
-                    Logger.getLogger(DeliverySchedule_EntryController.class
+                    Logger.getLogger(DeliverySchedule_EntryControllerCar.class
                             .getName()).log(Level.SEVERE, null, ex);
                     poLogWrapper.severe(psFormName + " :" + ex.getMessage());
                     return new SimpleStringProperty("UNKNOWN");
@@ -883,7 +883,7 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
                         }
                     }
                 } catch (Exception ex) {
-                    Logger.getLogger(DeliverySchedule_EntryController.class
+                    Logger.getLogger(DeliverySchedule_EntryControllerCar.class
                             .getName()).log(Level.SEVERE, null, ex);
                     poLogWrapper.severe(psFormName + " :" + ex.getMessage());
                 }
@@ -959,7 +959,7 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
                     reloadTableDetail();
 
                 } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
-                    Logger.getLogger(DeliverySchedule_EntryController.class
+                    Logger.getLogger(DeliverySchedule_EntryControllerCar.class
                             .getName()).log(Level.SEVERE, null, ex);
                     poLogWrapper.severe(psFormName + " :" + ex.getMessage());
                 }
@@ -1042,7 +1042,7 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
                         return new SimpleStringProperty(loModel.getValue().Branch().getBranchName());
 
                     } catch (SQLException | GuanzonException ex) {
-                        Logger.getLogger(DeliverySchedule_EntryController.class
+                        Logger.getLogger(DeliverySchedule_EntryControllerCar.class
                                 .getName()).log(Level.SEVERE, null, ex);
                         poLogWrapper.severe(psFormName + " :" + ex.getMessage());
                         return new SimpleStringProperty("");
@@ -1054,7 +1054,7 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
                         return new SimpleStringProperty(loModel.getValue().Branch().getAddress());
 
                     } catch (SQLException | GuanzonException ex) {
-                        Logger.getLogger(DeliverySchedule_EntryController.class
+                        Logger.getLogger(DeliverySchedule_EntryControllerCar.class
                                 .getName()).log(Level.SEVERE, null, ex);
                         poLogWrapper.severe(psFormName + " :" + ex.getMessage());
                         return new SimpleStringProperty("");
@@ -1130,7 +1130,7 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
                 pi.setVisible(false);
                 Throwable ex = getException();
                 Logger
-                        .getLogger(DeliverySchedule_EntryController.class
+                        .getLogger(DeliverySchedule_EntryControllerCar.class
                                 .getName()).log(Level.SEVERE, null, ex);
                 poLogWrapper.severe(psFormName + " : " + ex.getMessage());
             }
