@@ -807,6 +807,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
             tfTotalAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Master().getTransactionTotal(), true));
             tfLessWHTax.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Master().getWithTaxTotal(), true));
             tfTotalNetAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Master().getNetTotal(), true));
+
             Platform.runLater(() -> {
                 lblDVTransactionStatus.setText(getStatus(poDisbursementController.Master().getTransactionStatus()));
             });
@@ -908,7 +909,9 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                 tfTaxAmountDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(pnDetailDV).getTaxAmount(), true));
                 tfNetAmountDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(pnDetailDV).getAmount()
                         - poDisbursementController.Detail(pnDetailDV).getTaxAmount(), true));
-                chbkVatClassification.setSelected(poDisbursementController.Detail(pnDetailDV).isWithVat());
+                
+                    chbkVatClassification.setSelected(poDisbursementController.Detail(pnDetailDV).isWithVat());
+                
 
             } catch (SQLException | GuanzonException ex) {
                 Logger.getLogger(DisbursementVoucher_EntryController.class
@@ -928,13 +931,14 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                     pnMain = pnRowMain;
                     String lsTransactionType = selected.getIndex02();
                     String lsTransactionNo = selected.getIndex04();
+                    String lsHighLight = selected.getIndex01();
                     poJSON = poDisbursementController.addUnifiedPaymentToDisbursement(lsTransactionNo, lsTransactionType);
                     if ("error".equals(poJSON.get("result"))) {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         return;
                     }
 //                    JFXUtil.disableAllHighlightByColor(tblVwList, "#A7C7E7", highlightedRowsMain);
-                    JFXUtil.highlightByKey(tblVwList, lsTransactionNo, "#A7C7E7", highlightedRowsMain);
+                    JFXUtil.highlightByKey(tblVwList, lsHighLight, "#A7C7E7", highlightedRowsMain);
                     Platform.runLater(() -> {
                         loadTableDetailDV();
                         initFields(pnEditMode);
@@ -1126,7 +1130,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                 if (item == null || empty) {
                     setStyle("");
                 } else {
-                    String key = item.getIndex04();
+                    String key = item.getIndex01();
                     if (highlightedRowsMain.containsKey(key)) {
                         List<String> colors = highlightedRowsMain.get(key);
                         if (!colors.isEmpty()) {
@@ -1158,7 +1162,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
     private void initTabSelection() {
         tabJournal.setOnSelectionChanged(event -> {
             if (tabJournal.isSelected()) {
-                if (pnEditMode == EditMode.READY || pnEditMode == EditMode.UPDATE) {
+                if (pnEditMode == EditMode.READY || pnEditMode == EditMode.UPDATE|| pnEditMode == EditMode.ADDNEW) {
                     if (poDisbursementController.Detail(0).getSourceNo() != null && !poDisbursementController.Detail(0).getSourceNo().isEmpty()) {
                         pbIsCheckedJournalTab = true;
                         pnDetailDV = -1;
@@ -2227,12 +2231,12 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
         boolean lbShow = (fnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE);
         JFXUtil.setDisabled(!lbShow, apDVMaster1, apDVMaster2, apDVMaster3, apJournalMaster);
         JFXUtil.setDisabled(true, apDVDetail, apJournalDetails, apMasterDVCheck, apMasterDVOp, apMasterDVBTransfer, tfAuthorizedPerson);
-        tabJournal.setDisable(false);
-        if (!detailsdv_data.isEmpty()) {
-            if (oApp.getUserLevel() >= UserRight.ENCODER) {
-                tabJournal.setDisable(fnEditMode == EditMode.UNKNOWN || fnEditMode == EditMode.ADDNEW);
-            }
-        }
+//        tabJournal.setDisable(false);
+//        if (!detailsdv_data.isEmpty()) {
+//            if (oApp.getUserLevel() >= UserRight.ENCODER) {
+//                tabJournal.setDisable(fnEditMode == EditMode.UNKNOWN || fnEditMode == EditMode.ADDNEW);
+//            }
+//        }
 
         tabCheck.setDisable(true);
         tabOnlinePayment.setDisable(true);
