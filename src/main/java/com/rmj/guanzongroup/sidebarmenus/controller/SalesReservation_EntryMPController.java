@@ -140,6 +140,7 @@ public class SalesReservation_EntryMPController implements Initializable, Screen
     @FXML private Button btnHistory;
     @FXML private Button btnRetrieve;
     @FXML private Button btnClose;
+    @FXML private Button btnVoid;
 
     // ──────────────────────────────
     // Transaction Fields
@@ -616,7 +617,8 @@ public class SalesReservation_EntryMPController implements Initializable, Screen
             btnCancel,
             btnHistory,
             btnRetrieve,
-            btnClose
+            btnClose,
+            btnVoid
         };
         for (Button btn : buttons) {
             btn.setOnAction(this::handleButtonAction);
@@ -1205,6 +1207,8 @@ public class SalesReservation_EntryMPController implements Initializable, Screen
         btnSearch.setManaged(false);
         btnUpdate.setVisible(false);
         btnUpdate.setManaged(false);
+        btnVoid.setVisible(false);
+        btnVoid.setManaged(false);
         btnBrowse.setVisible(!lbShow);
         btnBrowse.setManaged(!lbShow);
         btnNew.setVisible(!lbShow);
@@ -1224,11 +1228,14 @@ public class SalesReservation_EntryMPController implements Initializable, Screen
         if (pnEditMode == EditMode.READY){
             btnUpdate.setVisible(true);
             btnUpdate.setManaged(true);
+            btnVoid.setVisible(true);
+            btnVoid.setManaged(true);
         }
         
     }
     
     private void clearMaster() {
+        lblStatus.setText("UNKNOWN");
         TextInputControl[] txtFieldInputs = {
             tfTransactionNo,
             tfCustomerName,
@@ -1247,7 +1254,7 @@ public class SalesReservation_EntryMPController implements Initializable, Screen
         dpExpedtedDate.setValue(null);
     }
     private void clearDetail(){
-        lblStatus.setText("UNKNOWN");
+        
             TextInputControl[] txtFieldInputs = {
             tfBrand,
             tfModel,

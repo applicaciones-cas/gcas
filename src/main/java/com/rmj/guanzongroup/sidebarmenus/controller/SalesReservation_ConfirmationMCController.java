@@ -1188,6 +1188,7 @@ public class SalesReservation_ConfirmationMCController implements Initializable,
         }
     }
     private void clearMaster() {
+            lblStatus.setText("UNKNOWN");
         TextInputControl[] txtFieldInputs = {
             tfTransactionNo,
             tfCustomerName,
@@ -1206,7 +1207,7 @@ public class SalesReservation_ConfirmationMCController implements Initializable,
         dpExpedtedDate.setValue(null);
     }
     private void clearDetail(){
-        lblStatus.setText("UNKNOWN");
+
             TextInputControl[] txtFieldInputs = {
             tfBrand,
             tfModel,

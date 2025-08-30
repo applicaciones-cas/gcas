@@ -639,7 +639,6 @@ public class SalesReservation_HistoryCarController implements Initializable, Scr
     
     
     private void clearDetail(){
-        lblStatus.setText("UNKNOWN");
             TextInputControl[] txtFieldInputs = {
             tfBrand,
             tfModel,

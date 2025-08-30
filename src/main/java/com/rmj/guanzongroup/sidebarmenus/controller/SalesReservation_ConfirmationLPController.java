@@ -759,8 +759,13 @@ public class SalesReservation_ConfirmationLPController implements Initializable,
                         initButton(EditMode.UNKNOWN);   
                         break;
                     case "btnRetrieve":
+                        clearMaster();
+                        clearDetail();
+                        detail_data.clear();
+                        initObject();
                         loadTableSourceList();
                         tblSourceList.refresh();
+                        initButton(EditMode.UNKNOWN); 
                         break;
                     case "btnSearch":
                         loadTableSourceList();
@@ -953,7 +958,7 @@ public class SalesReservation_ConfirmationLPController implements Initializable,
                 Thread.sleep(100);
                 Platform.runLater(() -> {
                     try {
-                        source_data.clear();
+//                        source_data.clear();
                         poJSON = poSalesReservationControllers.SalesReservation().getReservationList(tfsTransactionNo.getText(), poSalesReservationControllers.SalesReservation().Master().getClientID());
                         if ("success".equals(poJSON.get("result"))) {
                             if (poSalesReservationControllers.SalesReservation().getSalesReservationCount() > 0) {
@@ -1299,6 +1304,7 @@ public class SalesReservation_ConfirmationLPController implements Initializable,
         }
     }
     private void clearMaster() {
+        lblStatus.setText("UNKNOWN");
         TextInputControl[] txtFieldInputs = {
             tfTransactionNo,
             tfCustomerName,
@@ -1317,7 +1323,6 @@ public class SalesReservation_ConfirmationLPController implements Initializable,
         dpExpedtedDate.setValue(null);
     }
     private void clearDetail(){
-        lblStatus.setText("UNKNOWN");
             TextInputControl[] txtFieldInputs = {
             tfBrand,
             tfModel,

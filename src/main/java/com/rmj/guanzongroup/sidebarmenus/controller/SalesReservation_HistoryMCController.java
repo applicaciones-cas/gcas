@@ -639,7 +639,7 @@ public class SalesReservation_HistoryMCController implements Initializable, Scre
     
     
     private void clearDetail(){
-        lblStatus.setText("UNKNOWN");
+        
             TextInputControl[] txtFieldInputs = {
             tfBrand,
             tfModel,
