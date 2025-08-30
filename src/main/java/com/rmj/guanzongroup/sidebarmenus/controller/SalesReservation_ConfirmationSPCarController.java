@@ -1245,6 +1245,7 @@ public class SalesReservation_ConfirmationSPCarController implements Initializab
         }
     }
     private void clearMaster() {
+        lblStatus.setText("UNKNOWN");
         TextInputControl[] txtFieldInputs = {
             tfTransactionNo,
             tfCustomerName,
@@ -1263,7 +1264,7 @@ public class SalesReservation_ConfirmationSPCarController implements Initializab
         dpExpedtedDate.setValue(null);
     }
     private void clearDetail(){
-        lblStatus.setText("UNKNOWN");
+        
             TextInputControl[] txtFieldInputs = {
             tfBrand,
             tfModel,

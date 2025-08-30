@@ -1232,6 +1232,7 @@ public class SalesReservation_ConfirmationAppliancesController implements Initia
         }
     }
     private void clearMaster() {
+        lblStatus.setText("UNKNOWN");
         TextInputControl[] txtFieldInputs = {
             tfTransactionNo,
             tfCustomerName,
@@ -1250,7 +1251,6 @@ public class SalesReservation_ConfirmationAppliancesController implements Initia
         dpExpedtedDate.setValue(null);
     }
     private void clearDetail(){
-        lblStatus.setText("UNKNOWN");
             TextInputControl[] txtFieldInputs = {
             tfBrand,
             tfModel,
