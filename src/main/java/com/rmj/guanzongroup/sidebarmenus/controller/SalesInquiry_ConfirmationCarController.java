@@ -1395,6 +1395,7 @@ public class SalesInquiry_ConfirmationCarController implements Initializable, Sc
                                             "Are you sure you want to change the Purchase Type?\nPlease note that doing so will reset the Requirements & Bank Applications list.\n\nDo you wish to proceed?") == true) {
                                         poSalesInquiryController.SalesInquiry().Master().setPurchaseType(String.valueOf(selectedIndex));
                                         poJSON = poSalesInquiryController.SalesInquiry().removeRequirements();
+                                        poJSON = poSalesInquiryController.SalesInquiry().removeBankApplications();
                                         if ("error".equals((String) poJSON.get("result"))) {
                                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                             break;
