@@ -1355,6 +1355,7 @@ public class SalesReservation_ConfirmationMonarchFoodController implements Initi
         }
     }
     private void clearMaster() {
+        lblStatus.setText("UNKNOWN");
         TextInputControl[] txtFieldInputs = {
             tfTransactionNo,
             tfCustomerName,
@@ -1373,7 +1374,7 @@ public class SalesReservation_ConfirmationMonarchFoodController implements Initi
         dpExpedtedDate.setValue(null);
     }
     private void clearDetail(){
-        lblStatus.setText("UNKNOWN");
+        
             TextInputControl[] txtFieldInputs = {
             tfBrand,
             tfModel,

@@ -140,6 +140,7 @@ public class SalesReservation_EntryCarController implements Initializable, Scree
     @FXML private Button btnHistory;
     @FXML private Button btnRetrieve;
     @FXML private Button btnClose;
+    @FXML private Button btnVoid;
 
     // ──────────────────────────────
     // Transaction Fields
@@ -574,7 +575,9 @@ public class SalesReservation_EntryCarController implements Initializable, Scree
             btnCancel,
             btnHistory,
             btnRetrieve,
-            btnClose
+            btnClose,
+            btnVoid
+                
         };
         for (Button btn : buttons) {
             btn.setOnAction(this::handleButtonAction);
@@ -718,6 +721,24 @@ public class SalesReservation_EntryCarController implements Initializable, Scree
                     case "btnSearch":
                         loadTableSourceList();
                         break;   
+                    case "btnVoid":
+                        if (ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to void transaction?")) {
+                            poJSON = poSalesReservationControllers.SalesReservation().VoidTransaction("");
+                            if (!"success".equals((String) poJSON.get("result"))) {
+                                ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                                return;
+                            }
+                            ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                            source_data.get(tblSourceList.getSelectionModel().getSelectedIndex()).
+                                    setIndex06(Sales_Reservation_Static.highlighter.default_red);
+                            tblSourceList.refresh();
+
+                            clearMaster();
+                            clearDetail();
+                            detail_data.clear();
+                            initButton(EditMode.UNKNOWN);
+                        }
+                        break;
                 }
             } catch (CloneNotSupportedException | SQLException | GuanzonException | ParseException ex) {
                 Logger.getLogger(SalesReservation_EntryCarController.class.getName()).log(Level.SEVERE, null, ex);
@@ -1165,6 +1186,8 @@ public class SalesReservation_EntryCarController implements Initializable, Scree
         btnSearch.setVisible(false);
         btnSearch.setManaged(false);
         btnUpdate.setVisible(false);
+        btnVoid.setManaged(false);
+        btnVoid.setVisible(false);
         btnUpdate.setManaged(false);
         btnBrowse.setVisible(!lbShow);
         btnBrowse.setManaged(!lbShow);
@@ -1182,11 +1205,14 @@ public class SalesReservation_EntryCarController implements Initializable, Scree
         if (pnEditMode == EditMode.READY){
             btnUpdate.setVisible(true);
             btnUpdate.setManaged(true);
+            btnVoid.setVisible(true);
+            btnVoid.setManaged(true);
         }
         
     }
     
     private void clearMaster() {
+        lblStatus.setText("UNKNOWN");
         TextInputControl[] txtFieldInputs = {
             tfTransactionNo,
             tfCustomerName,
@@ -1205,7 +1231,7 @@ public class SalesReservation_EntryCarController implements Initializable, Scree
         dpExpedtedDate.setValue(null);
     }
     private void clearDetail(){
-        lblStatus.setText("UNKNOWN");
+        
             TextInputControl[] txtFieldInputs = {
             tfBrand,
             tfModel,

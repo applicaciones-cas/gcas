@@ -648,7 +648,7 @@ public class SalesReservation_HistorySPMCController implements Initializable, Sc
 
     
     private void clearDetail(){
-        lblStatus.setText("UNKNOWN");
+        
             TextInputControl[] txtFieldInputs = {
             tfBarcode,
             tfDescription,

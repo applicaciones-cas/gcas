@@ -654,7 +654,6 @@ public class SalesReservation_HistoryAppliancesController implements Initializab
     
     
     private void clearDetail(){
-        lblStatus.setText("UNKNOWN");
             TextInputControl[] txtFieldInputs = {
             tfBrand,
             tfModel,
