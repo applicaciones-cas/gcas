@@ -769,6 +769,7 @@ public class SalesReservation_ConfirmationSPCarController implements Initializab
                                 ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
                                 return;
                             }
+                            ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
                             source_data.get(tblSourceList.getSelectionModel().getSelectedIndex()).
                                                 setIndex06(Sales_Reservation_Static.highlighter.default_red);
                                                 tblSourceList.refresh();
