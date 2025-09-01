@@ -164,6 +164,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
             poSOATaggingController.SOATagging().setCategoryId(psCategoryId);
             poSOATaggingController.SOATagging().initFields();
             poSOATaggingController.SOATagging().setWithUI(true);
+            poSOATaggingController.SOATagging().validatePayment(true);
             loadRecordSearch();
             btnNew.fire();
         });
@@ -358,21 +359,27 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
 
     public void loadHighlightFromDetail() {
         try {
-            String lsTransNoBasis = "";
+            String lsTransNoBasis = "", lsTransType = "";
             for (int lnCtr = 0; lnCtr < poSOATaggingController.SOATagging().getDetailCount(); lnCtr++) {
                 switch (poSOATaggingController.SOATagging().Detail(lnCtr).getSourceCode()) {
                     case SOATaggingStatic.PaymentRequest:
-                        lsTransNoBasis = poSOATaggingController.SOATagging().Detail(lnCtr).PaymentRequestMaster().getSeriesNo();
+                        lsTransNoBasis = poSOATaggingController.SOATagging().Detail(lnCtr).PaymentRequestMaster().getTransactionNo();
+                        lsTransType = "PRF";
                         break;
-                    case SOATaggingStatic.CachePayable:
-                        lsTransNoBasis = poSOATaggingController.SOATagging().Detail(lnCtr).CachePayableMaster().getReferNo();
-                        break;
+                    case SOATaggingStatic.CachePayable: {
+                        lsTransNoBasis = poSOATaggingController.SOATagging().Detail(lnCtr).CachePayableMaster().getTransactionNo();
+                        lsTransType = "Cache Payable";
+                    }
+
+                    break;
+
                 }
+                String lsHighlightbasis = lsTransNoBasis + lsTransType;
                 if (!JFXUtil.isObjectEqualTo(poSOATaggingController.SOATagging().Detail(lnCtr).getAppliedAmount(), null, "")) {
                     if (poSOATaggingController.SOATagging().Detail(lnCtr).getAppliedAmount().doubleValue() > 0.0000) {
-                        plOrderNoPartial.add(new Pair<>(lsTransNoBasis, "1"));
+                        plOrderNoPartial.add(new Pair<>(lsHighlightbasis, "1"));
                     } else {
-                        plOrderNoPartial.add(new Pair<>(lsTransNoBasis, "0"));
+                        plOrderNoPartial.add(new Pair<>(lsHighlightbasis, "0"));
                     }
                 }
             }
@@ -977,13 +984,13 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                                     lsTransType = "Cache Payable";
                                     break;
                             }
-
+                            String lsHighlightbasis = lsTransNoBasis + lsTransType;
                             main_data.add(new ModelSOATagging_Main(String.valueOf(lnCtr + 1),
                                     lsTransType,
                                     lsPayeeName,
                                     lsTransDate,
                                     lsTransNo,
-                                    lsTransNoBasis
+                                    lsHighlightbasis
                             ));
                         } catch (SQLException | GuanzonException ex) {
                             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
@@ -1335,7 +1342,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
             }
         });
 
-        JFXUtil.applyRowHighlighting(tblViewMainList, item -> ((ModelSOATagging_Main) item).getIndex05(), highlightedRowsMain);
+        JFXUtil.applyRowHighlighting(tblViewMainList, item -> ((ModelSOATagging_Main) item).getIndex06(), highlightedRowsMain);
         tblViewTransDetailList.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
         JFXUtil.adjustColumnForScrollbar(tblViewTransDetailList, tblViewMainList); // need to use computed-size in min-width of the column to work
     }

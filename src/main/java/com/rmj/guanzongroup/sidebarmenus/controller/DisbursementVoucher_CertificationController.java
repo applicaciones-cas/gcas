@@ -31,6 +31,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Pagination;
 import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -102,7 +103,8 @@ public class DisbursementVoucher_CertificationController implements Initializabl
     @FXML
     private TableColumn<ModelDisbursementVoucher_Main, String> tblRowNo, tblDVNo, tblDate, tblSupplier, tblPayeeName, tblPaymentForm, tblBankName, tblBankAccount, tblTransAmount;
     @FXML
-    private TableColumn<ModelDisbursementVoucher_Main, Boolean> tblCheckBox;
+    private TableColumn<ModelDisbursementVoucher_Main, CheckBox> tblCheckBox;
+    
     @FXML
     private CheckBox chckSelectAll;
     @FXML
@@ -143,6 +145,7 @@ public class DisbursementVoucher_CertificationController implements Initializabl
                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
             }
             initAll();
+            
             Platform.runLater(() -> {
                 poDisbursementController.Master().setIndustryID(psIndustryId);
                 poDisbursementController.Master().setCompanyID(psCompanyId);
@@ -164,6 +167,8 @@ public class DisbursementVoucher_CertificationController implements Initializabl
             pagination.setManaged(false);
             pagination.setVisible(false);
         }
+        
+        
 
     }
 
@@ -405,6 +410,7 @@ public class DisbursementVoucher_CertificationController implements Initializabl
                                             lsBankName,
                                             lsBankAccount,
                                             CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.poDisbursementMaster(lnCntr).getNetTotal(), true)
+                                            
                                     ));
                                 }
                             } else {
@@ -465,6 +471,18 @@ public class DisbursementVoucher_CertificationController implements Initializabl
         JFXUtil.setColumnRight(tblTransAmount);
         JFXUtil.setColumnsIndexAndDisableReordering(tblVwMain);
         tblCheckBox.setCellValueFactory(new PropertyValueFactory<>("select"));
+
+        tblCheckBox.setCellFactory(col -> new TableCell<ModelDisbursementVoucher_Main, CheckBox>() {
+            @Override
+            protected void updateItem(CheckBox item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setGraphic(null);
+                } else {
+                    setGraphic(item); // show the actual checkbox
+                }
+            }
+        });
 
         tblVwMain.getItems().forEach(item -> {
             CheckBox selectCheckBox = item.getSelect();
