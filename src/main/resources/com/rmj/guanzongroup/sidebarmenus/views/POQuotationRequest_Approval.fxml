@@ -7,6 +7,8 @@
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Pagination?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
@@ -57,7 +59,7 @@
                                   <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
                                 </rowConstraints>
                                  <children>
-                                    <Label text="Department">
+                                    <Label text="Branch">
                                        <font>
                                           <Font name="System Bold" size="14.0" />
                                        </font>
@@ -67,7 +69,7 @@
                                           <Font name="System Bold" size="14.0" />
                                        </font>
                                     </Label>
-                                    <TextField fx:id="tfSearchDepartment" promptText="Press F3: Search" GridPane.columnIndex="2" />
+                                    <TextField fx:id="tfSearchBranch" promptText="Press F3: Search" GridPane.columnIndex="2" />
                                     <TextField fx:id="tfSearchReferenceNo" promptText="Press F3: Search" GridPane.columnIndex="13" />
                                     <Label fx:id="lblSource" layoutX="367.0" layoutY="14.0" text="Company - Industry" GridPane.columnIndex="16">
                                        <font>
@@ -142,7 +144,7 @@
                                     <Font size="12.0" />
                                  </font>
                               </Button>
-                                        <Button fx:id="btnConfirm" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="70.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Confirm">
+                                        <Button fx:id="btnApprove" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="70.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Approve">
                                             <effect>
                                                 <Blend />
                                             </effect>
@@ -153,7 +155,7 @@
                                     <Font size="12.0" />
                                  </font>
                                         </Button>
-                              <Button fx:id="btnVoid" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="70.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Void">
+                              <Button fx:id="btnDisApprove" contentDisplay="TOP" ellipsisString="" layoutX="315.0" layoutY="15.0" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="70.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Dis Approved">
                                  <effect>
                                     <Blend />
                                  </effect>
@@ -217,9 +219,19 @@
                                           <HBox prefHeight="100.0" prefWidth="200.0" spacing="5.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
                                              <children>
                                                 
+                                                <TabPane minWidth="741.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0">
+                          <tabs>
+                            <Tab closable="false" style="-fx-font-weight: bold;" text="Information">
+                              <content>
+                                <AnchorPane fx:id="apTransactionInfo" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="5.0">
+                            <children>
+                                
+                                          <HBox fx:id="hboxid" prefHeight="100.0" prefWidth="200.0" spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="0.0">
+                                             <children>
+                                                
                                                 <VBox maxWidth="885.0" spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="0.0">
                                     <children>
-                                          <AnchorPane fx:id="apTransactionInfo">
+                                          <AnchorPane>
                                               <children>
                                                   <VBox spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                       <children>
@@ -396,6 +408,86 @@
                                         </AnchorPane>
                                     </children>
                                 </VBox>
+                                             </children>
+                                          </HBox>
+                            </children>
+                                       <padding>
+                                          <Insets top="5.0" />
+                                       </padding>
+                                </AnchorPane>
+                              </content>
+                            </Tab>
+                            <Tab closable="false" style="-fx-font-weight: bold;" text="Quotation Request Supplier">
+                              <content>
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                       <padding>
+                                          <Insets top="5.0" />
+                                       </padding>
+                                       <children>
+                                          <VBox spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="0.0">
+                                             <children>
+                                                <AnchorPane style="-fx-border-color: #FF8201;">
+                                                   <children>
+                                                      <GridPane AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="13.0" AnchorPane.topAnchor="5.0">
+                                                        <columnConstraints>
+                                                          <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="80.0" />
+                                                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
+                                                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="139.0" />
+                                                          <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="150.0" />
+                                                            <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="-Infinity" prefWidth="100.0" />
+                                                            <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
+                                                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="139.0" />
+                                                        </columnConstraints>
+                                                        <rowConstraints>
+                                                          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
+                                                          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
+                                                            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
+                                                        </rowConstraints>
+                                                         <children>
+                                                                        <AnchorPane maxWidth="-Infinity" minWidth="-Infinity" prefHeight="27.0" prefWidth="140.0" style="-fx-background-color: FF8201;" GridPane.columnIndex="6" />
+                                                            <Label text="Supplier" />
+                                                            <TextField fx:id="tfSupplier" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.columnSpan="2" />
+                                                            <Label layoutX="46.0" layoutY="16.0" text="Address" GridPane.rowIndex="1" />
+                                                            <Label layoutX="46.0" layoutY="44.0" text="Contact No." GridPane.rowIndex="2" />
+                                                            <TextField fx:id="tfAddress" disable="true" editable="false" layoutX="100.0" layoutY="12.0" styleClass="DisabledTextField" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="1" />
+                                                            <TextField fx:id="tfContactNumber" disable="true" editable="false" layoutX="100.0" layoutY="40.0" styleClass="DisabledTextField" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                                                        <Label fx:id="lblStatus1" alignment="CENTER" contentDisplay="CENTER" prefHeight="27.0" prefWidth="142.0" text="STATUS" textAlignment="CENTER" GridPane.columnIndex="6">
+                                                                           <font>
+                                                                              <Font name="System Bold" size="14.0" />
+                                                                           </font>
+                                                                        </Label>
+                                                         </children>
+                                                      </GridPane>
+                                                   </children>
+                                                </AnchorPane>
+                                                <AnchorPane layoutX="10.0" layoutY="10.0" style="-fx-border-color: #FF8201;" VBox.vgrow="ALWAYS">
+                                                   <children>
+                                                      <GridPane AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+                                                         <columnConstraints>
+                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                         </columnConstraints>
+                                                         <rowConstraints>
+                                                            <RowConstraints minHeight="-Infinity" prefHeight="200.0" vgrow="ALWAYS" />
+                                                         </rowConstraints>
+                                                         <children>
+                                                            <TableView prefHeight="200.0" prefWidth="200.0">
+                                                              <columns>
+                                                                <TableColumn prefWidth="75.0" text="No." />
+                                                                <TableColumn prefWidth="474.0" text="Supplier" />
+                                                                  <TableColumn prefWidth="140.0" text="Status" />
+                                                              </columns>
+                                                            </TableView>
+                                                         </children>
+                                                      </GridPane>
+                                                   </children>
+                                                </AnchorPane>
+                                             </children>
+                                          </VBox>
+                                       </children></AnchorPane>
+                              </content>
+                            </Tab>
+                          </tabs>
+                        </TabPane>
                                           <AnchorPane style="-fx-border-color: FF8201;">
                                               <children>
                                                   <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -423,7 +515,7 @@
                                                           <TableView fx:id="tblViewMainList" prefWidth="551.0" GridPane.rowIndex="1">
                                                               <columns>
                                                                   <TableColumn fx:id="tblRowNo" editable="false" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="No." />
-                                                                  <TableColumn fx:id="tblDepartment" editable="false" maxWidth="300.0" minWidth="-1.0" prefWidth="300.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Department" />
+                                                                  <TableColumn fx:id="tblBranch" editable="false" maxWidth="300.0" minWidth="-1.0" prefWidth="300.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Branch" />
                                                                   <TableColumn fx:id="tblDate" editable="false" maxWidth="90.0" minWidth="90.0" prefWidth="90.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Date" />
                                                                  <TableColumn fx:id="tblReferenceNo" editable="false" maxWidth="128.0" minWidth="128.0" prefWidth="128.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Refer No" />
                                                               </columns>
