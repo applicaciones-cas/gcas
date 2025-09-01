@@ -680,6 +680,7 @@ public class SalesReservation_EntrySPMCController implements Initializable, Scre
                         break;
                     case "btnCancel":
                         if (ShowMessageFX.YesNo("Are you sure you want to cancel?", "Computerized Acounting System", psFormName)) {
+                            poSalesReservationControllers.SalesReservation().Master().setClientID(null);
                             clearMaster();
                             clearDetail();
                             detail_data.clear();

@@ -642,6 +642,7 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
                         break;
                     case "btnCancel":
                         if (ShowMessageFX.YesNo("Are you sure you want to cancel?", "Computerized Acounting System", psFormName)) {
+                            poSalesReservationControllers.SalesReservation().Master().setClientID(null);
                             clearMaster();
                             clearDetail();
                             detail_data.clear();
@@ -650,7 +651,6 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
                         }
                         break;
                     case "btnSave":
-                        
                         String toConfirm = poSalesReservationControllers.SalesReservation().Master().getTransactionNo();
                         if (ShowMessageFX.YesNo("Are you sure you want to save the transaction?",
                                 "Computerized Acounting System", psFormName)) {
@@ -880,7 +880,8 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
                     poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).getMinimumDown(), true));
             tfQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(
                     poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).getQuantity(), false));
-           
+            taNotes.setText(poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).getNotes() != null
+                    ? poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).getNotes() : "");
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(SalesReservation_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
         }
