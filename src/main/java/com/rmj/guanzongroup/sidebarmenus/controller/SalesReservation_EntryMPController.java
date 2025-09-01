@@ -754,7 +754,25 @@ public class SalesReservation_EntryMPController implements Initializable, Screen
                         break;
                     case "btnSearch":
                         loadTableSourceList();
-                        break;   
+                        break; 
+                    case "btnVoid":
+                        if (ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to void transaction?")) {
+                            poJSON = poSalesReservationControllers.SalesReservation().VoidTransaction("");
+                            if (!"success".equals((String) poJSON.get("result"))) {
+                                ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                                return;
+                            }
+                            ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                            source_data.get(tblSourceList.getSelectionModel().getSelectedIndex()).
+                                                setIndex06(Sales_Reservation_Static.highlighter.default_red);
+                                                tblSourceList.refresh();
+
+                            clearMaster();
+                            clearDetail();
+                            detail_data.clear();
+                            initButton(EditMode.UNKNOWN);
+                        }
+                        break;  
                 }
             } catch (CloneNotSupportedException | SQLException | GuanzonException | ParseException ex) {
                 Logger.getLogger(SalesReservation_EntryMPController.class.getName()).log(Level.SEVERE, null, ex);
