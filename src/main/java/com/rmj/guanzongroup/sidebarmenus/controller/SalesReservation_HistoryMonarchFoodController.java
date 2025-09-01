@@ -648,7 +648,7 @@ public class SalesReservation_HistoryMonarchFoodController implements Initializa
 
     
     private void clearDetail(){
-        lblStatus.setText("UNKNOWN");
+        
             TextInputControl[] txtFieldInputs = {
             tfBarcode,
             tfDescription,

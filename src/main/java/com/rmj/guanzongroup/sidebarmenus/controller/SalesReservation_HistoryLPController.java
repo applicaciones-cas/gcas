@@ -648,7 +648,7 @@ public class SalesReservation_HistoryLPController implements Initializable, Scre
 
     
     private void clearDetail(){
-        lblStatus.setText("UNKNOWN");
+        
             TextInputControl[] txtFieldInputs = {
             tfBarcode,
             tfDescription,

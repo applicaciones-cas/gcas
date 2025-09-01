@@ -140,6 +140,7 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
     @FXML private Button btnHistory;
     @FXML private Button btnRetrieve;
     @FXML private Button btnClose;
+    @FXML private Button btnVoid;
 
     // ──────────────────────────────
     // Transaction Fields
@@ -576,7 +577,8 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
             btnCancel,
             btnHistory,
             btnRetrieve,
-            btnClose
+            btnClose,
+            btnVoid
         };
         for (Button btn : buttons) {
             btn.setOnAction(this::handleButtonAction);
@@ -619,13 +621,19 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
                         loadRecordMaster();
                         loadRecordDetail();
                         loadTableDetailList();
-                        pnEditMode = EditMode.READY;
+                        pnEditMode = poSalesReservationControllers.SalesReservation().getEditMode();
                         initButton(pnEditMode);
                         break;
                     case "btnUpdate":
+                       poJSON = poSalesReservationControllers.SalesReservation().validateConfirmedTransactionApproval();
+                       if("error".equals(poJSON.get("result"))){
+                           ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                           return;
+                       }
+                
                         poJSON = poSalesReservationControllers.SalesReservation().UpdateTransaction();
                         if ("error".equalsIgnoreCase((String) poJSON.get("result"))) {
-                            ShowMessageFX.Warning( (String) poJSON.get("message"), psFormName,null);
+                            ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
                             return;
                         }
                         loadTableDetailList();
@@ -634,6 +642,7 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
                         break;
                     case "btnCancel":
                         if (ShowMessageFX.YesNo("Are you sure you want to cancel?", "Computerized Acounting System", psFormName)) {
+                            poSalesReservationControllers.SalesReservation().Master().setClientID(null);
                             clearMaster();
                             clearDetail();
                             detail_data.clear();
@@ -642,7 +651,6 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
                         }
                         break;
                     case "btnSave":
-                        
                         String toConfirm = poSalesReservationControllers.SalesReservation().Master().getTransactionNo();
                         if (ShowMessageFX.YesNo("Are you sure you want to save the transaction?",
                                 "Computerized Acounting System", psFormName)) {
@@ -708,6 +716,24 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
                     case "btnSearch":
                         loadTableSourceList();
                         break;   
+                    case "btnVoid":
+                        if (ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to void transaction?")) {
+                            poJSON = poSalesReservationControllers.SalesReservation().VoidTransaction("");
+                            if (!"success".equals((String) poJSON.get("result"))) {
+                                ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                                return;
+                            }
+                            ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                            source_data.get(tblSourceList.getSelectionModel().getSelectedIndex()).
+                                    setIndex06(Sales_Reservation_Static.highlighter.default_red);
+                            tblSourceList.refresh();
+
+                            clearMaster();
+                            clearDetail();
+                            detail_data.clear();
+                            initButton(EditMode.UNKNOWN);
+                        }
+                        break;
                 }
             } catch (CloneNotSupportedException | SQLException | GuanzonException | ParseException ex) {
                 Logger.getLogger(SalesReservation_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
@@ -854,7 +880,8 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
                     poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).getMinimumDown(), true));
             tfQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(
                     poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).getQuantity(), false));
-           
+            taNotes.setText(poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).getNotes() != null
+                    ? poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).getNotes() : "");
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(SalesReservation_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -1156,6 +1183,8 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
         btnSearch.setManaged(false);
         btnUpdate.setVisible(false);
         btnUpdate.setManaged(false);
+        btnVoid.setVisible(false);
+        btnVoid.setManaged(false);
         btnBrowse.setVisible(!lbShow);
         btnBrowse.setManaged(!lbShow);
         btnNew.setVisible(!lbShow);
@@ -1172,11 +1201,14 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
         if (pnEditMode == EditMode.READY){
             btnUpdate.setVisible(true);
             btnUpdate.setManaged(true);
+            btnVoid.setVisible(true);
+            btnVoid.setManaged(true);
         }
         
     }
     
     private void clearMaster() {
+        lblStatus.setText("UNKNOWN");
         TextInputControl[] txtFieldInputs = {
             tfTransactionNo,
             tfCustomerName,
@@ -1195,7 +1227,7 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
         dpExpedtedDate.setValue(null);
     }
     private void clearDetail(){
-        lblStatus.setText("UNKNOWN");
+        
             TextInputControl[] txtFieldInputs = {
             tfBrand,
             tfModel,
