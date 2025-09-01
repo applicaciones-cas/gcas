@@ -203,7 +203,7 @@
                                                                                   <Font name="System Bold" size="14.0" />
                                                                               </font>
                                                                           </Label>
-                                                                          <Label text="Reference No" GridPane.rowIndex="3">
+                                                                          <Label text="Reference No" GridPane.columnIndex="4" GridPane.rowIndex="3">
                                                                                  <font>
                                                                                     <Font size="12.0" />
                                                                                  </font></Label>
@@ -226,7 +226,7 @@
                                                                   </Label>
                                                                           <TextField fx:id="tfTransactionNo" disable="true" editable="false" maxHeight="25.0" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="139.0" style="-fx-font-weight: bold;" styleClass="DisabledTextField" GridPane.columnIndex="2" GridPane.columnSpan="2" />
                                                                               <DatePicker fx:id="dpTransactionDate" disable="true" editable="false" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                                                                          <TextField fx:id="tfReferenceNo" maxHeight="25.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                                                          <TextField fx:id="tfReferenceNo" maxHeight="25.0" GridPane.columnIndex="6" GridPane.rowIndex="3" />
                                                                   <TextField fx:id="tfDepartment" layoutX="100.0" layoutY="133.0" maxHeight="25.0" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="4" />
                                                                   <TextField fx:id="tfDestination" layoutX="100.0" layoutY="135.0" maxHeight="25.0" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="5" />
                                                                         <DatePicker fx:id="dbExpectedDate" maxWidth="139.0" GridPane.columnIndex="6" GridPane.rowIndex="5" />
@@ -246,6 +246,12 @@
                                                                         <Font size="12.0" />
                                                                      </font>
                                                                   </Label>
+                                                                                          <Label layoutX="26.0" layoutY="110.0" text="Branch" GridPane.rowIndex="3">
+                                                                                             <font>
+                                                                                                <Font size="12.0" />
+                                                                                             </font>
+                                                                                          </Label>
+                                                                                          <TextField fx:id="tfBranch" layoutX="100.0" layoutY="105.0" maxHeight="25.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="3" />
                                                                       </children>
                                                                   </GridPane>
                                                               </children>
