@@ -724,6 +724,7 @@ public class SalesReservation_ConfirmationCarController implements Initializable
                                 ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
                                 return;
                             }
+                            ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
                             source_data.get(tblSourceList.getSelectionModel().getSelectedIndex()).
                                     setIndex06(Sales_Reservation_Static.highlighter.default_red);
                             tblSourceList.refresh();
@@ -1189,6 +1190,7 @@ public class SalesReservation_ConfirmationCarController implements Initializable
         }
     }
     private void clearMaster() {
+        lblStatus.setText("UNKNOWN");
         TextInputControl[] txtFieldInputs = {
             tfTransactionNo,
             tfCustomerName,
@@ -1207,7 +1209,6 @@ public class SalesReservation_ConfirmationCarController implements Initializable
         dpExpedtedDate.setValue(null);
     }
     private void clearDetail(){
-        lblStatus.setText("UNKNOWN");
             TextInputControl[] txtFieldInputs = {
             tfBrand,
             tfModel,

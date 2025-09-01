@@ -648,7 +648,7 @@ public class SalesReservation_HistorySPCarController implements Initializable, S
 
     
     private void clearDetail(){
-        lblStatus.setText("UNKNOWN");
+        
             TextInputControl[] txtFieldInputs = {
             tfBarcode,
             tfDescription,

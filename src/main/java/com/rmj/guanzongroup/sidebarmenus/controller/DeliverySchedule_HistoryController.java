@@ -100,7 +100,7 @@ public class DeliverySchedule_HistoryController implements Initializable, Screen
     @FXML
     private Label lblSource, lblStatus;
     @FXML
-    private Button btnSearch, btnHistory, btnRetrieve,
+    private Button btnPost, btnSearch, btnHistory, btnRetrieve,
             btnClose;
     @FXML
     private TextArea taRemarks, taNotes;
@@ -183,17 +183,6 @@ public class DeliverySchedule_HistoryController implements Initializable, Screen
                         return;
                     }
                     switch (lastFocusedControl.getId()) {
-                        //Search Detail 
-                        case "tfClusterName":
-                            if (pnClusterDetail > 0) {
-                                if (!isJSONSuccess(poAppController.searchClusterBranch(pnClusterDetail, tfClusterName.getText(), false),
-                                        "Unable to Search Cluster! ")) {
-                                }
-                                loadSelectedTransactionDetail(pnClusterDetail);
-                                return;
-
-                            }
-                            break;
 
                         //Browse Transaction 
                         case "tfSearchCluster":
@@ -246,6 +235,28 @@ public class DeliverySchedule_HistoryController implements Initializable, Screen
 
                     }
                     break;
+                case "btnPost":
+                    if (tfTransactionNo.getText().isEmpty()) {
+                        ShowMessageFX.Information("Please load transaction before proceeding..", null, "Delivery Schedule Confirmation");
+                        return;
+                    }
+
+                    if (!poAppController.getMaster().getTransactionStatus().equalsIgnoreCase(DeliveryScheduleStatus.CANCELLED)
+                            || !poAppController.getMaster().getTransactionStatus().equalsIgnoreCase(DeliveryScheduleStatus.VOID)) {
+                        ShowMessageFX.Information("Status was already " + DeliveryScheduleStatus.STATUS.get(Integer.parseInt(poAppController.getMaster().getTransactionStatus())).toLowerCase(),
+                                null, "Delivery Schedule History");
+                        return;
+                    }
+
+                    if (ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to post transaction?") == true) {
+                        if (!isJSONSuccess(poAppController.PostTransaction(), "Initialize Post Transaction")) {
+                            return;
+                        }
+                        reloadTableDetail();
+                        clearAllInputs();
+                        pnEditMode = poAppController.getEditMode();
+                        break;
+                    }
                 case "btnHistory":
                     ShowMessageFX.Information(null, psFormName,
                             "This feature is under development and will be available soon.\nThank you for your patience!");
@@ -493,46 +504,27 @@ public class DeliverySchedule_HistoryController implements Initializable, Screen
         } else {
             lsValue = loTxtField.getText();
         }
-        try {
-            if (null != event.getCode()) {
-                switch (event.getCode()) {
-                    case TAB:
-                    case ENTER:
-                    case F3:
-                        switch (txtFieldID) {
+        if (null != event.getCode()) {
+            switch (event.getCode()) {
+                case TAB:
+                case ENTER:
+                case F3:
+                    switch (txtFieldID) {
 
-                            //Search Pane
-                            case "tfSearchCluster":
+                        default:
+                            CommonUtils.SetNextFocus((TextField) event.getSource());
+                            return;
+                    }
+                case UP:
+                    CommonUtils.SetPreviousFocus((TextField) event.getSource());
+                    return;
+                case DOWN:
+                    CommonUtils.SetNextFocus(loTxtField);
+                    return;
 
-                                if (!tfTransactionNo.getText().isEmpty()) {
-                                    if (ShowMessageFX.OkayCancel(null, "Search Transaction! by Transaction ", "Are you sure you want replace loaded Transaction?") == false) {
-                                        return;
-                                    }
-                                }
-                                if (!isJSONSuccess(poAppController.searchTransaction(lsValue, true, true),
-                                        "Search Transaction!")) {
-                                    return;
-                                }
-                                getLoadedTransaction();
-                                return;
-
-                            default:
-                                CommonUtils.SetNextFocus((TextField) event.getSource());
-                                return;
-                        }
-                    case UP:
-                        CommonUtils.SetPreviousFocus((TextField) event.getSource());
-                        return;
-                    case DOWN:
-                        CommonUtils.SetNextFocus(loTxtField);
-                        return;
-
-                }
             }
-        } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
-            Logger.getLogger(DeliverySchedule_EntryController.class.getName()).log(Level.SEVERE, null, ex);
-            poLogWrapper.severe(psFormName + " :" + ex.getMessage());
         }
+
     }
 
     private void txtArea_KeyPressed(KeyEvent event) {
