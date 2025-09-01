@@ -80,7 +80,7 @@ public class InventoryRequest_ApprovalCarController implements Initializable, Sc
             tfApprovedQty, tfQOH, tfColor, tfClassification, tfROQ, tfCancelQty;
     
     @FXML
-    private Button btnSearch, btnUpdate, btnSave, btnCancel, btnPrint, btnRetrieve, btnClose;
+    private Button btnSearch, btnCancel, btnRetrieve, btnClose;
 
     @FXML
     private TableView<Model_Inv_Stock_Request_Master> tblTransaction;
@@ -103,29 +103,8 @@ public class InventoryRequest_ApprovalCarController implements Initializable, Sc
 
             //trigger action event of last focused object, based on clicked button
             switch (btnID) {
-                case "btnPrint":
-                    if (poAppController.getMaster().getTransactionNo() == null || poAppController.getMaster().getTransactionNo().isEmpty()) {
-                        ShowMessageFX.Information("Please load transaction before proceeding..", "Stock Request Approval", "");
-                        return;
-                    }
-                    if (ShowMessageFX.OkayCancel(null, psFormName, "Do you want to print the transaction ?") == true) {
-                        if (!isJSONSuccess(poAppController.printRecord(),
-                                "Initialize Print Transaction")) {
-                            return;
-                        }
-                    }
-                    //refresh ui 
-                    clearAllInputs();
-                    reloadTableDetail();
-
-                    if (poAppController.getBranchCluster().getClusterDescription() != null && !poAppController.getBranchCluster().getClusterDescription().isEmpty()) {
-                        loadSelectedBranchClusterDelivery();
-                    }
-                    pnEditMode = poAppController.getEditMode();
-                    break;
-
+                
                 case "btnSearch":
-
                     if (lastFocusedControl == null) {
                         ShowMessageFX.Information(null, psFormName,
                                 "Search unavailable. Please ensure a searchable field is selected or focused before proceeding..");
@@ -153,38 +132,6 @@ public class InventoryRequest_ApprovalCarController implements Initializable, Sc
 
                     }
                     break;
-
-                case "btnUpdate":
-
-                    if (poAppController.getMaster().getTransactionNo() == null || poAppController.getMaster().getTransactionNo().isEmpty()) {
-                        ShowMessageFX.Information("Please load transaction before proceeding..", "Stock Request Approval", "");
-                        break;
-                    }
-
-                    if (!isJSONSuccess(poAppController.UpdateTransaction(), "Initialize Update Transaction")) {
-                        break;
-                    }
-                    pnEditMode = poAppController.getEditMode();
-                    break;
-
-                case "btnSave":
-                    if (poAppController.getMaster().getTransactionNo().isEmpty()) {
-                        ShowMessageFX.Information("Please load transaction before proceeding..", "Stock Request Approval", "");
-                        break;
-                    }
-
-                    if (!isJSONSuccess(poAppController.SaveTransaction(), "Initialize Save Transaction")) {
-                        break;
-                    }
-                    //refresh ui 
-                    reloadTableDetail();
-                    clearAllInputs();
-                    if (poAppController.getBranchCluster().getClusterDescription() != null && !poAppController.getBranchCluster().getClusterDescription().isEmpty()) {
-                        loadSelectedBranchClusterDelivery();
-                    }
-                    pnEditMode = poAppController.getEditMode();
-                    break;
-
                 case "btnCancel":
                     if (ShowMessageFX.OkayCancel(null, psFormName, "Do you want to disregard changes?") == true) {
 
@@ -371,7 +318,7 @@ public class InventoryRequest_ApprovalCarController implements Initializable, Sc
             initControlEvents();
             initializeTableDetail();
         } catch (Exception e) {
-            e.printStackTrace();
+            poLogWrapper.severe(psFormName + " :" + e.getMessage());
         }
     }
     //Fetching All Controller 

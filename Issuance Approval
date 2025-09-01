@@ -1,0 +1,188 @@
+Aug 27, 2025 3:34:36 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Approval :null
+Aug 27, 2025 3:34:36 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Approval : Success on Issuance Approval
+Aug 28, 2025 10:56:59 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Approval :null
+Aug 28, 2025 10:56:59 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Approval : Success on Issuance Approval
+Aug 28, 2025 10:57:01 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Approval :null
+Aug 28, 2025 10:57:01 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Approval : Success on Initialize Search Source No! 
+Aug 28, 2025 10:57:01 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Approval :null
+Aug 28, 2025 10:57:04 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Approval :null
+Aug 28, 2025 10:57:04 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Approval : Success on Initialize Search Source No! 
+Aug 28, 2025 10:57:04 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Approval :null
+Aug 28, 2025 10:57:41 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Approval :Unable to open transaction master record.
+Aug 28, 2025 10:57:45 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Approval :null
+Aug 28, 2025 10:57:45 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Approval : Success on Initialize Search Source No! 
+Aug 28, 2025 10:57:45 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Approval :null
+Aug 28, 2025 10:57:56 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Approval :null
+Aug 28, 2025 10:57:56 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Approval : Success on Initialize Search Source No! 
+Aug 28, 2025 10:57:56 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Approval :null
+Aug 28, 2025 11:04:34 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Approval :null
+Aug 28, 2025 11:04:34 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Approval : Success on Issuance Approval
+Aug 28, 2025 11:04:35 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Approval :null
+Aug 28, 2025 11:04:35 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Approval : Success on Initialize Search Source No! 
+Aug 28, 2025 11:04:42 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Approval :Transaction confirmed successfully.
+Aug 28, 2025 11:04:42 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Approval : Success on Initialize Close Transaction
+Aug 28, 2025 11:04:45 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Approval :null
+Aug 28, 2025 11:04:45 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Approval : Success on Initialize Search Source No! 
+Aug 28, 2025 11:04:55 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Approval :Transaction was already confirmed.
+Aug 28, 2025 11:05:03 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Approval :null
+Aug 28, 2025 11:05:03 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Approval : Success on Initialize Search Source No! 
+Aug 28, 2025 11:05:05 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Approval :Transaction was already confirmed.
+Aug 28, 2025 11:16:16 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Approval :null
+Aug 28, 2025 11:16:16 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Approval : Success on Issuance Approval
+Aug 28, 2025 11:16:18 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Approval :null
+Aug 28, 2025 11:16:18 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Approval : Success on Initialize Search Source No! 
+Aug 28, 2025 11:16:26 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Approval :Transaction was already confirmed.
+Aug 28, 2025 11:16:32 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Approval :Transaction was already confirmed.
+Aug 28, 2025 11:17:52 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Approval :Transaction was already confirmed.
+Aug 28, 2025 11:17:55 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Approval :Transaction was already confirmed.
+Aug 28, 2025 11:17:58 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Approval :Transaction was already confirmed.
+Aug 28, 2025 11:18:01 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Approval :Transaction was already confirmed.
+Aug 28, 2025 11:22:51 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Approval :null
+Aug 28, 2025 11:22:51 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Approval : Success on Issuance Approval
+Aug 28, 2025 11:22:52 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Approval :null
+Aug 28, 2025 11:22:52 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Approval : Success on Initialize Search Source No! 
+Aug 28, 2025 11:22:56 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Approval :Unknown column 'InventoryStockRequestMaster.sTransNox' in 'where clause'
+Aug 28, 2025 11:23:15 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Approval :Transaction cancelled successfully.
+Aug 28, 2025 11:23:15 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Approval : Success on Initialize Cancel Transaction
+Aug 28, 2025 11:26:56 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Approval :Unable to open transaction master record.
+Aug 28, 2025 11:41:07 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Approval :Unable to open transaction master record.
+Aug 28, 2025 1:13:29 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Approval :Unable to open transaction master record.
+Aug 28, 2025 1:14:03 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Approval :null
+Aug 28, 2025 1:14:03 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Approval : Success on Initialize Search Source No! 
+Aug 28, 2025 1:14:11 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Approval :Transaction voided successfully.
+Aug 28, 2025 1:14:11 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Approval : Success on Initialize Void Transaction
+Aug 28, 2025 1:14:30 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Approval :null
+Aug 28, 2025 1:14:30 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Approval : Success on Initialize Search Source No! 
+Aug 28, 2025 1:14:35 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Approval :Transaction confirmed successfully.
+Aug 28, 2025 1:14:35 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Approval : Success on Initialize Close Transaction
+Aug 28, 2025 1:14:37 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Approval :null
+Aug 28, 2025 1:14:37 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Approval : Success on Initialize Search Source No! 
+Aug 28, 2025 1:14:42 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Approval :Transaction cancelled successfully.
+Aug 28, 2025 1:14:42 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Approval : Success on Initialize Cancel Transaction
+Aug 28, 2025 1:30:08 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Approval :Unable to open transaction master record.
+Aug 28, 2025 2:41:58 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Approval :null
+Aug 28, 2025 2:41:58 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Approval : Success on Issuance Approval
+Aug 28, 2025 2:42:01 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Approval :null
+Aug 28, 2025 2:42:01 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Approval : Success on Initialize Search Source No! 
+Aug 28, 2025 2:42:09 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Approval :Unable to open transaction detail record.
+Aug 28, 2025 2:42:15 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Approval :null
+Aug 28, 2025 2:42:15 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Approval : Success on Initialize Search Transaction! 
+Aug 28, 2025 2:42:20 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Approval :null
+Aug 28, 2025 2:42:20 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Approval : Success on Initialize Search Transaction! 
+Aug 28, 2025 2:42:20 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Approval :null
+Aug 28, 2025 2:42:20 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Approval : Success on Initialize : Load of Transaction List
+Aug 28, 2025 2:42:25 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Approval :No record loaded.
+Aug 28, 2025 4:00:53 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Approval :null
+Aug 28, 2025 4:00:53 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Approval : Success on Issuance Approval
+Aug 28, 2025 4:00:58 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Approval :null
+Aug 28, 2025 4:00:58 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Approval : Success on Issuance Approval
+Aug 28, 2025 4:01:02 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Approval :null
+Aug 28, 2025 4:01:02 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Approval : Success on Issuance Approval
+Aug 28, 2025 4:01:05 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Approval :null
+Aug 28, 2025 4:01:05 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Approval : Success on Initialize Search Source No! 
+Aug 28, 2025 4:01:10 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Approval :Unknown column 'InventoryStockRequestMaster.sTransNox' in 'where clause'
+Aug 28, 2025 4:05:34 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Approval :null
+Aug 28, 2025 4:05:34 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Approval : Success on Issuance Approval
+Aug 28, 2025 4:05:37 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Approval :null
+Aug 28, 2025 4:05:37 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Approval : Success on Initialize Search Source No! 
+Aug 28, 2025 4:05:40 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Approval :Unknown column name nQtyOnHnd in result set.
+Aug 28, 2025 4:09:10 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Approval :null
+Aug 28, 2025 4:09:10 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Approval : Success on Initialize Print Transaction
+Aug 28, 2025 4:09:16 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Approval :null
+Aug 28, 2025 4:09:16 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Approval : Success on Initialize Search Source No! 
+Aug 28, 2025 4:09:20 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Approval :null
+Aug 28, 2025 4:09:20 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Approval : Success on Initialize Search Source No! 

@@ -178,7 +178,7 @@ public class DeliverySchedule_ConfirmationController implements Initializable, S
             switch (lsButton) {
                 case "btnUpdate":
                     if (tfTransactionNo.getText().isEmpty()) {
-                        ShowMessageFX.Information("Please load transaction before proceeding..", "Search Transaction! by Trasaction", "Delivery Schedule Confirmation");
+                        ShowMessageFX.Information(null,"Please load transaction before proceeding.." , "Delivery Schedule Confirmation");
                         return;
                     }
                     
@@ -259,7 +259,7 @@ public class DeliverySchedule_ConfirmationController implements Initializable, S
                     break;
                 case "btnApprove":
                     if (tfTransactionNo.getText().isEmpty()) {
-                        ShowMessageFX.Information("Please load transaction before proceeding..", "Search Transaction! by Trasaction", "Delivery Schedule Confirmation");
+                        ShowMessageFX.Information("Please load transaction before proceeding..", null, "Delivery Schedule Confirmation");
                         return;
                     }
                     
@@ -280,7 +280,7 @@ public class DeliverySchedule_ConfirmationController implements Initializable, S
                     break;
                 case "btnVoid":
                     if (tfTransactionNo.getText().isEmpty()) {
-                        ShowMessageFX.Information("Please load transaction before proceeding..", "Search Transaction! by Trasaction", "Delivery Schedule Confirmation");
+                        ShowMessageFX.Information("Please load transaction before proceeding..", "", "Delivery Schedule Confirmation");
                         return;
                     }
                     

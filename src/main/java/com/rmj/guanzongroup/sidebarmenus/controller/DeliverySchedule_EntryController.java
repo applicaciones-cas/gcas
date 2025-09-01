@@ -155,7 +155,7 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
             }
 
             Platform.runLater(() -> {
-
+                poAppController.setTransactionStatus("0");
                 poAppController.setIndustryID(psIndustryID);
                 poAppController.setCompanyID(psCompanyID);
                 poAppController.setCategoryID(psCategoryID);
@@ -363,7 +363,7 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
         if (pnTransaction < 0) {
             return;
         }
-        if (event.getClickCount() == 2 && !event.isConsumed()) {
+        if (event.getClickCount() == 1 && !event.isConsumed()) {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 if (ShowMessageFX.OkayCancel(null, psFormName, "Do you want to disregard changes?") != true) {
                     return;
@@ -1106,7 +1106,6 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
             @Override
             protected void succeeded() {
                 ObservableList<Model_Delivery_Schedule_Master> laMasterList = getValue();
-
                 tblTransaction.setItems(laMasterList);
 
                 tblColDeliveryNo.setCellValueFactory(loModel -> {
