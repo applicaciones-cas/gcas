@@ -84,10 +84,9 @@ public class InventoryStockIssuanceController implements Initializable, ScreenIn
     @FXML
     private AnchorPane apBrowse, apButton, apMaster, apMasterDelivery, apDetail, apDelivery, apStockMaster;
 
-
     @FXML
-    private TextArea taRemarks,taDeliveryRemarks;
-    
+    private TextArea taRemarks, taDeliveryRemarks;
+
     @FXML
     private TextField tfSearchSourceno, tfSeacrchTransNo, tfTransNo, tfPlateNo, tfDriver,
             tfAssistant1, tfAssistant2, tfClusterName, tfTownName, tfBranch,
@@ -238,7 +237,7 @@ public class InventoryStockIssuanceController implements Initializable, ScreenIn
             poLogWrapper.severe(psFormName + " :" + ex.getMessage());
         }
     }
-    
+
     @FXML
     void ontblDetailClicked(MouseEvent e) {
         try {
@@ -253,7 +252,6 @@ public class InventoryStockIssuanceController implements Initializable, ScreenIn
             poLogWrapper.severe(psFormName + " :" + ex.getMessage());
         }
     }
-
 
     @FXML
     private void cmdButton_Click(ActionEvent event) {
@@ -485,67 +483,70 @@ public class InventoryStockIssuanceController implements Initializable, ScreenIn
         } else {
             lsValue = loTxtField.getText();
         }
-//        try {
-        if (null != event.getCode()) {
-            switch (event.getCode()) {
-                case TAB:
-                case ENTER:
-                    switch (txtFieldID) {
-//                            case "tfDiscountRate":
-//                                if (lsValue.isEmpty()) {
-//                                    ShowMessageFX.Information("Imvalid freight amount", psFormName, null);
-//                                    loTxtField.requestFocus();
-//                                    return;
-//                                }
-//
-//                                poAppController.getMaster().setFreight(Double.parseDouble(lsValue));
-//                                poAppController.getMaster().setTransactionTotal(poAppController.getMaster().getFreight() - computeDiscount(
-//                                        poAppController.getMaster().getFreight(), poAppController.getMaster().getDiscount()));
-//
-//                                getLoadedTransaction();
-//                                break;
-//                            case "tfDiscountAmount":
-//                                if (lsValue.isEmpty()) {
-//                                    ShowMessageFX.Information("Imvalid discount amount", psFormName, null);
-//                                    loTxtField.requestFocus();
-//                                    return;
-//                                }
-//
-//                                poAppController.getMaster().setDiscount(Double.parseDouble(lsValue));
-//                                poAppController.getMaster().setTransactionTotal(poAppController.getMaster().getFreight() - computeDiscount(
-//                                        poAppController.getMaster().getFreight(), poAppController.getMaster().getDiscount()));
-//
-//                                getLoadedTransaction();
-//                                break;
-//                            case "tfIssuedQty":
-//                                if (lsValue.isEmpty()) {
-//                                    ShowMessageFX.Information("Imvalid quantity", psFormName, null);
-//                                    loTxtField.requestFocus();
-//                                    return;
-//                                }
-//                                poAppController.getDetail(pnTransactionDetail).setQuantity(Double.parseDouble(lsValue));
-//                                reloadTableDetail();
-//
-//                                loadSelectedTransactionDetail(pnTransactionDetail);
-//                                break;
-                        }
-                case F3:
-                    switch (txtFieldID) {
-//                            case "tfSearchSourceno":
-//                                if (!tfTransNo.getText().isEmpty()) {
-//                                    if (ShowMessageFX.OkayCancel(null, "Search Transaction! by Trasaction", "Are you sure you want replace loaded Transaction?") == false) {
-//                                        return;
-//                                    }
-//                                }
-//                                if (!isJSONSuccess(poAppController.searchTransaction(lsValue, true, true),
-//                                        "Initialize Search Source No! ")) {
-//                                    return;
-//                                }
-//
-////                                tfSearchSourceno.setText(poAppController.getMaster().Branch().getBranchName());
-//                                getLoadedTransaction();
-//                                initButtonDisplay(poAppController.getEditMode());
-//                                break;
+        try {
+            if (null != event.getCode()) {
+                switch (event.getCode()) {
+                    case TAB:
+                    case ENTER:
+                    case F3:
+                        switch (txtFieldID) {
+                            case "tfClusterName":
+                                if (!tfClusterName.getText().isEmpty()) {
+                                    if (ShowMessageFX.OkayCancel(null, "Search Transaction! by Cluster", "Transaction's already Retrieve. Do you want to reset Transaction? ") == false) {
+                                        return;
+                                    }
+                                }
+                                if (!isJSONSuccess(poAppController.searchTransactionCluster(lsValue, false),
+                                        "Initialize Search Cluster! ")) {
+                                    return;
+                                }
+                                loadTransactionMaster();
+                                //call reset incase
+                                break;
+
+                            case "tfTownName":
+                                if (!tfClusterName.getText().isEmpty()) {
+                                    if (ShowMessageFX.OkayCancel(null, "Search Transaction! by Town", "Transaction's already Retrieve. Do you want to reset Transaction? ") == false) {
+                                        return;
+                                    }
+                                }
+                                if (!isJSONSuccess(poAppController.searchTransactionTown(lsValue, false),
+                                        "Initialize Search Town Name! ")) {
+                                    return;
+                                }
+                                loadTransactionMaster();
+                                //call reset incase
+                                break;
+
+                            case "tfPlateNo":
+                                if (!isJSONSuccess(poAppController.searchTransactionPlate(lsValue, false),
+                                        "Initialize Search Plate! ")) {
+                                    return;
+                                }
+                                loadTransactionMaster();
+                                break;
+
+                            case "tfDriver":
+                                if (!isJSONSuccess(poAppController.searchTransactionDriver(lsValue, false),
+                                        "Initialize Search Driver! ")) {
+                                    return;
+                                }
+                                loadTransactionMaster();
+                                break;
+                            case "tfAssistant1":
+                                if (!isJSONSuccess(poAppController.searchTransactionAssistant01(lsValue, false),
+                                        "Initialize Search Assitant 1! ")) {
+                                    return;
+                                }
+                                loadTransactionMaster();
+                                break;
+                            case "tfAssistant2":
+                                if (!isJSONSuccess(poAppController.searchTransactionAssistant02(lsValue, false),
+                                        "Initialize Search Assitant 2! ")) {
+                                    return;
+                                }
+                                loadTransactionMaster();
+                                break;
 //                            case "tfSearchTransNo":
 //                                if (!tfTransNo.getText().isEmpty()) {
 //                                    if (ShowMessageFX.OkayCancel(null, "Search Transaction! by Trasaction", "Are you sure you want replace loaded Transaction?") == false) {
@@ -619,14 +620,14 @@ public class InventoryStockIssuanceController implements Initializable, ScreenIn
 //                                }
 //                                break;
                         }
-                    break;
+                        break;
+                }
             }
+        } catch (Exception ex) {
+            Logger.getLogger(DeliverySchedule_EntryController.class
+                    .getName()).log(Level.SEVERE, null, ex);
+            poLogWrapper.severe(psFormName + " :" + ex.getMessage());
         }
-//        } catch (Exception ex) {
-//            Logger.getLogger(DeliverySchedule_EntryController.class
-//                    .getName()).log(Level.SEVERE, null, ex);
-//            poLogWrapper.severe(psFormName + " :" + ex.getMessage());
-//        }
     }
 
     private double computeDiscount(double total, double discount) {
@@ -998,7 +999,7 @@ public class InventoryStockIssuanceController implements Initializable, ScreenIn
                 return new SimpleStringProperty(String.valueOf(index));
             });
 
-            tblColDelTransNo.setCellValueFactory((loModel) -> new SimpleStringProperty(loModel.getValue().getTransactionNo()));
+            tblColDelTransNo.setCellValueFactory((loModel) -> new SimpleStringProperty(loModel.getValue().getReferNo()));
             tblColDelBranch.setCellValueFactory((loModel) -> {
                 try {
                     return new SimpleStringProperty(loModel.getValue().Branch().getBranchName());
@@ -1018,7 +1019,7 @@ public class InventoryStockIssuanceController implements Initializable, ScreenIn
                     return new SimpleStringProperty("");
                 }
             });
-            tblColDelTransNo.setCellValueFactory((loModel) -> new SimpleStringProperty(String.valueOf(loModel.getValue().getNoOfItem())));
+            tblColDelItem.setCellValueFactory((loModel) -> new SimpleStringProperty(String.valueOf(loModel.getValue().getNoOfItem())));
 
             tblColDelStatus.setCellValueFactory((loModel) -> {
                 try {

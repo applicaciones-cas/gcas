@@ -58,3 +58,11 @@ Aug 28, 2025 2:44:39 PM org.guanzon.appdriver.base.LogWrapper info
 INFO: Issuance MC Entry : Success on Initialize Search Source No! 
 Aug 28, 2025 2:44:39 PM org.guanzon.appdriver.base.LogWrapper severe
 SEVERE: Issuance MC Entry :No record found.
+Sep 02, 2025 4:23:35 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance MC Entry :null
+Sep 02, 2025 4:23:35 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance MC Entry : Success on Issuance MC Entry
+Sep 02, 2025 4:23:35 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance MC Entry :null
+Sep 02, 2025 4:23:35 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance MC Entry : Success on Initialize New Transaction
