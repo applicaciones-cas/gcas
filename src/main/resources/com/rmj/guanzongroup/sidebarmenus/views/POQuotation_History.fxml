@@ -63,19 +63,17 @@
                                     <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
                                 </rowConstraints>
                                  <children>
+                                    <Label fx:id="lblSource" layoutX="367.0" layoutY="14.0" text="Company - Industry" GridPane.columnIndex="17">
+                                       <font>
+                                          <Font name="System Bold" size="14.0" />
+                                       </font>
+                                    </Label>
                                     <Label text="Branch">
                                        <font>
                                           <Font name="System Bold" size="14.0" />
                                        </font>
                                     </Label>
                                     <Label text="Reference No." GridPane.columnIndex="12">
-                                       <font>
-                                          <Font name="System Bold" size="14.0" />
-                                       </font>
-                                    </Label>
-                                    <TextField fx:id="tfSearchBranch" GridPane.columnIndex="2" />
-                                    <TextField fx:id="tfSearchReferenceNo" GridPane.columnIndex="14" />
-                                    <Label fx:id="lblSource" layoutX="367.0" layoutY="14.0" text="Company - Industry" GridPane.columnIndex="17">
                                        <font>
                                           <Font name="System Bold" size="14.0" />
                                        </font>
@@ -90,8 +88,10 @@
                                           <Font name="System Bold" size="14.0" />
                                        </font>
                                     </Label>
-                                    <TextField fx:id="tfSearchCategory" layoutX="105.0" layoutY="11.0" GridPane.columnIndex="10" />
-                                    <TextField fx:id="tfSearchSupplier" layoutX="105.0" layoutY="12.0" GridPane.columnIndex="6" />
+                                    <TextField fx:id="tfSearchBranch" promptText="Press F3: Search" GridPane.columnIndex="2" />
+                                    <TextField fx:id="tfSearchSupplier" layoutX="105.0" layoutY="12.0" promptText="Press F3: Search" GridPane.columnIndex="6" />
+                                    <TextField fx:id="tfSearchCategory" layoutX="105.0" layoutY="11.0" promptText="Press F3: Search" GridPane.columnIndex="10" />
+                                    <TextField fx:id="tfSearchReferenceNo" promptText="Press F3: Search" GridPane.columnIndex="14" />
                                  </children>
                               </GridPane>
                            </children>
