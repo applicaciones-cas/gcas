@@ -3389,7 +3389,7 @@ public class DashboardController implements Initializable {
                     return new InventoryRequest_ApprovalMonarchHospitalityController();
                 //Issuance Entry Clustered
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockIssuance.fxml":
-                    return new InventoryStockTransferIssuanceController();
+                    return new InventoryStockIssuanceController();
                 //Issuance Neo Entry
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockIssuanceNeo.fxml":
                     return new InventoryStockIssuanceNeoController();

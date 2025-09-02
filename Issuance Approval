@@ -186,3 +186,7 @@ Aug 28, 2025 4:09:20 PM org.guanzon.appdriver.base.LogWrapper severe
 SEVERE: Issuance Approval :null
 Aug 28, 2025 4:09:20 PM org.guanzon.appdriver.base.LogWrapper info
 INFO: Issuance Approval : Success on Initialize Search Source No! 
+Sep 01, 2025 11:18:11 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Approval :null
+Sep 01, 2025 11:18:11 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Approval : Success on Issuance Approval
