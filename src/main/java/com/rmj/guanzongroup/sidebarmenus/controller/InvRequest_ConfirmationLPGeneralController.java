@@ -961,9 +961,8 @@ public class InvRequest_ConfirmationLPGeneralController implements Initializable
         if (invRequestController.StockRequest().Master().getTransactionStatus().equals(StockRequestStatus.OPEN)||
             invRequestController.StockRequest().Master().getTransactionStatus().equals(StockRequestStatus.CONFIRMED)) {
             CustomCommonUtil.setDisable(!lbShow, AnchorDetailMaster);
-            CustomCommonUtil.setDisable(!lbShow,
+             CustomCommonUtil.setDisable(true,
                     dpTransactionDate, taRemarks,tfReferenceNo);
-
 
             CustomCommonUtil.setDisable(true,
                     tfInvType,tfReservationQTY
