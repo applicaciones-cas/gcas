@@ -529,7 +529,7 @@ public class InvRequest_ConfirmationMPController implements Initializable, Scree
                                 loadTableInvDetail();
                                 loadDetail();
                                 
-                                
+                                pnEditMode = EditMode.READY;
                             } else {
                                 ShowMessageFX.Warning((String) loJSON.get("message"), "Browse", null);
                             }
@@ -1297,6 +1297,8 @@ public class InvRequest_ConfirmationMPController implements Initializable, Scree
 
         
         if (fnEditMode == EditMode.READY) {
+            btnCancel.setVisible(!lbShow);
+            btnCancel.setManaged(!lbShow);
             switch (invRequestController.StockRequest().Master().getTransactionStatus()) {
                 case StockRequestStatus.OPEN:
                     CustomCommonUtil.setVisible(true, btnConfirm, btnVoid, btnUpdate);

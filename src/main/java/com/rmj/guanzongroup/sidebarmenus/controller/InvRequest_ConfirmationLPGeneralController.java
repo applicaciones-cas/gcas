@@ -1287,6 +1287,8 @@ public class InvRequest_ConfirmationLPGeneralController implements Initializable
 
         
         if (fnEditMode == EditMode.READY) {
+            btnCancel.setVisible(!lbShow);
+            btnCancel.setManaged(!lbShow);
             switch (invRequestController.StockRequest().Master().getTransactionStatus()) {
                 case StockRequestStatus.OPEN:
                     CustomCommonUtil.setVisible(true, btnConfirm, btnVoid, btnUpdate);

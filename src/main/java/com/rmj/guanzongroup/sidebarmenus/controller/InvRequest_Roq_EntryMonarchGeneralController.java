@@ -1052,14 +1052,7 @@ public class InvRequest_Roq_EntryMonarchGeneralController implements Initializab
                                     case "tfSearchTransNo":
                                         CommonUtils.SetNextFocus((TextField) event.getSource());
                                         break;
-                                    case "tfOrderQuantity":
-                                        setOrderQuantityToDetail(tfOrderQuantity.getText());
-                                        if (!invOrderDetail_data.isEmpty() && pnTblInvDetailRow < invOrderDetail_data.size() - 1) {
-                                            pnTblInvDetailRow++;
-                                        }
-                                        CommonUtils.SetNextFocus((TextField) event.getSource());
-                                        loadTableInvDetailAndSelectedRow();
-                                        break;
+                                    
                                 }
                                 event.consume();
                         break;
