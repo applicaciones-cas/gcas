@@ -1288,6 +1288,8 @@ public class InvRequest_ConfirmationAppliancesGeneralController implements Initi
 
         
         if (fnEditMode == EditMode.READY) {
+            btnCancel.setVisible(!lbShow);
+            btnCancel.setManaged(!lbShow);
             switch (invRequestController.StockRequest().Master().getTransactionStatus()) {
                 case StockRequestStatus.OPEN:
                     CustomCommonUtil.setVisible(true, btnConfirm, btnVoid, btnUpdate);

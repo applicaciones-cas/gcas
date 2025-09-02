@@ -1082,14 +1082,7 @@ public class InvRequest_Roq_EntryMPGeneralController implements Initializable, S
                                     case "tfSearchTransNo":
                                         CommonUtils.SetNextFocus((TextField) event.getSource());
                                         break;
-                                    case "tfOrderQuantity":
-                                        setOrderQuantityToDetail(tfOrderQuantity.getText());
-                                        if (!invOrderDetail_data.isEmpty() && pnTblInvDetailRow < invOrderDetail_data.size() - 1) {
-                                            pnTblInvDetailRow++;
-                                        }
-                                        CommonUtils.SetNextFocus((TextField) event.getSource());
-                                        loadTableInvDetailAndSelectedRow();
-                                        break;
+                                    
                                 }
                                 event.consume();
                         break;

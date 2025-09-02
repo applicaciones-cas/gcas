@@ -1090,14 +1090,6 @@ public class InvRequest_Roq_EntryCarSpController implements Initializable, Scree
                                     case "tfSearchTransNo":
                                         CommonUtils.SetNextFocus((TextField) event.getSource());
                                         break;
-                                    case "tfOrderQuantity":
-                                        setOrderQuantityToDetail(tfOrderQuantity.getText());
-                                        if (!invOrderDetail_data.isEmpty() && pnTblInvDetailRow < invOrderDetail_data.size() - 1) {
-                                            pnTblInvDetailRow++;
-                                        }
-                                        CommonUtils.SetNextFocus((TextField) event.getSource());
-                                        loadTableInvDetailAndSelectedRow();
-                                        break;
                                 }
                                 event.consume();
                         break;
@@ -1298,6 +1290,7 @@ public class InvRequest_Roq_EntryCarSpController implements Initializable, Scree
 
         
         if (fnEditMode == EditMode.READY) {
+            
             switch (invRequestController.StockRequest().Master().getTransactionStatus()) {
                 case StockRequestStatus.OPEN:
                     CustomCommonUtil.setVisible(true,  btnUpdate, btnVoid);
