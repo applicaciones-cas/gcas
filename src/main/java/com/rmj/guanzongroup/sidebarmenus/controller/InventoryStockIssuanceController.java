@@ -84,10 +84,14 @@ public class InventoryStockIssuanceController implements Initializable, ScreenIn
     @FXML
     private AnchorPane apBrowse, apButton, apMaster, apMasterDelivery, apDetail, apDelivery, apStockMaster;
 
+
+    @FXML
+    private TextArea taRemarks,taDeliveryRemarks;
+    
     @FXML
     private TextField tfSearchSourceno, tfSeacrchTransNo, tfTransNo, tfPlateNo, tfDriver,
-            taRemarks, tfAssistant1, tfAssistant2, tfClusterName, tfTownName, tfBranch,
-            tfDelilveryTransNo, tfOrderNo, taDeliveryRemarks, tfBarcode,
+            tfAssistant1, tfAssistant2, tfClusterName, tfTownName, tfBranch,
+            tfDelilveryTransNo, tfOrderNo, tfBarcode,
             tfDescription, tfSupersede, tfCost, tfIssuedQty, tfBrand, tfColor, tfMeasure, tfVariant, tfApprovedQty, tfModel, tfSerial, tfInvType, tfOrderQuantity;
 
     @FXML
@@ -221,9 +225,9 @@ public class InventoryStockIssuanceController implements Initializable, ScreenIn
     }
 
     @FXML
-    void ontblDetailClicked(MouseEvent e) {
+    void ontblDeliveryClicked(MouseEvent e) {
         try {
-            pnTransactionDetail = tblViewDetails.getSelectionModel().getSelectedIndex() + 1;
+            pnTransactionDetail = tblViewDeliveryTrans.getSelectionModel().getSelectedIndex() + 1;
             if (pnTransactionDetail <= 0) {
                 return;
             }
@@ -234,6 +238,22 @@ public class InventoryStockIssuanceController implements Initializable, ScreenIn
             poLogWrapper.severe(psFormName + " :" + ex.getMessage());
         }
     }
+    
+    @FXML
+    void ontblDetailClicked(MouseEvent e) {
+        try {
+            pnTransactionDetailOther = tblViewDetails.getSelectionModel().getSelectedIndex() + 1;
+            if (pnTransactionDetailOther <= 0) {
+                return;
+            }
+
+            loadSelectedTransactionDetailOther(pnTransactionDetailOther);
+        } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
+            Logger.getLogger(InventoryStockIssuance_PostingController.class.getName()).log(Level.SEVERE, null, ex);
+            poLogWrapper.severe(psFormName + " :" + ex.getMessage());
+        }
+    }
+
 
     @FXML
     private void cmdButton_Click(ActionEvent event) {
@@ -375,36 +395,13 @@ public class InventoryStockIssuanceController implements Initializable, ScreenIn
                     break;
 
                 case "btnRetrieve":
-                    if (lastFocusedControl == null) {
-                        ShowMessageFX.Information(null, psFormName,
-                                "Search unavailable. Please ensure a searchable field is selected or focused before proceeding..");
+                    if (tfClusterName.getText().isEmpty()) {
                         return;
                     }
 
-                    switch (lastFocusedControl.getId()) {
-                        case "tfSearchSourceno":
-                            if (!tfTransNo.getText().isEmpty()) {
-                                if (ShowMessageFX.OkayCancel(null, "Search Transaction! by Trasaction", "Are you sure you want replace loaded Transaction?") == false) {
-                                    return;
-                                }
-                            }
-
-//                            loadTransactionMasterList(tfSearchSourceno.getText(), "e.sBranchNm");
-                            getLoadedTransaction();
-                            initButtonDisplay(poAppController.getEditMode());
-                            break;
-                        case "tfSearchTransNo":
-                            if (!tfTransNo.getText().isEmpty()) {
-                                if (ShowMessageFX.OkayCancel(null, "Search Transaction! by Trasaction", "Are you sure you want replace loaded Transaction?") == false) {
-                                    return;
-                                }
-                            }
-
-//                            loadTransactionMasterList(tfSearchTransNo.getText(), "a.sTransNox");
-                            getLoadedTransaction();
-                            initButtonDisplay(poAppController.getEditMode());
-                            break;
-                    }
+                    loadTransactionStockMasterList();
+                    getLoadedTransaction();
+                    initButtonDisplay(poAppController.getEditMode());
                     break;
                 case "btnClose":
                     unloadForm appUnload = new unloadForm();
@@ -648,7 +645,7 @@ public class InventoryStockIssuanceController implements Initializable, ScreenIn
         overlay.setVisible(true);
         pi.setVisible(true);
 
-        Task<ObservableList<Model_Inv_Stock_Request_Master>> loadTransaction = new Task<ObservableList<Model_Inv_Stock_Request_Master>>() {
+        Task<ObservableList<Model_Inv_Stock_Request_Master>> loadStockTransaction = new Task<ObservableList<Model_Inv_Stock_Request_Master>>() {
             @Override
             protected ObservableList<Model_Inv_Stock_Request_Master> call() throws Exception {
                 if (!isJSONSuccess(poAppController.loadStockTransactionList(),
@@ -709,7 +706,7 @@ public class InventoryStockIssuanceController implements Initializable, ScreenIn
                 pi.setVisible(false);
             }
         };
-        Thread thread = new Thread(loadTransaction);
+        Thread thread = new Thread(loadStockTransaction);
         thread.setDaemon(true);
         thread.start();
     }
