@@ -37,15 +37,19 @@
                             <children>
                                 <AnchorPane fx:id="apBrowse" style="-fx-background-color: A0A0A0;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
-                              <GridPane prefHeight="28.0" prefWidth="1447.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="200.0" AnchorPane.topAnchor="10.0">
+                              <GridPane prefHeight="28.0" prefWidth="1447.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="10.0">
                                 <columnConstraints>
                                     <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="85.0" />
                                     <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
-                                    <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="230.0" />
+                                    <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="200.0" />
                                     <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
+                                    <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="80.0" />
+                                    <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
+                                    <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="200.0" />
+                                    <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" prefWidth="100.0" />
                                     <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="60.0" />
                                     <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
-                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="230.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="200.0" />
                                     <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
                                     <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="60.0" />
                                     <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
@@ -53,7 +57,7 @@
                                     <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
                                   <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="95.0" />
                                     <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
-                                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="230.0" />
+                                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="200.0" />
                                     <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="100.0" />
                                     <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
                                     <ColumnConstraints halignment="RIGHT" hgrow="ALWAYS" minWidth="200.0" prefWidth="480.0" />
@@ -63,7 +67,7 @@
                                     <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
                                 </rowConstraints>
                                  <children>
-                                    <Label fx:id="lblSource" layoutX="367.0" layoutY="14.0" text="Company - Industry" GridPane.columnIndex="17">
+                                    <Label fx:id="lblSource" layoutX="367.0" layoutY="14.0" text="Company - Industry" GridPane.columnIndex="21">
                                        <font>
                                           <Font name="System Bold" size="14.0" />
                                        </font>
@@ -73,25 +77,31 @@
                                           <Font name="System Bold" size="14.0" />
                                        </font>
                                     </Label>
-                                    <Label text="Reference No." GridPane.columnIndex="12">
+                                    <Label text="Reference No." GridPane.columnIndex="16">
                                        <font>
                                           <Font name="System Bold" size="14.0" />
                                        </font>
                                     </Label>
-                                    <Label layoutX="15.0" layoutY="14.0" text="Supplier" GridPane.columnIndex="4">
+                                    <Label layoutX="15.0" layoutY="14.0" text="Supplier" GridPane.columnIndex="8">
                                        <font>
                                           <Font name="System Bold" size="14.0" />
                                        </font>
                                     </Label>
-                                    <Label layoutX="15.0" layoutY="14.0" text="Category" GridPane.columnIndex="8">
+                                    <Label layoutX="15.0" layoutY="14.0" text="Category" GridPane.columnIndex="12">
                                        <font>
                                           <Font name="System Bold" size="14.0" />
                                        </font>
                                     </Label>
                                     <TextField fx:id="tfSearchBranch" promptText="Press F3: Search" GridPane.columnIndex="2" />
-                                    <TextField fx:id="tfSearchSupplier" layoutX="105.0" layoutY="12.0" promptText="Press F3: Search" GridPane.columnIndex="6" />
-                                    <TextField fx:id="tfSearchCategory" layoutX="105.0" layoutY="11.0" promptText="Press F3: Search" GridPane.columnIndex="10" />
-                                    <TextField fx:id="tfSearchReferenceNo" promptText="Press F3: Search" GridPane.columnIndex="14" />
+                                    <TextField fx:id="tfSearchSupplier" layoutX="105.0" layoutY="12.0" promptText="Press F3: Search" GridPane.columnIndex="10" />
+                                    <TextField fx:id="tfSearchCategory" layoutX="105.0" layoutY="11.0" promptText="Press F3: Search" GridPane.columnIndex="14" />
+                                    <TextField fx:id="tfSearchReferenceNo" promptText="Press F3: Search" GridPane.columnIndex="18" />
+                                    <Label layoutX="440.0" layoutY="14.0" text="Department" GridPane.columnIndex="4">
+                                       <font>
+                                          <Font name="System Bold" size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <TextField fx:id="tfSearchDepartment" layoutX="685.0" layoutY="12.0" promptText="Press F3: Search" GridPane.columnIndex="6" />
                                  </children>
                               </GridPane>
                            </children>
@@ -197,6 +207,7 @@
                                                                           <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
                                                                   <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
                                                                                           <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
+                                                                                          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
                                                                           <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
                                                                   <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
                                                                   <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
@@ -218,7 +229,7 @@
                                                                                  <font>
                                                                                     <Font size="12.0" />
                                                                                  </font></Label>
-                                                                          <Label text="Remarks" GridPane.rowIndex="8">
+                                                                          <Label text="Remarks" GridPane.rowIndex="9">
                                                                                  <font>
                                                                                     <Font size="12.0" />
                                                                                  </font></Label>
@@ -230,28 +241,11 @@
                                                                                  <font>
                                                                                     <Font size="12.0" />
                                                                                  </font></Label>
-                                                                  <Label layoutX="13.0" layoutY="139.0" text="Supplier" GridPane.rowIndex="6">
+                                                                  <Label layoutX="13.0" layoutY="139.0" text="Supplier" GridPane.rowIndex="7">
                                                                      <font>
                                                                         <Font size="12.0" />
                                                                      </font>
                                                                   </Label>
-                                                                          <TextField fx:id="tfTransactionNo" disable="true" editable="false" maxHeight="25.0" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="139.0" style="-fx-font-weight: bold;" styleClass="DisabledTextField" GridPane.columnIndex="2" GridPane.columnSpan="2" />
-                                                                              <DatePicker fx:id="dpTransactionDate" disable="true" editable="false" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                                                                          <TextField fx:id="tfReferenceNo" maxHeight="25.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-                                                                  <DatePicker fx:id="dpReferenceDate" layoutX="102.0" layoutY="50.0" GridPane.columnIndex="2" GridPane.rowIndex="4" />
-                                                                                          <TextField fx:id="tfBranch" layoutX="102.0" layoutY="174.0" maxHeight="25.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="5" />
-                                                                  <TextField fx:id="tfSupplier" layoutX="100.0" layoutY="135.0" maxHeight="25.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="6" />
-                                                                  <TextField fx:id="tfAddress" disable="true" editable="false" layoutX="102.0" layoutY="12.0" maxHeight="25.0" minWidth="-Infinity" prefWidth="139.0" style="-fx-font-weight: bold;" styleClass="DisabledTextField" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="7" />
-                                                      <TextArea fx:id="taRemarks" minHeight="-Infinity" prefHeight="27.0" GridPane.columnIndex="2" GridPane.columnSpan="5" GridPane.rowIndex="8" GridPane.rowSpan="2">
-                                                         <GridPane.margin>
-                                                            <Insets top="1.0" />
-                                                         </GridPane.margin>
-                                                      </TextArea>
-                                                                  <DatePicker fx:id="dpValidityDate" layoutX="102.0" layoutY="106.0" GridPane.columnIndex="7" GridPane.rowIndex="3" />
-                                                                                          <TextField fx:id="tfSourceNo" layoutX="481.0" layoutY="135.0" maxHeight="25.0" GridPane.columnIndex="7" GridPane.rowIndex="4" />
-                                                                                          <TextField fx:id="tfCategory" layoutX="481.0" layoutY="106.0" maxHeight="25.0" GridPane.columnIndex="7" GridPane.rowIndex="5" />
-                                                                  <TextField fx:id="tfTerm" layoutX="102.0" layoutY="134.0" maxHeight="25.0" GridPane.columnIndex="7" GridPane.rowIndex="6" />
-                                                                  <TextField fx:id="tfContact" disable="true" editable="false" layoutX="102.0" layoutY="162.0" maxHeight="25.0" minWidth="-Infinity" prefWidth="139.0" style="-fx-font-weight: bold;" styleClass="DisabledTextField" GridPane.columnIndex="7" GridPane.rowIndex="7" />
                                                                   <Label layoutX="18.0" layoutY="82.0" text="Reference Date" GridPane.rowIndex="4">
                                                                      <font>
                                                                         <Font size="12.0" />
@@ -262,7 +256,7 @@
                                                                         <Font size="12.0" />
                                                                      </font>
                                                                   </Label>
-                                                                  <Label layoutX="451.0" layoutY="82.0" text="Term" GridPane.columnIndex="5" GridPane.rowIndex="6">
+                                                                  <Label layoutX="451.0" layoutY="82.0" text="Term" GridPane.columnIndex="5" GridPane.rowIndex="7">
                                                                      <font>
                                                                         <Font size="12.0" />
                                                                      </font>
@@ -282,34 +276,27 @@
                                                                         <Font size="12.0" />
                                                                      </font>
                                                                   </Label>
-                                                                  <Label layoutX="48.0" layoutY="138.0" text="Address" GridPane.rowIndex="7">
+                                                                  <Label layoutX="48.0" layoutY="138.0" text="Address" GridPane.rowIndex="8">
                                                                      <font>
                                                                         <Font size="12.0" />
                                                                      </font>
                                                                   </Label>
-                                                                  <Label layoutX="463.0" layoutY="110.0" text="Contact No." GridPane.columnIndex="5" GridPane.rowIndex="7">
+                                                                  <Label layoutX="463.0" layoutY="110.0" text="Contact No." GridPane.columnIndex="5" GridPane.rowIndex="8">
                                                                      <font>
                                                                         <Font size="12.0" />
                                                                      </font>
                                                                   </Label>
-                                                                  <TextField fx:id="tfGrossAmount" alignment="CENTER_RIGHT" disable="true" editable="false" maxHeight="25.0" maxWidth="139.0" promptText="0.0000" styleClass="DisabledTextField" GridPane.columnIndex="10" GridPane.rowIndex="2" />
-                                                                  <TextField fx:id="tfDiscRate" alignment="CENTER_RIGHT" layoutX="800.0" layoutY="106.0" maxHeight="25.0" maxWidth="139.0" promptText="0.00" GridPane.columnIndex="10" GridPane.rowIndex="3" />
-                                                                  <TextField fx:id="tfAddlDiscAmt" alignment="CENTER_RIGHT" layoutX="800.0" layoutY="50.0" maxHeight="25.0" maxWidth="139.0" promptText="0.0000" GridPane.columnIndex="10" GridPane.rowIndex="4" />
-                                                                  <TextField fx:id="tfFreight" alignment="CENTER_RIGHT" layoutX="800.0" layoutY="78.0" maxHeight="25.0" maxWidth="139.0" promptText="0.00" GridPane.columnIndex="10" GridPane.rowIndex="5" />
-                                                                  <CheckBox fx:id="cbVatable" mnemonicParsing="false" GridPane.columnIndex="10" GridPane.rowIndex="7" />
-                                                                  <TextField fx:id="tfVATAmount" alignment="CENTER_RIGHT" layoutX="755.0" layoutY="105.0" maxHeight="25.0" maxWidth="139.0" promptText="0.0000" GridPane.columnIndex="10" GridPane.rowIndex="8" />
-                                                                  <TextField fx:id="tfTransactionTotal" alignment="CENTER_RIGHT" disable="true" editable="false" layoutX="800.0" layoutY="134.0" maxHeight="25.0" maxWidth="139.0" promptText="0.0000" styleClass="DisabledTextField" GridPane.columnIndex="10" GridPane.rowIndex="9" />
-                                                                  <Label layoutX="28.0" layoutY="14.0" text="Transaction Total" GridPane.columnIndex="8" GridPane.rowIndex="9">
+                                                                  <Label layoutX="28.0" layoutY="14.0" text="Transaction Total" GridPane.columnIndex="8" GridPane.rowIndex="10">
                                                                      <font>
                                                                         <Font name="System Bold" size="14.0" />
                                                                      </font>
                                                                   </Label>
-                                                                  <Label layoutX="707.0" layoutY="148.0" text="VAT Amount" GridPane.columnIndex="8" GridPane.rowIndex="8">
+                                                                  <Label layoutX="707.0" layoutY="148.0" text="VAT Amount" GridPane.columnIndex="8" GridPane.rowIndex="9">
                                                                      <font>
                                                                         <Font size="12.0" />
                                                                      </font>
                                                                   </Label>
-                                                                  <Label layoutX="676.0" layoutY="176.0" text="VATable" GridPane.columnIndex="8" GridPane.rowIndex="7">
+                                                                  <Label layoutX="676.0" layoutY="176.0" text="VATable" GridPane.columnIndex="8" GridPane.rowIndex="8">
                                                                      <font>
                                                                         <Font size="12.0" />
                                                                      </font>
@@ -329,6 +316,36 @@
                                                                                                 <Font size="12.0" />
                                                                                              </font>
                                                                                           </Label>
+                                                                          <TextField fx:id="tfTransactionNo" disable="true" editable="false" maxHeight="25.0" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="139.0" style="-fx-font-weight: bold;" styleClass="DisabledTextField" GridPane.columnIndex="2" GridPane.columnSpan="2" />
+                                                                              <DatePicker fx:id="dpTransactionDate" disable="true" editable="false" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                                                          <TextField fx:id="tfReferenceNo" maxHeight="25.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                                                  <DatePicker fx:id="dpReferenceDate" layoutX="102.0" layoutY="50.0" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                                                                                          <TextField fx:id="tfBranch" layoutX="102.0" layoutY="174.0" maxHeight="25.0" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="5" />
+                                                                  <TextField fx:id="tfSupplier" layoutX="100.0" layoutY="135.0" maxHeight="25.0" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="7" />
+                                                                  <TextField fx:id="tfAddress" disable="true" editable="false" layoutX="102.0" layoutY="12.0" maxHeight="25.0" minWidth="-Infinity" prefWidth="139.0" style="-fx-font-weight: bold;" styleClass="DisabledTextField" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="8" />
+                                                                  <DatePicker fx:id="dpValidityDate" layoutX="102.0" layoutY="106.0" GridPane.columnIndex="7" GridPane.rowIndex="3" />
+                                                                                          <TextField fx:id="tfSourceNo" layoutX="481.0" layoutY="135.0" maxHeight="25.0" promptText="Press F3: Search" GridPane.columnIndex="7" GridPane.rowIndex="4" />
+                                                                                          <TextField fx:id="tfCategory" layoutX="481.0" layoutY="106.0" maxHeight="25.0" promptText="Press F3: Search" GridPane.columnIndex="7" GridPane.rowIndex="5" />
+                                                                  <TextField fx:id="tfTerm" layoutX="102.0" layoutY="134.0" maxHeight="25.0" promptText="Press F3: Search" GridPane.columnIndex="7" GridPane.rowIndex="7" />
+                                                                  <TextField fx:id="tfContact" disable="true" editable="false" layoutX="102.0" layoutY="162.0" maxHeight="25.0" minWidth="-Infinity" prefWidth="139.0" style="-fx-font-weight: bold;" styleClass="DisabledTextField" GridPane.columnIndex="7" GridPane.rowIndex="8" />
+                                                                  <TextField fx:id="tfGrossAmount" alignment="CENTER_RIGHT" disable="true" editable="false" maxHeight="25.0" maxWidth="139.0" promptText="0.0000" styleClass="DisabledTextField" GridPane.columnIndex="10" GridPane.rowIndex="2" />
+                                                                  <TextField fx:id="tfDiscRate" alignment="CENTER_RIGHT" layoutX="800.0" layoutY="106.0" maxHeight="25.0" maxWidth="139.0" promptText="0.00" GridPane.columnIndex="10" GridPane.rowIndex="3" />
+                                                                  <TextField fx:id="tfAddlDiscAmt" alignment="CENTER_RIGHT" layoutX="800.0" layoutY="50.0" maxHeight="25.0" maxWidth="139.0" promptText="0.0000" GridPane.columnIndex="10" GridPane.rowIndex="4" />
+                                                                  <TextField fx:id="tfFreight" alignment="CENTER_RIGHT" layoutX="800.0" layoutY="78.0" maxHeight="25.0" maxWidth="139.0" promptText="0.00" GridPane.columnIndex="10" GridPane.rowIndex="5" />
+                                                                  <CheckBox fx:id="cbVatable" mnemonicParsing="false" GridPane.columnIndex="10" GridPane.rowIndex="8" />
+                                                                  <TextField fx:id="tfVATAmount" alignment="CENTER_RIGHT" layoutX="755.0" layoutY="105.0" maxHeight="25.0" maxWidth="139.0" promptText="0.0000" GridPane.columnIndex="10" GridPane.rowIndex="9" />
+                                                                  <TextField fx:id="tfTransactionTotal" alignment="CENTER_RIGHT" disable="true" editable="false" layoutX="800.0" layoutY="134.0" maxHeight="25.0" maxWidth="139.0" promptText="0.0000" styleClass="DisabledTextField" GridPane.columnIndex="10" GridPane.rowIndex="10" />
+                                                      <TextArea fx:id="taRemarks" minHeight="-Infinity" prefHeight="27.0" GridPane.columnIndex="2" GridPane.columnSpan="5" GridPane.rowIndex="9" GridPane.rowSpan="2">
+                                                         <GridPane.margin>
+                                                            <Insets top="1.0" />
+                                                         </GridPane.margin>
+                                                      </TextArea>
+                                                                                          <Label layoutX="55.0" layoutY="138.0" text="Department" GridPane.rowIndex="6">
+                                                                                             <font>
+                                                                                                <Font size="12.0" />
+                                                                                             </font>
+                                                                                          </Label>
+                                                                                          <TextField fx:id="tfBranch1" layoutX="102.0" layoutY="134.0" maxHeight="25.0" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="6" />
                                                                       </children>
                                                                   </GridPane>
                                                               </children>
@@ -373,11 +390,6 @@
                                                                         <Font size="12.0" />
                                                                      </font>
                                                                   </Label>
-                                                                          <TextField fx:id="tfQuantity" maxHeight="25.0" maxWidth="139.0" GridPane.columnIndex="7" GridPane.rowIndex="2" />
-                                                                  <TextField fx:id="tfDescription" disable="true" editable="false" layoutX="100.0" layoutY="67.0" styleClass="DisabledTextField" GridPane.columnIndex="2" GridPane.columnSpan="2" />
-                                                                          <TextField fx:id="tfReplaceId" maxHeight="25.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                                                                  <TextField fx:id="tfReplaceDescription" layoutX="519.0" layoutY="42.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="2" />
-                                                                  <TextField fx:id="tfCost" alignment="CENTER_RIGHT" disable="true" editable="false" layoutX="519.0" layoutY="41.0" maxHeight="25.0" maxWidth="139.0" promptText="0.0000" styleClass="DisabledTextField" GridPane.columnIndex="7" GridPane.halignment="LEFT" GridPane.rowIndex="1" />
                                                                   <Label layoutX="465.0" layoutY="16.0" text="Disc. Rate (%)" GridPane.columnIndex="8" GridPane.rowIndex="1">
                                                                      <font>
                                                                         <Font size="12.0" />
@@ -388,13 +400,18 @@
                                                                         <Font size="12.0" />
                                                                      </font>
                                                                   </Label>
-                                                                  <TextField fx:id="tfDiscRateDetail" alignment="CENTER_RIGHT" layoutX="499.0" layoutY="12.0" maxHeight="25.0" maxWidth="139.0" promptText="0.0000" GridPane.columnIndex="10" GridPane.rowIndex="1" />
-                                                                  <TextField fx:id="tfAddlDiscAmtDetail" alignment="CENTER_RIGHT" layoutX="785.0" layoutY="12.0" maxHeight="25.0" maxWidth="139.0" promptText="0.0000" GridPane.columnIndex="10" GridPane.rowIndex="2" />
                                                                   <Label layoutX="46.0" layoutY="44.0" text="Description">
                                                                      <font>
                                                                         <Font size="12.0" />
                                                                      </font>
                                                                   </Label>
+                                                                  <TextField fx:id="tfDescription" disable="true" editable="false" layoutX="100.0" layoutY="67.0" styleClass="DisabledTextField" GridPane.columnIndex="2" GridPane.columnSpan="2" />
+                                                                          <TextField fx:id="tfReplaceId" maxHeight="25.0" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                                  <TextField fx:id="tfReplaceDescription" layoutX="519.0" layoutY="42.0" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+                                                                  <TextField fx:id="tfCost" alignment="CENTER_RIGHT" layoutX="519.0" layoutY="41.0" maxHeight="25.0" maxWidth="139.0" promptText="0.0000" GridPane.columnIndex="7" GridPane.halignment="LEFT" GridPane.rowIndex="1" />
+                                                                          <TextField fx:id="tfQuantity" maxHeight="25.0" maxWidth="139.0" GridPane.columnIndex="7" GridPane.rowIndex="2" />
+                                                                  <TextField fx:id="tfDiscRateDetail" alignment="CENTER_RIGHT" layoutX="499.0" layoutY="12.0" maxHeight="25.0" maxWidth="139.0" promptText="0.0000" GridPane.columnIndex="10" GridPane.rowIndex="1" />
+                                                                  <TextField fx:id="tfAddlDiscAmtDetail" alignment="CENTER_RIGHT" layoutX="785.0" layoutY="12.0" maxHeight="25.0" maxWidth="139.0" promptText="0.0000" GridPane.columnIndex="10" GridPane.rowIndex="2" />
                                                                       </children>
                                                                   </GridPane>
                                                               </children>
