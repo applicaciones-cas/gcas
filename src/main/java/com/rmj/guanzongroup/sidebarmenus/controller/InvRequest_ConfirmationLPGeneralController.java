@@ -525,7 +525,7 @@ public class InvRequest_ConfirmationLPGeneralController implements Initializable
                                 loadTableInvDetail();
                                 loadDetail();
                                 
-                                
+                                pnEditMode = EditMode.READY;
                             } else {
                                 ShowMessageFX.Warning((String) loJSON.get("message"), "Browse", null);
                             }
