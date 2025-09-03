@@ -546,7 +546,7 @@ public class InvRequest_ConfirmationMonarchGeneralController implements Initiali
 
                         clearDetailFields();
                         loadTableInvDetail();
-
+                        pnEditMode = EditMode.UPDATE;
                         if (tblViewOrderDetails.getItems().size() > 0) {
                             Platform.runLater(() -> {
                                 tblViewOrderDetails.getSelectionModel().select(0);
@@ -1279,7 +1279,8 @@ public class InvRequest_ConfirmationMonarchGeneralController implements Initiali
 
         btnClose.setVisible(!lbShow);
         btnClose.setManaged(!lbShow);
-
+        btnCancel.setVisible(lbShow);
+        btnCancel.setManaged(lbShow);
         CustomCommonUtil.setVisible(lbShow, btnSave, btnCancel);
         CustomCommonUtil.setManaged(lbShow, btnSave, btnCancel);
 
@@ -1288,8 +1289,7 @@ public class InvRequest_ConfirmationMonarchGeneralController implements Initiali
 
         
         if (fnEditMode == EditMode.READY) {
-            btnCancel.setVisible(!lbShow);
-            btnCancel.setManaged(!lbShow);
+   
             switch (invRequestController.StockRequest().Master().getTransactionStatus()) {
                 case StockRequestStatus.OPEN:
                     CustomCommonUtil.setVisible(true, btnConfirm, btnVoid, btnUpdate);
