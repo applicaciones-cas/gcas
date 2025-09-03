@@ -210,3 +210,11 @@ Aug 27, 2025 3:43:46 PM org.guanzon.appdriver.base.LogWrapper severe
 SEVERE: Delivery Schedule Request :null
 Aug 27, 2025 3:43:46 PM org.guanzon.appdriver.base.LogWrapper info
 INFO: Delivery Schedule Request : Success on Initialize New Transaction
+Sep 03, 2025 2:00:28 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Request :null
+Sep 03, 2025 2:00:28 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Request : Success on Initialize Transaction
+Sep 03, 2025 2:00:29 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Request :null
+Sep 03, 2025 2:00:29 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Request : Success on Initialize New Transaction

@@ -198,21 +198,20 @@ public class InventoryStockIssuanceController implements Initializable, ScreenIn
             return;
         }
 
-        if (e.getClickCount() == 1 && !e.isConsumed()) {
-            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                if (ShowMessageFX.OkayCancel(null, psFormName, "Do you want to disregard changes?") != true) {
-                    return;
-                }
-            }
+        if (e.getClickCount() == 2 && !e.isConsumed()) {
+
             try {
                 e.consume();
-                if (!isJSONSuccess(poAppController.getDetailOther(pnTransactionStock).
-                        OpenTransaction(tblColTransNo.getCellData(pnTransactionStock)), psFormName)) {
-                    ShowMessageFX.Information("Failed to open transaction", psFormName, null);
-                    return;
+                if (!isJSONSuccess(poAppController.requestDetail(pnTransactionStock),
+                        "Add Stock Request Detail. ")) {
+                    if (ShowMessageFX.OkayCancel(null, psFormName, "Selected Delivery is not yet Saved. Do you want to replace Transaction? ") == true) {
+                        if (!isJSONSuccess(poAppController.replaceDetail(pnTransactionDetail, pnTransactionStock),
+                                 "Replace Stock Request Detail. ")) {
+                            return;
+                        }
+                    }
                 }
-
-                getLoadedTransaction();
+                reloadTableDetail();
             } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
                 Logger.getLogger(DeliverySchedule_EntryController.class.getName()).log(Level.SEVERE, null, ex);
                 poLogWrapper.severe(psFormName + " :" + ex.getMessage());
@@ -224,7 +223,8 @@ public class InventoryStockIssuanceController implements Initializable, ScreenIn
     }
 
     @FXML
-    void ontblDeliveryClicked(MouseEvent e) {
+    void ontblDeliveryClicked(MouseEvent e
+    ) {
         try {
             pnTransactionDetail = tblViewDeliveryTrans.getSelectionModel().getSelectedIndex() + 1;
             if (pnTransactionDetail <= 0) {
@@ -239,7 +239,8 @@ public class InventoryStockIssuanceController implements Initializable, ScreenIn
     }
 
     @FXML
-    void ontblDetailClicked(MouseEvent e) {
+    void ontblDetailClicked(MouseEvent e
+    ) {
         try {
             pnTransactionDetailOther = tblViewDetails.getSelectionModel().getSelectedIndex() + 1;
             if (pnTransactionDetailOther <= 0) {
@@ -254,7 +255,8 @@ public class InventoryStockIssuanceController implements Initializable, ScreenIn
     }
 
     @FXML
-    private void cmdButton_Click(ActionEvent event) {
+    private void cmdButton_Click(ActionEvent event
+    ) {
         try {
             //get button id
             String btnID = ((Button) event.getSource()).getId();
@@ -267,61 +269,63 @@ public class InventoryStockIssuanceController implements Initializable, ScreenIn
                     }
 
                     switch (lastFocusedControl.getId()) {
+                        case "tfClusterName":
+                            if (!tfClusterName.getText().isEmpty()) {
+                                if (ShowMessageFX.OkayCancel(null, "Search Transaction! by Cluster", "Transaction's already Retrieve. Do you want to reset Transaction? ") == false) {
+                                    return;
+                                }
+                            }
+                            if (!isJSONSuccess(poAppController.searchTransactionCluster(tfClusterName.getText(), false),
+                                    "Initialize Search Cluster! ")) {
+                                return;
+                            }
+                            loadTransactionMaster();
+                            //call reset incase
+                            break;
 
-//                        case "tfClusterName":
-//                            if (!isJSONSuccess(poAppController.searchTransactionDestination(tfClusterName.getText(), false),
-//                                    "Initialize Search Destination! ")) {
-//                                return;
-//                            }
-//                            tfClusterName.setText(poAppController.getMaster().BranchDestination().getBranchName());
-//                            break;
-//                        case "tfTrucking":
-//                            if (!isJSONSuccess(poAppController.searchTransactionTrucking(tfTrucking.getText(), false),
-//                                    "Initialize Search Trucking! ")) {
-//                                return;
-//                            }
-//                            tfTrucking.setText(poAppController.getMaster().TruckingCompany().getCompanyName());
-//                            break;
-//                        case "tfSearchSerial":
-//                            if (pnTransactionDetail > 0) {
-//                                if (!isJSONSuccess(poAppController.searchDetailByIssuance(pnTransactionDetail, tfSearchSerial.getText(), false, true),
-//                                        "Initialize Search Serial! ")) {
-//                                    return;
-//                                }
-//                                reloadTableDetail();
-//                                loadSelectedTransactionDetail(pnTransactionDetail);
-//                            }
-//                            break;
-//                        case "tfSearchBarcode":
-//                            if (pnTransactionDetail > 0) {
-//                                if (!isJSONSuccess(poAppController.searchDetailByIssuance(pnTransactionDetail, tfSearchBarcode.getText(), true, false),
-//                                        "Initialize Search Barcode! ")) {
-//                                    return;
-//                                }
-//                                reloadTableDetail();
-//                                loadSelectedTransactionDetail(pnTransactionDetail);
-//                            }
-//                            break;
-//                        case "tfSearchDescription":
-//                            if (pnTransactionDetail > 0) {
-//                                if (!isJSONSuccess(poAppController.searchDetailByIssuance(pnTransactionDetail, tfSearchDescription.getText(), false, false),
-//                                        "Initialize Search Description! ")) {
-//                                    return;
-//                                }
-//                                reloadTableDetail();
-//                                loadSelectedTransactionDetail(pnTransactionDetail);
-//                            }
-//                            break;
-//                        case "tfSupersede":
-//                            if (pnTransactionDetail > 0) {
-//                                if (!isJSONSuccess(poAppController.searchDetailByBarcode(pnTransactionDetail, tfSupersede.getText(), true),
-//                                        "Initialize Search Supersede! ")) {
-//                                    return;
-//                                }
-//                                reloadTableDetail();
-//                                loadSelectedTransactionDetail(pnTransactionDetail);
-//                            }
-//                            break;
+                        case "tfTownName":
+                            if (!tfClusterName.getText().isEmpty()) {
+                                if (ShowMessageFX.OkayCancel(null, "Search Transaction! by Town", "Transaction's already Retrieve. Do you want to reset Transaction? ") == false) {
+                                    return;
+                                }
+                            }
+                            if (!isJSONSuccess(poAppController.searchTransactionTown(tfTownName.getText(), false),
+                                    "Initialize Search Town Name! ")) {
+                                return;
+                            }
+                            loadTransactionMaster();
+                            //call reset incase
+                            break;
+
+                        case "tfPlateNo":
+                            if (!isJSONSuccess(poAppController.searchTransactionPlate(tfPlateNo.getText(), false),
+                                    "Initialize Search Plate! ")) {
+                                return;
+                            }
+                            loadTransactionMaster();
+                            break;
+
+                        case "tfDriver":
+                            if (!isJSONSuccess(poAppController.searchTransactionDriver(tfDriver.getText(), false),
+                                    "Initialize Search Driver! ")) {
+                                return;
+                            }
+                            loadTransactionMaster();
+                            break;
+                        case "tfAssistant1":
+                            if (!isJSONSuccess(poAppController.searchTransactionAssistant01(tfAssistant1.getText(), false),
+                                    "Initialize Search Assitant 1! ")) {
+                                return;
+                            }
+                            loadTransactionMaster();
+                            break;
+                        case "tfAssistant2":
+                            if (!isJSONSuccess(poAppController.searchTransactionAssistant02(tfAssistant2.getText(), false),
+                                    "Initialize Search Assitant 2! ")) {
+                                return;
+                            }
+                            loadTransactionMaster();
+                            break;
                     }
                     break;
 
@@ -394,6 +398,9 @@ public class InventoryStockIssuanceController implements Initializable, ScreenIn
 
                 case "btnRetrieve":
                     if (tfClusterName.getText().isEmpty()) {
+                        ShowMessageFX.Information(null, psFormName,
+                                "Please select a Cluster to Retrieve Stock Request");
+
                         return;
                     }
 
@@ -1055,6 +1062,7 @@ public class InventoryStockIssuanceController implements Initializable, ScreenIn
         loadTransactionMaster();
         reloadTableDetail();
         loadSelectedTransactionDetail(pnTransactionDetail);
+//         loadSelectedTransactionDetailOther(pnTransactionDetailOther);
     }
 
     private boolean isJSONSuccess(JSONObject loJSON, String fsModule) {
