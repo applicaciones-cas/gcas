@@ -265,7 +265,7 @@ public class InvRequest_HistoryLPGeneralController implements Initializable, Scr
     private void loadRecordSearch() {
         try {
 
-            lblSource.setText(invRequestController.StockRequest().Master().Company().getCompanyName() + " - " + invRequestController.StockRequest().Master().Industry().getDescription());
+            lblSource.setText(invRequestController.StockRequest().Master().Company().getCompanyName());
 
         } catch (GuanzonException | SQLException ex) {
             Logger.getLogger(InvRequest_EntryMcController.class.getName()).log(Level.SEVERE, null, ex);
