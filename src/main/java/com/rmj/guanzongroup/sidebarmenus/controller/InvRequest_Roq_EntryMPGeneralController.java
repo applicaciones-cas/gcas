@@ -1063,7 +1063,7 @@ public class InvRequest_Roq_EntryMPGeneralController implements Initializable, S
                                 invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                                 invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
                                 invRequestController.StockRequest().setTransactionStatus("102");
-                                poJSON = invRequestController.StockRequest().searchTransaction();
+                                poJSON = invRequestController.StockRequest().searchTransaction(true);
                                 if (!"error".equals((String) poJSON.get("result"))) {
                                     pnTblInvDetailRow = -1;
                                     loadMaster();
