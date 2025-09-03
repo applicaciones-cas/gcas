@@ -155,7 +155,7 @@ public class InvRequest_HistoryMonarchGeneralController implements Initializable
                 try {
                     //set edit mode to new transaction temporily to assign industry and company
                     invRequestController.StockRequest().NewTransaction();
-                    invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
+                    
                     invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                     invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
 
@@ -291,7 +291,7 @@ public class InvRequest_HistoryMonarchGeneralController implements Initializable
                     switch (fieldId) {
                         case "tfSearchTransNo":
                             System.out.print("Enter pressed");
-                            invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
+                            
                             invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                             invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
                             invRequestController.StockRequest().setTransactionStatus("1024");
@@ -310,7 +310,7 @@ public class InvRequest_HistoryMonarchGeneralController implements Initializable
                             break;
                             case "tfSearchReferenceNo":
                             System.out.print("Enter pressed");
-                            invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
+                            
                             invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                             invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
                             invRequestController.StockRequest().setTransactionStatus("1024");
@@ -351,14 +351,14 @@ public class InvRequest_HistoryMonarchGeneralController implements Initializable
             switch (lsButton) {
                 case "btnRetrieve":
                     System.out.print("loaded table this is btnRetrieve");
-                    invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
+                    
                     invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                     invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
                     invRequestController.StockRequest().setTransactionStatus("1024");
                     loadTableList();
                     break;
                 case "btnBrowse":
-                    invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
+                    
                     invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                     invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
                     invRequestController.StockRequest().setTransactionStatus("1024");
