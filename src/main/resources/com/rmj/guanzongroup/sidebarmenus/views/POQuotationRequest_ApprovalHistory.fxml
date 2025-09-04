@@ -282,7 +282,7 @@
                                                                       </columnConstraints>
                                                                       <rowConstraints>
                                                                   <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
-                                                                  <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
                                                       <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
                                                                   <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
                                                                       </rowConstraints>
@@ -392,14 +392,14 @@
                                                           <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
                                                           <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
                                                             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
-                                                                        <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
                                                         </rowConstraints>
                                                          <children>
                                                                         <AnchorPane maxWidth="-Infinity" minWidth="-Infinity" prefHeight="27.0" prefWidth="140.0" style="-fx-background-color: FF8201;" GridPane.columnIndex="6" />
                                                             <Label text="Supplier" />
                                                             <Label layoutX="46.0" layoutY="16.0" text="Address" GridPane.rowIndex="1" />
                                                             <Label layoutX="46.0" layoutY="44.0" text="Contact No." GridPane.rowIndex="2" />
-                                                                        <Label fx:id="lblStatus1" alignment="CENTER" contentDisplay="CENTER" prefHeight="27.0" prefWidth="142.0" text="STATUS" textAlignment="CENTER" GridPane.columnIndex="6">
+                                                                        <Label fx:id="lblStatusSupplier" alignment="CENTER" contentDisplay="CENTER" prefHeight="27.0" prefWidth="142.0" text="STATUS" textAlignment="CENTER" GridPane.columnIndex="6">
                                                                            <font>
                                                                               <Font name="System Bold" size="14.0" />
                                                                            </font>
@@ -425,8 +425,8 @@
                                                          <children>
                                                             <TableView prefHeight="200.0" prefWidth="200.0">
                                                               <columns>
-                                                                <TableColumn prefWidth="75.0" text="No." />
-                                                                <TableColumn minWidth="-1.0" prefWidth="474.0" text="Supplier" />
+                                                                <TableColumn fx:id="tblRowNoSupplier" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" text="No." />
+                                                                <TableColumn fx:id="tblSupplier" maxWidth="520.0" minWidth="-1.0" prefWidth="520.0" text="Supplier" />
                                                                   <TableColumn maxWidth="175.0" minWidth="175.0" prefWidth="175.0" text="Status" />
                                                               </columns>
                                                             </TableView>

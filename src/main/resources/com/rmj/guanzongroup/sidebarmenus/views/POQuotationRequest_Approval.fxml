@@ -166,7 +166,7 @@
                                     <Font size="12.0" />
                                  </font>
                                         </Button>
-                              <Button fx:id="btnDisApprove" contentDisplay="TOP" ellipsisString="" layoutX="315.0" layoutY="15.0" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="70.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Dis Approved">
+                              <Button fx:id="btnDisApprove" contentDisplay="TOP" ellipsisString="" layoutX="315.0" layoutY="15.0" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="70.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Disapprove">
                                  <effect>
                                     <Blend />
                                  </effect>
@@ -361,7 +361,7 @@
                                                                       </columnConstraints>
                                                                       <rowConstraints>
                                                                   <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
-                                                                  <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
                                                       <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
                                                                   <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
                                                                       </rowConstraints>
@@ -394,10 +394,10 @@
                                                                         <Font size="12.0" />
                                                                      </font>
                                                                   </Label>
-                                                                  <TextField fx:id="tfBrand" layoutX="100.0" layoutY="11.0" maxHeight="25.0"  GridPane.columnIndex="2" />
-                                                                  <TextField fx:id="tfModel" layoutX="100.0" layoutY="40.0" maxHeight="25.0"  GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                                                                          <TextField fx:id="tfBarcode" maxHeight="25.0"  GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                                                                  <TextField fx:id="tfDescription" layoutX="519.0" layoutY="42.0"  GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="3" />
+                                                                  <TextField fx:id="tfBrand" layoutX="100.0" layoutY="11.0" maxHeight="25.0" GridPane.columnIndex="2" />
+                                                                  <TextField fx:id="tfModel" layoutX="100.0" layoutY="40.0" maxHeight="25.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                                          <TextField fx:id="tfBarcode" maxHeight="25.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                                                  <TextField fx:id="tfDescription" layoutX="519.0" layoutY="42.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="3" />
                                                                   <TextField fx:id="tfCost" alignment="CENTER_RIGHT" disable="true" editable="false" layoutX="519.0" layoutY="41.0" maxHeight="25.0" promptText="0.0000" styleClass="DisabledTextField" GridPane.columnIndex="7" GridPane.halignment="LEFT" GridPane.rowIndex="2" />
                                                                           <TextField fx:id="tfQuantity" maxHeight="25.0" GridPane.columnIndex="7" GridPane.rowIndex="3" />
                                                                       </children>
@@ -423,7 +423,7 @@
                                                             <columns>
                                                                 <TableColumn fx:id="tblRowNoDetail" editable="false" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="No." />
                                                                 <TableColumn fx:id="tblBarcodeDetail" editable="false" maxWidth="140.0" minWidth="140.0" prefWidth="140.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Barcode" />
-                                                                <TableColumn fx:id="tblDescriptionDetail" editable="false" maxWidth="230.0" minWidth="230.0" prefWidth="230.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Description" />
+                                                                <TableColumn fx:id="tblDescriptionDetail" editable="false" maxWidth="230.0" minWidth="-1.0" prefWidth="230.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Description" />
                                                             <TableColumn fx:id="tblCostDetail" editable="false" maxWidth="85.0" minWidth="85.0" prefWidth="85.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Cost" />
                                                             <TableColumn fx:id="tblQuantityDetail" editable="false" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Qty" />
                                                             <TableColumn fx:id="tblTotalDetail" editable="false" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Total" />
@@ -478,7 +478,7 @@
                                                             <Label text="Supplier" />
                                                             <Label layoutX="46.0" layoutY="16.0" text="Address" GridPane.rowIndex="1" />
                                                             <Label layoutX="46.0" layoutY="44.0" text="Contact No." GridPane.rowIndex="2" />
-                                                                        <Label fx:id="lblStatus1" alignment="CENTER" contentDisplay="CENTER" prefHeight="27.0" prefWidth="142.0" text="STATUS" textAlignment="CENTER" GridPane.columnIndex="6">
+                                                                        <Label fx:id="lblStatusSupplier" alignment="CENTER" contentDisplay="CENTER" prefHeight="27.0" prefWidth="142.0" text="STATUS" textAlignment="CENTER" GridPane.columnIndex="6">
                                                                            <font>
                                                                               <Font name="System Bold" size="14.0" />
                                                                            </font>
@@ -505,9 +505,9 @@
                                                          <children>
                                                             <TableView prefHeight="200.0" prefWidth="200.0">
                                                               <columns>
-                                                                <TableColumn prefWidth="75.0" text="No." />
-                                                                <TableColumn minWidth="-1.0" prefWidth="474.0" text="Supplier" />
-                                                                  <TableColumn maxWidth="175.0" minWidth="175.0" prefWidth="175.0" text="Status" />
+                                                                <TableColumn fx:id="tblRowNoSupplier" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" text="No." />
+                                                                <TableColumn fx:id="tblSupplier" maxWidth="550.0" minWidth="-1.0" prefWidth="550.0" text="Supplier" />
+                                                                  <TableColumn fx:id="tblStatus" maxWidth="175.0" minWidth="175.0" prefWidth="175.0" text="Status" />
                                                               </columns>
                                                             </TableView>
                                                          </children>
@@ -548,8 +548,8 @@
                                                           <TableView fx:id="tblViewMainList" prefWidth="551.0" GridPane.rowIndex="1">
                                                               <columns>
                                                                   <TableColumn fx:id="tblRowNo" editable="false" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="No." />
-                                                                  <TableColumn fx:id="tblBranch" editable="false" maxWidth="230.0" minWidth="230.0" prefWidth="230.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Branch" />
-                                                      <TableColumn fx:id="tblDepartment" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Department" />
+                                                                  <TableColumn fx:id="tblBranch" editable="false" maxWidth="230.0" minWidth="-1.0" prefWidth="230.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Branch" />
+                                                      <TableColumn fx:id="tblDepartment" editable="false" maxWidth="160.0" minWidth="160.0" prefWidth="160.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Department" />
                                                                   <TableColumn fx:id="tblDate" editable="false" maxWidth="90.0" minWidth="90.0" prefWidth="90.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Date" />
                                                                  <TableColumn fx:id="tblReferenceNo" editable="false" maxWidth="139.0" minWidth="139.0" prefWidth="139.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Refer No" />
                                                               </columns>
