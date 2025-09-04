@@ -953,12 +953,12 @@ public class InvRequest_Roq_ConfirmationLPFoodController implements Initializabl
             invRequestController.StockRequest().Master().getTransactionStatus().equals(StockRequestStatus.CONFIRMED)) {
             CustomCommonUtil.setDisable(!lbShow, AnchorDetailMaster);
             CustomCommonUtil.setDisable(!lbShow,
-                    dpTransactionDate, taRemarks,tfReferenceNo);
+                     taRemarks);
 
 
             CustomCommonUtil.setDisable(true,
-                    tfInvType,tfReservationQTY
-                    ,tfQOH,tfROQ,tfClassification,tfBrand,tfBarCode,tfDescription);
+                    tfInvType,dpTransactionDate,tfReservationQTY
+                    ,tfQOH,tfROQ,tfReferenceNo,tfClassification,tfBrand,tfBarCode,tfDescription);
             CustomCommonUtil.setDisable(!lbShow, tfOrderQuantity);
             
             
