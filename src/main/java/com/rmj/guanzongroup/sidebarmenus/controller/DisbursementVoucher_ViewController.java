@@ -150,6 +150,8 @@ public class DisbursementVoucher_ViewController implements Initializable {
     @FXML
     private TableView tblVwDetails;
     @FXML
+    private Label txtAccountCode;
+    @FXML
     private TableColumn tblDVRowNo, tblReferenceNo, tblAccountCode, tblTransactionTypeDetail, tblParticulars, tblPurchasedAmount, tblTaxCode, tblTaxAmount, tblNetAmount;
 
     public void setTransaction(String fsValue) {
@@ -169,6 +171,8 @@ public class DisbursementVoucher_ViewController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        txtAccountCode.setVisible(false);
+            tfAccountCodeDetail.setVisible(false);
         CustomCommonUtil.setDropShadow(AnchorMain, StackPane);
         if (!psTransactionNo.isEmpty()) {
             try {
@@ -455,6 +459,7 @@ public class DisbursementVoucher_ViewController implements Initializable {
     }
 
     private void initTableDetailDV() {
+        tblAccountCode.setVisible(false);
         JFXUtil.setColumnCenter(tblDVRowNo, tblReferenceNo, tblTransactionTypeDetail, tblAccountCode, tblParticulars, tblTaxCode);
         JFXUtil.setColumnRight(tblTaxAmount, tblPurchasedAmount, tblNetAmount);
         JFXUtil.setColumnsIndexAndDisableReordering(tblVwDetails);

@@ -243,6 +243,8 @@ public class DisbursementVoucher_VerificationController implements Initializable
     @FXML
     private TableView tblVwJournalDetails;
     @FXML
+    private Label txtAccountCode;
+    @FXML
     private TableColumn tblJournalRowNo, tblJournalAccountCode, tblJournalAccountDescription, tblJournalDebitAmount, tblJournalCreditAmount, tblJournalReportMonthYear;
 
     @Override
@@ -271,6 +273,8 @@ public class DisbursementVoucher_VerificationController implements Initializable
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         try {
+            txtAccountCode.setVisible(false);
+            tfAccountCodeDetail.setVisible(false);
             poDisbursementController = new CashflowControllers(oApp, null).Disbursement();
             poDisbursementController.setTransactionStatus(DisbursementStatic.OPEN + DisbursementStatic.VERIFIED + DisbursementStatic.RETURNED);
             poJSON = new JSONObject();
@@ -1017,6 +1021,8 @@ public class DisbursementVoucher_VerificationController implements Initializable
     }
 
     private void initTableDetailDV() {
+        
+        tblAccountCode.setVisible(false);
         JFXUtil.setColumnCenter(tblDVRowNo, tblReferenceNo, tblTransactionTypeDetail, tblAccountCode, tblParticulars, tblTaxCode);
         JFXUtil.setColumnRight(tblTaxAmount, tblPurchasedAmount, tblNetAmount);
         JFXUtil.setColumnsIndexAndDisableReordering(tblVwDetails);

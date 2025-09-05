@@ -197,6 +197,8 @@ public class DisbursementVoucher_HistoryController implements Initializable, Scr
     @FXML
     private TableView tblVwJournalDetails;
     @FXML
+    private Label txtAccountCode;
+    @FXML
     private TableColumn tblJournalRowNo, tblJournalAccountCode, tblJournalAccountDescription, tblJournalDebitAmount, tblJournalCreditAmount, tblJournalReportMonthYear;
 
     @Override
@@ -225,6 +227,8 @@ public class DisbursementVoucher_HistoryController implements Initializable, Scr
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         try {
+            txtAccountCode.setVisible(false);
+            tfAccountCodeDetail.setVisible(false);
             poDisbursementController = new CashflowControllers(oApp, null).Disbursement();
             poDisbursementController.setTransactionStatus(
                     DisbursementStatic.OPEN
@@ -571,6 +575,8 @@ public class DisbursementVoucher_HistoryController implements Initializable, Scr
     }
 
     private void initTableDetailDV() {
+        
+        tblAccountCode.setVisible(false);
         JFXUtil.setColumnCenter(tblDVRowNo, tblReferenceNo, tblTransactionTypeDetail, tblAccountCode, tblParticulars, tblTaxCode);
         JFXUtil.setColumnRight(tblTaxAmount, tblPurchasedAmount, tblNetAmount);
         JFXUtil.setColumnsIndexAndDisableReordering(tblVwDetails);
