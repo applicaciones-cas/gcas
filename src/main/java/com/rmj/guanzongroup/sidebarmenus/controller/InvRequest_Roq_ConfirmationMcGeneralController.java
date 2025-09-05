@@ -228,7 +228,7 @@ public class InvRequest_Roq_ConfirmationMcGeneralController implements Initializ
         private void loadRecordSearch() {
             try {
                 System.out.print("LBL SOURCE: "+invRequestController.StockRequest().Master().Company().getCompanyName());
-                lblSource.setText(invRequestController.StockRequest().Master().Company().getCompanyName() + " - " + invRequestController.StockRequest().Master().Industry().getDescription());
+                lblSource.setText(invRequestController.StockRequest().Master().Company().getCompanyName());
 
             } catch (GuanzonException | SQLException ex) {
                 Logger.getLogger(InvRequest_EntryMcController.class.getName()).log(Level.SEVERE, null, ex);
@@ -962,12 +962,12 @@ public class InvRequest_Roq_ConfirmationMcGeneralController implements Initializ
             invRequestController.StockRequest().Master().getTransactionStatus().equals(StockRequestStatus.CONFIRMED)) {
             CustomCommonUtil.setDisable(!lbShow, AnchorDetailMaster);
             CustomCommonUtil.setDisable(!lbShow,
-                    dpTransactionDate, taRemarks,tfReferenceNo);
+                     taRemarks);
 
 
             CustomCommonUtil.setDisable(true,
                     tfInvType,tfReservationQTY
-                    ,tfQOH,tfROQ,tfClassification,tfVariant,tfColor,tfBrand,tfModel,tfBarCode,tfDescription);
+                    ,dpTransactionDate,tfQOH,tfReferenceNo,tfROQ,tfClassification,tfVariant,tfColor,tfBrand,tfModel,tfBarCode,tfDescription);
             CustomCommonUtil.setDisable(!lbShow, tfOrderQuantity);
             
             

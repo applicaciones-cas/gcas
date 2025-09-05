@@ -962,10 +962,10 @@ public class InvRequest_ConfirmationLPGeneralController implements Initializable
             invRequestController.StockRequest().Master().getTransactionStatus().equals(StockRequestStatus.CONFIRMED)) {
             CustomCommonUtil.setDisable(!lbShow, AnchorDetailMaster);
              CustomCommonUtil.setDisable(true,
-                    dpTransactionDate, taRemarks,tfReferenceNo);
+                     taRemarks);
 
             CustomCommonUtil.setDisable(true,
-                    tfInvType,tfReservationQTY
+                    tfInvType,tfReferenceNo,dpTransactionDate,tfReservationQTY
                     ,tfQOH,tfROQ,tfClassification,tfVariant,tfColor,tfBrand,tfModel,tfBarCode,tfDescription);
             CustomCommonUtil.setDisable(!lbShow, tfOrderQuantity);
             

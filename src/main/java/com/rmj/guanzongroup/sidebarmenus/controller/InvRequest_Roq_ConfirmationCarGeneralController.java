@@ -225,7 +225,7 @@ public class InvRequest_Roq_ConfirmationCarGeneralController implements Initiali
     }
         private void loadRecordSearch() {
             try {
-                System.out.print("LBL SOURCE: "+invRequestController.StockRequest().Master().Company().getCompanyName() + " - " + invRequestController.StockRequest().Master().Industry().getDescription());
+                System.out.print("LBL SOURCE: "+invRequestController.StockRequest().Master().Company().getCompanyName());
                 lblSource.setText(invRequestController.StockRequest().Master().Company().getCompanyName());
 
             } catch (GuanzonException | SQLException ex) {

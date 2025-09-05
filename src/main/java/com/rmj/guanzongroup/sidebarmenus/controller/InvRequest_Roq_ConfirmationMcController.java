@@ -975,10 +975,10 @@ public class InvRequest_Roq_ConfirmationMcController implements Initializable, S
                 invRequestController.StockRequest().Master().getTransactionStatus().equals(StockRequestStatus.CONFIRMED)) {
             CustomCommonUtil.setDisable(!lbShow, AnchorDetailMaster);
             CustomCommonUtil.setDisable(!lbShow,
-                    dpTransactionDate, taRemarks, tfReferenceNo);
+                     taRemarks);
 
             CustomCommonUtil.setDisable(true,
-                    tfInvType, tfVariant, tfColor, tfReservationQTY, tfBrand, tfModel, tfQOH, tfROQ, tfClassification);
+                    tfInvType, dpTransactionDate, tfReferenceNo,tfVariant, tfColor, tfReservationQTY, tfBrand, tfModel, tfQOH, tfROQ, tfClassification);
             CustomCommonUtil.setDisable(!lbShow, tfOrderQuantity);
 
         } else {

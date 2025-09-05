@@ -953,11 +953,11 @@ public class InvRequest_ConfirmationMonarchFoodController implements Initializab
             invRequestController.StockRequest().Master().getTransactionStatus().equals(StockRequestStatus.CONFIRMED)) {
             CustomCommonUtil.setDisable(!lbShow, AnchorDetailMaster);
           CustomCommonUtil.setDisable(true,
-                    dpTransactionDate, taRemarks,tfReferenceNo);
+                    taRemarks);
 
 
             CustomCommonUtil.setDisable(true,
-                    tfInvType,tfReservationQTY
+                    tfInvType,tfReferenceNo,dpTransactionDate, tfReservationQTY
                     ,tfQOH,tfROQ,tfClassification,tfBrand,tfBarCode,tfDescription);
             CustomCommonUtil.setDisable(!lbShow, tfOrderQuantity);
             

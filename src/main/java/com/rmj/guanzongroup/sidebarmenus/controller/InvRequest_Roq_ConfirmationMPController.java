@@ -966,12 +966,12 @@ case "btnSave":
             invRequestController.StockRequest().Master().getTransactionStatus().equals(StockRequestStatus.CONFIRMED)) {
             CustomCommonUtil.setDisable(!lbShow, AnchorDetailMaster);
             CustomCommonUtil.setDisable(!lbShow,
-                    dpTransactionDate, taRemarks,tfReferenceNo);
+                   taRemarks);
 
 
             CustomCommonUtil.setDisable(true,
-                    tfInvType,tfReservationQTY
-                    ,tfQOH,tfROQ,tfClassification,tfVariant,tfColor,tfBrand,tfModel,tfBarCode,tfDescription);
+                    tfInvType, dpTransactionDate, tfReservationQTY
+                    ,tfQOH,tfROQ,tfReferenceNo,tfClassification,tfVariant,tfColor,tfBrand,tfModel,tfBarCode,tfDescription);
             CustomCommonUtil.setDisable(!lbShow, tfOrderQuantity);
             
             
