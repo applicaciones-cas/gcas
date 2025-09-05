@@ -976,10 +976,10 @@ public class InvRequest_ConfirmationCarController implements Initializable, Scre
                 invRequestController.StockRequest().Master().getTransactionStatus().equals(StockRequestStatus.CONFIRMED)) {
             CustomCommonUtil.setDisable(!lbShow, AnchorDetailMaster);
            CustomCommonUtil.setDisable(true,
-                    dpTransactionDate, taRemarks,tfReferenceNo);
+                     taRemarks);
 
             CustomCommonUtil.setDisable(true,
-                    tfInvType, tfVariant, tfColor, tfReservationQTY, tfBrand, tfModel, tfQOH, tfROQ, tfClassification);
+                    tfInvType,tfReferenceNo, dpTransactionDate,tfVariant, tfColor, tfReservationQTY, tfBrand, tfModel, tfQOH, tfROQ, tfClassification);
             CustomCommonUtil.setDisable(!lbShow, tfOrderQuantity);
 
         } else {
