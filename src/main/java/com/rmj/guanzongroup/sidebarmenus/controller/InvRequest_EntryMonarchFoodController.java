@@ -966,14 +966,14 @@ public class InvRequest_EntryMonarchFoodController implements Initializable, Scr
         if (invRequestController.StockRequest().Master().getTransactionStatus().equals(StockRequestStatus.OPEN)||
             invRequestController.StockRequest().Master().getTransactionStatus().equals(StockRequestStatus.CONFIRMED)) {
             CustomCommonUtil.setDisable(!lbShow, AnchorDetailMaster);
-            CustomCommonUtil.setDisable(!lbNew,
-                    dpTransactionDate, taRemarks,tfReferenceNo);
+             CustomCommonUtil.setDisable(!lbNew,
+                    dpTransactionDate, tfReferenceNo);
 
 
             CustomCommonUtil.setDisable(true,
                     tfInvType,tfReservationQTY
                     ,tfQOH,tfROQ,tfClassification,tfBrand,tfDescription,tfBarCode,tfMeasure);
-            CustomCommonUtil.setDisable(!lbShow, tfOrderQuantity);
+            CustomCommonUtil.setDisable(!lbShow, tfOrderQuantity, taRemarks);
             CustomCommonUtil.setDisable(!lbNew, tfDescription,tfBarCode);
             
             

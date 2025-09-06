@@ -979,13 +979,13 @@ public class InvRequest_EntryAppliancesController implements Initializable, Scre
             invRequestController.StockRequest().Master().getTransactionStatus().equals(StockRequestStatus.CONFIRMED)) {
             CustomCommonUtil.setDisable(!lbShow, AnchorDetailMaster);
             CustomCommonUtil.setDisable(!lbNew,
-                    dpTransactionDate, taRemarks,tfReferenceNo);
+                    dpTransactionDate, tfReferenceNo);
 
 
             CustomCommonUtil.setDisable(true,
                     tfInvType,tfReservationQTY
                     ,tfQOH,tfROQ,tfClassification,tfVariant,tfColor,tfBrand,tfModel,tfDescription,tfBarCode);
-            CustomCommonUtil.setDisable(!lbShow, tfOrderQuantity);
+            CustomCommonUtil.setDisable(!lbShow, tfOrderQuantity, taRemarks);
             CustomCommonUtil.setDisable(!lbNew, tfBrand,tfDescription,tfBarCode,tfModel);
             
             
