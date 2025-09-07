@@ -22,7 +22,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane id="AnchorPane" fx:id="AnchorMain" prefHeight="789.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane id="AnchorPane" fx:id="AnchorMain" prefHeight="789.0" xmlns="http://javafx.com/javafx/8.0.381" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
@@ -75,11 +75,11 @@
                         </AnchorPane>
                     </top>
                     <bottom>
-                        <AnchorPane fx:id="apButton" maxHeight="1.7976931348623157E308" prefHeight="80.0" BorderPane.alignment="CENTER">
+                        <AnchorPane fx:id="apButton" prefHeight="80.0" BorderPane.alignment="CENTER">
                             <children>
                                 <HBox fx:id="hbButtons" alignment="CENTER_LEFT" prefHeight="75.0" prefWidth="1482.0" spacing="5.0" style="-fx-background-color: E9E9E9;" styleClass="button_process" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                     <children>
-                              <Button fx:id="btnBrowse" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Browse">
+                              <Button fx:id="btnBrowse" contentDisplay="TOP" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Browse">
                                  <graphic>
                                     <FontAwesomeIconView glyphName="FOLDER_OPEN" size="20" />
                                  </graphic>
@@ -87,7 +87,7 @@
                                     <Blend />
                                  </effect>
                               </Button>
-                                        <Button fx:id="btnNew" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" prefHeight="65.0" prefWidth="80.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="New">
+                                        <Button fx:id="btnNew" contentDisplay="TOP" mnemonicParsing="false" prefHeight="65.0" prefWidth="80.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="New">
                                  <graphic>
                                     <FontAwesomeIconView glyphName="PLUS" size="20" />
                                  </graphic>
@@ -95,7 +95,7 @@
                                     <Blend />
                                  </effect>
                               </Button>
-                              <Button fx:id="btnSave" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" prefHeight="65.0" prefWidth="80.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Save">
+                              <Button fx:id="btnSave" contentDisplay="TOP" mnemonicParsing="false" prefHeight="65.0" prefWidth="80.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Save">
                                             <effect>
                                                 <Blend />
                                             </effect>
@@ -103,10 +103,7 @@
                                                 <FontAwesomeIconView glyphName="SAVE" size="20" />
                                             </graphic>
                                         </Button>
-                                       
-                                        
-                              
-                                        <Button fx:id="btnCancel" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" prefHeight="65.0" prefWidth="80.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Cancel">
+                                        <Button fx:id="btnCancel" contentDisplay="TOP" mnemonicParsing="false" prefHeight="65.0" prefWidth="80.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Cancel">
                                             <effect>
                                                 <Blend />
                                             </effect>
@@ -114,7 +111,7 @@
                                                 <FontAwesomeIconView glyphName="TIMES" size="20" />
                                             </graphic>
                                         </Button>
-                              <Button fx:id="btnRetrieve" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Retrieve">
+                              <Button fx:id="btnRetrieve" contentDisplay="TOP" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Retrieve">
                                  <graphic>
                                     <FontAwesomeIconView glyphName="LIST_ALT" size="20" />
                                  </graphic>
@@ -122,7 +119,7 @@
                                     <Blend />
                                  </effect>
                               </Button>
-                               <Button fx:id="btnClose" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" prefHeight="65.0" prefWidth="80.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Close">
+                               <Button fx:id="btnClose" contentDisplay="TOP" mnemonicParsing="false" prefHeight="65.0" prefWidth="80.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Close">
                                             <graphic>
                                                 <FontAwesomeIconView glyphName="POWER_OFF" size="20" />
                                             </graphic>
@@ -130,7 +127,7 @@
                                                 <Blend />
                                             </effect>
                                         </Button>
-                              <Button fx:id="btnUpdate" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Update">
+                              <Button fx:id="btnUpdate" contentDisplay="TOP" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Update">
                                  <graphic>
                                     <FontAwesomeIconView glyphName="EDIT" size="20" />
                                  </graphic>
@@ -138,7 +135,7 @@
                                     <Blend />
                                  </effect>
                               </Button>
-                              <Button fx:id="btnVoid" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Void">
+                              <Button fx:id="btnVoid" contentDisplay="TOP" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Void">
                                  <graphic>
                                     <FontAwesomeIconView glyphName="TIMES" size="20" />
                                  </graphic>
@@ -160,9 +157,9 @@
                     <center>
                         <AnchorPane prefWidth="1503.0" BorderPane.alignment="CENTER_LEFT">
                             <children>
-                        <HBox alignment="CENTER_LEFT" nodeOrientation="LEFT_TO_RIGHT" AnchorPane.leftAnchor="1.0">
+                        <HBox alignment="CENTER_LEFT" fillHeight="true" maxHeight="1.7976931348623157E308" prefWidth="1609.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="1.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
-                                      <VBox alignment="CENTER_LEFT" prefHeight="869.0" prefWidth="1092.0" spacing="5.0">
+                                      <VBox alignment="CENTER_LEFT" maxHeight="1.7976931348623157E308" prefWidth="1092.0" spacing="5.0" VBox.vgrow="ALWAYS">
                                           <children>
                                                 <AnchorPane>
                                                     <children>
@@ -295,9 +292,9 @@
                                                         </VBox>
                                                     </children>
                                                 </AnchorPane>
-                                              <AnchorPane prefHeight="477.0" prefWidth="1192.0" style="-fx-border-color: orange;" VBox.vgrow="ALWAYS">
+                                              <AnchorPane maxHeight="1.7976931348623157E308" prefWidth="1192.0" style="-fx-border-color: orange;" VBox.vgrow="ALWAYS">
                                                   <children>
-                                                      <GridPane layoutX="11.0" layoutY="11.0" prefHeight="407.0" prefWidth="1176.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="10.0">
+                                                      <GridPane layoutX="11.0" layoutY="11.0" maxHeight="1.7976931348623157E308" prefWidth="1176.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="10.0" GridPane.vgrow="ALWAYS">
                                                           <columnConstraints>
                                                               <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" />
                                                               <ColumnConstraints />
@@ -306,7 +303,7 @@
                                                               <RowConstraints maxHeight="1.7976931348623157E308" vgrow="ALWAYS" />
                                                           </rowConstraints>
                                              <children>
-                                                <TableView fx:id="tblViewOrderDetails" prefHeight="320.0" prefWidth="1176.0">
+                                                <TableView fx:id="tblViewOrderDetails" maxHeight="1.7976931348623157E308" prefWidth="1176.0">
                                                    <columns>
                                                       <TableColumn fx:id="tblBrandDetail" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" resizable="false" text="Brand" />
                                                       <TableColumn fx:id="tblBarCodeDetail" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" resizable="false" text="Bar Code" />
@@ -331,18 +328,18 @@
                                               </AnchorPane>
                                           </children>
                                       </VBox>
-                              <AnchorPane maxHeight="1.7976931348623157E308" prefWidth="512.0" style="-fx-border-color: orange;">
+                              <AnchorPane maxHeight="1.7976931348623157E308" prefWidth="512.0" style="-fx-border-color: orange;" HBox.hgrow="ALWAYS">
                                  <children>
-                                    <GridPane maxHeight="1.7976931348623157E308" prefWidth="510.0" AnchorPane.bottomAnchor="2.0" AnchorPane.topAnchor="2.0">
+                                    <GridPane layoutY="6.0" maxHeight="1.7976931348623157E308" prefWidth="510.0" AnchorPane.bottomAnchor="2.0" AnchorPane.topAnchor="5.0" GridPane.vgrow="ALWAYS">
                                        <columnConstraints>
                                           <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="-Infinity" />
                                        </columnConstraints>
                                        <rowConstraints>
                                           <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
-                                          <RowConstraints vgrow="SOMETIMES" />
+                                          <RowConstraints vgrow="ALWAYS" />
                                        </rowConstraints>
                                        <children>
-                                          <AnchorPane minHeight="-Infinity" prefHeight="28.0" style="-fx-background-color: FF8201;">
+                                          <AnchorPane minHeight="-Infinity" prefHeight="28.0" prefWidth="500.0" style="-fx-background-color: FF8201;">
                                              <children>
                                                 <Label alignment="CENTER" contentDisplay="CENTER" text="Table List Information Section" textAlignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                    <font>
@@ -354,7 +351,7 @@
                                                 <Insets left="5.0" right="5.0" top="5.0" />
                                              </GridPane.margin>
                                           </AnchorPane>
-                                          <TableView fx:id="tableListInformation" maxHeight="1000.0" minHeight="750.0" minWidth="-Infinity" prefWidth="500.0" GridPane.rowIndex="1">
+                                          <TableView fx:id="tableListInformation" maxHeight="1.7976931348623157E308" prefWidth="500.0" GridPane.rowIndex="1">
                                              <columns>
                                                 <TableColumn fx:id="tblTransactionNo" maxWidth="150.0" minWidth="180.0" prefWidth="150.0" resizable="false" sortable="false" text="Transaction No" />
                                                 <TableColumn fx:id="tblReferenceNo" maxWidth="150.0" minWidth="180.0" prefWidth="150.0" resizable="false" sortable="false" text="Reference No" />
@@ -363,15 +360,12 @@
                                              <GridPane.margin>
                                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                              </GridPane.margin>
-                                             <columnResizePolicy>
-                                                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-                                             </columnResizePolicy>
                                           </TableView>
                                        </children>
                                     </GridPane>
                                  </children>
                                  <HBox.margin>
-                                    <Insets bottom="5.0" right="5.0" top="5.0" />
+                                    <Insets right="5.0" top="5.0" />
                                  </HBox.margin>
                               </AnchorPane>
                            </children>
