@@ -1059,9 +1059,12 @@ public class InvRequest_Roq_EntryAppliancesController implements Initializable, 
                                           if (!invOrderDetail_data.isEmpty() && pnTblInvDetailRow < invOrderDetail_data.size() - 1) {
                                               pnTblInvDetailRow++;
                                           }//step 9W
-                                          
+                                          Platform.runLater(() -> {
+        taRemarks.requestFocus();
+        taRemarks.selectAll();
+    });
     
-    
+    event.consume();
                                           CommonUtils.SetNextFocus(sourceField);
                                           loadTableInvDetailAndSelectedRow();
                                           
