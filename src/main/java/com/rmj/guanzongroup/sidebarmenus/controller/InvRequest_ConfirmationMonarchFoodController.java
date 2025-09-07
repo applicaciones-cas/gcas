@@ -952,14 +952,14 @@ public class InvRequest_ConfirmationMonarchFoodController implements Initializab
         if (invRequestController.StockRequest().Master().getTransactionStatus().equals(StockRequestStatus.OPEN)||
             invRequestController.StockRequest().Master().getTransactionStatus().equals(StockRequestStatus.CONFIRMED)) {
             CustomCommonUtil.setDisable(!lbShow, AnchorDetailMaster);
-          CustomCommonUtil.setDisable(true,
-                    taRemarks);
+            CustomCommonUtil.setDisable(true,
+                     tfReferenceNo);
 
 
             CustomCommonUtil.setDisable(true,
                     tfInvType,tfReferenceNo,dpTransactionDate, tfReservationQTY
                     ,tfQOH,tfROQ,tfClassification,tfBrand,tfBarCode,tfDescription);
-            CustomCommonUtil.setDisable(!lbShow, tfOrderQuantity);
+            CustomCommonUtil.setDisable(!lbShow, tfOrderQuantity, taRemarks);
             
             
         } else {

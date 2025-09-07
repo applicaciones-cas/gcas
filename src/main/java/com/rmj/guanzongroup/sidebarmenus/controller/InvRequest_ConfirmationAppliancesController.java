@@ -966,13 +966,13 @@ public class InvRequest_ConfirmationAppliancesController implements Initializabl
             invRequestController.StockRequest().Master().getTransactionStatus().equals(StockRequestStatus.CONFIRMED)) {
             CustomCommonUtil.setDisable(!lbShow, AnchorDetailMaster);
               CustomCommonUtil.setDisable(true,
-                     taRemarks);
+                     tfReferenceNo);
 
 
             CustomCommonUtil.setDisable(true,
                     tfInvType,tfReservationQTY
                     ,tfQOH,tfReferenceNo,tfROQ,dpTransactionDate,tfClassification,tfVariant,tfColor,tfBrand,tfModel,tfBarCode,tfDescription);
-            CustomCommonUtil.setDisable(!lbShow, tfOrderQuantity);
+            CustomCommonUtil.setDisable(!lbShow, tfOrderQuantity, taRemarks);
             
             
         } else {

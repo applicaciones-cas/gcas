@@ -974,11 +974,11 @@ public class InvRequest_ConfirmationMcController implements Initializable, Scree
                 invRequestController.StockRequest().Master().getTransactionStatus().equals(StockRequestStatus.CONFIRMED)) {
             CustomCommonUtil.setDisable(!lbShow, AnchorDetailMaster);
             CustomCommonUtil.setDisable(true,
-                     taRemarks);
+                     tfReferenceNo);
 
             CustomCommonUtil.setDisable(true,
                     tfInvType,tfReferenceNo, dpTransactionDate,tfVariant, tfColor, tfReservationQTY, tfBrand, tfModel, tfQOH, tfROQ, tfClassification);
-            CustomCommonUtil.setDisable(!lbShow, tfOrderQuantity);
+            CustomCommonUtil.setDisable(!lbShow, tfOrderQuantity, taRemarks);
 
         } else {
             CustomCommonUtil.setDisable(true, AnchorDetailMaster);

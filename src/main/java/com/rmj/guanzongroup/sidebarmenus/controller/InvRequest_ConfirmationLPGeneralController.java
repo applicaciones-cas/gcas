@@ -961,13 +961,13 @@ public class InvRequest_ConfirmationLPGeneralController implements Initializable
         if (invRequestController.StockRequest().Master().getTransactionStatus().equals(StockRequestStatus.OPEN)||
             invRequestController.StockRequest().Master().getTransactionStatus().equals(StockRequestStatus.CONFIRMED)) {
             CustomCommonUtil.setDisable(!lbShow, AnchorDetailMaster);
-             CustomCommonUtil.setDisable(true,
-                     taRemarks);
+            CustomCommonUtil.setDisable(true,
+                     tfReferenceNo);
 
             CustomCommonUtil.setDisable(true,
                     tfInvType,tfReferenceNo,dpTransactionDate,tfReservationQTY
                     ,tfQOH,tfROQ,tfClassification,tfVariant,tfColor,tfBrand,tfModel,tfBarCode,tfDescription);
-            CustomCommonUtil.setDisable(!lbShow, tfOrderQuantity);
+            CustomCommonUtil.setDisable(!lbShow, tfOrderQuantity, taRemarks);
             
             
         } else {

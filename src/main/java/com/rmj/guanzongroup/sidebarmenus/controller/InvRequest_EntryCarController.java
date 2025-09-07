@@ -962,13 +962,13 @@ public class InvRequest_EntryCarController implements Initializable, ScreenInter
             invRequestController.StockRequest().Master().getTransactionStatus().equals(StockRequestStatus.CONFIRMED)) {
             CustomCommonUtil.setDisable(!lbShow, AnchorDetailMaster);
             CustomCommonUtil.setDisable(!lbNew,
-                    dpTransactionDate, taRemarks,tfReferenceNo);
+                    dpTransactionDate, tfReferenceNo);
 
 
             CustomCommonUtil.setDisable(true,
                     tfInvType,tfReservationQTY
                     ,tfQOH,tfROQ,tfClassification,tfVariant,tfColor,tfBrand,tfModel);
-            CustomCommonUtil.setDisable(!lbShow, tfOrderQuantity);
+            CustomCommonUtil.setDisable(!lbShow, tfOrderQuantity, taRemarks);
             CustomCommonUtil.setDisable(!lbNew, tfBrand,tfModel);
             
             

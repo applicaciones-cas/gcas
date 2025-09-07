@@ -980,14 +980,14 @@ public class InvRequest_EntryMcSpController implements Initializable, ScreenInte
         if (invRequestController.StockRequest().Master().getTransactionStatus().equals(StockRequestStatus.OPEN)||
             invRequestController.StockRequest().Master().getTransactionStatus().equals(StockRequestStatus.CONFIRMED)) {
             CustomCommonUtil.setDisable(!lbShow, AnchorDetailMaster);
-            CustomCommonUtil.setDisable(!lbNew,
-                    dpTransactionDate, taRemarks,tfReferenceNo);
+             CustomCommonUtil.setDisable(!lbNew,
+                    dpTransactionDate, tfReferenceNo);
 
 
             CustomCommonUtil.setDisable(true,
                     tfInvType,tfReservationQTY
                     ,tfQOH,tfROQ,tfClassification,tfVariant,tfColor,tfBrand,tfModel,tfDescription,tfBarCode);
-            CustomCommonUtil.setDisable(!lbShow, tfOrderQuantity);
+            CustomCommonUtil.setDisable(!lbShow, tfOrderQuantity, taRemarks);
             CustomCommonUtil.setDisable(!lbNew, tfBrand,tfDescription,tfBarCode);
             
             
