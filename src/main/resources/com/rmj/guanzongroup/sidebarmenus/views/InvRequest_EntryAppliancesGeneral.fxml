@@ -22,15 +22,15 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane id="AnchorPane" fx:id="AnchorMain" maxWidth="1.7976931348623157E308" minWidth="1487.0" prefHeight="997.0" prefWidth="1661.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane id="AnchorPane" fx:id="AnchorMain" prefHeight="789.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
     <children>
-        <StackPane prefHeight="997.0" prefWidth="1642.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
-                <BorderPane prefHeight="1008.0" prefWidth="1700.0">
+                <BorderPane>
                     <top>
-                        <AnchorPane BorderPane.alignment="CENTER">
+                        <AnchorPane maxWidth="1.7976931348623157E308" prefWidth="1042.0" BorderPane.alignment="CENTER">
                             <children>
-                                <AnchorPane fx:id="apBrowse" prefWidth="1457.0" style="-fx-background-color: A0A0A0;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                <AnchorPane fx:id="apBrowse" style="-fx-background-color: A0A0A0;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
                              <GridPane prefHeight="28.0" prefWidth="1447.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="10.0">
                                             <columnConstraints>
@@ -75,9 +75,9 @@
                         </AnchorPane>
                     </top>
                     <bottom>
-                        <AnchorPane fx:id="apButton" prefHeight="80.0" BorderPane.alignment="CENTER">
+                        <AnchorPane fx:id="apButton" maxHeight="1.7976931348623157E308" prefHeight="80.0" BorderPane.alignment="CENTER">
                             <children>
-                                <HBox fx:id="hbButtons" alignment="CENTER_LEFT" prefHeight="75.0" prefWidth="1042.0" spacing="5.0" style="-fx-background-color: E9E9E9;" styleClass="button_process" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                <HBox fx:id="hbButtons" alignment="CENTER_LEFT" prefHeight="75.0" prefWidth="1482.0" spacing="5.0" style="-fx-background-color: E9E9E9;" styleClass="button_process" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                     <children>
                               <Button fx:id="btnBrowse" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Browse">
                                  <graphic>
@@ -158,11 +158,11 @@
                         </AnchorPane>
                     </bottom>
                     <center>
-                        <AnchorPane maxWidth="1503.0" prefHeight="869.0" prefWidth="1751.0" BorderPane.alignment="CENTER_LEFT">
+                        <AnchorPane prefWidth="1503.0" BorderPane.alignment="CENTER_LEFT">
                             <children>
-                        <HBox prefHeight="658.0" prefWidth="1660.0">
+                        <HBox alignment="CENTER_LEFT" nodeOrientation="LEFT_TO_RIGHT" AnchorPane.leftAnchor="1.0">
                            <children>
-                                      <VBox prefHeight="869.0" prefWidth="1092.0" spacing="5.0">
+                                      <VBox alignment="CENTER_LEFT" prefHeight="869.0" prefWidth="1092.0" spacing="5.0">
                                           <children>
                                                 <AnchorPane>
                                                     <children>
@@ -331,9 +331,9 @@
                                               </AnchorPane>
                                           </children>
                                       </VBox>
-                              <AnchorPane prefHeight="868.0" prefWidth="512.0" style="-fx-border-color: orange;">
+                              <AnchorPane maxHeight="1.7976931348623157E308" prefWidth="512.0" style="-fx-border-color: orange;">
                                  <children>
-                                    <GridPane prefHeight="857.0" prefWidth="510.0" AnchorPane.bottomAnchor="0.0">
+                                    <GridPane maxHeight="1.7976931348623157E308" prefWidth="510.0" AnchorPane.bottomAnchor="2.0" AnchorPane.topAnchor="2.0">
                                        <columnConstraints>
                                           <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="-Infinity" />
                                        </columnConstraints>
@@ -354,7 +354,7 @@
                                                 <Insets left="5.0" right="5.0" top="5.0" />
                                              </GridPane.margin>
                                           </AnchorPane>
-                                          <TableView fx:id="tableListInformation" minWidth="-Infinity" prefHeight="866.0" prefWidth="500.0" GridPane.rowIndex="1">
+                                          <TableView fx:id="tableListInformation" maxHeight="1000.0" minHeight="750.0" minWidth="-Infinity" prefWidth="500.0" GridPane.rowIndex="1">
                                              <columns>
                                                 <TableColumn fx:id="tblTransactionNo" maxWidth="150.0" minWidth="180.0" prefWidth="150.0" resizable="false" sortable="false" text="Transaction No" />
                                                 <TableColumn fx:id="tblReferenceNo" maxWidth="150.0" minWidth="180.0" prefWidth="150.0" resizable="false" sortable="false" text="Reference No" />
@@ -363,12 +363,15 @@
                                              <GridPane.margin>
                                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                              </GridPane.margin>
+                                             <columnResizePolicy>
+                                                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                             </columnResizePolicy>
                                           </TableView>
                                        </children>
                                     </GridPane>
                                  </children>
                                  <HBox.margin>
-                                    <Insets bottom="5.0" top="5.0" />
+                                    <Insets bottom="5.0" right="5.0" top="5.0" />
                                  </HBox.margin>
                               </AnchorPane>
                            </children>
