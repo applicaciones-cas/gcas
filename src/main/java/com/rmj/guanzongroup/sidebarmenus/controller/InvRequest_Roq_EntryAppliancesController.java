@@ -491,7 +491,11 @@ public class InvRequest_Roq_EntryAppliancesController implements Initializable, 
                         lsOrderQuantity = String.valueOf(invRequestController.StockRequest().Detail(pnTblInvDetailRow).getQuantity());
                     }
                     tfOrderQuantity.setText(lsOrderQuantity);
-
+                    Platform.runLater(() -> {
+                if (tfOrderQuantity.isFocused()) {
+                    tfOrderQuantity.selectAll();
+                }
+            });
                 }
             } catch (SQLException | GuanzonException e) {
                 ShowMessageFX.Error(getStage(), e.getMessage(), "Error",psFormName);
@@ -580,6 +584,7 @@ public class InvRequest_Roq_EntryAppliancesController implements Initializable, 
 
                         if (tblViewOrderDetails.getItems().size() > 0) {
                             Platform.runLater(() -> {
+                                tfOrderQuantity.requestFocus();
                                 tblViewOrderDetails.getSelectionModel().select(0);
                                 pnTblInvDetailRow = 0; 
                                 loadDetail();
@@ -587,7 +592,7 @@ public class InvRequest_Roq_EntryAppliancesController implements Initializable, 
                                
                             });
                         }
-
+                        initDetailFocus();
                         initFields(pnEditMode);
                         tableListInformation.toFront();
                         break;
@@ -965,13 +970,13 @@ public class InvRequest_Roq_EntryAppliancesController implements Initializable, 
             invRequestController.StockRequest().Master().getTransactionStatus().equals(StockRequestStatus.CONFIRMED)) {
             CustomCommonUtil.setDisable(!lbShow, AnchorDetailMaster);
             CustomCommonUtil.setDisable(!lbNew,
-                    dpTransactionDate, taRemarks,tfReferenceNo);
+                    dpTransactionDate, tfReferenceNo);
 
 
             CustomCommonUtil.setDisable(true,
                     tfInvType,tfReservationQTY
                     ,tfQOH,tfROQ,tfClassification,tfVariant,tfColor,tfBrand,tfModel, tfBarCode, tfDescription);
-            CustomCommonUtil.setDisable(!lbShow, tfOrderQuantity);
+            CustomCommonUtil.setDisable(!lbShow, tfOrderQuantity, taRemarks);
             
             
         } else {
@@ -1029,6 +1034,7 @@ public class InvRequest_Roq_EntryAppliancesController implements Initializable, 
                     case ENTER:
                     case F3:
                         switch (fieldId) {
+                            
                             case "tfSearchTransNo":
                                     System.out.print("Company ID" + psCompanyID);
                                     invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
@@ -1053,10 +1059,14 @@ public class InvRequest_Roq_EntryAppliancesController implements Initializable, 
                                           if (!invOrderDetail_data.isEmpty() && pnTblInvDetailRow < invOrderDetail_data.size() - 1) {
                                               pnTblInvDetailRow++;
                                           }//step 9W
-
+                                          
+    
+    
                                           CommonUtils.SetNextFocus(sourceField);
                                           loadTableInvDetailAndSelectedRow();
+                                          
                                           break;
+                            
                             case "tfSearchReferenceNo":
                                 System.out.print("Enter pressed");
                                 invRequestController.StockRequest().Master().setIndustryId(psIndustryID);

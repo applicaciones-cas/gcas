@@ -481,7 +481,11 @@ public class InvRequest_Roq_EntryMcController implements Initializable, ScreenIn
                     lsOrderQuantity = String.valueOf(invRequestController.StockRequest().Detail(pnTblInvDetailRow).getQuantity());
                 }
                 tfOrderQuantity.setText(lsOrderQuantity);
-
+                Platform.runLater(() -> {
+                if (tfOrderQuantity.isFocused()) {
+                    tfOrderQuantity.selectAll();
+                }
+            });
             }
         } catch (SQLException | GuanzonException e) {
             ShowMessageFX.Error(getStage(), e.getMessage(), "Error", psFormName);
@@ -571,13 +575,14 @@ public class InvRequest_Roq_EntryMcController implements Initializable, ScreenIn
 
                     if (tblViewOrderDetails.getItems().size() > 0) {
                         Platform.runLater(() -> {
+                            tfOrderQuantity.requestFocus();
                             tblViewOrderDetails.getSelectionModel().select(0);
                             pnTblInvDetailRow = 0;
                             loadDetail();
 
                         });
                     }
-
+                    initDetailFocus();
                     initFields(pnEditMode); 
                     tableListInformation.toFront();
                     break;
@@ -950,13 +955,13 @@ public class InvRequest_Roq_EntryMcController implements Initializable, ScreenIn
             invRequestController.StockRequest().Master().getTransactionStatus().equals(StockRequestStatus.CONFIRMED)) {
             CustomCommonUtil.setDisable(!lbShow, AnchorDetailMaster);
             CustomCommonUtil.setDisable(!lbNew,
-                    dpTransactionDate, taRemarks,tfReferenceNo);
+                    dpTransactionDate, tfReferenceNo);
 
 
             CustomCommonUtil.setDisable(true,
                     tfInvType,tfReservationQTY
                     ,tfQOH,tfROQ,tfClassification,tfVariant,tfColor,tfBrand,tfModel);
-            CustomCommonUtil.setDisable(!lbShow, tfOrderQuantity);
+            CustomCommonUtil.setDisable(!lbShow, tfOrderQuantity, taRemarks);
             
             
         } else {
@@ -1043,7 +1048,12 @@ public class InvRequest_Roq_EntryMcController implements Initializable, ScreenIn
                                           if (!invOrderDetail_data.isEmpty() && pnTblInvDetailRow < invOrderDetail_data.size() - 1) {
                                               pnTblInvDetailRow++;
                                           }//step 9W
-
+                                          Platform.runLater(() -> {
+        taRemarks.requestFocus();
+        taRemarks.selectAll();
+    });
+    
+    event.consume();
                                           CommonUtils.SetNextFocus(sourceField);
                                           loadTableInvDetailAndSelectedRow();
                                           break;
