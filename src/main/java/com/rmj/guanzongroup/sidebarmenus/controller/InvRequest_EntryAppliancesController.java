@@ -594,7 +594,7 @@ public class InvRequest_EntryAppliancesController implements Initializable, Scre
                                
                             });
                         }
-
+                        initDetailFocus();
                         initFields(pnEditMode);
                         tableListInformation.toFront();
                         break;

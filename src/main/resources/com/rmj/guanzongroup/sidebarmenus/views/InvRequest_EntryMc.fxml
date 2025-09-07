@@ -22,19 +22,19 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane id="AnchorPane" fx:id="AnchorMain" maxWidth="1.7976931348623157E308" minWidth="1487.0" prefHeight="789.0" prefWidth="1601.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane id="AnchorPane" fx:id="AnchorMain" prefHeight="789.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
     <children>
-        <StackPane prefHeight="150.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
                 <BorderPane>
                     <top>
-                        <AnchorPane BorderPane.alignment="CENTER">
+                        <AnchorPane maxWidth="1.7976931348623157E308" prefWidth="1042.0" BorderPane.alignment="CENTER">
                             <children>
-                                <AnchorPane fx:id="apBrowse" prefWidth="1457.0" style="-fx-background-color: A0A0A0;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                <AnchorPane fx:id="apBrowse" style="-fx-background-color: A0A0A0;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
-                              <GridPane prefHeight="28.0" prefWidth="1447.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="10.0">
+                             <GridPane prefHeight="28.0" prefWidth="1447.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="10.0">
                                             <columnConstraints>
-                                                <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" prefWidth="100.0" />
+                                                <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="100.0" prefWidth="100.0" />
                                                 <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
                                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="230.0" />
                                                 <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
@@ -43,8 +43,9 @@
                                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="230.0" />
                                                 <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="100.0" />
                                                 <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
-                                                <ColumnConstraints halignment="RIGHT" minWidth="400.0" prefWidth="700.0" />
-                                                <ColumnConstraints halignment="RIGHT" hgrow="ALWAYS" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
+                                                <ColumnConstraints halignment="RIGHT" hgrow="NEVER" maxWidth="897.0" minWidth="400.0" prefWidth="794.0" />
+                                    <ColumnConstraints halignment="RIGHT" hgrow="ALWAYS" maxWidth="100.333251953125" minWidth="31.333251953125" prefWidth="42.0" />
+                                    <ColumnConstraints halignment="RIGHT" hgrow="ALWAYS" maxWidth="100.0" minWidth="25.666748046875" prefWidth="25.666748046875" />
                                             </columnConstraints>
                                             <rowConstraints>
                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
@@ -62,11 +63,11 @@
                                                 </Label>
                                                 <TextField fx:id="tfSearchTransNo" promptText="Press F3: Search" GridPane.columnIndex="2" />
                                                 <TextField fx:id="tfSearchReferenceNo" promptText="Press F3: Search" GridPane.columnIndex="6" />
-                                                <Label fx:id="lblSource" layoutX="367.0" layoutY="14.0" text="Company - Industry" GridPane.columnIndex="9">
-                                                    <font>
-                                                        <Font name="System Bold" size="14.0" />
-                                                    </font>
-                                                </Label>
+                                    <Label fx:id="lblSource" alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" text="Company - Industry" GridPane.columnIndex="9">
+                                       <font>
+                                          <Font name="System Bold" size="14.0" />
+                                       </font>
+                                    </Label>
                                             </children>
                                         </GridPane>
                            </children></AnchorPane>
@@ -76,9 +77,9 @@
                     <bottom>
                         <AnchorPane fx:id="apButton" prefHeight="80.0" BorderPane.alignment="CENTER">
                             <children>
-                                <HBox fx:id="hbButtons" alignment="CENTER_LEFT" prefHeight="75.0" prefWidth="1042.0" spacing="5.0" style="-fx-background-color: E9E9E9;" styleClass="button_process" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                <HBox fx:id="hbButtons" alignment="CENTER_LEFT" prefHeight="75.0" prefWidth="1482.0" spacing="5.0" style="-fx-background-color: E9E9E9;" styleClass="button_process" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                     <children>
-                              <Button fx:id="btnBrowse" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Browse">
+                              <Button fx:id="btnBrowse" contentDisplay="TOP" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Browse">
                                  <graphic>
                                     <FontAwesomeIconView glyphName="FOLDER_OPEN" size="20" />
                                  </graphic>
@@ -86,7 +87,7 @@
                                     <Blend />
                                  </effect>
                               </Button>
-                                        <Button fx:id="btnNew" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" prefHeight="65.0" prefWidth="80.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="New">
+                                        <Button fx:id="btnNew" contentDisplay="TOP" mnemonicParsing="false" prefHeight="65.0" prefWidth="80.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="New">
                                  <graphic>
                                     <FontAwesomeIconView glyphName="PLUS" size="20" />
                                  </graphic>
@@ -94,7 +95,7 @@
                                     <Blend />
                                  </effect>
                               </Button>
-                              <Button fx:id="btnSave" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" prefHeight="65.0" prefWidth="80.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Save">
+                              <Button fx:id="btnSave" contentDisplay="TOP" mnemonicParsing="false" prefHeight="65.0" prefWidth="80.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Save">
                                             <effect>
                                                 <Blend />
                                             </effect>
@@ -102,10 +103,7 @@
                                                 <FontAwesomeIconView glyphName="SAVE" size="20" />
                                             </graphic>
                                         </Button>
-                                       
-                                        
-                              
-                                        <Button fx:id="btnCancel" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" prefHeight="65.0" prefWidth="80.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Cancel">
+                                        <Button fx:id="btnCancel" contentDisplay="TOP" mnemonicParsing="false" prefHeight="65.0" prefWidth="80.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Cancel">
                                             <effect>
                                                 <Blend />
                                             </effect>
@@ -113,7 +111,7 @@
                                                 <FontAwesomeIconView glyphName="TIMES" size="20" />
                                             </graphic>
                                         </Button>
-                              <Button fx:id="btnRetrieve" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Retrieve">
+                              <Button fx:id="btnRetrieve" contentDisplay="TOP" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Retrieve">
                                  <graphic>
                                     <FontAwesomeIconView glyphName="LIST_ALT" size="20" />
                                  </graphic>
@@ -121,7 +119,7 @@
                                     <Blend />
                                  </effect>
                               </Button>
-                               <Button fx:id="btnClose" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" prefHeight="65.0" prefWidth="80.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Close">
+                               <Button fx:id="btnClose" contentDisplay="TOP" mnemonicParsing="false" prefHeight="65.0" prefWidth="80.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Close">
                                             <graphic>
                                                 <FontAwesomeIconView glyphName="POWER_OFF" size="20" />
                                             </graphic>
@@ -129,7 +127,7 @@
                                                 <Blend />
                                             </effect>
                                         </Button>
-                              <Button fx:id="btnUpdate" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Update">
+                              <Button fx:id="btnUpdate" contentDisplay="TOP" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Update">
                                  <graphic>
                                     <FontAwesomeIconView glyphName="EDIT" size="20" />
                                  </graphic>
@@ -137,7 +135,7 @@
                                     <Blend />
                                  </effect>
                               </Button>
-                               <Button fx:id="btnVoid" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Void">
+                              <Button fx:id="btnVoid" contentDisplay="TOP" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Void">
                                  <graphic>
                                     <FontAwesomeIconView glyphName="TIMES" size="20" />
                                  </graphic>
@@ -157,15 +155,15 @@
                         </AnchorPane>
                     </bottom>
                     <center>
-                        <AnchorPane maxWidth="1503.0" BorderPane.alignment="CENTER_LEFT">
+                        <AnchorPane prefWidth="1503.0" BorderPane.alignment="CENTER_LEFT">
                             <children>
-                                <VBox spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="0.0">
-                                    <children>
-                                        <HBox prefHeight="244.0" prefWidth="1042.0" spacing="5.0">
-                                            <children>
-                                                <AnchorPane fx:id="AnchorDetailMaster">
+                        <HBox alignment="CENTER_LEFT" fillHeight="true" maxHeight="1.7976931348623157E308" prefWidth="1609.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="1.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                                      <VBox alignment="CENTER_LEFT" maxHeight="1.7976931348623157E308" prefWidth="1092.0" spacing="5.0" VBox.vgrow="ALWAYS">
+                                          <children>
+                                                <AnchorPane>
                                                     <children>
-                                                        <VBox prefHeight="339.0" spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                        <VBox prefHeight="339.0" spacing="5.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
                                                             <children>
                                                                 <AnchorPane style="-fx-border-color: orange;">
                                                                     <children>
@@ -173,7 +171,7 @@
                                                                             <columnConstraints>
                                                                                 <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="65.0" />
                                                                                 <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
-                                                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="139.0" minWidth="-Infinity" prefWidth="139.0" />
+                                                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="139.0" minWidth="139.0" prefWidth="139.0" />
                                                                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="108.0" minWidth="-Infinity" prefWidth="52.0" />
                                                                                 <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="135.0" minWidth="-Infinity" prefWidth="95.0" />
                                                                                 <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
@@ -183,6 +181,7 @@
                                                             <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
                                                             <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="194.0" minWidth="-Infinity" prefWidth="194.0" />
                                                             <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
+                                                            <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" prefWidth="139.0" />
                                                             <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="139.0" />
                                                             <ColumnConstraints />
                                                             <ColumnConstraints />
@@ -190,17 +189,17 @@
                                                                             <rowConstraints>
                                                                                 <RowConstraints />
                                                                                 <RowConstraints />
-                                                                                <RowConstraints minHeight="27.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
                                                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="10.0" vgrow="SOMETIMES" />
-                                                                                <RowConstraints minHeight="27.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                                                <RowConstraints minHeight="27.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                            <RowConstraints maxHeight="24.0" minHeight="2.0" prefHeight="2.0" vgrow="SOMETIMES" />
-                                                                                <RowConstraints maxHeight="52.0" minHeight="27.0" prefHeight="52.0" vgrow="SOMETIMES" />
-                                                            <RowConstraints minHeight="27.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                            <RowConstraints minHeight="27.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
+                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
+                                                            <RowConstraints maxHeight="25.75" minHeight="0.5" prefHeight="0.5" vgrow="SOMETIMES" />
+                                                                                <RowConstraints maxHeight="53.5" minHeight="27.0" prefHeight="53.5" vgrow="SOMETIMES" />
+                                                            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
+                                                            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
                                                                             </rowConstraints>
                                                                             <children>
-                                                            <AnchorPane maxWidth="-Infinity" prefHeight="27.0" prefWidth="140.0" style="-fx-background-color: FF8201;" GridPane.columnIndex="12" GridPane.rowIndex="2">
+                                                            <AnchorPane maxWidth="-Infinity" prefHeight="27.0" prefWidth="140.0" style="-fx-background-color: FF8201;" GridPane.columnIndex="13" GridPane.rowIndex="2">
                                                                <GridPane.margin>
                                                                   <Insets />
                                                                </GridPane.margin>
@@ -210,7 +209,8 @@
                                                                                                 <Font name="System Bold" size="14.0" />
                                                                                             </font>
                                                                                         </Label>
-                                                               </children></AnchorPane>
+                                                               </children>
+                                                            </AnchorPane>
                                                                                 <Label text="Trans No." GridPane.rowIndex="2">
                                                                                     <font>
                                                                                         <Font name="System Bold" size="14.0" />
@@ -227,7 +227,7 @@
                                                                         </GridPane>
                                                                     </children>
                                                                 </AnchorPane>
-                                                <AnchorPane prefHeight="147.0" prefWidth="1078.0" style="-fx-border-color: orange;">
+                                                <AnchorPane prefWidth="1078.0" style="-fx-border-color: orange;">
                                                    <children>
                                                       <GridPane AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0">
                                                          <columnConstraints>
@@ -248,9 +248,9 @@
                                                             <ColumnConstraints hgrow="SOMETIMES" maxWidth="140.0" minWidth="100.0" prefWidth="140.0" />
                                                          </columnConstraints>
                                                          <rowConstraints>
-                                                            <RowConstraints minHeight="27.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                            <RowConstraints minHeight="27.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                            <RowConstraints minHeight="27.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
+                                                            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
+                                                            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
                                                          </rowConstraints>
                                                          <children>
                                                             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Brand" />
@@ -284,80 +284,83 @@
                                                             </children>
                                                         </VBox>
                                                     </children>
-                                                    <HBox.margin>
-                                                        <Insets top="5.0" />
-                                                    </HBox.margin>
                                                 </AnchorPane>
-                                    <AnchorPane style="-fx-border-color: orange;">
-                                       <children>
-                                          <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                             <columnConstraints>
-                                                <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="-Infinity" />
-                                             </columnConstraints>
-                                             <rowConstraints>
-                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
-                                                <RowConstraints vgrow="SOMETIMES" />
-                                             </rowConstraints>
+                                              <AnchorPane maxHeight="1.7976931348623157E308" prefWidth="1192.0" style="-fx-border-color: orange;" VBox.vgrow="ALWAYS">
+                                                  <children>
+                                                      <GridPane layoutX="11.0" layoutY="11.0" maxHeight="1.7976931348623157E308" prefWidth="1176.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0" GridPane.vgrow="ALWAYS">
+                                                          <columnConstraints>
+                                                              <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" />
+                                                              <ColumnConstraints />
+                                                          </columnConstraints>
+                                                          <rowConstraints>
+                                                              <RowConstraints maxHeight="1.7976931348623157E308" vgrow="ALWAYS" />
+                                                          </rowConstraints>
                                              <children>
-                                                <AnchorPane minHeight="-Infinity" prefHeight="28.0" style="-fx-background-color: FF8201;">
-                                                   <children>
-                                                      <Label alignment="CENTER" contentDisplay="CENTER" text="Table List Information Section" textAlignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                                         <font>
-                                                            <Font name="System Bold" size="14.0" />
-                                                         </font>
-                                                      </Label>
-                                                   </children>
-                                                   <GridPane.margin>
-                                                      <Insets left="5.0" right="5.0" top="5.0" />
-                                                   </GridPane.margin>
-                                                </AnchorPane>
-                                                <TableView fx:id="tableListInformation" minWidth="-Infinity" prefWidth="500.0" GridPane.rowIndex="1">
+                                                <TableView fx:id="tblViewOrderDetails" maxHeight="1.7976931348623157E308" prefWidth="1176.0">
                                                    <columns>
-                                                      <TableColumn fx:id="tblTransactionNo" maxWidth="236.0" minWidth="98.0" prefWidth="133.0" resizable="false" sortable="false" text="Transaction No" />
-                                                      <TableColumn fx:id="tblReferenceNo" maxWidth="239.6666259765625" minWidth="90.0" prefWidth="169.0" resizable="false" sortable="false" text="Reference No" />
-                                                      <TableColumn fx:id="tblTransactionDate" maxWidth="104.0" minWidth="30.0" prefWidth="103.0" resizable="false" sortable="false" text="Transaction Date" />
+                                                      <TableColumn fx:id="tblBrandDetail" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" text="Brand" />
+                                                      <TableColumn fx:id="tblModelDetail" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" text="Model" />
+                                                      <TableColumn fx:id="tblVariantDetail" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" text="Variant" />
+                                                      <TableColumn fx:id="tblColorDetail" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" text="Color" />
+                                                      <TableColumn fx:id="tblInvTypeDetail" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" text="Inv Type" />
+                                                      <TableColumn fx:id="tblROQDetail" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" resizable="false" text="ROQ" />
+                                                      <TableColumn fx:id="tblClassificationDetail" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" resizable="false" text="Class" />
+                                                      <TableColumn fx:id="tblQOHDetail" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" resizable="false" text="QOH" />
+                                                      <TableColumn fx:id="tblReservationQtyDetail" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" resizable="false" text="Reservation Qty" />
+                                                      <TableColumn fx:id="tblOrderQuantityDetail" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" resizable="false" text="Order Quantity" />
                                                    </columns>
-                                                   <GridPane.margin>
-                                                      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                                   </GridPane.margin>
                                                 </TableView>
                                              </children>
-                                          </GridPane>
-                                       </children>
-                                    </AnchorPane>
-                                            </children>
-                                        </HBox>
-                                        <AnchorPane style="-fx-border-color: orange;" VBox.vgrow="ALWAYS">
-                                            <children>
-                                                <GridPane AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
-                                                    <columnConstraints>
-                                                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" />
-                                                        <ColumnConstraints />
-                                                    </columnConstraints>
-                                                    <rowConstraints>
-                                                        <RowConstraints maxHeight="1.7976931348623157E308" vgrow="ALWAYS" />
-                                                    </rowConstraints>
+                                                      </GridPane>
+                                                  </children>
+                                       <VBox.margin>
+                                          <Insets left="5.0" right="5.0" />
+                                       </VBox.margin>
+                                              </AnchorPane>
+                                          </children>
+                                      </VBox>
+                              <AnchorPane maxHeight="1.7976931348623157E308" prefWidth="512.0" style="-fx-border-color: orange;" HBox.hgrow="ALWAYS">
+                                 <children>
+                                    <GridPane layoutY="6.0" maxHeight="1.7976931348623157E308" prefWidth="510.0" AnchorPane.bottomAnchor="2.0" AnchorPane.topAnchor="5.0" GridPane.vgrow="ALWAYS">
+                                       <columnConstraints>
+                                          <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="-Infinity" />
+                                       </columnConstraints>
+                                       <rowConstraints>
+                                          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
+                                          <RowConstraints vgrow="ALWAYS" />
+                                       </rowConstraints>
                                        <children>
-                                          <TableView fx:id="tblViewOrderDetails" prefHeight="200.0" prefWidth="200.0">
+                                          <AnchorPane minHeight="-Infinity" prefHeight="28.0" prefWidth="500.0" style="-fx-background-color: FF8201;">
+                                             <children>
+                                                <Label alignment="CENTER" contentDisplay="CENTER" text="Table List Information Section" textAlignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                   <font>
+                                                      <Font name="System Bold" size="14.0" />
+                                                   </font>
+                                                </Label>
+                                             </children>
+                                             <GridPane.margin>
+                                                <Insets left="5.0" right="5.0" top="5.0" />
+                                             </GridPane.margin>
+                                          </AnchorPane>
+                                          <TableView fx:id="tableListInformation" maxHeight="1.7976931348623157E308" prefWidth="500.0" GridPane.rowIndex="1">
                                              <columns>
-                                                <TableColumn fx:id="tblBrandDetail" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" text="Brand" />
-                                                <TableColumn fx:id="tblModelDetail" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" text="Model" />
-                                                <TableColumn fx:id="tblVariantDetail" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" text="Variant" />
-                                                <TableColumn fx:id="tblColorDetail" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" text="Color" />
-                                                <TableColumn fx:id="tblInvTypeDetail" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" text="Inv Type" />
-                                                <TableColumn fx:id="tblROQDetail" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" resizable="false" text="ROQ" />
-                                                <TableColumn fx:id="tblClassificationDetail" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" resizable="false" text="Class" />
-                                                <TableColumn fx:id="tblQOHDetail" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" resizable="false" text="QOH" />
-                                                <TableColumn fx:id="tblReservationQtyDetail" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" resizable="false" text="Reservation Qty" />
-                                                <TableColumn fx:id="tblOrderQuantityDetail" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" resizable="false" text="Order Quantity" />
+                                                <TableColumn fx:id="tblTransactionNo" maxWidth="150.0" minWidth="180.0" prefWidth="150.0" resizable="false" sortable="false" text="Transaction No" />
+                                                <TableColumn fx:id="tblReferenceNo" maxWidth="150.0" minWidth="180.0" prefWidth="150.0" resizable="false" sortable="false" text="Reference No" />
+                                                <TableColumn fx:id="tblTransactionDate" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" resizable="false" sortable="false" text="Transaction Date" />
                                              </columns>
+                                             <GridPane.margin>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                             </GridPane.margin>
                                           </TableView>
                                        </children>
-                                                </GridPane>
-                                            </children>
-                                        </AnchorPane>
-                                    </children>
-                                </VBox>
+                                    </GridPane>
+                                 </children>
+                                 <HBox.margin>
+                                    <Insets right="5.0" top="5.0" />
+                                 </HBox.margin>
+                              </AnchorPane>
+                           </children>
+                        </HBox>
                             </children>
                         </AnchorPane>
                     </center>
