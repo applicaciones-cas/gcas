@@ -320,7 +320,7 @@
                                               </AnchorPane>
                                           </children>
                                       </VBox>
-                              <AnchorPane maxHeight="1.7976931348623157E308" prefWidth="512.0" style="-fx-border-color: orange;" HBox.hgrow="ALWAYS">
+                              <AnchorPane maxHeight="1.7976931348623157E308" prefWidth="512.0" style="-fx-border-color: orange;" HBox.hgrow="NEVER">
                                  <children>
                                     <GridPane layoutY="6.0" maxHeight="1.7976931348623157E308" prefWidth="510.0" AnchorPane.bottomAnchor="2.0" AnchorPane.topAnchor="5.0" GridPane.vgrow="ALWAYS">
                                        <columnConstraints>
