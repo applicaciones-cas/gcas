@@ -228,83 +228,66 @@
                                                                     </children>
                                                                 </AnchorPane>
                                                 <AnchorPane prefWidth="1078.0" style="-fx-border-color: orange;">
-   <children>
-      <GridPane AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0">
-         <columnConstraints>
-            <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="65.0" />
-            <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="10.0" minWidth="-Infinity" prefWidth="10.0" />
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="175.0" minWidth="-Infinity" prefWidth="175.0" />
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="10.0" minWidth="10.0" prefWidth="10.0" />
-            <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="120.0" minWidth="-Infinity" prefWidth="120.0" />
-            <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="120.0" minWidth="10.0" prefWidth="120.0" />
-            <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="10.0" minWidth="-Infinity" prefWidth="0.0" />
-            <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="175.0" minWidth="-Infinity" prefWidth="175.0" />
-            <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="10.0" minWidth="10.0" prefWidth="10.0" />
-            <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="80.0" minWidth="-Infinity" prefWidth="80.0" />
-            <ColumnConstraints hgrow="NEVER" maxWidth="10.0" minWidth="10.0" prefWidth="10.0" />
-            <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="70.0" minWidth="-Infinity" prefWidth="70.0" />
-            <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="70.0" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="145.0" minWidth="145.0" prefWidth="145.0" />
-            <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="10.0" minWidth="10.0" prefWidth="10.0" />
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="140.0" minWidth="140.0" prefWidth="140.0" />
-         </columnConstraints>
-
-         <!-- Added extra spacer row (index 2) -->
-         <rowConstraints>
-            <RowConstraints prefHeight="28.0" vgrow="SOMETIMES" /> <!-- row 0 -->
-            <RowConstraints prefHeight="28.0" vgrow="SOMETIMES" /> <!-- row 1 -->
-            <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" /> <!-- row 2 spacer -->
-            <RowConstraints prefHeight="28.0" vgrow="SOMETIMES" /> <!-- row 3 -->
-            <RowConstraints prefHeight="28.0" vgrow="SOMETIMES" /> <!-- row 4 -->
-            <RowConstraints prefHeight="28.0" vgrow="SOMETIMES" /> <!-- row 5 -->
-         </rowConstraints>
-
-         <children>
-            <Text text="Brand" />
-            <Text text="Model" GridPane.rowIndex="1" />
-
-            <TextField fx:id="tfBrand" promptText="Press F3: Search" GridPane.columnIndex="2" />
-            <TextField fx:id="tfModel" prefWidth="107.0" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-
-            <!-- everything moved down by 1 row -->
-            <Text text="Variant" GridPane.rowIndex="3" />
-            <TextField fx:id="tfVariant" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-
-            <Text text="Color" GridPane.rowIndex="4" />
-            <TextField fx:id="tfColor" GridPane.columnIndex="2" GridPane.rowIndex="4" />
-
-            <Text text="Reservation Qty" GridPane.columnIndex="13" GridPane.rowIndex="3" />
-            <TextField fx:id="tfReservationQTY" GridPane.columnIndex="15" GridPane.rowIndex="3" />
-
-            <Text text="Order Quantity" GridPane.columnIndex="13" GridPane.rowIndex="4">
-               <font>
-                  <Font name="System Bold" size="15.0" />
-               </font>
-            </Text>
-            <TextField fx:id="tfOrderQuantity" promptText="0" GridPane.columnIndex="15" GridPane.rowIndex="4" />
-
-            <Text text="QOH" GridPane.columnIndex="9" GridPane.rowIndex="4" />
-            <TextField fx:id="tfQOH" GridPane.columnIndex="11" GridPane.rowIndex="4" />
-
-            <Text text="Inv Type" GridPane.columnIndex="4" GridPane.rowIndex="3" />
-            <TextField fx:id="tfInvType" GridPane.columnIndex="7" GridPane.rowIndex="3" />
-
-            <Text text="ROQ" GridPane.columnIndex="4" GridPane.rowIndex="4" />
-            <TextField fx:id="tfROQ" prefHeight="70.0" prefWidth="70.0" GridPane.columnIndex="7" GridPane.rowIndex="4" />
-
-            <Text text="Class" GridPane.columnIndex="9" GridPane.rowIndex="3" />
-            <TextField fx:id="tfClassification" GridPane.columnIndex="11" GridPane.rowIndex="3" />
-
-            <Text text="Bar Code" GridPane.columnIndex="4" />
-            <TextField fx:id="tfBarCode" promptText="Press F3: Search" GridPane.columnIndex="7" />
-
-            <Text text="Description" GridPane.columnIndex="4" GridPane.rowIndex="1" />
-            <TextField fx:id="tfDescription" prefWidth="408.0" promptText="Press F3: Search" GridPane.columnIndex="7" GridPane.columnSpan="5" GridPane.rowIndex="1" />
-         </children>
-      </GridPane>
-   </children>
-</AnchorPane>
-
+                                                   <children>
+                                                      <GridPane AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0">
+                                                         <columnConstraints>
+                                                            <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="65.0" />
+                                                            <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="10.0" minWidth="-Infinity" prefWidth="10.0" />
+                                                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="175.0" minWidth="-Infinity" prefWidth="175.0" />
+                                                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="10.0" minWidth="10.0" prefWidth="10.0" />
+                                                            <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="120.0" minWidth="-Infinity" prefWidth="120.0" />
+                                                            <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="120.0" minWidth="10.0" prefWidth="120.0" />
+                                                            <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="10.0" minWidth="-Infinity" prefWidth="0.0" />
+                                                            <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="175.0" minWidth="-Infinity" prefWidth="175.0" />
+                                                            <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="10.0" minWidth="10.0" prefWidth="10.0" />
+                                                            <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="80.0" minWidth="-Infinity" prefWidth="80.0" />
+                                                            <ColumnConstraints hgrow="NEVER" maxWidth="10.0" minWidth="10.0" prefWidth="10.0" />
+                                                            <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="70.0" minWidth="-Infinity" prefWidth="70.0" />
+                                                            <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="70.0" minWidth="10.0" prefWidth="100.0" />
+                                                            <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="145.0" minWidth="145.0" prefWidth="145.0" />
+                                                            <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="10.0" minWidth="10.0" prefWidth="10.0" />
+                                                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="140.0" minWidth="140.0" prefWidth="140.0" />
+                                                         </columnConstraints>
+                                                         <rowConstraints>
+                                                            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
+                                                            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
+                                                            <RowConstraints maxHeight="22.0" minHeight="7.0" prefHeight="7.0" vgrow="SOMETIMES" />
+                                                            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
+                                                            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
+                                                         </rowConstraints>
+                                                         <children>
+                                                            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Brand" />
+                                                            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Model" GridPane.rowIndex="1" />
+                                                            <TextField fx:id="tfBrand" promptText="Press F3: Search" GridPane.columnIndex="2" />
+                                                            <TextField fx:id="tfModel" prefWidth="107.0" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Variant" GridPane.rowIndex="3" />
+                                                            <TextField fx:id="tfVariant" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                                            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Color" GridPane.rowIndex="4" />
+                                                            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Reservation Qty" GridPane.columnIndex="13" GridPane.rowIndex="3" />
+                                                            <TextField fx:id="tfColor" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                                                            <TextField fx:id="tfReservationQTY" GridPane.columnIndex="15" GridPane.rowIndex="3" />
+                                                            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Order Quantity" GridPane.columnIndex="13" GridPane.rowIndex="4">
+                                                               <font>
+                                                                  <Font name="System Bold" size="15.0" />
+                                                               </font>
+                                                            </Text>
+                                                            <TextField fx:id="tfOrderQuantity" promptText="0" GridPane.columnIndex="15" GridPane.rowIndex="4" />
+                                                            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="QOH" GridPane.columnIndex="9" GridPane.rowIndex="4" />
+                                                            <TextField fx:id="tfQOH" GridPane.columnIndex="11" GridPane.rowIndex="4" />
+                                                            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Inv Type" GridPane.columnIndex="4" GridPane.rowIndex="3" />
+                                                            <TextField fx:id="tfInvType" GridPane.columnIndex="7" GridPane.rowIndex="3" />
+                                                            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="ROQ" GridPane.columnIndex="4" GridPane.rowIndex="4" />
+                                                            <TextField fx:id="tfROQ" maxWidth="70.0" minHeight="70.0" prefHeight="70.0" prefWidth="70.0" GridPane.columnIndex="7" GridPane.hgrow="NEVER" GridPane.rowIndex="4" GridPane.vgrow="NEVER" />
+                                                            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Class" GridPane.columnIndex="9" GridPane.rowIndex="3" />
+                                                            <TextField fx:id="tfClassification" GridPane.columnIndex="11" GridPane.rowIndex="3" />
+                                                            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Bar Code" GridPane.columnIndex="4" />
+                                                            <TextField fx:id="tfBarCode" promptText="Press F3: Search" GridPane.columnIndex="7" />
+                                                            <TextField fx:id="tfDescription" prefWidth="408.0" promptText="Press F3: Search" GridPane.columnIndex="7" GridPane.columnSpan="5" GridPane.rowIndex="1" />
+                                                            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Description" GridPane.columnIndex="4" GridPane.rowIndex="1" />
+                                                         </children>
+                                                      </GridPane>
+                                                   </children>
+                                                </AnchorPane>
                                                             </children>
                                                         </VBox>
                                                     </children>
