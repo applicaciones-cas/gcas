@@ -199,9 +199,10 @@ public class DeliverySchedule_EntryControllerMC implements Initializable, Screen
                     switch (lastFocusedControl.getId()) {
                         //Search Detail 
                         case "tfClusterName":
-                            if (pnClusterDetail > 0) {
+                            
+                            if (pnClusterDetail >= 0) {
                                 if (!isJSONSuccess(poAppController.searchClusterBranch(pnClusterDetail, tfClusterName.getText(), false),
-                                        "Unable to Search Cluster! ")) {
+                                        "Search Cluster! ")) {
                                     break;
                                 }
                                 loadSelectedTransactionDetail(pnClusterDetail);
@@ -212,15 +213,19 @@ public class DeliverySchedule_EntryControllerMC implements Initializable, Screen
 
                         //Browse Transaction 
                         case "tfSearchCluster":
-
-                            if (!tfSearchCluster.getText().isEmpty()) {
-                                if (ShowMessageFX.OkayCancel(null, "Search Transaction! by Trasaction", "Are you sure you want replace loaded Transaction?") == false) {
-                                    break;
-                                }
-                            }else{
+                            
+                            if (tfSearchCluster.getText().isEmpty()) {
                                 ShowMessageFX.Information(null, psFormName,
                                     "Search unavailable. Please ensure the selected or focused field is not empty");
                                 break;
+                            }
+                            
+                            if (!tfTransactionNo.getText().isEmpty()) {
+                                if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                                    if (ShowMessageFX.OkayCancel(null, "Search Transaction! by Trasaction", "Do you want to disregard changes?") == false) {
+                                        break;
+                                    }
+                                }
                             }
                             
                             if (!isJSONSuccess(poAppController.searchTransaction(tfSearchCluster.getText(), true, true),
@@ -236,51 +241,7 @@ public class DeliverySchedule_EntryControllerMC implements Initializable, Screen
                             initButtonDisplay(poAppController.getEditMode());
                             pnEditMode = poAppController.getEditMode();
                             break;
-                        case "dpSearchDate":
-
-                            if (!dpSearchDate.getValue().toString().isEmpty()) {
-                                if (ShowMessageFX.OkayCancel(null, "Search Transaction! by Date", "Are you sure you want replace loaded Transaction?") == false) {
-                                    break;
-                                }
-                            }else{
-                                ShowMessageFX.Information(null, psFormName,
-                                    "Search unavailable. Please ensure the selected or focused field is not empty");
-                                break;
-                            }
                             
-                            String lsDate = dpSearchDate.getValue() != null ? dpSearchDate.getValue().toString() : "";
-                            if (!isJSONSuccess(poAppController.searchTransaction(lsDate, false, true),
-                                    "Search Transaction!! BY Date")) {
-                                break;
-                            }
-                            
-                            clearAllInputs();
-                            getLoadedTransaction();
-                            pnEditMode = poAppController.getEditMode();
-                            break;
-                        case "dpSearchScheduleDate":
-
-                            if (!dpSearchScheduleDate.getValue().toString().isEmpty()) {
-                                if (ShowMessageFX.OkayCancel(null, "Search Transaction! by Schedule Date", "Are you sure you want replace loaded Transaction?") == false) {
-                                    break;
-                                }
-                            }else{
-                                ShowMessageFX.Information(null, psFormName,
-                                    "Search unavailable. Please ensure the selected or focused field is not empty");
-                                break;
-                            }
-                            
-                            String lsScheduleDate = dpSearchDate.getValue() != null ? dpSearchScheduleDate.getValue().toString() : "";
-                            if (!isJSONSuccess(poAppController.searchTransaction(lsScheduleDate, false, false),
-                                    "Search Transaction!! BY Schedule Date")) {
-                                break;
-                            }
-                            
-                            clearAllInputs();
-                            getLoadedTransaction();
-                            pnEditMode = poAppController.getEditMode();
-                            break;
-
                         default:
                             ShowMessageFX.Information(null, psFormName,
                                     "Search unavailable. Please ensure a searchable field is selected or focused before proceeding..");
@@ -326,6 +287,8 @@ public class DeliverySchedule_EntryControllerMC implements Initializable, Screen
                             poAppController.setCompanyID(psCompanyID);
                             poAppController.setCategoryID(psCategoryID);
                         });
+                        
+                        clearAllInputs();
                         pnEditMode = poAppController.getEditMode();
                         break;
                     }
@@ -391,11 +354,15 @@ public class DeliverySchedule_EntryControllerMC implements Initializable, Screen
             return;
         }
         if (event.getClickCount() == 1 && !event.isConsumed()) {
-            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                if (ShowMessageFX.OkayCancel(null, psFormName, "Do you want to disregard changes?") != true) {
-                    return;
+            
+            if (!tfTransactionNo.getText().isEmpty()) {
+                if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                    if (ShowMessageFX.OkayCancel(null, "Search Transaction! by Trasaction", "Do you want to disregard changes?") == false) {
+                        return;
+                    }
                 }
             }
+            
             try {
                 event.consume();
                 if (!isJSONSuccess(poAppController.openTransaction(tblColDeliveryTransaction.getCellData(pnTransaction)),
@@ -616,37 +583,49 @@ public class DeliverySchedule_EntryControllerMC implements Initializable, Screen
                     case F3:
                         switch (txtFieldID) {
 
-                            //Search Pane
+                            //Search Detail 
+                            case "tfClusterName":
+                                if (pnClusterDetail >= 0) {
+                                    if (!isJSONSuccess(poAppController.searchClusterBranch(pnClusterDetail, tfClusterName.getText(), false),
+                                            "Search Cluster")) {
+                                        break;
+                                    }
+                                    loadSelectedTransactionDetail(pnClusterDetail);
+                                    pnEditMode = poAppController.getEditMode();
+                                    break;
+                                }
+                                break;
+
+                            //Browse Transaction 
                             case "tfSearchCluster":
 
-                                if (!tfSearchCluster.getText().isEmpty()) {
-                                    if (ShowMessageFX.OkayCancel(null, "Search Transaction! by Trasaction", "Are you sure you want replace loaded Transaction?") == false) {
-                                        return;
-                                    }
-                                }else{
+                                if (tfSearchCluster.getText().isEmpty()) {
                                     ShowMessageFX.Information(null, psFormName,
                                         "Search unavailable. Please ensure the selected or focused field is not empty");
-                                    return;
+                                    break;
                                 }
-                                
-                                if (!isJSONSuccess(poAppController.searchTransaction(lsValue, true, true),
+
+                                if (!tfTransactionNo.getText().isEmpty()) {
+                                    if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                                        if (ShowMessageFX.OkayCancel(null, "Search Transaction! by Trasaction", "Do you want to disregard changes?") == false) {
+                                            break;
+                                        }
+                                    }
+                                }
+
+                                if (!isJSONSuccess(poAppController.searchTransaction(tfSearchCluster.getText(), true, true),
                                         "Search Transaction!")) {
-                                    return;
+
+                                    ShowMessageFX.Information(null, psFormName,
+                                        "Search unavailable. Transaction not found");
+                                    break;
                                 }
-                                
+
                                 clearAllInputs();
                                 getLoadedTransaction();
                                 initButtonDisplay(poAppController.getEditMode());
+                                pnEditMode = poAppController.getEditMode();
                                 break;
-                            //Detail Pane
-                            case "tfClusterName":
-                                if (!isJSONSuccess(poAppController.searchClusterBranch(pnClusterDetail, lsValue, false),
-                                        " Search Cluster! ")) {
-                                    return;
-                                }
-                                
-                                loadSelectedTransactionDetail(pnClusterDetail);
-                                return;
 
                             default:
                                 CommonUtils.SetNextFocus((TextField) event.getSource());
@@ -881,7 +860,7 @@ public class DeliverySchedule_EntryControllerMC implements Initializable, Screen
                         detail.BranchCluster().loadBranchClusterDeliveryList();
                         if (detail.BranchCluster().getBranchClusterDeliverysCount() > 0) {
                             int index = tblClusterDetail.getItems().indexOf(detail);
-                            int Size = Integer.parseInt(detail.BranchCluster().BranchClusterDelivery(index).getTruckSize());
+                            int Size = Integer.parseInt(detail.BranchCluster().BranchClusterDelivery(0).getTruckSize() != null ? detail.BranchCluster().BranchClusterDelivery(0).getTruckSize() : "NONE");
                             cbTruckSize.getSelectionModel().select(DeliveryScheduleTruck.SIZE.get(Size));
                             return new SimpleStringProperty(DeliveryScheduleTruck.SIZE.get(Size));
 
@@ -903,8 +882,8 @@ public class DeliverySchedule_EntryControllerMC implements Initializable, Screen
                         detail.BranchCluster().loadBranchClusterDeliveryList();
                         if (detail.BranchCluster().getBranchClusterDeliverysCount() > 0) {
                             int index = tblClusterDetail.getItems().indexOf(detail);
-                            Object allocation = detail.BranchCluster().BranchClusterDelivery(index).getAllocation();
-                            return new SimpleStringProperty(allocation != null ? allocation.toString() : "0");
+                            Number allocation = detail.BranchCluster().BranchClusterDelivery(0).getAllocation() != null ? detail.BranchCluster().BranchClusterDelivery(0).getAllocation() : 0;
+                            return new SimpleStringProperty(allocation.toString());
 
                         }
                     }
