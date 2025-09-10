@@ -422,9 +422,9 @@ public class POQuotationRequest_EntryController implements Initializable, Screen
                                                     String.valueOf(lnCtr + 1),
                                                     String.valueOf(lsBarcode),
                                                     lsDescription,
-                                                    String.valueOf(poController.POQuotationRequest().Detail(lnCtr).Inventory().getCost()),
-                                                    String.valueOf(poController.POQuotationRequest().Detail(lnCtr).getQuantity()),
-                                                    String.valueOf(lnTotal), String.valueOf(lnCtr)
+                                                    String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.POQuotationRequest().Detail(lnCtr).Inventory().getCost(), true)),
+                                                    String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.POQuotationRequest().Detail(lnCtr).getQuantity(), false)),
+                                                    CustomCommonUtil.setIntegerValueToDecimalFormat(String.valueOf(lnTotal), true), String.valueOf(lnCtr)
                                             ));
                                     lsBarcode = "";
                                     lsDescription = "";
@@ -436,7 +436,7 @@ public class POQuotationRequest_EntryController implements Initializable, Screen
                                 if (!details_data.isEmpty()) {
                                     /* FOCUS ON FIRST ROW */
                                     JFXUtil.selectAndFocusRow(tblViewTransDetails, 0);
-                                    int lnRow = Integer.parseInt(details_data.get(tblViewTransDetails.getSelectionModel().getSelectedIndex()).getIndex07());
+                                    int lnRow = Integer.parseInt(details_data.get(0).getIndex07());
                                     pnDetail = lnRow;
                                     loadRecordDetail();
                                 }
@@ -552,7 +552,6 @@ public class POQuotationRequest_EntryController implements Initializable, Screen
         try {
             if (continueNext) {
                 apDetail.requestFocus();
-                int lnRow = 
                 pnDetail = isUp ? Integer.parseInt(details_data.get(JFXUtil.moveToPreviousRow(tblViewTransDetails)).getIndex07()) :
                         Integer.parseInt(details_data.get(JFXUtil.moveToNextRow(tblViewTransDetails)).getIndex07());
             }
