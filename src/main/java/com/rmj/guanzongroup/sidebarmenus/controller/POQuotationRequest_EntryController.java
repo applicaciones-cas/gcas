@@ -298,8 +298,8 @@ public class POQuotationRequest_EntryController implements Initializable, Screen
     public void loadRecordMaster() {
         try {
             boolean lbShow = (pnEditMode == EditMode.UPDATE);
-            JFXUtil.setDisabled(lbShow, tfBrand, tfModel, tfBarcode);
-            
+            JFXUtil.setDisabled(lbShow, tfBrand, tfModel, tfBarcode, tfDescription);
+
             JFXUtil.setStatusValue(lblStatus, POQuotationRequestStatus.class, pnEditMode == EditMode.UNKNOWN ? "-1" : poController.POQuotationRequest().Master().getTransactionStatus());
 
             // Transaction Date
@@ -493,13 +493,26 @@ public class POQuotationRequest_EntryController implements Initializable, Screen
                         }
                         break;
                     case "tfDescription":
+                        //if value is blank then reset
                         if (lsValue.equals("")) {
-                            poController.POQuotationRequest().Detail(pnDetail).setStockId("");
-                        }
-                        poJSON = poController.POQuotationRequest().Detail(pnDetail).setDescription(lsValue);
-                        if (!JFXUtil.isJSONSuccess(poJSON)) {
-                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                            return;
+                            poJSON = poController.POQuotationRequest().Detail(pnDetail).setStockId("");
+                            poJSON = poController.POQuotationRequest().Detail(pnDetail).isReverse(false);
+                        } else {
+                            poJSON = poController.POQuotationRequest().checkExistingDetail(
+                                    pnDetail,
+                                    poController.POQuotationRequest().Detail(pnDetail).getStockId(),
+                                    lsValue);
+
+                            if ("error".equals(poJSON.get("result"))) {
+                                if ((boolean) poJSON.get("reverse")) {
+                                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                } else {
+                                    pnDetail = (int) poJSON.get("row");
+                                    poController.POQuotationRequest().Detail(pnDetail).isReverse(true);
+                                }
+                            } else {
+                                poJSON = poController.POQuotationRequest().Detail(pnDetail).setDescription(lsValue);
+                            }
                         }
                         break;
                     case "tfQuantity":
@@ -552,8 +565,8 @@ public class POQuotationRequest_EntryController implements Initializable, Screen
         try {
             if (continueNext) {
                 apDetail.requestFocus();
-                pnDetail = isUp ? Integer.parseInt(details_data.get(JFXUtil.moveToPreviousRow(tblViewTransDetails)).getIndex07()) :
-                        Integer.parseInt(details_data.get(JFXUtil.moveToNextRow(tblViewTransDetails)).getIndex07());
+                pnDetail = isUp ? Integer.parseInt(details_data.get(JFXUtil.moveToPreviousRow(tblViewTransDetails)).getIndex07())
+                        : Integer.parseInt(details_data.get(JFXUtil.moveToNextRow(tblViewTransDetails)).getIndex07());
             }
             loadRecordDetail();
             JFXUtil.requestFocusNullField(new Object[][]{ // alternative to if , else if
