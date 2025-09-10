@@ -218,31 +218,31 @@
                                                          <children>
                                                             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Brand" />
                                                             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Model" GridPane.rowIndex="3" />
-                                                            <TextField fx:id="tfBrand1" GridPane.columnIndex="2" />
-                                                            <TextField fx:id="tfModel1" prefWidth="107.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                                            <TextField fx:id="tfBrand" GridPane.columnIndex="2" />
+                                                            <TextField fx:id="tfModel" prefWidth="107.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                                                             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Variant" GridPane.rowIndex="4" />
-                                                            <TextField fx:id="tfVariant1" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                                                            <TextField fx:id="tfVariant" GridPane.columnIndex="2" GridPane.rowIndex="4" />
                                                             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Color" GridPane.columnIndex="4" GridPane.rowIndex="4" />
                                                             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Reservation Qty" GridPane.columnIndex="13" GridPane.rowIndex="3" />
-                                                            <TextField fx:id="tfColor1" GridPane.columnIndex="7" GridPane.rowIndex="4" />
-                                                            <TextField fx:id="tfReservationQTY1" GridPane.columnIndex="15" GridPane.rowIndex="3" />
+                                                            <TextField fx:id="tfColor" GridPane.columnIndex="7" GridPane.rowIndex="4" />
+                                                            <TextField fx:id="tfReservationQTY" GridPane.columnIndex="15" GridPane.rowIndex="3" />
                                                             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Order Quantity" GridPane.columnIndex="13" GridPane.rowIndex="4">
                                                                <font>
                                                                   <Font name="System Bold" size="15.0" />
                                                                </font>
                                                             </Text>
-                                                            <TextField fx:id="tfOrderQuantity1" GridPane.columnIndex="15" GridPane.rowIndex="4" />
+                                                            <TextField fx:id="tfOrderQuantity" GridPane.columnIndex="15" GridPane.rowIndex="4" />
                                                             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="QOH" GridPane.columnIndex="9" GridPane.rowIndex="4" />
-                                                            <TextField fx:id="tfQOH1" GridPane.columnIndex="11" GridPane.rowIndex="4" />
+                                                            <TextField fx:id="tfQOH" GridPane.columnIndex="11" GridPane.rowIndex="4" />
                                                             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Inv Type" GridPane.columnIndex="4" GridPane.rowIndex="3" />
-                                                            <TextField fx:id="tfInvType1" GridPane.columnIndex="7" GridPane.rowIndex="3" />
+                                                            <TextField fx:id="tfInvType" GridPane.columnIndex="7" GridPane.rowIndex="3" />
                                                             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="ROQ" GridPane.columnIndex="9" GridPane.rowIndex="2" />
-                                                            <TextField fx:id="tfROQ1" GridPane.columnIndex="11" GridPane.rowIndex="2" />
+                                                            <TextField fx:id="tfROQ" GridPane.columnIndex="11" GridPane.rowIndex="2" />
                                                             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Class" GridPane.columnIndex="9" GridPane.rowIndex="3" />
-                                                            <TextField fx:id="tfClassification1" GridPane.columnIndex="11" GridPane.rowIndex="3" />
+                                                            <TextField fx:id="tfClassification" GridPane.columnIndex="11" GridPane.rowIndex="3" />
                                                             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Bar Code" GridPane.rowIndex="1" />
-                                                            <TextField fx:id="tfBarCode1" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                                                            <TextField fx:id="tfDescription1" prefWidth="408.0" GridPane.columnIndex="2" GridPane.columnSpan="6" GridPane.rowIndex="2" />
+                                                            <TextField fx:id="tfBarCode" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                            <TextField fx:id="tfDescription" prefWidth="408.0" GridPane.columnIndex="2" GridPane.columnSpan="6" GridPane.rowIndex="2" />
                                                             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Description" GridPane.rowIndex="2" />
                                                          </children>
                                                       </GridPane>
@@ -252,7 +252,7 @@
                                                         </VBox>
                                                     </children>
                                                 </AnchorPane>
-                                              <AnchorPane maxHeight="1.7976931348623157E308" prefWidth="1192.0" style="-fx-border-color: orange;" VBox.vgrow="ALWAYS">
+                                              <AnchorPane maxHeight="1.7976931348623157E308" prefHeight="884.0" prefWidth="1012.0" style="-fx-border-color: orange;" VBox.vgrow="ALWAYS">
                                                   <children>
                                                       <GridPane layoutX="11.0" layoutY="11.0" maxHeight="1.7976931348623157E308" prefWidth="1176.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0" GridPane.vgrow="ALWAYS">
                                                           <columnConstraints>
