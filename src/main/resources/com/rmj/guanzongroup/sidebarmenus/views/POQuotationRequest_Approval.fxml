@@ -166,7 +166,7 @@
                                     <Font size="12.0" />
                                  </font>
                                         </Button>
-                              <Button fx:id="btnDisApprove" contentDisplay="TOP" ellipsisString="" layoutX="315.0" layoutY="15.0" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="70.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Disapprove">
+                              <Button fx:id="btnDisapprove" contentDisplay="TOP" ellipsisString="" layoutX="315.0" layoutY="15.0" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="70.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Disapprove">
                                  <effect>
                                     <Blend />
                                  </effect>
@@ -423,9 +423,9 @@
                                                             <columns>
                                                                 <TableColumn fx:id="tblRowNoDetail" editable="false" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="No." />
                                                                 <TableColumn fx:id="tblBarcodeDetail" editable="false" maxWidth="140.0" minWidth="140.0" prefWidth="140.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Barcode" />
-                                                                <TableColumn fx:id="tblDescriptionDetail" editable="false" maxWidth="230.0" minWidth="-1.0" prefWidth="230.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Description" />
+                                                                <TableColumn fx:id="tblDescriptionDetail" editable="false" maxWidth="305.0" minWidth="-1.0" prefWidth="305.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Description" />
                                                             <TableColumn fx:id="tblCostDetail" editable="false" maxWidth="85.0" minWidth="85.0" prefWidth="85.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Cost" />
-                                                            <TableColumn fx:id="tblQuantityDetail" editable="false" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Qty" />
+                                                            <TableColumn fx:id="tblQuantityDetail" editable="false" maxWidth="55.0" minWidth="55.0" prefWidth="55.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Qty" />
                                                             <TableColumn fx:id="tblTotalDetail" editable="false" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Total" />
                                                             </columns>
                                              <columnResizePolicy>
@@ -489,7 +489,7 @@
                                                             <TextField fx:id="tfSupplier" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="1" />
                                                             <TextField fx:id="tfAddress" disable="true" editable="false" layoutX="100.0" layoutY="12.0" styleClass="DisabledTextField" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="2" />
                                                             <TextField fx:id="tfContactNumber" disable="true" editable="false" layoutX="100.0" layoutY="40.0" styleClass="DisabledTextField" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-                                                                        <CheckBox fx:id="cbReverse" mnemonicParsing="false" nodeOrientation="RIGHT_TO_LEFT" text="Reverse" GridPane.columnIndex="6" GridPane.rowIndex="3" />
+                                                                        <CheckBox fx:id="cbReverse" mnemonicParsing="false" nodeOrientation="RIGHT_TO_LEFT" onAction="#cmdCheckBox_Click" text="Reverse" GridPane.columnIndex="6" GridPane.rowIndex="3" />
                                                                         <Label text="Term" GridPane.rowIndex="4" />
                                                                         <TextField fx:id="tfTerm" layoutX="100.0" layoutY="12.0" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.rowIndex="4" />
                                                                         <Label text="Company" />

@@ -232,7 +232,7 @@ public class POQuotationRequest_EntryController implements Initializable, Screen
                             clearTextFields();
 
                             poController.POQuotationRequest().Master().setIndustryId(psIndustryId);
-//                            poController.POQuotationRequest().Master().setCompanyId(psCompanyId);
+                            poController.POQuotationRequest().setCompanyId(psCompanyId);
                             poController.POQuotationRequest().Master().setCategoryCode(psCategoryId);
 //                            poController.POQuotationRequest().initFields();
                             pnEditMode = EditMode.UNKNOWN;
@@ -496,22 +496,17 @@ public class POQuotationRequest_EntryController implements Initializable, Screen
                         //if value is blank then reset
                         if (lsValue.equals("")) {
                             poJSON = poController.POQuotationRequest().Detail(pnDetail).setStockId("");
-                            poJSON = poController.POQuotationRequest().Detail(pnDetail).isReverse(false);
+                            poJSON = poController.POQuotationRequest().Detail(pnDetail).setDescription("");
                         } else {
-                            poJSON = poController.POQuotationRequest().checkExistingDetail(
-                                    pnDetail,
-                                    poController.POQuotationRequest().Detail(pnDetail).getStockId(),
-                                    lsValue);
-
-                            if ("error".equals(poJSON.get("result"))) {
-                                if ((boolean) poJSON.get("reverse")) {
-                                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                } else {
-                                    pnDetail = (int) poJSON.get("row");
-                                    poController.POQuotationRequest().Detail(pnDetail).isReverse(true);
+                            if (!lsValue.equals(poController.POQuotationRequest().Detail(pnDetail).getDescription())) {
+                                try {
+                                    poJSON = poController.POQuotationRequest().SearchInventory(lsValue, false, pnDetail);
+                                    if ("error".equals(poJSON.get("result"))) {
+                                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                    }
+                                } catch (GuanzonException | SQLException ex) {
+                                    Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                                 }
-                            } else {
-                                poJSON = poController.POQuotationRequest().Detail(pnDetail).setDescription(lsValue);
                             }
                         }
                         break;
