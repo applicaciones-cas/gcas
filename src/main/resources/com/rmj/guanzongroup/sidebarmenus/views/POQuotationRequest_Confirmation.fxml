@@ -361,7 +361,7 @@
                                                                   <TextField fx:id="tfDescription" layoutX="519.0" layoutY="42.0" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="3" />
                                                                   <TextField fx:id="tfCost" alignment="CENTER_RIGHT" disable="true" editable="false" layoutX="519.0" layoutY="41.0" maxHeight="25.0" promptText="0.0000" styleClass="DisabledTextField" GridPane.columnIndex="7" GridPane.halignment="LEFT" GridPane.rowIndex="2" />
                                                                           <TextField fx:id="tfQuantity" maxHeight="25.0" GridPane.columnIndex="7" GridPane.rowIndex="3" />
-                                                                  <CheckBox fx:id="cReverse" alignment="BOTTOM_RIGHT" mnemonicParsing="false" nodeOrientation="RIGHT_TO_LEFT" text="Reverse" GridPane.columnIndex="7" />
+                                                                  <CheckBox fx:id="cbReverse" alignment="BOTTOM_RIGHT" mnemonicParsing="false" nodeOrientation="RIGHT_TO_LEFT" text="Reverse" GridPane.columnIndex="7" />
                                                                       </children>
                                                                   </GridPane>
                                                               </children>

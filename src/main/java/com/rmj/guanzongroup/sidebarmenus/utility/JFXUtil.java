@@ -2082,13 +2082,22 @@ public class JFXUtil {
         }
     }
 
-    public static void textFieldMoveNext(TextField fsId) {
-        Platform.runLater(() -> {
-            PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
-            delay.setOnFinished(e -> {
-                fsId.requestFocus();
-            });
-            delay.play();
+    public static void textFieldMoveNext(Node node) {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                PauseTransition delay = new PauseTransition(Duration.seconds(0.5));
+                delay.setOnFinished(event -> {
+                    if (node instanceof DatePicker) {
+                        ((DatePicker) node).getEditor().requestFocus();
+                    } else if (node instanceof TextInputControl) {
+                        ((TextInputControl) node).requestFocus();
+                    } else {
+                        node.requestFocus();
+                    }
+                });
+                delay.play();
+            }
         });
     }
 

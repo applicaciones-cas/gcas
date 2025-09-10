@@ -96,7 +96,7 @@ public class POQuotationRequest_EntryController implements Initializable, Screen
     @FXML
     private TextArea taRemarks;
     @FXML
-    private CheckBox cReverse;
+    private CheckBox cbReverse;
     @FXML
     private TableView tblViewTransDetails;
     @FXML
@@ -319,7 +319,6 @@ public class POQuotationRequest_EntryController implements Initializable, Screen
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
-
     }
 
     public void loadRecordDetail() {
@@ -398,9 +397,7 @@ public class POQuotationRequest_EntryController implements Initializable, Screen
                         int lnCtr;
                         details_data.clear();
                         try {
-//                            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-//                                poController.POQuotationRequest().loadDetail();
-//                            }
+
                             String lsBarcode = "";
                             String lsDescription = "";
                             for (lnCtr = 0; lnCtr < poController.POQuotationRequest().getDetailCount(); lnCtr++) {
@@ -421,7 +418,9 @@ public class POQuotationRequest_EntryController implements Initializable, Screen
                                 lsBarcode = "";
                                 lsDescription = "";
                             }
-
+                            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                                poController.POQuotationRequest().ReloadDetail();
+                            }
                             if (pnDetail < 0 || pnDetail
                                     >= details_data.size()) {
                                 if (!details_data.isEmpty()) {
@@ -438,7 +437,9 @@ public class POQuotationRequest_EntryController implements Initializable, Screen
                             loadRecordMaster();
                         } catch (SQLException | GuanzonException ex) {
                             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-                        }
+                        } catch (CloneNotSupportedException ex) {
+                            Logger.getLogger(POQuotationRequest_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+                        } 
 
                     });
                 });
@@ -615,7 +616,7 @@ public class POQuotationRequest_EntryController implements Initializable, Screen
                                 txtField.setText("");
                                 break;
                             } else {
-//                                JFXUtil.textFieldMoveNext(tfInquiryType);
+                                JFXUtil.textFieldMoveNext(dpExpectedDate);
                             }
                             loadRecordMaster();
                             return;
@@ -706,7 +707,7 @@ public class POQuotationRequest_EntryController implements Initializable, Screen
                                 || poController.POQuotationRequest().getEditMode() == EditMode.UPDATE) {
 
                             if (selectedDate.isBefore(currentDate)) {
-                                JFXUtil.setJSONError(poJSON, "Target date cannot be before the transaction date.");
+                                JFXUtil.setJSONError(poJSON, "Expected Purchase Date cannot be before the transaction date.");
                                 pbSuccess = false;
                             } else {
                                 poController.POQuotationRequest().Master().setExpectedPurchaseDate((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
