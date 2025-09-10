@@ -71,7 +71,6 @@ public class POQuotationRequest_EntryController implements Initializable, Screen
     private String psIndustryId = "";
     private String psCompanyId = "";
     private String psCategoryId = "";
-    private boolean isGeneral = false;
 
     private ObservableList<ModelPOQuotationRequest_Detail> details_data = FXCollections.observableArrayList();
 
@@ -341,9 +340,11 @@ public class POQuotationRequest_EntryController implements Initializable, Screen
             tfBrand.setText(lsBrand);
             tfModel.setText(lsModel);
             tfBarcode.setText(poController.POQuotationRequest().Detail(pnDetail).Inventory().getBarCode());
-            tfDescription.setText(poController.POQuotationRequest().Detail(pnDetail).Inventory().getDescription());
+            tfDescription.setText(poController.POQuotationRequest().Detail(pnDetail).getDescription());
             tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.POQuotationRequest().Detail(pnDetail).Inventory().getCost(), true));
             tfQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.POQuotationRequest().Detail(pnDetail).getQuantity(), false));
+
+            cbReverse.setSelected(poController.POQuotationRequest().Detail(pnDetail).isReverse());
             JFXUtil.updateCaretPositions(apDetail);
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
@@ -354,14 +355,17 @@ public class POQuotationRequest_EntryController implements Initializable, Screen
         if (details_data.size() > 0) {
             TableView currentTable = (TableView) event.getSource();
             TablePosition focusedCell = currentTable.getFocusModel().getFocusedCell();
+            int lnRow = 0;
             if (focusedCell != null) {
                 switch (event.getCode()) {
                     case TAB:
                     case DOWN:
-                        pnDetail = JFXUtil.moveToNextRow(currentTable);
+                        lnRow = Integer.parseInt(details_data.get(JFXUtil.moveToNextRow(currentTable)).getIndex07());
+                        pnDetail = lnRow;
                         break;
                     case UP:
-                        pnDetail = JFXUtil.moveToPreviousRow(currentTable);
+                        lnRow = Integer.parseInt(details_data.get(JFXUtil.moveToPreviousRow(currentTable)).getIndex07());
+                        pnDetail = lnRow;
                         break;
 
                     default:
@@ -377,7 +381,8 @@ public class POQuotationRequest_EntryController implements Initializable, Screen
         tblViewTransDetails.setOnMouseClicked(event -> {
             if (details_data.size() > 0) {
                 if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
-                    pnDetail = tblViewTransDetails.getSelectionModel().getSelectedIndex();
+                    int lnRow = Integer.parseInt(details_data.get(tblViewTransDetails.getSelectionModel().getSelectedIndex()).getIndex07());
+                    pnDetail = lnRow;
                     moveNext(false, false);
                 }
             }
@@ -397,50 +402,52 @@ public class POQuotationRequest_EntryController implements Initializable, Screen
                         int lnCtr;
                         details_data.clear();
                         try {
-
-                            String lsBarcode = "";
-                            String lsDescription = "";
-                            for (lnCtr = 0; lnCtr < poController.POQuotationRequest().getDetailCount(); lnCtr++) {
-                                if (poController.POQuotationRequest().Detail(lnCtr).getStockId() != null) {
-                                    lsBarcode = poController.POQuotationRequest().Detail(lnCtr).Inventory().getBarCode();
-                                    lsDescription = poController.POQuotationRequest().Detail(lnCtr).Inventory().getDescription();
-                                }
-                                double lnTotal = poController.POQuotationRequest().Detail(lnCtr).getQuantity() * poController.POQuotationRequest().Detail(lnCtr).Inventory().getCost().doubleValue();
-                                details_data.add(
-                                        new ModelPOQuotationRequest_Detail(
-                                                String.valueOf(lnCtr + 1),
-                                                String.valueOf(lsBarcode),
-                                                lsDescription,
-                                                String.valueOf(poController.POQuotationRequest().Detail(lnCtr).Inventory().getCost()),
-                                                String.valueOf(poController.POQuotationRequest().Detail(lnCtr).getQuantity()),
-                                                String.valueOf(lnTotal), ""
-                                        ));
-                                lsBarcode = "";
-                                lsDescription = "";
-                            }
                             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                                 poController.POQuotationRequest().ReloadDetail();
                             }
+                            String lsBarcode = "";
+                            String lsDescription = "";
+                            for (lnCtr = 0; lnCtr < poController.POQuotationRequest().getDetailCount(); lnCtr++) {
+                                if (poController.POQuotationRequest().Detail(lnCtr).isReverse()) {
+                                    if (poController.POQuotationRequest().Detail(lnCtr).getStockId() != null) {
+                                        lsBarcode = poController.POQuotationRequest().Detail(lnCtr).Inventory().getBarCode();
+                                        lsDescription = poController.POQuotationRequest().Detail(lnCtr).getDescription();
+                                    }
+                                    double lnTotal = poController.POQuotationRequest().Detail(lnCtr).getQuantity() * poController.POQuotationRequest().Detail(lnCtr).Inventory().getCost().doubleValue();
+                                    details_data.add(
+                                            new ModelPOQuotationRequest_Detail(
+                                                    String.valueOf(lnCtr + 1),
+                                                    String.valueOf(lsBarcode),
+                                                    lsDescription,
+                                                    String.valueOf(poController.POQuotationRequest().Detail(lnCtr).Inventory().getCost()),
+                                                    String.valueOf(poController.POQuotationRequest().Detail(lnCtr).getQuantity()),
+                                                    String.valueOf(lnTotal), String.valueOf(lnCtr)
+                                            ));
+                                    lsBarcode = "";
+                                    lsDescription = "";
+                                }
+                            }
+
                             if (pnDetail < 0 || pnDetail
                                     >= details_data.size()) {
                                 if (!details_data.isEmpty()) {
                                     /* FOCUS ON FIRST ROW */
                                     JFXUtil.selectAndFocusRow(tblViewTransDetails, 0);
-                                    pnDetail = tblViewTransDetails.getSelectionModel().getSelectedIndex();
+                                    int lnRow = Integer.parseInt(details_data.get(tblViewTransDetails.getSelectionModel().getSelectedIndex()).getIndex07());
+                                    pnDetail = lnRow;
                                     loadRecordDetail();
                                 }
                             } else {
                                 /* FOCUS ON THE ROW THAT pnRowDetail POINTS TO */
                                 JFXUtil.selectAndFocusRow(tblViewTransDetails, pnDetail);
+                                int lnRow = Integer.parseInt(details_data.get(tblViewTransDetails.getSelectionModel().getSelectedIndex()).getIndex07());
+                                pnDetail = lnRow;
                                 loadRecordDetail();
                             }
                             loadRecordMaster();
-                        } catch (SQLException | GuanzonException ex) {
+                        } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
                             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-                        } catch (CloneNotSupportedException ex) {
-                            Logger.getLogger(POQuotationRequest_EntryController.class.getName()).log(Level.SEVERE, null, ex);
-                        } 
-
+                        }
                     });
                 });
     }
@@ -483,13 +490,18 @@ public class POQuotationRequest_EntryController implements Initializable, Screen
                         }
                         break;
                     case "tfDescription":
-                        //if value is blank then reset
                         if (lsValue.equals("")) {
-                            poJSON = poController.POQuotationRequest().Detail(pnDetail).setStockId("");
+                            poController.POQuotationRequest().Detail(pnDetail).setStockId("");
+                        }
+                        poJSON = poController.POQuotationRequest().Detail(pnDetail).setDescription(lsValue);
+                        if (!JFXUtil.isJSONSuccess(poJSON)) {
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                            return;
                         }
                         break;
                     case "tfQuantity":
-                        poJSON = poController.POQuotationRequest().Detail(pnDetail).setQuantity(Integer.parseInt(lsValue));
+                        lsValue = JFXUtil.removeComma(lsValue);
+                        poJSON = poController.POQuotationRequest().Detail(pnDetail).setQuantity(Double.valueOf(lsValue));
                         if (!JFXUtil.isJSONSuccess(poJSON)) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                             return;
@@ -537,7 +549,9 @@ public class POQuotationRequest_EntryController implements Initializable, Screen
         try {
             if (continueNext) {
                 apDetail.requestFocus();
-                pnDetail = isUp ? JFXUtil.moveToPreviousRow(tblViewTransDetails) : JFXUtil.moveToNextRow(tblViewTransDetails);
+                int lnRow = 
+                pnDetail = isUp ? Integer.parseInt(details_data.get(JFXUtil.moveToPreviousRow(tblViewTransDetails)).getIndex07()) :
+                        Integer.parseInt(details_data.get(JFXUtil.moveToNextRow(tblViewTransDetails)).getIndex07());
             }
             loadRecordDetail();
             JFXUtil.requestFocusNullField(new Object[][]{ // alternative to if , else if
@@ -743,6 +757,7 @@ public class POQuotationRequest_EntryController implements Initializable, Screen
         JFXUtil.setFocusListener(txtDetail_Focus, tfBrand, tfModel, tfBarcode, tfDescription, tfCost, tfQuantity);
 
         JFXUtil.setKeyPressedListener(this::txtField_KeyPressed, apBrowse, apMaster, apDetail);
+        JFXUtil.setCheckboxHoverCursor(apDetail);
     }
 
     private void initButton(int fnValue) {
