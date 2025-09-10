@@ -349,7 +349,7 @@ public class POQuotationRequest_ConfirmationController implements Initializable,
         String lsSelectedDate = sdfFormat.format(SQLUtil.toDate(JFXUtil.convertToIsoFormat(inputText), SQLUtil.FORMAT_SHORT_DATE));
         LocalDate selectedDate = LocalDate.parse(lsSelectedDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
 
-        poJSON = poController.POQuotationRequest().loadPOQuotationRequestList(tfSearchDepartment.getText(), tfSearchDepartment.getText(),
+        poJSON = poController.POQuotationRequest().loadPOQuotationRequestList(oApp.getBranchName(), tfSearchDepartment.getText(),
                 tfSearchCategory.getText(), Date.from(selectedDate.atStartOfDay(ZoneId.systemDefault()).toInstant()),
                 tfSearchReferenceNo.getText());
         if (!"success".equals((String) poJSON.get("result"))) {
@@ -464,22 +464,18 @@ public class POQuotationRequest_ConfirmationController implements Initializable,
     ChangeListener<Boolean> txtField_Focus = JFXUtil.FocusListener(TextField.class,
             (lsID, lsValue) -> {
                 if (lsValue == null) {
-                    return;
+                    lsValue = "";
                 }
                 /*Lost Focus*/
                 switch (lsID) {
                     case "tfSearchDepartment":
-                        if (lsValue.equals("")) {
-                            psSearchClientId = "";
-                        }
-                        loadRecordSearch();
+                        poController.POQuotationRequest().setSearchDepartment(lsValue);
                         break;
                     case "tfSearchCategory":
-                        loadRecordSearch();
-                        break;
-                    case "tfSearchReferenceNo":
+                        poController.POQuotationRequest().setSearchCategory(lsValue);
                         break;
                 }
+                loadRecordSearch();
             });
 
     public void moveNext(boolean isUp, boolean continueNext) {
@@ -723,8 +719,8 @@ public class POQuotationRequest_ConfirmationController implements Initializable,
 //            String lsSearchTransactionDate = CustomCommonUtil.formatDateToShortString(poController.POQuotationRequest().Master().getExpectedPurchaseDate());
 //            dpSearchTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsSearchTransactionDate, "yyyy-MM-dd"));
 
-            tfSearchDepartment.setText(psSearchClientId.equals("") ? "" : poController.POQuotationRequest().Master().Department().getDescription());
-            tfSearchCategory.setText(psSearchClientId.equals("") ? "" : poController.POQuotationRequest().Master().Category2().getDescription());
+            tfSearchDepartment.setText(poController.POQuotationRequest().getSearchDepartment());
+            tfSearchCategory.setText(poController.POQuotationRequest().getSearchCategory());
 
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
@@ -932,7 +928,6 @@ public class POQuotationRequest_ConfirmationController implements Initializable,
         JFXUtil.setFocusListener(txtArea_Focus, taRemarks);
         JFXUtil.setFocusListener(txtMaster_Focus, tfReferenceNo, tfDepartment, tfDestination, tfCategory, tfDepartment, tfDestination, tfCategory);
         JFXUtil.setFocusListener(txtDetail_Focus, tfBrand, tfModel, tfBarcode, tfDescription, tfCost, tfQuantity);
-
         JFXUtil.setKeyPressedListener(this::txtField_KeyPressed, apBrowse, apMaster, apDetail);
         JFXUtil.setCheckboxHoverCursor(apDetail);
     }
