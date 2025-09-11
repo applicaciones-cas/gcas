@@ -43,9 +43,10 @@ import org.guanzon.appdriver.base.GuanzonException;
 import org.guanzon.appdriver.base.MiscUtil;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
-import org.json.simple.parser.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.concurrent.atomic.AtomicReference;
 import javafx.scene.control.CheckBox;
 import org.guanzon.appdriver.base.GRiderCAS;
@@ -483,25 +484,7 @@ public class POQuotationRequest_HistoryController implements Initializable, Scre
 
                 switch (datePicker.getId()) {
                     case "dpSearchTransactionDate":
-                        if (poController.POQuotationRequest().getEditMode() == EditMode.ADDNEW
-                                || poController.POQuotationRequest().getEditMode() == EditMode.UPDATE) {
-
-                            if (selectedDate.isBefore(currentDate)) {
-                                JFXUtil.setJSONError(poJSON, "Expected Purchase Date cannot be before the transaction date.");
-                                pbSuccess = false;
-                            } else {
-                                poController.POQuotationRequest().Master().setExpectedPurchaseDate((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
-                            }
-                            if (pbSuccess) {
-                            } else {
-                                if ("error".equals((String) poJSON.get("result"))) {
-                                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                }
-                            }
-                            pbSuccess = false; //Set to false to prevent multiple message box: Conflict with server date vs transaction date validation
-                            loadRecordMaster();
-                            pbSuccess = true; //Set to original value
-                        }
+                        retrievePOQuotationRequest();
                         break;
                     default:
                         break;
@@ -511,6 +494,21 @@ public class POQuotationRequest_HistoryController implements Initializable, Scre
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
+
+    public void retrievePOQuotationRequest() {
+        poJSON = new JSONObject();
+        poController.POQuotationRequest().setTransactionStatus(POQuotationRequestStatus.OPEN + POQuotationRequestStatus.CONFIRMED);
+
+        SimpleDateFormat sdfFormat = new SimpleDateFormat(SQLUtil.FORMAT_SHORT_DATE);
+        String inputText = JFXUtil.isObjectEqualTo(dpSearchTransactionDate.getEditor().getText(), "") ? "01/01/1900" : dpSearchTransactionDate.getEditor().getText();
+        String lsSelectedDate = sdfFormat.format(SQLUtil.toDate(JFXUtil.convertToIsoFormat(inputText), SQLUtil.FORMAT_SHORT_DATE));
+        LocalDate selectedDate = LocalDate.parse(lsSelectedDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
+
+        poJSON = poController.POQuotationRequest().loadPOQuotationRequestList(oApp.getBranchName(), poController.POQuotationRequest().getSearchDepartment(),
+                poController.POQuotationRequest().getSearchCategory(), java.sql.Date.valueOf(selectedDate),
+                tfSearchReferenceNo.getText());
+    }
+
     ChangeListener<Boolean> txtField_Focus = JFXUtil.FocusListener(TextField.class,
             (lsID, lsValue) -> {
                 if (lsValue == null) {
@@ -520,11 +518,14 @@ public class POQuotationRequest_HistoryController implements Initializable, Scre
                 switch (lsID) {
                     case "tfSearchDepartment":
                         if (lsValue.equals("")) {
-                            psSearchClientId = "";
+                            poController.POQuotationRequest().setSearchDepartment("");
                         }
                         loadRecordSearch();
                         break;
                     case "tfSearchCategory":
+                        if (lsValue.equals("")) {
+                            poController.POQuotationRequest().setSearchDepartment("");
+                        }
                         loadRecordSearch();
                         break;
                     case "tfSearchReferenceNo":
@@ -575,8 +576,9 @@ public class POQuotationRequest_HistoryController implements Initializable, Scre
 //            String lsSearchTransactionDate = CustomCommonUtil.formatDateToShortString(poController.POQuotationRequest().Master().getExpectedPurchaseDate());
 //            dpSearchTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsSearchTransactionDate, "yyyy-MM-dd"));
 
-            tfSearchDepartment.setText(psSearchClientId.equals("") ? "" : poController.POQuotationRequest().Master().Department().getDescription());
-            tfSearchCategory.setText(psSearchClientId.equals("") ? "" : poController.POQuotationRequest().Master().Category2().getDescription());
+            tfSearchDepartment.setText(poController.POQuotationRequest().getSearchDepartment());
+            tfSearchCategory.setText(poController.POQuotationRequest().getSearchCategory());
+
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
