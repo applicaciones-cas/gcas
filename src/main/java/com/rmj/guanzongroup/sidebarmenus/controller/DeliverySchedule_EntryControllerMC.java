@@ -5,6 +5,7 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -721,8 +722,9 @@ public class DeliverySchedule_EntryControllerMC implements Initializable, Screen
         
         try {
             if (loValue != null && !loValue.isEmpty()) {
-                Date toDateValue = SQLUtil.toDate(loValue, "dd/MM/yyyy");
-                lsValue = SQLUtil.dateFormat(toDateValue, SQLUtil.FORMAT_SHORT_DATE);
+//                Date toDateValue = SQLUtil.toDate(loValue, "dd/MM/yyyy");
+//                lsValue = SQLUtil.dateFormat(toDateValue, SQLUtil.FORMAT_SHORT_DATE);
+                  lsValue = LocalDate.parse(loValue, DateTimeFormatter.ofPattern("M/d/yyyy")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             }
 
             if (event.getCode() != null) {
