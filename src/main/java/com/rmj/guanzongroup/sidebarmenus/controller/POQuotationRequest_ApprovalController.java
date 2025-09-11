@@ -53,7 +53,9 @@ import org.guanzon.appdriver.constant.EditMode;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.concurrent.atomic.AtomicReference;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TabPane;
@@ -358,8 +360,18 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
 
     public void retrievePOQuotationRequest() {
         poJSON = new JSONObject();
-        poController.POQuotationRequest().setTransactionStatus(SalesInquiryStatic.OPEN + SalesInquiryStatic.CONFIRMED);
-//        poJSON = poController.POQuotationRequest().loadSalesInquiry(psIndustryId, tfSearchDepartment.getText(), tfSearchReferenceNo.getText());
+        SimpleDateFormat sdfFormat = new SimpleDateFormat(SQLUtil.FORMAT_SHORT_DATE);
+        String inputText = JFXUtil.isObjectEqualTo(dpSearchTransactionDate.getEditor().getText(), "") ? "01/01/1900" : dpSearchTransactionDate.getEditor().getText();
+        String lsSelectedDate = sdfFormat.format(SQLUtil.toDate(JFXUtil.convertToIsoFormat(inputText), SQLUtil.FORMAT_SHORT_DATE));
+        LocalDate selectedDate = LocalDate.parse(lsSelectedDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
+
+        poController.POQuotationRequest().setTransactionStatus(POQuotationRequestStatus.CONFIRMED+POQuotationRequestStatus.APPROVED);
+        poJSON = poController.POQuotationRequest().loadPOQuotationRequestList(tfSearchBranch.getText(), 
+                tfSearchDepartment.getText(),
+                tfSearchCategory.getText(), 
+                java.sql.Date.from(selectedDate.atStartOfDay(ZoneId.systemDefault()).toInstant()),
+                tfSearchReferenceNo.getText());
+        
         if (!"success".equals((String) poJSON.get("result"))) {
             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
         } else {
@@ -446,22 +458,25 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
                 }
             });
 
+    
     ChangeListener<Boolean> txtField_Focus = JFXUtil.FocusListener(TextField.class,
             (lsID, lsValue) -> {
                 if (lsValue == null) {
-                    return;
+                    lsValue = "";
                 }
                 /*Lost Focus*/
                 switch (lsID) {
                     case "tfSearchBranch":
-                        loadRecordSearch();
+                        poController.POQuotationRequest().setSearchBranch(lsValue);
                         break;
                     case "tfSearchDepartment":
-                        loadRecordSearch();
+                        poController.POQuotationRequest().setSearchDepartment(lsValue);
                         break;
                     case "tfSearchCategory":
+                        poController.POQuotationRequest().setSearchCategory(lsValue);
                         break;
                 }
+                loadRecordSearch();
             });
 
     public void moveNextSupplier(boolean isUp, boolean continueNext) {
@@ -614,17 +629,17 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
                             }
                             break;
                         case "tfCompany":
-//                            poJSON = poController.POQuotationRequest().search(lsValue, false, pnDetail);
-//                            if ("error".equals(poJSON.get("result"))) {
-//                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-//                                txtField.setText("");
-//                                break;
-//                            } else {
-//                                loadTableSupplier.reload();
-//                                JFXUtil.runWithDelay(0.50, () -> {
-//                                    moveNextSupplier(false, true);
-//                                });
-//                            }
+                            poJSON = poController.POQuotationRequest().SearchCompany(lsValue, false, pnSupplier);
+                            if ("error".equals(poJSON.get("result"))) {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                txtField.setText("");
+                                break;
+                            } else {
+                                loadTableSupplier.reload();
+                                JFXUtil.runWithDelay(0.50, () -> {
+                                    moveNextSupplier(false, true);
+                                });
+                            }
                             break;
                     }
                     break;
@@ -652,14 +667,14 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
                 if (JFXUtil.isObjectEqualTo(inputText, null, "", "01/01/1900")) {
                     return;
                 }
-                String lsServerDate = sdfFormat.format(oApp.getServerDate());
-                String lsTransDate = sdfFormat.format(poController.POQuotationRequest().Master().getTransactionDate());
-                String lsSelectedDate = sdfFormat.format(SQLUtil.toDate(JFXUtil.convertToIsoFormat(inputText), SQLUtil.FORMAT_SHORT_DATE));
-                LocalDate currentDate = LocalDate.parse(lsTransDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
-                LocalDate selectedDate = LocalDate.parse(lsSelectedDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
 
                 switch (datePicker.getId()) {
                     case "dpExpectedDate":
+                        String lsServerDate = sdfFormat.format(oApp.getServerDate());
+                        String lsTransDate = sdfFormat.format(poController.POQuotationRequest().Master().getTransactionDate());
+                        String lsSelectedDate = sdfFormat.format(SQLUtil.toDate(JFXUtil.convertToIsoFormat(inputText), SQLUtil.FORMAT_SHORT_DATE));
+                        LocalDate currentDate = LocalDate.parse(lsTransDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
+                        LocalDate selectedDate = LocalDate.parse(lsSelectedDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
                         if (poController.POQuotationRequest().getEditMode() == EditMode.ADDNEW
                                 || poController.POQuotationRequest().getEditMode() == EditMode.UPDATE) {
                             if (selectedDate.isBefore(currentDate)) {
@@ -680,25 +695,8 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
                         }
                         break;
                     case "dpSearchTransactionDate":
-                        if (poController.POQuotationRequest().getEditMode() == EditMode.ADDNEW
-                                || poController.POQuotationRequest().getEditMode() == EditMode.UPDATE) {
-
-                            if (selectedDate.isBefore(currentDate)) {
-                                JFXUtil.setJSONError(poJSON, "Target date cannot be before the transaction date.");
-                                pbSuccess = false;
-                            } else {
-                                poController.POQuotationRequest().Master().setTransactionDate((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
-                            }
-                            if (pbSuccess) {
-                            } else {
-                                if ("error".equals((String) poJSON.get("result"))) {
-                                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                }
-                            }
-                            pbSuccess = false; //Set to false to prevent multiple message box: Conflict with server date vs transaction date validation
-                            loadRecordSearch();
-                            pbSuccess = true; //Set to original value
-                        }
+                        loadRecordSearch();
+                        retrievePOQuotationRequest();
                         break;
                     default:
                         break;
@@ -736,12 +734,10 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
             } else {
                 lblSource.setText("General");
             }
-            tfSearchDepartment.setText(psSearchClientId.equals("") ? "" : poController.POQuotationRequest().Master().Department().getDescription());
-            tfSearchCategory.setText(psSearchClientId.equals("") ? "" : poController.POQuotationRequest().Master().Category2().getDescription());
-
-//            String lsExpectedDate = CustomCommonUtil.formatDateToShortString(poController.POQuotationRequest().Master().getTransactionDate());
-//            dpSearchTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsExpectedDate, "yyyy-MM-dd"));
-//            tfSearchReferenceNo.setText("");
+            tfSearchBranch.setText(poController.POQuotationRequest().getSearchBranch());
+            tfSearchDepartment.setText(poController.POQuotationRequest().getSearchDepartment());
+            tfSearchCategory.setText(poController.POQuotationRequest().getSearchCategory());
+            
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
@@ -958,6 +954,7 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
                             for (int lnCtr = 0; lnCtr <= poController.POQuotationRequest().getPOQuotationRequestCount() - 1; lnCtr++) {
                                 try {
                                     main_data.add(new ModelPOQuotationRequest_Main(String.valueOf(lnCtr + 1),
+                                            String.valueOf(poController.POQuotationRequest().POQuotationRequestList(lnCtr).Branch().getBranchName()),
                                             String.valueOf(poController.POQuotationRequest().POQuotationRequestList(lnCtr).Department().getDescription()),
                                             String.valueOf(poController.POQuotationRequest().POQuotationRequestList(lnCtr).getTransactionDate()),
                                             String.valueOf(poController.POQuotationRequest().POQuotationRequestList(lnCtr).getReferenceNo())
@@ -1061,9 +1058,9 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
         switch (poController.POQuotationRequest().Master().getTransactionStatus()) {
             case SalesInquiryStatic.CONFIRMED:
                 JFXUtil.setButtonsVisibility(false, btnApprove, btnDisapprove);
-                if (poController.POQuotationRequest().Master().isProcessed()) {
-                    JFXUtil.setButtonsVisibility(false, btnUpdate);
-                }
+//                if (poController.POQuotationRequest().Master().isProcessed()) {
+//                    JFXUtil.setButtonsVisibility(false, btnUpdate);
+//                }
                 break;
             case SalesInquiryStatic.QUOTED:
             case SalesInquiryStatic.SALE:
