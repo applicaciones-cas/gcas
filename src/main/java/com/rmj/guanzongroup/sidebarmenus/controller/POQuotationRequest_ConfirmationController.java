@@ -688,9 +688,12 @@ public class POQuotationRequest_ConfirmationController implements Initializable,
                                 || poController.POQuotationRequest().getEditMode() == EditMode.UPDATE) {
 
                             if (selectedDate.isAfter(currentDate)) {
-                                JFXUtil.setJSONError(poJSON, "Expected Purchase Date cannot be after the transaction date.");
+                                JFXUtil.setJSONError(poJSON, "Transaction Date cannot be after the current date.");
                                 pbSuccess = false;
                             } else {
+                                poController.POQuotationRequest().Master().setTransactionDate((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
+                            }
+                            if (pbSuccess) {
                                 if (oApp.getUserLevel() <= UserRight.ENCODER) {
                                     poJSON = ShowDialogFX.getUserApproval(oApp);
                                     if (!"success".equals((String) poJSON.get("result"))) {
@@ -698,9 +701,6 @@ public class POQuotationRequest_ConfirmationController implements Initializable,
                                         return;
                                     }
                                 }
-                                poController.POQuotationRequest().Master().setTransactionDate((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
-                            }
-                            if (pbSuccess) {
                             } else {
                                 if ("error".equals((String) poJSON.get("result"))) {
                                     ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -716,7 +716,7 @@ public class POQuotationRequest_ConfirmationController implements Initializable,
                                 || poController.POQuotationRequest().getEditMode() == EditMode.UPDATE) {
 
                             if (selectedDate.isBefore(currentDate)) {
-                                JFXUtil.setJSONError(poJSON, "Expected Purchase Date cannot be after the transaction date.");
+                                JFXUtil.setJSONError(poJSON, "Expected Purchase Date cannot be before the transaction date.");
                                 pbSuccess = false;
                             } else {
                                 poController.POQuotationRequest().Master().setExpectedPurchaseDate((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
