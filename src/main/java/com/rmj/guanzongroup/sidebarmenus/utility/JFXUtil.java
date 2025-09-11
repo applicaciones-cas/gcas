@@ -789,12 +789,14 @@ public class JFXUtil {
                 ((TextInputControl) node).clear();
             } else if (node instanceof DatePicker) {
                 DatePicker dp = (DatePicker) node;
-                dp.setValue(null); // Set the selected date to null
+                dp.setValue(null);
                 if (dp.getEditor() != null) {
-                    dp.getEditor().clear(); // Clear any text in the editor field
+                    dp.getEditor().clear();
                 }
+            } else if (node instanceof CheckBox) {
+                ((CheckBox) node).setSelected(false); // uncheck
             } else if (node instanceof Parent) {
-                clearTextInputsRecursive((Parent) node); // Recursively check child nodes
+                clearTextInputsRecursive((Parent) node);
             }
         }
     }

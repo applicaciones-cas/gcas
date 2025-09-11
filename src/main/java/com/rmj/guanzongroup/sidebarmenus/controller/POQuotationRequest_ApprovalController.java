@@ -625,6 +625,7 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
                             } else {
                                 loadTableSupplier.reload();
                                 JFXUtil.runWithDelay(0.50, () -> {
+                                    // if there is supplier ID and company ID?
                                     moveNextSupplier(false, true);
                                 });
                             }
@@ -733,11 +734,11 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
 
     public void loadRecordSupplier() {
         try {
-            boolean lbShow = poController.POQuotationRequest().POQuotationRequestSupplierList(pnSupplier).getEditMode() == EditMode.UPDATE;
-            JFXUtil.setDisabled(lbShow, tfSupplier);
             if (pnSupplier < 0 || pnSupplier > poController.POQuotationRequest().getPOQuotationRequestSupplierCount() - 1) {
                 return;
             }
+            boolean lbShow = poController.POQuotationRequest().POQuotationRequestSupplierList(pnSupplier).getEditMode() == EditMode.UPDATE;
+            JFXUtil.setDisabled(lbShow, tfSupplier);
             tfCompany.setText(poController.POQuotationRequest().POQuotationRequestSupplierList(pnSupplier).Company().getCompanyName());
             tfSupplier.setText(poController.POQuotationRequest().POQuotationRequestSupplierList(pnSupplier).Supplier().getCompanyName());
             tfAddress.setText(poController.POQuotationRequest().POQuotationRequestSupplierList(pnSupplier).ClientAddress().getAddress());
@@ -815,10 +816,19 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
                 if ("error".equals((String) poJSON.get("result"))) {
                     ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                     return;
+                } else {
+                    poController.POQuotationRequest().loadPOQuotationRequestSupplierList();
                 }
             }
+            JFXUtil.clearTextFields(apSupplier);
             Platform.runLater(() -> {
                 loadTableDetail.reload();
+                String currentTitle = tabPane.getSelectionModel().getSelectedItem().getText();
+                switch (currentTitle) {
+                    case "Quotation Request Supplier":
+                        loadTableSupplier.reload();
+                        break;
+                }
             });
 
         } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
@@ -831,12 +841,10 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
                 tblViewSupplier,
                 supplier_data,
                 () -> {
-                    pbEntered = false;
                     Platform.runLater(() -> {
                         int lnCtr;
                         supplier_data.clear();
                         try {
-                            poController.POQuotationRequest().loadPOQuotationRequestSupplierList();
                             if ((pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE)
                                     && poController.POQuotationRequest().Master().getTransactionStatus() != POQuotationRequestStatus.APPROVED) {
                                 poController.POQuotationRequest().ReloadSupplier();
@@ -863,8 +871,8 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
                                     JFXUtil.selectAndFocusRow(tblViewSupplier, 0);
                                     int lnRow = Integer.parseInt(details_data.get(0).getIndex07());
                                     pnSupplier = lnRow;
-                                    loadRecordSupplier();
                                 }
+                                loadRecordSupplier();
                             } else {
                                 /* FOCUS ON THE ROW THAT pnRowDetail POINTS TO */
                                 JFXUtil.selectAndFocusRow(tblViewSupplier, pnSupplier);
