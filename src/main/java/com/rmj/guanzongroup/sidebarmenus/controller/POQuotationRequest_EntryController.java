@@ -684,9 +684,7 @@ public class POQuotationRequest_EntryController implements Initializable, Screen
                                 break;
                             } else {
                                 loadTableDetail.reload();
-                                JFXUtil.runWithDelay(0.50, () -> {
-                                    moveNext(false, true);
-                                });
+                                JFXUtil.textFieldMoveNext(tfQuantity);
                             }
                             break;
                         case "tfDescription":
@@ -697,9 +695,7 @@ public class POQuotationRequest_EntryController implements Initializable, Screen
                                 break;
                             } else {
                                 loadTableDetail.reload();
-                                JFXUtil.runWithDelay(0.50, () -> {
-                                    moveNext(false, true);
-                                });
+                                JFXUtil.textFieldMoveNext(tfQuantity);
                             }
                             break;
                     }

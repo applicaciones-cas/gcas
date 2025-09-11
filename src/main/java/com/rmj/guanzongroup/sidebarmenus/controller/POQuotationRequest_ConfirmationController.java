@@ -633,9 +633,7 @@ public class POQuotationRequest_ConfirmationController implements Initializable,
                                 break;
                             } else {
                                 loadTableDetail.reload();
-                                JFXUtil.runWithDelay(0.50, () -> {
-                                    moveNext(false, true);
-                                });
+                                JFXUtil.textFieldMoveNext(tfQuantity);
                             }
                             break;
                         case "tfDescription":
@@ -646,9 +644,7 @@ public class POQuotationRequest_ConfirmationController implements Initializable,
                                 break;
                             } else {
                                 loadTableDetail.reload();
-                                JFXUtil.runWithDelay(0.50, () -> {
-                                    moveNext(false, true);
-                                });
+                                JFXUtil.textFieldMoveNext(tfQuantity);
                             }
                             break;
                     }
