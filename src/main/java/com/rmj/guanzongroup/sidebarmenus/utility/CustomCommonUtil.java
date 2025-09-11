@@ -81,6 +81,10 @@ public class CustomCommonUtil {
      * }</pre>
      */
     public static String formatDateToShortString(Date foDateValue) {
+        if(foDateValue == null){
+            return "1900-01-01";
+        }
+        
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         return sdf.format(foDateValue);
     }

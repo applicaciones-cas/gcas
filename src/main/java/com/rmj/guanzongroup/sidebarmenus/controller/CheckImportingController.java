@@ -192,7 +192,7 @@ public class CheckImportingController implements Initializable, ScreenInterface 
                                 cr.getVoucherNo(),
                                 cr.getCheckDate(),
                                 cr.getAmount(),
-                                cr.getPayeeName()));
+                                cr.getPayeeName()));    
 
                         /* 3.  If you just want a single dump --------------------------------
  * (.toString() on ObservableList calls Collection.toString()) */

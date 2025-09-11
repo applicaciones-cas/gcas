@@ -5,6 +5,7 @@
 package com.rmj.guanzongroup.sidebarmenus.controller;
 
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelCheckPrinting;
+import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDisbursementVoucher_Main;
 import com.rmj.guanzongroup.sidebarmenus.utility.CustomCommonUtil;
 import com.rmj.guanzongroup.sidebarmenus.utility.JFXUtil;
 import java.io.IOException;
@@ -37,6 +38,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.Pagination;
 import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -121,7 +123,7 @@ public class CheckPrintingController implements Initializable, ScreenInterface {
     @FXML
     private TableColumn<ModelCheckPrinting, String> tblRowNo, tblDVNo, tblDVDate, tblSupplier, tblPayeeName, tblBankName, tblBankAccount, tblCheckNo, tblCheckDate, tblTotalAmount;
     @FXML
-    private TableColumn<ModelCheckPrinting, Boolean> tblCheckBox;
+    private TableColumn<ModelCheckPrinting, CheckBox> tblCheckBox;
     @FXML
     private CheckBox chckSelectAll;
     @FXML
@@ -531,7 +533,18 @@ public class CheckPrintingController implements Initializable, ScreenInterface {
         JFXUtil.setColumnRight(tblTotalAmount);
         JFXUtil.setColumnsIndexAndDisableReordering(tblVwMain);
         tblCheckBox.setCellValueFactory(new PropertyValueFactory<>("select"));
-
+        
+        tblCheckBox.setCellFactory(col -> new TableCell<ModelCheckPrinting, CheckBox>() {
+            @Override
+            protected void updateItem(CheckBox item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setGraphic(null);
+                } else {
+                    setGraphic(item); // show the actual checkbox
+                }
+            }
+        });
         tblVwMain.getItems().forEach(item -> {
             CheckBox selectCheckBox = item.getSelect();
             selectCheckBox.setOnAction(event -> {

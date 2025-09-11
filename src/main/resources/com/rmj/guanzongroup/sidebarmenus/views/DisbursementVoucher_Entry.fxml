@@ -542,7 +542,7 @@
                                                                                                 <TextField fx:id="tfTaxRateDetail" alignment="CENTER_RIGHT" disable="true" editable="false" promptText="0.00" GridPane.columnIndex="12" GridPane.rowIndex="2" />
                                                                                                 <TextField fx:id="tfTaxAmountDetail" alignment="CENTER_RIGHT" disable="true" editable="false" promptText="0.00" GridPane.columnIndex="12" GridPane.rowIndex="3" />
                                                                                                 <TextField fx:id="tfNetAmountDetail" alignment="CENTER_RIGHT" disable="true" editable="false" promptText="0.00" GridPane.columnIndex="12" GridPane.rowIndex="4" />
-                                                                                                <CheckBox fx:id="chbkVatClassification" mnemonicParsing="false" GridPane.columnIndex="8" GridPane.rowIndex="3" />
+                                                                                                <CheckBox fx:id="chbkVatClassification" disable="true" mnemonicParsing="false" GridPane.columnIndex="8" GridPane.rowIndex="3" />
                                                                                             </children>
                                                                                         </GridPane>
                                                                                     </children>
@@ -661,7 +661,7 @@
                                                                             </rowConstraints>
                                                                             <children>
                                                                                 <AnchorPane maxWidth="1.7976931348623157E308" minWidth="-Infinity" style="-fx-background-color: FF8201;" GridPane.columnIndex="8" GridPane.rowIndex="2" />
-                                                                                <DatePicker fx:id="dpJournalTransactionDate" maxWidth="150.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="4" />
+                                                                                <DatePicker fx:id="dpJournalTransactionDate" disable="true" maxWidth="150.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="4" />
                                                                                 <TextField fx:id="tfTotalCreditAmount" alignment="CENTER_RIGHT" disable="true" editable="false" maxWidth="1.7976931348623157E308" promptText="0.00" GridPane.columnIndex="8" GridPane.rowIndex="6" />
                                                                                 <TextArea fx:id="taJournalRemarks" maxWidth="1.7976931348623157E308" prefHeight="27.0" GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.hgrow="ALWAYS" GridPane.rowIndex="5" GridPane.rowSpan="3">
                                                                                     <GridPane.margin>

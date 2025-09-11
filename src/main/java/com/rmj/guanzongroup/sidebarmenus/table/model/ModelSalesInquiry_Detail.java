@@ -22,16 +22,24 @@ public class ModelSalesInquiry_Detail {
     public static ObservableList<String> PurchaseType = FXCollections.observableArrayList(
             "Cash",
             "Cash Balance",
-            "Term",
             "Installment",
-            "Finance",
-            "Insurance"
+            "PO",
+            "Financing",
+            "Insurance",
+            "Term"
     );
     public static ObservableList<String> CategoryType = FXCollections.observableArrayList(
             "New",
             "Sold/Repo",
             "BNOS",
             "Demo"
+    );
+    public static ObservableList<String> CustomerGroup = FXCollections.observableArrayList(
+            "Any",
+            "Employee",
+            "OFW",
+            "SEAMAN",
+            "Business"
     );
     public SimpleStringProperty index01;
     public SimpleStringProperty index02;
