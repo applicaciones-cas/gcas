@@ -683,7 +683,7 @@ public class POQuotationRequest_ConfirmationController implements Initializable,
                 LocalDate selectedDate = LocalDate.parse(lsSelectedDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
 
                 switch (datePicker.getId()) {
-                    case "dpExpectedDate":
+                    case "dpTransactionDate":
                         if (poController.POQuotationRequest().getEditMode() == EditMode.ADDNEW
                                 || poController.POQuotationRequest().getEditMode() == EditMode.UPDATE) {
 
@@ -698,6 +698,27 @@ public class POQuotationRequest_ConfirmationController implements Initializable,
                                         return;
                                     }
                                 }
+                                poController.POQuotationRequest().Master().setTransactionDate((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
+                            }
+                            if (pbSuccess) {
+                            } else {
+                                if ("error".equals((String) poJSON.get("result"))) {
+                                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                }
+                            }
+                            pbSuccess = false; //Set to false to prevent multiple message box: Conflict with server date vs transaction date validation
+                            loadRecordMaster();
+                            pbSuccess = true; //Set to original value
+                        }
+                        break;
+                    case "dpExpectedDate":
+                        if (poController.POQuotationRequest().getEditMode() == EditMode.ADDNEW
+                                || poController.POQuotationRequest().getEditMode() == EditMode.UPDATE) {
+
+                            if (selectedDate.isBefore(currentDate)) {
+                                JFXUtil.setJSONError(poJSON, "Expected Purchase Date cannot be after the transaction date.");
+                                pbSuccess = false;
+                            } else {
                                 poController.POQuotationRequest().Master().setExpectedPurchaseDate((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
                             }
                             if (pbSuccess) {
@@ -776,6 +797,7 @@ public class POQuotationRequest_ConfirmationController implements Initializable,
         try {
             boolean lbShow = (pnEditMode == EditMode.UPDATE);
             JFXUtil.setDisabled(lbShow, tfBrand, tfModel, tfBarcode, tfDescription);
+            JFXUtil.setDisabled(!lbShow, dpTransactionDate);
 
             JFXUtil.setStatusValue(lblStatus, POQuotationRequestStatus.class, pnEditMode == EditMode.UNKNOWN ? "-1" : poController.POQuotationRequest().Master().getTransactionStatus());
 
