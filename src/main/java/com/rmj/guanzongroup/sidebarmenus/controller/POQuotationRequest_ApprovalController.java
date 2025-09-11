@@ -332,7 +332,7 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
                         break;
                 }
                 if (JFXUtil.isObjectEqualTo(lsButton, "btnSave", "btnCancel")) {
-                    JFXUtil.clickTabByTitleText(tabPane, "Inquiry");
+                    JFXUtil.clickTabByTitleText(tabPane, "Information");
                 }
 
                 if (JFXUtil.isObjectEqualTo(lsButton, "btnPrint", "btnAddAttachment", "btnRemoveAttachment",
