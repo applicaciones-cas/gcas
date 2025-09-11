@@ -872,10 +872,11 @@ public class POQuotationRequest_ConfirmationController implements Initializable,
                                         lsBarcode = poController.POQuotationRequest().Detail(lnCtr).Inventory().getBarCode();
                                         lsDescription = poController.POQuotationRequest().Detail(lnCtr).getDescription();
                                     }
+                                    lnRowCount += 1;
                                     double lnTotal = poController.POQuotationRequest().Detail(lnCtr).getQuantity() * poController.POQuotationRequest().Detail(lnCtr).Inventory().getCost().doubleValue();
                                     details_data.add(
                                             new ModelPOQuotationRequest_Detail(
-                                                    String.valueOf(lnRowCount + 1),
+                                                    String.valueOf(lnRowCount),
                                                     String.valueOf(lsBarcode),
                                                     lsDescription,
                                                     String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.POQuotationRequest().Detail(lnCtr).Inventory().getCost(), true)),
