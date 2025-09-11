@@ -734,7 +734,7 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
 
     public void loadRecordSupplier() {
         try {
-            boolean lbShow = poController.POQuotationRequest().Detail(pnDetail).getEditMode() == EditMode.UPDATE;
+            boolean lbShow = poController.POQuotationRequest().POQuotationRequestSupplierList(pnSupplier).getEditMode() == EditMode.UPDATE;
             JFXUtil.setDisabled(lbShow, tfSupplier);
             if (pnSupplier < 0 || pnSupplier > poController.POQuotationRequest().getPOQuotationRequestSupplierCount() - 1) {
                 return;
@@ -768,7 +768,7 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
             tfBarcode.setText(poController.POQuotationRequest().Detail(pnDetail).Inventory().getBarCode());
             tfDescription.setText(poController.POQuotationRequest().Detail(pnDetail).Inventory().getDescription());
             tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.POQuotationRequest().Detail(pnDetail).Inventory().getSellingPrice(), true));
-            tfQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.POQuotationRequest().Detail(pnDetail).Inventory().getSellingPrice(), false));
+            tfQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.POQuotationRequest().Detail(pnDetail).getQuantity(), false));
             JFXUtil.updateCaretPositions(apDetail);
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
