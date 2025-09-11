@@ -297,9 +297,6 @@ public class POQuotationRequest_EntryController implements Initializable, Screen
 
     public void loadRecordMaster() {
         try {
-            boolean lbShow = (pnEditMode == EditMode.UPDATE);
-            JFXUtil.setDisabled(lbShow, tfBrand, tfModel, tfBarcode, tfDescription);
-
             JFXUtil.setStatusValue(lblStatus, POQuotationRequestStatus.class, pnEditMode == EditMode.UNKNOWN ? "-1" : poController.POQuotationRequest().Master().getTransactionStatus());
 
             // Transaction Date
@@ -325,6 +322,8 @@ public class POQuotationRequest_EntryController implements Initializable, Screen
 
     public void loadRecordDetail() {
         try {
+            boolean lbShow = (poController.POQuotationRequest().Detail(pnDetail).getEditMode() == EditMode.UPDATE);
+            JFXUtil.setDisabled(lbShow, tfBrand, tfModel, tfBarcode, tfDescription);
             if (pnDetail < 0 || pnDetail > poController.POQuotationRequest().getDetailCount() - 1) {
                 return;
             }
