@@ -497,7 +497,11 @@ public class InvRequest_EntryAppliancesController implements Initializable, Scre
                         lsOrderQuantity = String.valueOf(invRequestController.StockRequest().Detail(pnTblInvDetailRow).getQuantity());
                     }
                     tfOrderQuantity.setText(lsOrderQuantity);
-
+                    Platform.runLater(() -> {
+                if (tfOrderQuantity.isFocused()) {
+                    tfOrderQuantity.selectAll();
+                }
+            });
                 }
             } catch (SQLException | GuanzonException e) {
                 ShowMessageFX.Error(getStage(), e.getMessage(), "Error",psFormName);
@@ -587,6 +591,7 @@ public class InvRequest_EntryAppliancesController implements Initializable, Scre
 
                         if (tblViewOrderDetails.getItems().size() > 0) {
                             Platform.runLater(() -> {
+                                tfOrderQuantity.requestFocus();
                                 tblViewOrderDetails.getSelectionModel().select(0);
                                 pnTblInvDetailRow = 0; 
                                 loadDetail();
@@ -594,7 +599,7 @@ public class InvRequest_EntryAppliancesController implements Initializable, Scre
                                
                             });
                         }
-
+                        initDetailFocus();
                         initFields(pnEditMode);
                         tableListInformation.toFront();
                         break;
@@ -979,13 +984,13 @@ public class InvRequest_EntryAppliancesController implements Initializable, Scre
             invRequestController.StockRequest().Master().getTransactionStatus().equals(StockRequestStatus.CONFIRMED)) {
             CustomCommonUtil.setDisable(!lbShow, AnchorDetailMaster);
             CustomCommonUtil.setDisable(!lbNew,
-                    dpTransactionDate, taRemarks,tfReferenceNo);
+                    dpTransactionDate, tfReferenceNo);
 
 
             CustomCommonUtil.setDisable(true,
                     tfInvType,tfReservationQTY
                     ,tfQOH,tfROQ,tfClassification,tfVariant,tfColor,tfBrand,tfModel,tfDescription,tfBarCode);
-            CustomCommonUtil.setDisable(!lbShow, tfOrderQuantity);
+            CustomCommonUtil.setDisable(!lbShow, tfOrderQuantity, taRemarks);
             CustomCommonUtil.setDisable(!lbNew, tfBrand,tfDescription,tfBarCode,tfModel);
             
             
@@ -1046,6 +1051,17 @@ public class InvRequest_EntryAppliancesController implements Initializable, Scre
                   case ENTER:
                   case F3:
                       switch (fieldId) {
+                                case "tfOrderQuantity":
+    setOrderQuantityToDetail(tfOrderQuantity.getText(), tfROQ.getText());
+    
+    // Focus on remarks and select all text for immediate typing
+    Platform.runLater(() -> {
+        taRemarks.requestFocus();
+        taRemarks.selectAll();
+    });
+    
+    event.consume();
+    break;
                                 case "tfSearchTransNo":
                                     System.out.print("Company ID" + psCompanyID);
                                     invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
@@ -1071,7 +1087,7 @@ public class InvRequest_EntryAppliancesController implements Initializable, Scre
                             invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                             invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
                             invRequestController.StockRequest().setTransactionStatus("102");
-                            poJSON = invRequestController.StockRequest().searchTransaction();
+                            poJSON = invRequestController.StockRequest().searchTransaction(true);
                             if (!"error".equals((String) poJSON.get("result"))) {
                                 pnTblInvDetailRow = -1;
                                 loadMaster();
@@ -1494,6 +1510,10 @@ public class InvRequest_EntryAppliancesController implements Initializable, Scre
                     tfBarCode.setDisable(isSourceNotEmpty);
                      tfDescription.setDisable(isSourceNotEmpty);
                      tfModel.setDisable(isSourceNotEmpty);
+                     if (pnEditMode == EditMode.UPDATE && !tfBarCode.getText().isEmpty()) {
+                        tfOrderQuantity.requestFocus();
+                        return;
+                      }
                     if (isSourceNotEmpty && !tfBrand.getText().isEmpty()) {
                         tfOrderQuantity.requestFocus();
                     } else {

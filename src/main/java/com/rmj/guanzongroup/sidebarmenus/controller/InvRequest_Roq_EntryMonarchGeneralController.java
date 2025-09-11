@@ -228,7 +228,7 @@ public class InvRequest_Roq_EntryMonarchGeneralController implements Initializab
         private void loadRecordSearch() {
             try {
               
-                lblSource.setText(invRequestController.StockRequest().Master().Company().getCompanyName() + " - " + invRequestController.StockRequest().Master().Industry().getDescription());
+                lblSource.setText(invRequestController.StockRequest().Master().Company().getCompanyName() );
 
             } catch (GuanzonException | SQLException ex) {
                 Logger.getLogger(InvRequest_EntryMcController.class.getName()).log(Level.SEVERE, null, ex);
@@ -495,7 +495,11 @@ public class InvRequest_Roq_EntryMonarchGeneralController implements Initializab
                         lsOrderQuantity = String.valueOf(invRequestController.StockRequest().Detail(pnTblInvDetailRow).getQuantity());
                     }
                     tfOrderQuantity.setText(lsOrderQuantity);
-
+                    Platform.runLater(() -> {
+                if (tfOrderQuantity.isFocused()) {
+                    tfOrderQuantity.selectAll();
+                }
+            });
                 }
             } catch (SQLException | GuanzonException e) {
                 ShowMessageFX.Error(getStage(), e.getMessage(), "Error",psFormName);
@@ -552,6 +556,7 @@ public class InvRequest_Roq_EntryMonarchGeneralController implements Initializab
 
                         if (tblViewOrderDetails.getItems().size() > 0) {
                             Platform.runLater(() -> {
+                                tfOrderQuantity.requestFocus();
                                 tblViewOrderDetails.getSelectionModel().select(0);
                                 pnTblInvDetailRow = 0; 
                                 loadDetail();
@@ -559,7 +564,7 @@ public class InvRequest_Roq_EntryMonarchGeneralController implements Initializab
                                
                             });
                         }
-
+                        initDetailFocus();
                         initFields(pnEditMode);
                         tableListInformation.toFront();
                         break;
@@ -938,13 +943,13 @@ public class InvRequest_Roq_EntryMonarchGeneralController implements Initializab
             invRequestController.StockRequest().Master().getTransactionStatus().equals(StockRequestStatus.CONFIRMED)) {
             CustomCommonUtil.setDisable(!lbShow, AnchorDetailMaster);
             CustomCommonUtil.setDisable(!lbNew,
-                    dpTransactionDate, taRemarks,tfReferenceNo);
+                    dpTransactionDate, tfReferenceNo);
 
 
             CustomCommonUtil.setDisable(true,
                     tfInvType,tfReservationQTY
                     ,tfQOH,tfROQ,tfClassification,tfVariant,tfColor,tfBrand,tfModel, tfBarCode, tfDescription);
-            CustomCommonUtil.setDisable(!lbShow, tfOrderQuantity);
+            CustomCommonUtil.setDisable(!lbShow, tfOrderQuantity, taRemarks);
             
             
         } else {
@@ -1025,7 +1030,12 @@ public class InvRequest_Roq_EntryMonarchGeneralController implements Initializab
                                           if (!invOrderDetail_data.isEmpty() && pnTblInvDetailRow < invOrderDetail_data.size() - 1) {
                                               pnTblInvDetailRow++;
                                           }//step 9W
-
+                                          Platform.runLater(() -> {
+        taRemarks.requestFocus();
+        taRemarks.selectAll();
+    });
+    
+    event.consume();
                                           CommonUtils.SetNextFocus(sourceField);
                                           loadTableInvDetailAndSelectedRow();
                                           break;
@@ -1033,7 +1043,7 @@ public class InvRequest_Roq_EntryMonarchGeneralController implements Initializab
                                 invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                                 invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
                                 invRequestController.StockRequest().setTransactionStatus("102");
-                                poJSON = invRequestController.StockRequest().searchTransaction();
+                                poJSON = invRequestController.StockRequest().searchTransaction(true);
                                 if (!"error".equals((String) poJSON.get("result"))) {
                                     pnTblInvDetailRow = -1;
                                     loadMaster();
@@ -1052,14 +1062,7 @@ public class InvRequest_Roq_EntryMonarchGeneralController implements Initializab
                                     case "tfSearchTransNo":
                                         CommonUtils.SetNextFocus((TextField) event.getSource());
                                         break;
-                                    case "tfOrderQuantity":
-                                        setOrderQuantityToDetail(tfOrderQuantity.getText());
-                                        if (!invOrderDetail_data.isEmpty() && pnTblInvDetailRow < invOrderDetail_data.size() - 1) {
-                                            pnTblInvDetailRow++;
-                                        }
-                                        CommonUtils.SetNextFocus((TextField) event.getSource());
-                                        loadTableInvDetailAndSelectedRow();
-                                        break;
+                                    
                                 }
                                 event.consume();
                         break;
