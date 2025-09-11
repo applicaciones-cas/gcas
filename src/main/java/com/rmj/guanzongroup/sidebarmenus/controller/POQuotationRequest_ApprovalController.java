@@ -223,6 +223,7 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                             return;
                         }
+                        poController.POQuotationRequest().loadPOQuotationRequestSupplierList();
                         pnEditMode = poController.POQuotationRequest().getEditMode();
                         break;
                     case "btnSearch":
@@ -315,6 +316,7 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
                 if (JFXUtil.isObjectEqualTo(lsButton, "btnSave", "btnApprove", "btnDisapprove", "btnReturn", "btnVoid", "btnCancel")) {
                     poController.POQuotationRequest().resetMaster();
                     poController.POQuotationRequest().Detail().clear();
+                     poController.POQuotationRequest().resetOthers();
                     pnEditMode = EditMode.UNKNOWN;
                     clearTextFields();
 
