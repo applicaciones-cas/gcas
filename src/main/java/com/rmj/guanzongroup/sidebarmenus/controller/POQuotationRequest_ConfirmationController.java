@@ -927,7 +927,6 @@ public class POQuotationRequest_ConfirmationController implements Initializable,
                                 } catch (GuanzonException | SQLException ex) {
                                     Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                                 }
-
                                 if (poController.POQuotationRequest().POQuotationRequestList(lnCtr).getTransactionStatus().equals(POQuotationRequestStatus.CONFIRMED)) {
                                     JFXUtil.highlightByKey(tblViewMainList, String.valueOf(lnCtr + 1), "#C1E1C1", highlightedRowsMain);
                                 }
@@ -1014,9 +1013,9 @@ public class POQuotationRequest_ConfirmationController implements Initializable,
         switch (poController.POQuotationRequest().Master().getTransactionStatus()) {
             case POQuotationRequestStatus.CONFIRMED:
                 JFXUtil.setButtonsVisibility(false, btnConfirm);
-                if (poController.POQuotationRequest().Master().isProcessed()) {
-                    JFXUtil.setButtonsVisibility(false, btnUpdate, btnVoid);
-                }
+//                if (poController.POQuotationRequest().Master().isProcessed()) {
+//                JFXUtil.setButtonsVisibility(false, btnUpdate, btnVoid);
+//                }
                 break;
 //            case POQuotationRequestStatus.QUOTED:
 //            case POQuotationRequestStatus.SALE:
