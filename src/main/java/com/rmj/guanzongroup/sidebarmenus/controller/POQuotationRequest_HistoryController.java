@@ -439,7 +439,14 @@ public class POQuotationRequest_HistoryController implements Initializable, Scre
                             loadRecordSearch();
                             return;
                         case "tfSearchReferenceNo":
-                            poJSON = poController.POQuotationRequest().searchTransaction(psIndustryId, true);
+                            SimpleDateFormat sdfFormat = new SimpleDateFormat(SQLUtil.FORMAT_SHORT_DATE);
+                            String inputText = JFXUtil.isObjectEqualTo(dpSearchTransactionDate.getEditor().getText(), "") ? "01/01/1900" : dpSearchTransactionDate.getEditor().getText();
+                            String lsSelectedDate = sdfFormat.format(SQLUtil.toDate(JFXUtil.convertToIsoFormat(inputText), SQLUtil.FORMAT_SHORT_DATE));
+                            LocalDate selectedDate = LocalDate.parse(lsSelectedDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
+
+                            poJSON = poController.POQuotationRequest().searchTransaction(poController.POQuotationRequest().getSearchBranch(),
+                                    poController.POQuotationRequest().getSearchDepartment(), poController.POQuotationRequest().getSearchCategory(),
+                                    lsSelectedDate, tfSearchReferenceNo.getText());
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfSearchReferenceNo.setText("");
@@ -457,7 +464,7 @@ public class POQuotationRequest_HistoryController implements Initializable, Scre
                 default:
                     break;
             }
-        } catch (GuanzonException | SQLException ex) {
+        } catch (GuanzonException | SQLException | CloneNotSupportedException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }

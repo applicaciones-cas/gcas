@@ -430,8 +430,9 @@
                                                             <TableView fx:id="tblViewSupplier" prefHeight="200.0" prefWidth="200.0">
                                                               <columns>
                                                                 <TableColumn fx:id="tblRowNoSupplier" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" text="No." />
-                                                                <TableColumn fx:id="tblSupplier" maxWidth="520.0" minWidth="-1.0" prefWidth="520.0" text="Supplier" />
-                                                                  <TableColumn maxWidth="175.0" minWidth="175.0" prefWidth="175.0" text="Status" />
+                                                                              <TableColumn fx:id="tblCompany" maxWidth="229.0" minWidth="229.0" prefWidth="229.0" text="Company" />
+                                                                <TableColumn fx:id="tblSupplier" maxWidth="354.0" minWidth="-1.0" prefWidth="354.0" text="Supplier" />
+                                                                  <TableColumn fx:id="tblStatus" maxWidth="111.0" minWidth="111.0" prefWidth="111.0" text="Status" />
                                                               </columns>
                                                             </TableView>
                                                          </children>
