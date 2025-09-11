@@ -4,6 +4,7 @@
  */
 package com.rmj.guanzongroup.sidebarmenus.controller;
 
+import static com.rmj.guanzongroup.sidebarmenus.controller.POQuotationRequest_ConfirmationController.poController;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelPOQuotationRequest_Detail;
 
 import com.rmj.guanzongroup.sidebarmenus.utility.CustomCommonUtil;
@@ -48,7 +49,9 @@ import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.concurrent.atomic.AtomicReference;
 import javafx.scene.control.CheckBox;
+import org.guanzon.appdriver.agent.ShowDialogFX;
 import org.guanzon.appdriver.base.GRiderCAS;
+import org.guanzon.appdriver.constant.UserRight;
 import org.json.simple.JSONObject;
 import ph.com.guanzongroup.cas.purchasing.t2.services.QuotationControllers;
 import ph.com.guanzongroup.cas.purchasing.t2.status.POQuotationRequestStatus;
@@ -164,6 +167,7 @@ public class POQuotationRequest_EntryController implements Initializable, Screen
             switch (checkedBox.getId()) {
                 case "cbReverse":
                     poController.POQuotationRequest().Detail(pnDetail).isReverse(checkedBox.isSelected());
+                    poController.POQuotationRequest().Detail(pnDetail).setQuantity(0.00);
                     loadTableDetail.reload();
                     break;
             }
@@ -297,6 +301,9 @@ public class POQuotationRequest_EntryController implements Initializable, Screen
 
     public void loadRecordMaster() {
         try {
+            boolean lbShow = (JFXUtil.isObjectEqualTo(pnEditMode, EditMode.UPDATE, EditMode.ADDNEW));
+            JFXUtil.setDisabled(!lbShow, dpTransactionDate);
+
             JFXUtil.setStatusValue(lblStatus, POQuotationRequestStatus.class, pnEditMode == EditMode.UNKNOWN ? "-1" : poController.POQuotationRequest().Master().getTransactionStatus());
 
             // Transaction Date
@@ -305,11 +312,11 @@ public class POQuotationRequest_EntryController implements Initializable, Screen
             dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsTransactionDate, "yyyy-MM-dd"));
 
             String lsExpectedDate = CustomCommonUtil.formatDateToShortString(poController.POQuotationRequest().Master().getExpectedPurchaseDate());
-            dpExpectedDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsExpectedDate, "yyyy-MM-dd"));
+            dpExpectedDate.setValue(JFXUtil.isObjectEqualTo(lsExpectedDate, "1900-01-01") ? null : CustomCommonUtil.parseDateStringToLocalDate(lsExpectedDate, "yyyy-MM-dd"));
 
             tfReferenceNo.setText(poController.POQuotationRequest().Master().getReferenceNo());
             tfDepartment.setText(poController.POQuotationRequest().Master().Department().getDescription());
-            tfDestination.setText(poController.POQuotationRequest().Master().Destination().getDescription());
+            tfDestination.setText(poController.POQuotationRequest().Master().Destination().getBranchName());
             tfCategory.setText(poController.POQuotationRequest().Master().Category2().getDescription());
 
             taRemarks.setText(poController.POQuotationRequest().Master().getRemarks());
@@ -409,7 +416,9 @@ public class POQuotationRequest_EntryController implements Initializable, Screen
                             }
                             String lsBarcode = "";
                             String lsDescription = "";
+                            int lnRowCount = 0;
                             for (lnCtr = 0; lnCtr < poController.POQuotationRequest().getDetailCount(); lnCtr++) {
+
                                 if (poController.POQuotationRequest().Detail(lnCtr).isReverse()) {
                                     if (poController.POQuotationRequest().Detail(lnCtr).getStockId() != null) {
                                         lsBarcode = poController.POQuotationRequest().Detail(lnCtr).Inventory().getBarCode();
@@ -418,7 +427,7 @@ public class POQuotationRequest_EntryController implements Initializable, Screen
                                     double lnTotal = poController.POQuotationRequest().Detail(lnCtr).getQuantity() * poController.POQuotationRequest().Detail(lnCtr).Inventory().getCost().doubleValue();
                                     details_data.add(
                                             new ModelPOQuotationRequest_Detail(
-                                                    String.valueOf(lnCtr + 1),
+                                                    String.valueOf(lnRowCount + 1),
                                                     String.valueOf(lsBarcode),
                                                     lsDescription,
                                                     String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.POQuotationRequest().Detail(lnCtr).Inventory().getCost(), true)),
@@ -725,6 +734,35 @@ public class POQuotationRequest_EntryController implements Initializable, Screen
                 LocalDate selectedDate = LocalDate.parse(lsSelectedDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
 
                 switch (datePicker.getId()) {
+                    case "dpTransactionDate":
+                        if (poController.POQuotationRequest().getEditMode() == EditMode.ADDNEW
+                                || poController.POQuotationRequest().getEditMode() == EditMode.UPDATE) {
+
+                            if (selectedDate.isAfter(currentDate)) {
+                                JFXUtil.setJSONError(poJSON, "Transaction Date cannot be after the current date.");
+                                pbSuccess = false;
+                            } else {
+                                poController.POQuotationRequest().Master().setTransactionDate((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
+                            }
+                            if (pbSuccess) {
+                                if (pnEditMode == EditMode.UPDATE && oApp.getUserLevel() <= UserRight.ENCODER) {
+                                    poJSON = ShowDialogFX.getUserApproval(oApp);
+                                    if (!"success".equals((String) poJSON.get("result"))) {
+                                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                        loadRecordMaster();
+                                        return;
+                                    }
+                                }
+                            } else {
+                                if ("error".equals((String) poJSON.get("result"))) {
+                                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                }
+                            }
+                            pbSuccess = false; //Set to false to prevent multiple message box: Conflict with server date vs transaction date validation
+                            loadRecordMaster();
+                            pbSuccess = true; //Set to original value
+                        }
+                        break;
                     case "dpExpectedDate":
                         if (poController.POQuotationRequest().getEditMode() == EditMode.ADDNEW
                                 || poController.POQuotationRequest().getEditMode() == EditMode.UPDATE) {

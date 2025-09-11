@@ -184,6 +184,7 @@ public class POQuotationRequest_ConfirmationController implements Initializable,
             switch (checkedBox.getId()) {
                 case "cbReverse":
                     poController.POQuotationRequest().Detail(pnDetail).isReverse(checkedBox.isSelected());
+                    poController.POQuotationRequest().Detail(pnDetail).setQuantity(0.00);
                     loadTableDetail.reload();
                     break;
             }
@@ -698,6 +699,7 @@ public class POQuotationRequest_ConfirmationController implements Initializable,
                                     poJSON = ShowDialogFX.getUserApproval(oApp);
                                     if (!"success".equals((String) poJSON.get("result"))) {
                                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                        loadRecordMaster();
                                         return;
                                     }
                                 }
@@ -807,11 +809,11 @@ public class POQuotationRequest_ConfirmationController implements Initializable,
             dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsTransactionDate, "yyyy-MM-dd"));
 
             String lsExpectedDate = CustomCommonUtil.formatDateToShortString(poController.POQuotationRequest().Master().getExpectedPurchaseDate());
-            dpExpectedDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsExpectedDate, "yyyy-MM-dd"));
+            dpExpectedDate.setValue(JFXUtil.isObjectEqualTo(lsExpectedDate, "1900-01-01") ? null : CustomCommonUtil.parseDateStringToLocalDate(lsExpectedDate, "yyyy-MM-dd"));
 
             tfReferenceNo.setText(poController.POQuotationRequest().Master().getReferenceNo());
             tfDepartment.setText(poController.POQuotationRequest().Master().Department().getDescription());
-            tfDestination.setText(poController.POQuotationRequest().Master().Destination().getDescription());
+            tfDestination.setText(poController.POQuotationRequest().Master().Destination().getBranchName());
             tfCategory.setText(poController.POQuotationRequest().Master().Category2().getDescription());
 
             taRemarks.setText(poController.POQuotationRequest().Master().getRemarks());
@@ -863,6 +865,7 @@ public class POQuotationRequest_ConfirmationController implements Initializable,
                             }
                             String lsBarcode = "";
                             String lsDescription = "";
+                            int lnRowCount = 0;
                             for (lnCtr = 0; lnCtr < poController.POQuotationRequest().getDetailCount(); lnCtr++) {
                                 if (poController.POQuotationRequest().Detail(lnCtr).isReverse()) {
                                     if (poController.POQuotationRequest().Detail(lnCtr).getStockId() != null) {
@@ -872,7 +875,7 @@ public class POQuotationRequest_ConfirmationController implements Initializable,
                                     double lnTotal = poController.POQuotationRequest().Detail(lnCtr).getQuantity() * poController.POQuotationRequest().Detail(lnCtr).Inventory().getCost().doubleValue();
                                     details_data.add(
                                             new ModelPOQuotationRequest_Detail(
-                                                    String.valueOf(lnCtr + 1),
+                                                    String.valueOf(lnRowCount + 1),
                                                     String.valueOf(lsBarcode),
                                                     lsDescription,
                                                     String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.POQuotationRequest().Detail(lnCtr).Inventory().getCost(), true)),
@@ -922,7 +925,7 @@ public class POQuotationRequest_ConfirmationController implements Initializable,
                                     main_data.add(new ModelPOQuotationRequest_Main(String.valueOf(lnCtr + 1),
                                             String.valueOf(poController.POQuotationRequest().POQuotationRequestList(lnCtr).Department().getDescription()),
                                             String.valueOf(poController.POQuotationRequest().POQuotationRequestList(lnCtr).getTransactionDate()),
-                                            String.valueOf(poController.POQuotationRequest().POQuotationRequestList(lnCtr).getReferenceNo())
+                                            String.valueOf(poController.POQuotationRequest().POQuotationRequestList(lnCtr).getTransactionNo())
                                     ));
                                 } catch (GuanzonException | SQLException ex) {
                                     Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
