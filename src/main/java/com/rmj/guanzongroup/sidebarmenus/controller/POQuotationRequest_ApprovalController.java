@@ -62,7 +62,6 @@ import javafx.scene.control.TabPane;
 import javafx.scene.input.KeyCode;
 import ph.com.guanzongroup.cas.purchasing.t2.services.QuotationControllers;
 import ph.com.guanzongroup.cas.purchasing.t2.status.POQuotationRequestStatus;
-import ph.com.guanzongroup.cas.sales.t1.status.SalesInquiryStatic;
 
 /**
  * FXML Controller class
@@ -253,13 +252,13 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
                             } else {
                                 ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
 
-                                // Confirmation Prompt
+                                // Approval Prompt
                                 JSONObject loJSON;
                                 loJSON = poController.POQuotationRequest().OpenTransaction(psTransactionNo);
                                 if ("success".equals(loJSON.get("result"))) {
-                                    if (poController.POQuotationRequest().Master().getTransactionStatus().equals(SalesInquiryStatic.OPEN)) {
-                                        if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to confirm this transaction?")) {
-                                            loJSON = poController.POQuotationRequest().ConfirmTransaction("");
+                                    if (poController.POQuotationRequest().Master().getTransactionStatus().equals(POQuotationRequestStatus.OPEN)) {
+                                        if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to approve this transaction?")) {
+                                            loJSON = poController.POQuotationRequest().ApproveTransaction("");
                                             if ("success".equals((String) loJSON.get("result"))) {
                                                 ShowMessageFX.Information((String) loJSON.get("message"), pxeModuleName, null);
                                                 JFXUtil.highlightByKey(tblViewMainList, String.valueOf(pnMain + 1), "#C1E1C1", highlightedRowsMain);
@@ -276,11 +275,10 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
                         }
 
                         break;
-
                     case "btnApprove":
                         poJSON = new JSONObject();
-                        if (ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure you want to confirm transaction?") == true) {
-                            poJSON = poController.POQuotationRequest().ConfirmTransaction("");
+                        if (ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure you want to approve transaction?") == true) {
+                            poJSON = poController.POQuotationRequest().ApproveTransaction("");
                             if ("error".equals((String) poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 return;
@@ -293,10 +291,26 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
                             return;
                         }
                         break;
+                    case "btnDisapprove":
+//                        poJSON = new JSONObject();
+//                        if (ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure you want to disapprove transaction?") == true) {
+//                            poJSON = poController.POQuotationRequest().ApproveTransaction("");
+//                            if ("error".equals((String) poJSON.get("result"))) {
+//                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+//                                return;
+//                            } else {
+//                                ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
+//                                JFXUtil.disableAllHighlightByColor(tblViewMainList, "#A7C7E7", highlightedRowsMain);
+//                                JFXUtil.highlightByKey(tblViewMainList, String.valueOf(pnMain + 1), "#C1E1C1", highlightedRowsMain);
+//                            }
+//                        } else {
+//                            return;
+//                        }
+                        break;
                     case "btnVoid":
                         poJSON = new JSONObject();
                         if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure you want to void transaction?") == true) {
-                            if (SalesInquiryStatic.CONFIRMED.equals(poController.POQuotationRequest().Master().getTransactionStatus())) {
+                            if (POQuotationRequestStatus.APPROVED.equals(poController.POQuotationRequest().Master().getTransactionStatus())) {
                                 poJSON = poController.POQuotationRequest().CancelTransaction("");
                             } else {
                                 poJSON = poController.POQuotationRequest().VoidTransaction("");
@@ -325,7 +339,6 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
                     clearTextFields();
 
                     poController.POQuotationRequest().Master().setIndustryId(psIndustryId);
-//                    poController.POQuotationRequest().Master().setCompanyId(psCompanyId);
                     poController.POQuotationRequest().setCompanyId(psCompanyId);
                     poController.POQuotationRequest().Master().setCategoryCode(psCategoryId);
 //                    poController.POQuotationRequest().initFields();
@@ -360,24 +373,21 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
 
     public void retrievePOQuotationRequest() {
         poJSON = new JSONObject();
+        poController.POQuotationRequest().setTransactionStatus(POQuotationRequestStatus.OPEN + POQuotationRequestStatus.CONFIRMED);
+
         SimpleDateFormat sdfFormat = new SimpleDateFormat(SQLUtil.FORMAT_SHORT_DATE);
         String inputText = JFXUtil.isObjectEqualTo(dpSearchTransactionDate.getEditor().getText(), "") ? "01/01/1900" : dpSearchTransactionDate.getEditor().getText();
         String lsSelectedDate = sdfFormat.format(SQLUtil.toDate(JFXUtil.convertToIsoFormat(inputText), SQLUtil.FORMAT_SHORT_DATE));
         LocalDate selectedDate = LocalDate.parse(lsSelectedDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
 
-        poController.POQuotationRequest().setTransactionStatus(POQuotationRequestStatus.CONFIRMED+POQuotationRequestStatus.APPROVED);
-        poJSON = poController.POQuotationRequest().loadPOQuotationRequestList(tfSearchBranch.getText(), 
-                tfSearchDepartment.getText(),
-                tfSearchCategory.getText(), 
-                java.sql.Date.from(selectedDate.atStartOfDay(ZoneId.systemDefault()).toInstant()),
+        poJSON = poController.POQuotationRequest().loadPOQuotationRequestList(oApp.getBranchName(), poController.POQuotationRequest().getSearchDepartment(),
+                poController.POQuotationRequest().getSearchCategory(), java.sql.Date.valueOf(selectedDate),
                 tfSearchReferenceNo.getText());
-        
         if (!"success".equals((String) poJSON.get("result"))) {
             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
         } else {
             loadTableMain.reload();
         }
-
     }
 
     ChangeListener<Boolean> txtArea_Focus = JFXUtil.FocusListener(TextArea.class,
@@ -458,7 +468,6 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
                 }
             });
 
-    
     ChangeListener<Boolean> txtField_Focus = JFXUtil.FocusListener(TextField.class,
             (lsID, lsValue) -> {
                 if (lsValue == null) {
@@ -629,17 +638,17 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
                             }
                             break;
                         case "tfCompany":
-                            poJSON = poController.POQuotationRequest().SearchCompany(lsValue, false, pnSupplier);
-                            if ("error".equals(poJSON.get("result"))) {
-                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                txtField.setText("");
-                                break;
-                            } else {
-                                loadTableSupplier.reload();
-                                JFXUtil.runWithDelay(0.50, () -> {
-                                    moveNextSupplier(false, true);
-                                });
-                            }
+//                            poJSON = poController.POQuotationRequest().searchcompany(lsValue, false, pnSupplier);
+//                            if ("error".equals(poJSON.get("result"))) {
+//                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+//                                txtField.setText("");
+//                                break;
+//                            } else {
+//                                loadTableSupplier.reload();
+//                                JFXUtil.runWithDelay(0.50, () -> {
+//                                    moveNextSupplier(false, true);
+//                                });
+//                            }
                             break;
                     }
                     break;
@@ -737,7 +746,7 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
             tfSearchBranch.setText(poController.POQuotationRequest().getSearchBranch());
             tfSearchDepartment.setText(poController.POQuotationRequest().getSearchDepartment());
             tfSearchCategory.setText(poController.POQuotationRequest().getSearchCategory());
-            
+
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
@@ -785,7 +794,7 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
 
     public void loadRecordMaster() {
         try {
-            JFXUtil.setStatusValue(lblStatus, SalesInquiryStatic.class, pnEditMode == EditMode.UNKNOWN ? "-1" : poController.POQuotationRequest().Master().getTransactionStatus());
+            JFXUtil.setStatusValue(lblStatus, POQuotationRequestStatus.class, pnEditMode == EditMode.UNKNOWN ? "-1" : poController.POQuotationRequest().Master().getTransactionStatus());
 
             // Transaction Date
             tfTransactionNo.setText(poController.POQuotationRequest().Master().getTransactionNo());
@@ -963,7 +972,7 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
                                     Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                                 }
 
-                                if (poController.POQuotationRequest().POQuotationRequestList(lnCtr).getTransactionStatus().equals(POQuotationRequestStatus.CONFIRMED)) {
+                                if (poController.POQuotationRequest().POQuotationRequestList(lnCtr).getTransactionStatus().equals(POQuotationRequestStatus.APPROVED)) {
                                     JFXUtil.highlightByKey(tblViewMainList, String.valueOf(lnCtr + 1), "#C1E1C1", highlightedRowsMain);
                                 }
                             }
@@ -1056,17 +1065,17 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
         JFXUtil.setButtonsVisibility(lbShow4, btnClose);
 
         switch (poController.POQuotationRequest().Master().getTransactionStatus()) {
-            case SalesInquiryStatic.CONFIRMED:
+            case POQuotationRequestStatus.APPROVED:
                 JFXUtil.setButtonsVisibility(false, btnApprove, btnDisapprove);
 //                if (poController.POQuotationRequest().Master().isProcessed()) {
 //                    JFXUtil.setButtonsVisibility(false, btnUpdate);
 //                }
                 break;
-            case SalesInquiryStatic.QUOTED:
-            case SalesInquiryStatic.SALE:
-            case SalesInquiryStatic.LOST:
-            case SalesInquiryStatic.VOID:
-            case SalesInquiryStatic.CANCELLED:
+            case POQuotationRequestStatus.CONFIRMED:
+                JFXUtil.setButtonsVisibility(false, btnPrint);
+                break;
+            case POQuotationRequestStatus.VOID:
+            case POQuotationRequestStatus.CANCELLED:
                 JFXUtil.setButtonsVisibility(false, btnApprove, btnDisapprove, btnUpdate);
                 break;
         }
