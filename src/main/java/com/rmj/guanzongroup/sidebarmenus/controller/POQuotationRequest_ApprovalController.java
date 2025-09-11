@@ -592,7 +592,7 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
                             return;
 
                         case "tfSupplier":
-                            poJSON = poController.POQuotationRequest().SearchSupplier(lsValue, false, pnDetail);
+                            poJSON = poController.POQuotationRequest().SearchSupplier(lsValue, false, pnSupplier);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 txtField.setText("");
@@ -605,7 +605,7 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
                             }
                             break;
                         case "tfTerm":
-                            poJSON = poController.POQuotationRequest().SearchTerm(lsValue, false, pnDetail);
+                            poJSON = poController.POQuotationRequest().SearchTerm(lsValue, false, pnSupplier);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 txtField.setText("");
@@ -618,17 +618,17 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
                             }
                             break;
                         case "tfCompany":
-//                            poJSON = poController.POQuotationRequest().searchcompany(lsValue, false, pnSupplier);
-//                            if ("error".equals(poJSON.get("result"))) {
-//                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-//                                txtField.setText("");
-//                                break;
-//                            } else {
-//                                loadTableSupplier.reload();
-//                                JFXUtil.runWithDelay(0.50, () -> {
-//                                    moveNextSupplier(false, true);
-//                                });
-//                            }
+                            poJSON = poController.POQuotationRequest().SearchCompany(lsValue, false, pnSupplier);
+                            if ("error".equals(poJSON.get("result"))) {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                txtField.setText("");
+                                break;
+                            } else {
+                                loadTableSupplier.reload();
+                                JFXUtil.runWithDelay(0.50, () -> {
+                                    moveNextSupplier(false, true);
+                                });
+                            }
                             break;
                     }
                     break;
@@ -734,6 +734,8 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
 
     public void loadRecordSupplier() {
         try {
+            boolean lbShow = poController.POQuotationRequest().Detail(pnDetail).getEditMode() == EditMode.UPDATE;
+            JFXUtil.setDisabled(lbShow, tfSupplier);
             if (pnSupplier < 0 || pnSupplier > poController.POQuotationRequest().getPOQuotationRequestSupplierCount() - 1) {
                 return;
             }
@@ -751,9 +753,7 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
 
     public void loadRecordDetail() {
         try {
-            boolean lbShow = poController.POQuotationRequest().Detail(pnDetail).getEditMode() == EditMode.UPDATE;
-            JFXUtil.setDisabled(lbShow, tfSupplier);
-            
+
             if (pnDetail < 0 || pnDetail > poController.POQuotationRequest().getDetailCount() - 1) {
                 return;
             }
