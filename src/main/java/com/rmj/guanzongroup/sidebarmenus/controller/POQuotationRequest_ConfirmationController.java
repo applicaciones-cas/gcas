@@ -184,7 +184,6 @@ public class POQuotationRequest_ConfirmationController implements Initializable,
             switch (checkedBox.getId()) {
                 case "cbReverse":
                     poController.POQuotationRequest().Detail(pnDetail).isReverse(checkedBox.isSelected());
-                    poController.POQuotationRequest().Detail(pnDetail).setQuantity(0.00);
                     loadTableDetail.reload();
                     break;
             }
@@ -479,7 +478,7 @@ public class POQuotationRequest_ConfirmationController implements Initializable,
                         break;
                     case "tfSearchCategory":
                         if (lsValue.equals("")) {
-                            poController.POQuotationRequest().setSearchDepartment("");
+                            poController.POQuotationRequest().setSearchCategory("");
                         }
                         loadRecordSearch();
                         break;
@@ -671,49 +670,90 @@ public class POQuotationRequest_ConfirmationController implements Initializable,
                 SimpleDateFormat sdfFormat = new SimpleDateFormat(SQLUtil.FORMAT_SHORT_DATE);
 
                 if (JFXUtil.isObjectEqualTo(inputText, null, "", "01/01/1900")) {
+                    switch (datePicker.getId()) {
+                        case "dpExpectedDate":
+                            poJSON = poController.POQuotationRequest().Master().setExpectedPurchaseDate(null);
+                            break;
+                    }
                     return;
                 }
-                String lsServerDate = sdfFormat.format(oApp.getServerDate());
-                String lsTransDate = sdfFormat.format(poController.POQuotationRequest().Master().getTransactionDate());
-                String lsSelectedDate = sdfFormat.format(SQLUtil.toDate(JFXUtil.convertToIsoFormat(inputText), SQLUtil.FORMAT_SHORT_DATE));
-                LocalDate currentDate = LocalDate.parse(lsTransDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
-                LocalDate selectedDate = LocalDate.parse(lsSelectedDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
-
+                
+                String lsServerDate, lsTransDate, lsSelectedDate;
+                LocalDate currentDate, selectedDate, transactionDate;
+                
+//                String lsServerDate = sdfFormat.format(oApp.getServerDate());
+//                String lsTransDate = sdfFormat.format(poController.POQuotationRequest().Master().getTransactionDate());
+//                String lsSelectedDate = sdfFormat.format(SQLUtil.toDate(JFXUtil.convertToIsoFormat(inputText), SQLUtil.FORMAT_SHORT_DATE));
+//                LocalDate currentDate = LocalDate.parse(lsServerDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
+//                LocalDate selectedDate = LocalDate.parse(lsSelectedDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
+//                LocalDate transactionDate = LocalDate.parse(lsTransDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
+                
                 switch (datePicker.getId()) {
                     case "dpTransactionDate":
+                        lsServerDate = sdfFormat.format(oApp.getServerDate());
+                        lsTransDate = sdfFormat.format(poController.POQuotationRequest().Master().getTransactionDate());
+                        lsSelectedDate = sdfFormat.format(SQLUtil.toDate(JFXUtil.convertToIsoFormat(inputText), SQLUtil.FORMAT_SHORT_DATE));
+                        currentDate = LocalDate.parse(lsServerDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
+                        selectedDate = LocalDate.parse(lsSelectedDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
+                        transactionDate = LocalDate.parse(lsTransDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
+                        
                         if (poController.POQuotationRequest().getEditMode() == EditMode.ADDNEW
                                 || poController.POQuotationRequest().getEditMode() == EditMode.UPDATE) {
 
                             if (selectedDate.isAfter(currentDate)) {
-                                JFXUtil.setJSONError(poJSON, "Transaction Date cannot be after the current date.");
+                                poJSON.put("result", "error");
+                                poJSON.put("message", "Future dates are not allowed.");
                                 pbSuccess = false;
-                            } else {
-                                poController.POQuotationRequest().Master().setTransactionDate((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
                             }
-                            if (pbSuccess) {
+
+                            if (pbSuccess && ((poController.POQuotationRequest().getEditMode() == EditMode.UPDATE && !lsTransDate.equals(lsSelectedDate))
+                                    || !lsServerDate.equals(lsSelectedDate))) {
                                 if (oApp.getUserLevel() <= UserRight.ENCODER) {
-                                    poJSON = ShowDialogFX.getUserApproval(oApp);
-                                    if (!"success".equals((String) poJSON.get("result"))) {
-                                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                        loadRecordMaster();
-                                        return;
+                                    if (ShowMessageFX.YesNo(null, pxeModuleName, "Change in Transaction Date Detected\n\n"
+                                        + "If YES, please seek approval to proceed with the new selected date.\n"
+                                        + "If NO, the previous transaction date will be retained.") == true) {
+                                        poJSON = ShowDialogFX.getUserApproval(oApp);
+                                        if (!"success".equals((String) poJSON.get("result"))) {
+                                            pbSuccess = false;
+                                        } else {
+                                            if(Integer.parseInt(poJSON.get("nUserLevl").toString())<= UserRight.ENCODER){
+                                                poJSON.put("result", "error");
+                                                poJSON.put("message", "User is not an authorized approving officer.");
+                                                pbSuccess = false;
+                                            }
+                                        }
+                                    } else {
+                                        pbSuccess = false;
                                     }
                                 }
+                            }
+
+                            if (pbSuccess) {
+                                poController.POQuotationRequest().Master().setTransactionDate((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
                             } else {
                                 if ("error".equals((String) poJSON.get("result"))) {
                                     ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+
                                 }
                             }
+
                             pbSuccess = false; //Set to false to prevent multiple message box: Conflict with server date vs transaction date validation
                             loadRecordMaster();
                             pbSuccess = true; //Set to original value
                         }
                         break;
                     case "dpExpectedDate":
+                        lsServerDate = sdfFormat.format(oApp.getServerDate());
+                        lsTransDate = sdfFormat.format(poController.POQuotationRequest().Master().getTransactionDate());
+                        lsSelectedDate = sdfFormat.format(SQLUtil.toDate(JFXUtil.convertToIsoFormat(inputText), SQLUtil.FORMAT_SHORT_DATE));
+                        currentDate = LocalDate.parse(lsServerDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
+                        selectedDate = LocalDate.parse(lsSelectedDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
+                        transactionDate = LocalDate.parse(lsTransDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
+                        
                         if (poController.POQuotationRequest().getEditMode() == EditMode.ADDNEW
                                 || poController.POQuotationRequest().getEditMode() == EditMode.UPDATE) {
 
-                            if (selectedDate.isBefore(currentDate)) {
+                            if (selectedDate.isBefore(transactionDate)) {
                                 JFXUtil.setJSONError(poJSON, "Expected Purchase Date cannot be before the transaction date.");
                                 pbSuccess = false;
                             } else {
@@ -765,6 +805,10 @@ public class POQuotationRequest_ConfirmationController implements Initializable,
             if (pnDetail < 0 || pnDetail > poController.POQuotationRequest().getDetailCount() - 1) {
                 return;
             }
+            
+            boolean lbShow = (poController.POQuotationRequest().Detail(pnDetail).getEditMode() == EditMode.UPDATE);
+            JFXUtil.setDisabled(lbShow, tfBrand, tfModel, tfBarcode, tfDescription);
+            
             String lsBrand = "";
             if (!JFXUtil.isObjectEqualTo(poController.POQuotationRequest().Detail(pnDetail).Brand().getDescription(), null, "")) {
                 lsBrand = poController.POQuotationRequest().Detail(pnDetail).Brand().getDescription();
@@ -897,6 +941,8 @@ public class POQuotationRequest_ConfirmationController implements Initializable,
                                 /* FOCUS ON THE ROW THAT pnRowDetail POINTS TO */
                                 JFXUtil.selectAndFocusRow(tblViewTransDetails, pnDetail);
                                 int lnRow = Integer.parseInt(details_data.get(tblViewTransDetails.getSelectionModel().getSelectedIndex()).getIndex07());
+                                System.out.println("getSelectedIndex " + tblViewTransDetails.getSelectionModel().getSelectedIndex());
+                                System.out.println("row " + lnRow);
                                 pnDetail = lnRow;
                                 loadRecordDetail();
                             }

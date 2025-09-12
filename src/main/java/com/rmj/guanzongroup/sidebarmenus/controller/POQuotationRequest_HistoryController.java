@@ -533,7 +533,7 @@ public class POQuotationRequest_HistoryController implements Initializable, Scre
                         break;
                     case "tfSearchCategory":
                         if (lsValue.equals("")) {
-                            poController.POQuotationRequest().setSearchDepartment("");
+                            poController.POQuotationRequest().setSearchCategory("");
                         }
                         loadRecordSearch();
                         break;

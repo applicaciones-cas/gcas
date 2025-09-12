@@ -484,8 +484,8 @@ public class POQuotationRequest_ApprovalHistoryController implements Initializab
             JFXUtil.setDisabled(lbShow, tfSupplier);
             tfCompany.setText(poController.POQuotationRequest().POQuotationRequestSupplierList(pnSupplier).Company().getCompanyName());
             tfSupplier.setText(poController.POQuotationRequest().POQuotationRequestSupplierList(pnSupplier).Supplier().getCompanyName());
-            tfAddress.setText(poController.POQuotationRequest().POQuotationRequestSupplierList(pnSupplier).ClientAddress().getAddress());
-            tfContactNumber.setText(poController.POQuotationRequest().POQuotationRequestSupplierList(pnSupplier).ClientMobile().getMobileNo());
+            tfAddress.setText(poController.POQuotationRequest().POQuotationRequestSupplierList(pnSupplier).Address().getAddress());
+            tfContactNumber.setText(poController.POQuotationRequest().POQuotationRequestSupplierList(pnSupplier).Contact().getMobileNo());
             tfTerm.setText(poController.POQuotationRequest().POQuotationRequestSupplierList(pnSupplier).Term().getDescription());
             JFXUtil.updateCaretPositions(apSupplier);
         } catch (SQLException | GuanzonException ex) {
@@ -505,8 +505,14 @@ public class POQuotationRequest_ApprovalHistoryController implements Initializab
             } else {
                 lsBrand = poController.POQuotationRequest().Detail(pnDetail).Inventory().Brand().getDescription();
             }
+            String lsModel = "";
+            if (!JFXUtil.isObjectEqualTo(poController.POQuotationRequest().Detail(pnDetail).Model().getDescription(), null, "")) {
+                lsModel = poController.POQuotationRequest().Detail(pnDetail).Model().getDescription();
+            } else {
+                lsModel = poController.POQuotationRequest().Detail(pnDetail).Inventory().Model().getDescription();
+            }
             tfBrand.setText(lsBrand);
-            tfModel.setText("");
+            tfModel.setText(lsModel);
             tfBarcode.setText(poController.POQuotationRequest().Detail(pnDetail).Inventory().getBarCode());
             tfDescription.setText(poController.POQuotationRequest().Detail(pnDetail).Inventory().getDescription());
             tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.POQuotationRequest().Detail(pnDetail).Inventory().getCost(), true));
@@ -530,6 +536,7 @@ public class POQuotationRequest_ApprovalHistoryController implements Initializab
             String lsExpectedDate = CustomCommonUtil.formatDateToShortString(poController.POQuotationRequest().Master().getTransactionDate());
             dpExpectedDate.setValue(JFXUtil.isObjectEqualTo(lsExpectedDate, "1900-01-01") ? null : CustomCommonUtil.parseDateStringToLocalDate(lsExpectedDate, "yyyy-MM-dd"));
 
+            tfBranch.setText(poController.POQuotationRequest().Master().Branch().getBranchName());
             tfReferenceNo.setText(poController.POQuotationRequest().Master().getReferenceNo());
             tfDepartment.setText(poController.POQuotationRequest().Master().Department().getDescription());
             tfDestination.setText(poController.POQuotationRequest().Master().Destination().getBranchName());
@@ -666,7 +673,7 @@ public class POQuotationRequest_ApprovalHistoryController implements Initializab
         JFXUtil.setFocusListener(txtArea_Focus, taRemarks);
         JFXUtil.setKeyPressedListener(this::txtField_KeyPressed, apBrowse, apMaster, apDetail, apSupplier);
 
-        CustomCommonUtil.inputIntegersOnly(tfQuantity);
+//        CustomCommonUtil.inputIntegersOnly(tfQuantity);
     }
 
     public void initTableOnClick() {

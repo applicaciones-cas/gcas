@@ -4,7 +4,6 @@
  */
 package com.rmj.guanzongroup.sidebarmenus.controller;
 
-import static com.rmj.guanzongroup.sidebarmenus.controller.POQuotationRequest_ConfirmationController.poController;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelPOQuotationRequest_Detail;
 
 import com.rmj.guanzongroup.sidebarmenus.utility.CustomCommonUtil;
@@ -167,7 +166,6 @@ public class POQuotationRequest_EntryController implements Initializable, Screen
             switch (checkedBox.getId()) {
                 case "cbReverse":
                     poController.POQuotationRequest().Detail(pnDetail).isReverse(checkedBox.isSelected());
-                    poController.POQuotationRequest().Detail(pnDetail).setQuantity(0.00);
                     loadTableDetail.reload();
                     break;
             }
@@ -274,6 +272,27 @@ public class POQuotationRequest_EntryController implements Initializable, Screen
                                 }
                                 btnNew.fire();
                             }
+                        } else {
+                            return;
+                        }
+                        break;
+                        
+                    case "btnVoid":
+                        poJSON = new JSONObject();
+                        if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure you want to void transaction?") == true) {
+                            if (POQuotationRequestStatus.CONFIRMED.equals(poController.POQuotationRequest().Master().getTransactionStatus())) {
+                                poJSON = poController.POQuotationRequest().CancelTransaction("");
+                            } else {
+                                poJSON = poController.POQuotationRequest().VoidTransaction("");
+                            }
+                            if ("error".equals((String) poJSON.get("result"))) {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                return;
+                            } else {
+                                ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
+                            }
+                            
+                            btnNew.fire();
                         } else {
                             return;
                         }
@@ -722,13 +741,20 @@ public class POQuotationRequest_EntryController implements Initializable, Screen
                 SimpleDateFormat sdfFormat = new SimpleDateFormat(SQLUtil.FORMAT_SHORT_DATE);
 
                 if (JFXUtil.isObjectEqualTo(inputText, null, "", "01/01/1900")) {
+                    switch (datePicker.getId()) {
+                        case "dpExpectedDate":
+                            poJSON = poController.POQuotationRequest().Master().setExpectedPurchaseDate(null);
+                            break;
+                    }
                     return;
                 }
+                
                 String lsServerDate = sdfFormat.format(oApp.getServerDate());
                 String lsTransDate = sdfFormat.format(poController.POQuotationRequest().Master().getTransactionDate());
                 String lsSelectedDate = sdfFormat.format(SQLUtil.toDate(JFXUtil.convertToIsoFormat(inputText), SQLUtil.FORMAT_SHORT_DATE));
-                LocalDate currentDate = LocalDate.parse(lsTransDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
+                LocalDate currentDate = LocalDate.parse(lsServerDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
                 LocalDate selectedDate = LocalDate.parse(lsSelectedDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
+                LocalDate transactionDate = LocalDate.parse(lsTransDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
 
                 switch (datePicker.getId()) {
                     case "dpTransactionDate":
@@ -736,25 +762,42 @@ public class POQuotationRequest_EntryController implements Initializable, Screen
                                 || poController.POQuotationRequest().getEditMode() == EditMode.UPDATE) {
 
                             if (selectedDate.isAfter(currentDate)) {
-                                JFXUtil.setJSONError(poJSON, "Transaction Date cannot be after the current date.");
+                                poJSON.put("result", "error");
+                                poJSON.put("message", "Future dates are not allowed.");
                                 pbSuccess = false;
-                            } else {
-                                poController.POQuotationRequest().Master().setTransactionDate((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
                             }
-                            if (pbSuccess) {
-                                if (pnEditMode == EditMode.UPDATE && oApp.getUserLevel() <= UserRight.ENCODER) {
-                                    poJSON = ShowDialogFX.getUserApproval(oApp);
-                                    if (!"success".equals((String) poJSON.get("result"))) {
-                                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                        loadRecordMaster();
-                                        return;
+
+                            if (pbSuccess && ((poController.POQuotationRequest().getEditMode() == EditMode.UPDATE && !lsTransDate.equals(lsSelectedDate))
+                                    || !lsServerDate.equals(lsSelectedDate))) {
+                                if (oApp.getUserLevel() <= UserRight.ENCODER) {
+                                    if (ShowMessageFX.YesNo(null, pxeModuleName, "Change in Transaction Date Detected\n\n"
+                                        + "If YES, please seek approval to proceed with the new selected date.\n"
+                                        + "If NO, the previous transaction date will be retained.") == true) {
+                                        poJSON = ShowDialogFX.getUserApproval(oApp);
+                                        if (!"success".equals((String) poJSON.get("result"))) {
+                                            pbSuccess = false;
+                                        } else {
+                                            if(Integer.parseInt(poJSON.get("nUserLevl").toString())<= UserRight.ENCODER){
+                                                poJSON.put("result", "error");
+                                                poJSON.put("message", "User is not an authorized approving officer.");
+                                                pbSuccess = false;
+                                            }
+                                        }
+                                    } else {
+                                        pbSuccess = false;
                                     }
                                 }
+                            }
+
+                            if (pbSuccess) {
+                                poController.POQuotationRequest().Master().setTransactionDate((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
                             } else {
                                 if ("error".equals((String) poJSON.get("result"))) {
                                     ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+
                                 }
                             }
+
                             pbSuccess = false; //Set to false to prevent multiple message box: Conflict with server date vs transaction date validation
                             loadRecordMaster();
                             pbSuccess = true; //Set to original value
@@ -764,7 +807,7 @@ public class POQuotationRequest_EntryController implements Initializable, Screen
                         if (poController.POQuotationRequest().getEditMode() == EditMode.ADDNEW
                                 || poController.POQuotationRequest().getEditMode() == EditMode.UPDATE) {
 
-                            if (selectedDate.isBefore(currentDate)) {
+                            if (selectedDate.isBefore(transactionDate)) {
                                 JFXUtil.setJSONError(poJSON, "Expected Purchase Date cannot be before the transaction date.");
                                 pbSuccess = false;
                             } else {

@@ -176,7 +176,7 @@
                                     <Font size="12.0" />
                                  </font>
                               </Button>
-                              <Button fx:id="btnPrint" contentDisplay="TOP" ellipsisString="" layoutX="390.0" layoutY="15.0" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="70.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Print">
+                              <Button fx:id="btnExport" contentDisplay="TOP" ellipsisString="" layoutX="390.0" layoutY="15.0" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="70.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Export">
                                  <effect>
                                     <Blend />
                                  </effect>
@@ -330,12 +330,12 @@
                                                                                           </Label>
                                                                           <TextField fx:id="tfTransactionNo" disable="true" editable="false" maxHeight="25.0" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="139.0" style="-fx-font-weight: bold;" styleClass="DisabledTextField" GridPane.columnIndex="2" GridPane.columnSpan="2" />
                                                                               <DatePicker fx:id="dpTransactionDate" disable="true" editable="false" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                                                                                          <TextField fx:id="tfBranch" layoutX="100.0" layoutY="105.0" maxHeight="25.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="3" />
+                                                                                          <TextField fx:id="tfBranch" disable="true" editable="false" layoutX="100.0" layoutY="105.0" maxHeight="25.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="3" />
                                                                   <TextField fx:id="tfDepartment" disable="true" editable="false" layoutX="100.0" layoutY="133.0" maxHeight="25.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="5" />
                                                                   <TextField fx:id="tfDestination" disable="true" editable="false" layoutX="100.0" layoutY="135.0" maxHeight="25.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="4" />
-                                                                          <TextField fx:id="tfReferenceNo" maxHeight="25.0" GridPane.columnIndex="7" GridPane.rowIndex="3" />
+                                                                          <TextField fx:id="tfReferenceNo" disable="true" editable="false" maxHeight="25.0" GridPane.columnIndex="7" GridPane.rowIndex="3" />
                                                                   <TextField fx:id="tfCategory" disable="true" editable="false" maxHeight="25.0" GridPane.columnIndex="7" GridPane.rowIndex="4" />
-                                                                        <DatePicker fx:id="dpExpectedDate" maxWidth="139.0" GridPane.columnIndex="7" GridPane.rowIndex="5" />
+                                                                        <DatePicker fx:id="dpExpectedDate" disable="true" editable="false" maxWidth="139.0" GridPane.columnIndex="7" GridPane.rowIndex="5" />
                                                       <TextArea fx:id="taRemarks" minHeight="-Infinity" prefHeight="27.0" GridPane.columnIndex="2" GridPane.columnSpan="6" GridPane.rowIndex="6" GridPane.rowSpan="2">
                                                          <GridPane.margin>
                                                             <Insets top="1.0" />
@@ -482,17 +482,17 @@
                                                                                  </font>
                                                                               </Label>
                                                                            </children></AnchorPane>
-                                                            <Label text="Supplier" GridPane.rowIndex="1" />
-                                                            <Label layoutX="46.0" layoutY="16.0" text="Address" GridPane.rowIndex="2" />
-                                                            <Label layoutX="46.0" layoutY="44.0" text="Contact No." GridPane.rowIndex="3" />
-                                                            <TextField fx:id="tfSupplier" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="1" />
-                                                            <TextField fx:id="tfAddress" disable="true" editable="false" layoutX="100.0" layoutY="12.0" styleClass="DisabledTextField" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="2" />
-                                                            <TextField fx:id="tfContactNumber" disable="true" editable="false" layoutX="100.0" layoutY="40.0" styleClass="DisabledTextField" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-                                                                        <CheckBox fx:id="cbReverse" mnemonicParsing="false" nodeOrientation="RIGHT_TO_LEFT" onAction="#cmdCheckBox_Click" text="Reverse" GridPane.columnIndex="6" GridPane.rowIndex="3" />
-                                                                        <Label text="Term" GridPane.rowIndex="4" />
-                                                                        <TextField fx:id="tfTerm" layoutX="100.0" layoutY="12.0" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.rowIndex="4" />
-                                                                        <Label text="Company" />
-                                                                        <TextField fx:id="tfCompany" minWidth="-Infinity" prefHeight="25.0" prefWidth="289.0" promptText="Press F3: Search" GridPane.columnIndex="2" />
+                                                            <Label text="Supplier" />
+                                                            <Label layoutX="46.0" layoutY="16.0" text="Address" GridPane.rowIndex="1" />
+                                                            <Label layoutX="46.0" layoutY="44.0" text="Contact No." GridPane.rowIndex="2" />
+                                                            <TextField fx:id="tfSupplier" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.columnSpan="2" />
+                                                            <TextField fx:id="tfAddress" disable="true" editable="false" layoutX="100.0" layoutY="12.0" styleClass="DisabledTextField" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="1" />
+                                                            <TextField fx:id="tfContactNumber" disable="true" editable="false" layoutX="100.0" layoutY="40.0" styleClass="DisabledTextField" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                                                        <CheckBox fx:id="cbReverse" mnemonicParsing="false" nodeOrientation="RIGHT_TO_LEFT" onAction="#cmdCheckBox_Click" text="Reverse" GridPane.columnIndex="6" GridPane.rowIndex="4" />
+                                                                        <Label text="Term" GridPane.rowIndex="3" />
+                                                                        <TextField fx:id="tfTerm" layoutX="100.0" layoutY="12.0" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                                                        <Label text="Company" GridPane.rowIndex="4" />
+                                                                        <TextField fx:id="tfCompany" minWidth="-Infinity" prefHeight="25.0" prefWidth="289.0" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.rowIndex="4" />
                                                          </children>
                                                       </GridPane>
                                                    </children>
@@ -510,8 +510,8 @@
                                                             <TableView fx:id="tblViewSupplier" prefHeight="200.0" prefWidth="200.0">
                                                               <columns>
                                                                 <TableColumn fx:id="tblRowNoSupplier" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" text="No." />
-                                                                              <TableColumn fx:id="tblCompany" maxWidth="229.0" minWidth="229.0" prefWidth="229.0" text="Company" />
                                                                 <TableColumn fx:id="tblSupplier" maxWidth="354.0" minWidth="-1.0" prefWidth="354.0" text="Supplier" />
+                                                                              <TableColumn fx:id="tblCompany" maxWidth="229.0" minWidth="229.0" prefWidth="229.0" text="Company" />
                                                                   <TableColumn fx:id="tblStatus" maxWidth="111.0" minWidth="111.0" prefWidth="111.0" text="Status" />
                                                               </columns>
                                                             </TableView>
