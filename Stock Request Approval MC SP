@@ -40,3 +40,7 @@ Aug 27, 2025 5:16:38 PM org.guanzon.appdriver.base.LogWrapper info
 INFO: Stock Request Approval MC SP : Success on  Search Cluster! 
 Aug 27, 2025 5:16:38 PM org.guanzon.appdriver.base.LogWrapper severe
 SEVERE: Stock Request Approval MC SP :No record found.
+Sep 03, 2025 9:28:45 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Stock Request Approval MC SP :null
+Sep 03, 2025 9:28:45 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Stock Request Approval MC SP : Success on Stock Request Approval MC SP

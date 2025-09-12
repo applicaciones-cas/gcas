@@ -76,7 +76,7 @@ public class DeliverySchedule_EntryControllerMC implements Initializable, Screen
     private LogWrapper poLogWrapper;
     private int pnEditMode;
     private DeliverySchedule poAppController;
-    private String psFormName = "Delivery Schedule Request";
+    private String psFormName = "Delivery Schedule Entry MC";
 
     private String psClusterNameOld = "";
 
@@ -722,8 +722,6 @@ public class DeliverySchedule_EntryControllerMC implements Initializable, Screen
         
         try {
             if (loValue != null && !loValue.isEmpty()) {
-//                Date toDateValue = SQLUtil.toDate(loValue, "dd/MM/yyyy");
-//                lsValue = SQLUtil.dateFormat(toDateValue, SQLUtil.FORMAT_SHORT_DATE);
                   lsValue = LocalDate.parse(loValue, DateTimeFormatter.ofPattern("M/d/yyyy")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             }
 

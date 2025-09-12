@@ -5,6 +5,7 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -75,7 +76,7 @@ public class DeliverySchedule_ConfirmationControllerMC_SP implements Initializab
     private LogWrapper poLogWrapper;
     private int pnEditMode;
     private DeliverySchedule poAppController;
-    private String psFormName = "Delivery Schedule Confirmation";
+    private String psFormName = "Delivery Schedule Confirmation MC SP";
 
     private String psClusterNameOld = "";
 
@@ -747,15 +748,14 @@ public class DeliverySchedule_ConfirmationControllerMC_SP implements Initializab
 
     private void dPicker_KeyPressed(KeyEvent event) {
 
-        TextField loTxtField = (TextField) event.getSource();
-        String loDatePickerID = ((DatePicker) loTxtField.getParent()).getId(); // cautious cast
-        String loValue = loTxtField.getText();
+        TextField loDateField = (TextField) event.getSource();
+        String loDatePickerID = loDateField.getParent().getId(); // cautious cast
+        String loValue = loDateField.getText().toString();
         String lsValue = "";
+        
         try {
             if (loValue != null && !loValue.isEmpty()) {
-                Date toDateValue = SQLUtil.toDate(loValue, "dd/MM/yyyy");
-                lsValue = SQLUtil.dateFormat(toDateValue, SQLUtil.FORMAT_SHORT_DATE);
-
+                  lsValue = LocalDate.parse(loValue, DateTimeFormatter.ofPattern("M/d/yyyy")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             }
 
             if (event.getCode() != null) {
@@ -766,40 +766,36 @@ public class DeliverySchedule_ConfirmationControllerMC_SP implements Initializab
                         event.consume();
                         switch (loDatePickerID) {
                             case "dpSearchDate":
-
-                                if (!tfTransactionNo.getText().isEmpty()) {
-                                    if (ShowMessageFX.OkayCancel(null, "Search Transaction! by Date", "Are you sure you want replace loaded Transaction?") == false) {
-                                        return;
-                                    }
-                                }
+                                
                                 if (!isJSONSuccess(poAppController.searchTransaction(lsValue, false, true),
                                         "Search Transaction!! BY Date")) {
-                                    return;
+                                    ShowMessageFX.Information("No transactions found", "Delivery Schedule Encoding", "");
+                                    break;
                                 }
                                 getLoadedTransaction();
                                 initButtonDisplay(poAppController.getEditMode());
+
                                 break;
 
                             case "dpSearchScheduleDate":
-
-                                if (!tfTransactionNo.getText().isEmpty()) {
-                                    if (ShowMessageFX.OkayCancel(null, "Search Transaction! by Schedule Date", "Are you sure you want replace loaded Transaction?") == false) {
-                                        return;
-                                    }
-                                }
-                                if (!isJSONSuccess(poAppController.searchTransaction(lsValue, false, false),
+                                
+                                if (!isJSONSuccess(poAppController.searchTransaction(lsValue, false, true),
                                         "Search Transaction!! BY Schedule Date")) {
-                                    return;
+                                    ShowMessageFX.Information("No transactions found", "Delivery Schedule Encoding", "");
+                                    break;
                                 }
                                 getLoadedTransaction();
                                 initButtonDisplay(poAppController.getEditMode());
+
                                 break;
                         }
                 }
             }
             event.consume();
+
         } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
-            Logger.getLogger(DeliverySchedule_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliverySchedule_EntryControllerMC.class
+                    .getName()).log(Level.SEVERE, null, ex);
             poLogWrapper.severe(psFormName + " :" + ex.getMessage());
         }
     }
