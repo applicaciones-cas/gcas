@@ -550,7 +550,7 @@ public class POQuotationRequest_EntryController implements Initializable, Screen
                                 try {
                                     poJSON = poController.POQuotationRequest().SearchInventory(lsValue, false, pnDetail);
                                     if ("error".equals(poJSON.get("result"))) {
-                                        int lnTempRow = JFXUtil.getDetailTempRow(details_data, Integer.parseInt(String.valueOf(poJSON.get("row"))), 7);
+                                        int lnTempRow = JFXUtil.getDetailTempRow(details_data, Integer.parseInt(String.valueOf(poJSON.get("row"))) + 1, 7);
                                         pnDetail = lnTempRow;
                                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                     }

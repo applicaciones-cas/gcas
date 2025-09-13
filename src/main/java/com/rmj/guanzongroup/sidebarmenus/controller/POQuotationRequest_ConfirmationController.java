@@ -416,6 +416,8 @@ public class POQuotationRequest_ConfirmationController implements Initializable,
                                 try {
                                     poJSON = poController.POQuotationRequest().SearchInventory(lsValue, false, pnDetail);
                                     if ("error".equals(poJSON.get("result"))) {
+                                        int lnTempRow = JFXUtil.getDetailTempRow(details_data, Integer.parseInt(String.valueOf(poJSON.get("row"))) + 1, 7);
+                                        pnDetail = lnTempRow;
                                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                     }
                                 } catch (GuanzonException | SQLException ex) {

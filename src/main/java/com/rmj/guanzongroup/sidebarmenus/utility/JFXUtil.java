@@ -2483,7 +2483,7 @@ public class JFXUtil {
     }
 
     public static int getDetailRow(ObservableList<?> dataList, int lnpn, int columnIndex) {
-        int result = 0;
+        int result = lnpn - 1;
         try {
             for (int lnCtr = 0; lnCtr < dataList.size(); lnCtr++) {
                 Object item = dataList.get(lnCtr);
