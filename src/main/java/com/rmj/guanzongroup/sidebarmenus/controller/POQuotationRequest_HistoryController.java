@@ -541,10 +541,11 @@ public class POQuotationRequest_HistoryController implements Initializable, Scre
                         break;
                 }
             });
-
+    
     public void initDatePickers() {
-        JFXUtil.setDatePickerFormat("MM/dd/yyyy", dpTransactionDate, dpExpectedDate);
-        JFXUtil.setActionListener(this::datepicker_Action, dpTransactionDate, dpExpectedDate);
+        JFXUtil.setDatePickerFormat("MM/dd/yyyy", dpTransactionDate, dpExpectedDate, dpSearchTransactionDate);
+        JFXUtil.setActionListener(this::datepicker_Action, dpTransactionDate, dpExpectedDate, dpSearchTransactionDate);
+
     }
 
     public void initTextFields() {
