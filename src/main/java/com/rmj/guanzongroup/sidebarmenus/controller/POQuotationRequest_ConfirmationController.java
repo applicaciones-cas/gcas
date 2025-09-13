@@ -183,14 +183,14 @@ public class POQuotationRequest_ConfirmationController implements Initializable,
             CheckBox checkedBox = (CheckBox) source;
             switch (checkedBox.getId()) {
                 case "cbReverse": // this is the id
-                    if(poController.POQuotationRequest().Detail(pnDetail).getEditMode() == EditMode.ADDNEW){
-                        if(!checkedBox.isSelected()){
+                    if (poController.POQuotationRequest().Detail(pnDetail).getEditMode() == EditMode.ADDNEW) {
+                        if (!checkedBox.isSelected()) {
                             poController.POQuotationRequest().Detail().remove(pnDetail);
-                        }     
+                        }
                     } else {
                         poController.POQuotationRequest().Detail(pnDetail).isReverse(checkedBox.isSelected());
                     }
-                    
+
                     loadTableDetail.reload();
                     break;
             }
@@ -522,7 +522,7 @@ public class POQuotationRequest_ConfirmationController implements Initializable,
             switch (event.getCode()) {
                 case TAB:
                 case ENTER:
-                    pbEntered = true;
+                    pbEntered = tfQuantity.isFocused() ? true : false;
                     CommonUtils.SetNextFocus(txtField);
                     event.consume();
                     break;
@@ -634,8 +634,14 @@ public class POQuotationRequest_ConfirmationController implements Initializable,
                         case "tfBarcode":
                             poJSON = poController.POQuotationRequest().SearchInventory(lsValue, true, pnDetail);
                             if ("error".equals(poJSON.get("result"))) {
-                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 txtField.setText("");
+                                int lnReturned = Integer.parseInt(String.valueOf(poJSON.get("row"))) + 1;
+                                JFXUtil.runWithDelay(0.70, () -> {
+                                    int lnTempRow = JFXUtil.getDetailTempRow(details_data, lnReturned, 7);
+                                    pnDetail = lnTempRow;
+                                    loadTableDetail.reload();
+                                });
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 break;
                             } else {
                                 loadTableDetail.reload();
@@ -645,8 +651,14 @@ public class POQuotationRequest_ConfirmationController implements Initializable,
                         case "tfDescription":
                             poJSON = poController.POQuotationRequest().SearchInventory(lsValue, false, pnDetail);
                             if ("error".equals(poJSON.get("result"))) {
-                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 txtField.setText("");
+                                int lnReturned = Integer.parseInt(String.valueOf(poJSON.get("row"))) + 1;
+                                JFXUtil.runWithDelay(0.70, () -> {
+                                    int lnTempRow = JFXUtil.getDetailTempRow(details_data, lnReturned, 7);
+                                    pnDetail = lnTempRow;
+                                    loadTableDetail.reload();
+                                });
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 break;
                             } else {
                                 loadTableDetail.reload();
@@ -684,17 +696,16 @@ public class POQuotationRequest_ConfirmationController implements Initializable,
                     }
                     return;
                 }
-                
+
                 String lsServerDate, lsTransDate, lsSelectedDate;
                 LocalDate currentDate, selectedDate, transactionDate;
-                
+
 //                String lsServerDate = sdfFormat.format(oApp.getServerDate());
 //                String lsTransDate = sdfFormat.format(poController.POQuotationRequest().Master().getTransactionDate());
 //                String lsSelectedDate = sdfFormat.format(SQLUtil.toDate(JFXUtil.convertToIsoFormat(inputText), SQLUtil.FORMAT_SHORT_DATE));
 //                LocalDate currentDate = LocalDate.parse(lsServerDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
 //                LocalDate selectedDate = LocalDate.parse(lsSelectedDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
 //                LocalDate transactionDate = LocalDate.parse(lsTransDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
-                
                 switch (datePicker.getId()) {
                     case "dpTransactionDate":
                         lsServerDate = sdfFormat.format(oApp.getServerDate());
@@ -703,7 +714,7 @@ public class POQuotationRequest_ConfirmationController implements Initializable,
                         currentDate = LocalDate.parse(lsServerDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
                         selectedDate = LocalDate.parse(lsSelectedDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
                         transactionDate = LocalDate.parse(lsTransDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
-                        
+
                         if (poController.POQuotationRequest().getEditMode() == EditMode.ADDNEW
                                 || poController.POQuotationRequest().getEditMode() == EditMode.UPDATE) {
 
@@ -717,13 +728,13 @@ public class POQuotationRequest_ConfirmationController implements Initializable,
                                     || !lsServerDate.equals(lsSelectedDate))) {
                                 if (oApp.getUserLevel() <= UserRight.ENCODER) {
                                     if (ShowMessageFX.YesNo(null, pxeModuleName, "Change in Transaction Date Detected\n\n"
-                                        + "If YES, please seek approval to proceed with the new selected date.\n"
-                                        + "If NO, the previous transaction date will be retained.") == true) {
+                                            + "If YES, please seek approval to proceed with the new selected date.\n"
+                                            + "If NO, the previous transaction date will be retained.") == true) {
                                         poJSON = ShowDialogFX.getUserApproval(oApp);
                                         if (!"success".equals((String) poJSON.get("result"))) {
                                             pbSuccess = false;
                                         } else {
-                                            if(Integer.parseInt(poJSON.get("nUserLevl").toString())<= UserRight.ENCODER){
+                                            if (Integer.parseInt(poJSON.get("nUserLevl").toString()) <= UserRight.ENCODER) {
                                                 poJSON.put("result", "error");
                                                 poJSON.put("message", "User is not an authorized approving officer.");
                                                 pbSuccess = false;
@@ -756,7 +767,7 @@ public class POQuotationRequest_ConfirmationController implements Initializable,
                         currentDate = LocalDate.parse(lsServerDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
                         selectedDate = LocalDate.parse(lsSelectedDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
                         transactionDate = LocalDate.parse(lsTransDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
-                        
+
                         if (poController.POQuotationRequest().getEditMode() == EditMode.ADDNEW
                                 || poController.POQuotationRequest().getEditMode() == EditMode.UPDATE) {
 
@@ -812,10 +823,10 @@ public class POQuotationRequest_ConfirmationController implements Initializable,
             if (pnDetail < 0 || pnDetail > poController.POQuotationRequest().getDetailCount() - 1) {
                 return;
             }
-            
+
             boolean lbShow = (poController.POQuotationRequest().Detail(pnDetail).getEditMode() == EditMode.UPDATE);
             JFXUtil.setDisabled(lbShow, tfBrand, tfModel, tfBarcode, tfDescription);
-            
+
             String lsBrand = "";
             if (!JFXUtil.isObjectEqualTo(poController.POQuotationRequest().Detail(pnDetail).Brand().getDescription(), null, "")) {
                 lsBrand = poController.POQuotationRequest().Detail(pnDetail).Brand().getDescription();
@@ -935,7 +946,8 @@ public class POQuotationRequest_ConfirmationController implements Initializable,
                                 }
                             }
 
-                            if (pnDetail < 0 || pnDetail
+                            int lnTempRow = JFXUtil.getDetailRow(details_data, pnDetail, 7); //this method is only used when Reverse is applied
+                            if (lnTempRow < 0 || lnTempRow
                                     >= details_data.size()) {
                                 if (!details_data.isEmpty()) {
                                     /* FOCUS ON FIRST ROW */
@@ -946,10 +958,8 @@ public class POQuotationRequest_ConfirmationController implements Initializable,
                                 }
                             } else {
                                 /* FOCUS ON THE ROW THAT pnRowDetail POINTS TO */
-                                JFXUtil.selectAndFocusRow(tblViewTransDetails, pnDetail);
+                                JFXUtil.selectAndFocusRow(tblViewTransDetails, lnTempRow);
                                 int lnRow = Integer.parseInt(details_data.get(tblViewTransDetails.getSelectionModel().getSelectedIndex()).getIndex07());
-                                System.out.println("getSelectedIndex " + tblViewTransDetails.getSelectionModel().getSelectedIndex());
-                                System.out.println("row " + lnRow);
                                 pnDetail = lnRow;
                                 loadRecordDetail();
                             }

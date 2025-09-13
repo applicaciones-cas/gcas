@@ -4,6 +4,7 @@
  */
 package com.rmj.guanzongroup.sidebarmenus.controller;
 
+import static com.rmj.guanzongroup.sidebarmenus.controller.POQuotationRequest_ApprovalController.poController;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelPOQuotationRequest_Detail;
 
 import com.rmj.guanzongroup.sidebarmenus.utility.CustomCommonUtil;
@@ -165,14 +166,14 @@ public class POQuotationRequest_EntryController implements Initializable, Screen
             CheckBox checkedBox = (CheckBox) source;
             switch (checkedBox.getId()) {
                 case "cbReverse": // this is the id
-                    if(poController.POQuotationRequest().Detail(pnDetail).getEditMode() == EditMode.ADDNEW){
-                        if(!checkedBox.isSelected()){
+                    if (poController.POQuotationRequest().Detail(pnDetail).getEditMode() == EditMode.ADDNEW) {
+                        if (!checkedBox.isSelected()) {
                             poController.POQuotationRequest().Detail().remove(pnDetail);
-                        }     
+                        }
                     } else {
                         poController.POQuotationRequest().Detail(pnDetail).isReverse(checkedBox.isSelected());
                     }
-                    
+
                     loadTableDetail.reload();
                     break;
             }
@@ -283,7 +284,7 @@ public class POQuotationRequest_EntryController implements Initializable, Screen
                             return;
                         }
                         break;
-                        
+
                     case "btnVoid":
                         poJSON = new JSONObject();
                         if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure you want to void transaction?") == true) {
@@ -298,7 +299,7 @@ public class POQuotationRequest_EntryController implements Initializable, Screen
                             } else {
                                 ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
                             }
-                            
+
                             btnNew.fire();
                         } else {
                             return;
@@ -357,6 +358,7 @@ public class POQuotationRequest_EntryController implements Initializable, Screen
         try {
             boolean lbShow = (poController.POQuotationRequest().Detail(pnDetail).getEditMode() == EditMode.UPDATE);
             JFXUtil.setDisabled(lbShow, tfBrand, tfModel, tfBarcode, tfDescription);
+
             if (pnDetail < 0 || pnDetail > poController.POQuotationRequest().getDetailCount() - 1) {
                 return;
             }
@@ -465,8 +467,8 @@ public class POQuotationRequest_EntryController implements Initializable, Screen
                                     lsDescription = "";
                                 }
                             }
-
-                            if (pnDetail < 0 || pnDetail
+                            int lnTempRow = JFXUtil.getDetailRow(details_data, pnDetail, 7); //this method is used only when Reverse is applied
+                            if (lnTempRow < 0 || lnTempRow
                                     >= details_data.size()) {
                                 if (!details_data.isEmpty()) {
                                     /* FOCUS ON FIRST ROW */
@@ -477,7 +479,7 @@ public class POQuotationRequest_EntryController implements Initializable, Screen
                                 }
                             } else {
                                 /* FOCUS ON THE ROW THAT pnRowDetail POINTS TO */
-                                JFXUtil.selectAndFocusRow(tblViewTransDetails, pnDetail);
+                                JFXUtil.selectAndFocusRow(tblViewTransDetails, lnTempRow);
                                 int lnRow = Integer.parseInt(details_data.get(tblViewTransDetails.getSelectionModel().getSelectedIndex()).getIndex07());
                                 pnDetail = lnRow;
                                 loadRecordDetail();
@@ -505,6 +507,17 @@ public class POQuotationRequest_EntryController implements Initializable, Screen
                 loadRecordMaster();
             });
 
+//    public int checkSimilar(String lsValue) {
+//        int lnCtr = 0;
+//        int lnResult = 0;
+//        for (lnCtr = 0; lnCtr < poController.POQuotationRequest().getDetailCount(); lnCtr++) {
+//            if (poController.POQuotationRequest().Detail(pnDetail).getDescription().equals(lsValue)) {
+//                lnResult = lnCtr;
+//            }
+//        }
+//        JFXUtil.selectAndFocusRow(tblViewTransDetails, checkSimilar(poController.POQuotationRequest().Detail(pnDetail).getDescription()));
+//        return lnResult;
+//    }
     ChangeListener<Boolean> txtDetail_Focus = JFXUtil.FocusListener(TextField.class,
             (lsID, lsValue) -> {
                 /*Lost Focus*/
@@ -537,6 +550,8 @@ public class POQuotationRequest_EntryController implements Initializable, Screen
                                 try {
                                     poJSON = poController.POQuotationRequest().SearchInventory(lsValue, false, pnDetail);
                                     if ("error".equals(poJSON.get("result"))) {
+                                        int lnTempRow = JFXUtil.getDetailTempRow(details_data, Integer.parseInt(String.valueOf(poJSON.get("row"))), 7);
+                                        pnDetail = lnTempRow;
                                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                     }
                                 } catch (GuanzonException | SQLException ex) {
@@ -618,7 +633,9 @@ public class POQuotationRequest_EntryController implements Initializable, Screen
             switch (event.getCode()) {
                 case TAB:
                 case ENTER:
-                    pbEntered = true;
+                    if (tfQuantity.isFocused()) {
+                        pbEntered = true;
+                    }
                     CommonUtils.SetNextFocus(txtField);
                     event.consume();
                     break;
@@ -705,8 +722,14 @@ public class POQuotationRequest_EntryController implements Initializable, Screen
                         case "tfBarcode":
                             poJSON = poController.POQuotationRequest().SearchInventory(lsValue, true, pnDetail);
                             if ("error".equals(poJSON.get("result"))) {
-                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 txtField.setText("");
+                                int lnReturned = Integer.parseInt(String.valueOf(poJSON.get("row"))) + 1;
+                                JFXUtil.runWithDelay(0.70, () -> {
+                                    int lnTempRow = JFXUtil.getDetailTempRow(details_data, lnReturned, 7);
+                                    pnDetail = lnTempRow;
+                                    loadTableDetail.reload();
+                                });
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 break;
                             } else {
                                 loadTableDetail.reload();
@@ -716,8 +739,14 @@ public class POQuotationRequest_EntryController implements Initializable, Screen
                         case "tfDescription":
                             poJSON = poController.POQuotationRequest().SearchInventory(lsValue, false, pnDetail);
                             if ("error".equals(poJSON.get("result"))) {
-                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 txtField.setText("");
+                                int lnReturned = Integer.parseInt(String.valueOf(poJSON.get("row"))) + 1;
+                                JFXUtil.runWithDelay(0.70, () -> {
+                                    int lnTempRow = JFXUtil.getDetailTempRow(details_data, lnReturned, 7);
+                                    pnDetail = lnTempRow;
+                                    loadTableDetail.reload();
+                                });
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 break;
                             } else {
                                 loadTableDetail.reload();
@@ -755,7 +784,7 @@ public class POQuotationRequest_EntryController implements Initializable, Screen
                     }
                     return;
                 }
-                
+
                 String lsServerDate = sdfFormat.format(oApp.getServerDate());
                 String lsTransDate = sdfFormat.format(poController.POQuotationRequest().Master().getTransactionDate());
                 String lsSelectedDate = sdfFormat.format(SQLUtil.toDate(JFXUtil.convertToIsoFormat(inputText), SQLUtil.FORMAT_SHORT_DATE));
@@ -778,13 +807,13 @@ public class POQuotationRequest_EntryController implements Initializable, Screen
                                     || !lsServerDate.equals(lsSelectedDate))) {
                                 if (oApp.getUserLevel() <= UserRight.ENCODER) {
                                     if (ShowMessageFX.YesNo(null, pxeModuleName, "Change in Transaction Date Detected\n\n"
-                                        + "If YES, please seek approval to proceed with the new selected date.\n"
-                                        + "If NO, the previous transaction date will be retained.") == true) {
+                                            + "If YES, please seek approval to proceed with the new selected date.\n"
+                                            + "If NO, the previous transaction date will be retained.") == true) {
                                         poJSON = ShowDialogFX.getUserApproval(oApp);
                                         if (!"success".equals((String) poJSON.get("result"))) {
                                             pbSuccess = false;
                                         } else {
-                                            if(Integer.parseInt(poJSON.get("nUserLevl").toString())<= UserRight.ENCODER){
+                                            if (Integer.parseInt(poJSON.get("nUserLevl").toString()) <= UserRight.ENCODER) {
                                                 poJSON.put("result", "error");
                                                 poJSON.put("message", "User is not an authorized approving officer.");
                                                 pbSuccess = false;

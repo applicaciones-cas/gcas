@@ -2481,4 +2481,49 @@ public class JFXUtil {
             orElse.run();
         }
     }
+
+    public static int getDetailRow(ObservableList<?> dataList, int lnpn, int columnIndex) {
+        int result = 0;
+        try {
+            for (int lnCtr = 0; lnCtr < dataList.size(); lnCtr++) {
+                Object item = dataList.get(lnCtr);
+                // Build dynamic getter name like "getIndex07"
+                String getterName = String.format("getIndex%02d", columnIndex);
+                String value = (String) item.getClass().getMethod(getterName).invoke(item);
+
+                if (String.valueOf(lnpn).equals(value)) {
+                    // Always get index01
+                    String index01 = (String) item.getClass().getMethod("getIndex01").invoke(item);
+                    result = Integer.parseInt(index01) - 1;
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    public static int getDetailTempRow(ObservableList<?> dataList, int lnpn, int columnIndex) {
+        int result = 0;
+        try {
+            for (int lnCtr = 0; lnCtr < dataList.size(); lnCtr++) {
+                Object item = dataList.get(lnCtr);
+                // Always search using Index01
+                String index01 = (String) item.getClass().getMethod("getIndex01").invoke(item);
+
+                if (String.valueOf(lnpn).equals(index01)) {
+                    // Build dynamic getter name for return field sample index07
+                    String getterName = String.format("getIndex%02d", columnIndex);
+                    String value = (String) item.getClass().getMethod(getterName).invoke(item);
+                    result = Integer.parseInt(value);
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
 }

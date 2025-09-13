@@ -338,7 +338,8 @@ public class POQuotationRequest_HistoryController implements Initializable, Scre
                                 }
                             }
 
-                            if (pnDetail < 0 || pnDetail
+                            int lnTempRow = JFXUtil.getDetailRow(details_data, pnDetail, 7); //this method is used only when Reverse is applied
+                            if (lnTempRow < 0 || lnTempRow
                                     >= details_data.size()) {
                                 if (!details_data.isEmpty()) {
                                     /* FOCUS ON FIRST ROW */
@@ -349,7 +350,7 @@ public class POQuotationRequest_HistoryController implements Initializable, Scre
                                 }
                             } else {
                                 /* FOCUS ON THE ROW THAT pnRowDetail POINTS TO */
-                                JFXUtil.selectAndFocusRow(tblViewTransDetails, pnDetail);
+                                JFXUtil.selectAndFocusRow(tblViewTransDetails, lnTempRow);
                                 int lnRow = Integer.parseInt(details_data.get(tblViewTransDetails.getSelectionModel().getSelectedIndex()).getIndex07());
                                 pnDetail = lnRow;
                                 loadRecordDetail();
@@ -525,7 +526,7 @@ public class POQuotationRequest_HistoryController implements Initializable, Scre
                         break;
                 }
             });
-    
+
     public void initDatePickers() {
         JFXUtil.setDatePickerFormat("MM/dd/yyyy", dpTransactionDate, dpExpectedDate, dpSearchTransactionDate);
         JFXUtil.setActionListener(this::datepicker_Action, dpTransactionDate, dpExpectedDate, dpSearchTransactionDate);

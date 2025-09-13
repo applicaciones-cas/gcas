@@ -562,23 +562,23 @@ public class POQuotationRequest_ApprovalHistoryController implements Initializab
                                             ));
                                 }
                             }
-                            if (pnSupplier < 0 || pnSupplier
+                            int lnTempRow = JFXUtil.getDetailRow(supplier_data, pnSupplier, 7); //this method is only used when Reverse is applied
+                            if (lnTempRow < 0 || lnTempRow
                                     >= supplier_data.size()) {
                                 if (!supplier_data.isEmpty()) {
                                     /* FOCUS ON FIRST ROW */
                                     JFXUtil.selectAndFocusRow(tblViewSupplier, 0);
-                                    int lnRow = Integer.parseInt(details_data.get(0).getIndex07());
+                                    int lnRow = Integer.parseInt(supplier_data.get(0).getIndex07());
                                     pnSupplier = lnRow;
+                                    loadRecordSupplier();
                                 }
-                                loadRecordSupplier();
                             } else {
                                 /* FOCUS ON THE ROW THAT pnRowDetail POINTS TO */
-                                JFXUtil.selectAndFocusRow(tblViewSupplier, pnSupplier);
-                                int lnRow = Integer.parseInt(details_data.get(tblViewTransDetails.getSelectionModel().getSelectedIndex()).getIndex07());
-                                pnDetail = lnRow;
+                                JFXUtil.selectAndFocusRow(tblViewSupplier, lnTempRow);
+                                int lnRow = Integer.parseInt(supplier_data.get(tblViewSupplier.getSelectionModel().getSelectedIndex()).getIndex07());
+                                pnSupplier = lnRow;
                                 loadRecordSupplier();
                             }
-                            loadRecordMaster();
                         } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
                             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                         }
@@ -622,7 +622,8 @@ public class POQuotationRequest_ApprovalHistoryController implements Initializab
                                 }
                             }
 
-                            if (pnDetail < 0 || pnDetail
+                            int lnTempRow = JFXUtil.getDetailRow(details_data, pnDetail, 7); //this method is only used when Reverse is applied
+                            if (lnTempRow < 0 || lnTempRow
                                     >= details_data.size()) {
                                 if (!details_data.isEmpty()) {
                                     /* FOCUS ON FIRST ROW */
@@ -633,7 +634,7 @@ public class POQuotationRequest_ApprovalHistoryController implements Initializab
                                 }
                             } else {
                                 /* FOCUS ON THE ROW THAT pnRowDetail POINTS TO */
-                                JFXUtil.selectAndFocusRow(tblViewTransDetails, pnDetail);
+                                JFXUtil.selectAndFocusRow(tblViewTransDetails, lnTempRow);
                                 int lnRow = Integer.parseInt(details_data.get(tblViewTransDetails.getSelectionModel().getSelectedIndex()).getIndex07());
                                 pnDetail = lnRow;
                                 loadRecordDetail();
