@@ -618,6 +618,9 @@ public class POQuotationRequest_EntryController implements Initializable, Screen
                 {poController.POQuotationRequest().Detail(pnDetail).Brand().getBrandId(), tfBrand}, // if null or empty, then requesting focus to the txtfield
                 {poController.POQuotationRequest().Detail(pnDetail).Inventory().Model().getModelId(), tfModel},
                 {poController.POQuotationRequest().Detail(pnDetail).Inventory().getBarCode(), tfBarcode},}, tfQuantity); // default
+            if (!JFXUtil.isObjectEqualTo(poController.POQuotationRequest().Detail(pnDetail).getDescription(), null, "")) {
+                tfQuantity.requestFocus();
+            }
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
         }
