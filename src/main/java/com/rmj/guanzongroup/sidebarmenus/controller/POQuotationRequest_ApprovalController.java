@@ -630,7 +630,11 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 break;
                             } else {
-                                loadTableSupplier.reload();
+                                int lnReturned = Integer.parseInt(String.valueOf(poJSON.get("row")));
+                                JFXUtil.runWithDelay(0.70, () -> {
+                                    pnSupplier = lnReturned;
+                                    loadTableSupplier.reload();
+                                });
                                 JFXUtil.textFieldMoveNext(tfTerm);
                             }
                             break;
@@ -658,8 +662,10 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 break;
                             } else {
-                                loadTableSupplier.reload();
-                                JFXUtil.runWithDelay(0.50, () -> {
+                                int lnReturned = Integer.parseInt(String.valueOf(poJSON.get("row")));
+                                JFXUtil.runWithDelay(0.70, () -> {
+                                    pnSupplier = lnReturned;
+                                    loadTableSupplier.reload();
                                     moveNextSupplier(false, true);
                                 });
                             }
@@ -774,6 +780,10 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
             if (pnSupplier < 0 || pnSupplier > poController.POQuotationRequest().getPOQuotationRequestSupplierCount() - 1) {
                 return;
             }
+            String lsSupplierStatus = poController.POQuotationRequest().POQuotationRequestSupplierList(pnSupplier).isSent() ? "SENT" : "OPEN";
+            Platform.runLater(() -> {
+                lblStatusSupplier.setText(lsSupplierStatus);
+            });
             boolean lbShow = poController.POQuotationRequest().POQuotationRequestSupplierList(pnSupplier).getEditMode() == EditMode.UPDATE;
             JFXUtil.setDisabled(lbShow, tfSupplier);
             tfCompany.setText(poController.POQuotationRequest().POQuotationRequestSupplierList(pnSupplier).Company().getCompanyName());
@@ -913,11 +923,12 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
                                     if (poController.POQuotationRequest().POQuotationRequestSupplierList(lnCtr).Company().getCompanyName() != null) {
                                         lsCompany = poController.POQuotationRequest().POQuotationRequestSupplierList(lnCtr).Company().getCompanyName();
                                     }
+                                    String lsSupplierStatus = poController.POQuotationRequest().POQuotationRequestSupplierList(lnCtr).isSent() ? "SENT" : "OPEN";
                                     supplier_data.add(
                                             new ModelPOQuotationRequestSupplier_Detail(String.valueOf(lnRowCount),
                                                     String.valueOf(poController.POQuotationRequest().POQuotationRequestSupplierList(lnCtr).Supplier().getCompanyName()),
                                                     String.valueOf(lsCompany),
-                                                    String.valueOf(""),
+                                                    String.valueOf(lsSupplierStatus),
                                                     "",
                                                     "",
                                                     String.valueOf(lnCtr)

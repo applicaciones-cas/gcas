@@ -464,6 +464,10 @@ public class POQuotationRequest_ApprovalHistoryController implements Initializab
             if (pnSupplier < 0 || pnSupplier > poController.POQuotationRequest().getPOQuotationRequestSupplierCount() - 1) {
                 return;
             }
+            String lsSupplierStatus = poController.POQuotationRequest().POQuotationRequestSupplierList(pnSupplier).isSent() ? "SENT" : "OPEN";
+            Platform.runLater(() -> {
+                lblStatusSupplier.setText(lsSupplierStatus);
+            });
             boolean lbShow = poController.POQuotationRequest().POQuotationRequestSupplierList(pnSupplier).getEditMode() == EditMode.UPDATE;
             JFXUtil.setDisabled(lbShow, tfSupplier);
             tfCompany.setText(poController.POQuotationRequest().POQuotationRequestSupplierList(pnSupplier).Company().getCompanyName());
@@ -550,12 +554,13 @@ public class POQuotationRequest_ApprovalHistoryController implements Initializab
                             int lnRowCount = 0;
                             for (lnCtr = 0; lnCtr < poController.POQuotationRequest().getPOQuotationRequestSupplierCount(); lnCtr++) {
                                 if (poController.POQuotationRequest().POQuotationRequestSupplierList(lnCtr).isReverse()) {
+                                    String lsSupplierStatus = poController.POQuotationRequest().POQuotationRequestSupplierList(pnSupplier).isSent() ? "SENT" : "OPEN";
                                     lnRowCount += 1;
                                     supplier_data.add(
                                             new ModelPOQuotationRequestSupplier_Detail(String.valueOf(lnRowCount),
                                                     String.valueOf(poController.POQuotationRequest().POQuotationRequestSupplierList(lnCtr).Supplier().getCompanyName()),
                                                     String.valueOf(poController.POQuotationRequest().POQuotationRequestSupplierList(lnCtr).Company().getCompanyName()),
-                                                    String.valueOf(""),
+                                                    String.valueOf(lsSupplierStatus),
                                                     "",
                                                     "",
                                                     String.valueOf(lnCtr)

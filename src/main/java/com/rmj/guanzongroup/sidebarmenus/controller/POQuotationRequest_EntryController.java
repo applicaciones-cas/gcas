@@ -617,8 +617,7 @@ public class POQuotationRequest_EntryController implements Initializable, Screen
             JFXUtil.requestFocusNullField(new Object[][]{ // alternative to if , else if
                 {poController.POQuotationRequest().Detail(pnDetail).Brand().getBrandId(), tfBrand}, // if null or empty, then requesting focus to the txtfield
                 {poController.POQuotationRequest().Detail(pnDetail).Inventory().Model().getModelId(), tfModel},
-                {poController.POQuotationRequest().Detail(pnDetail).Inventory().getBarCode(), tfBarcode}
-            }, tfBrand); // default
+                {poController.POQuotationRequest().Detail(pnDetail).Inventory().getBarCode(), tfBarcode},}, tfQuantity); // default
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
         }
@@ -644,6 +643,7 @@ public class POQuotationRequest_EntryController implements Initializable, Screen
                         case "tfBrand":
                         case "tfBarcode":
                         case "tfDescription":
+                        case "tfQuantity":
                             moveNext(true, true);
                             event.consume();
                             break;
@@ -654,6 +654,7 @@ public class POQuotationRequest_EntryController implements Initializable, Screen
                         case "tfBrand":
                         case "tfBarcode":
                         case "tfDescription":
+                        case "tfQuantity":
                             moveNext(false, true);
                             event.consume();
                             break;
@@ -732,7 +733,12 @@ public class POQuotationRequest_EntryController implements Initializable, Screen
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 break;
                             } else {
-                                loadTableDetail.reload();
+                                int lnReturned = Integer.parseInt(String.valueOf(poJSON.get("row")));
+                                JFXUtil.runWithDelay(0.70, () -> {
+//                                    int lnTempRow = JFXUtil.getDetailTempRow(details_data, lnReturned, 7);
+                                    pnDetail = lnReturned;
+                                    loadTableDetail.reload();
+                                });
                                 JFXUtil.textFieldMoveNext(tfQuantity);
                             }
                             break;
@@ -749,7 +755,11 @@ public class POQuotationRequest_EntryController implements Initializable, Screen
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 break;
                             } else {
-                                loadTableDetail.reload();
+                                int lnReturned = Integer.parseInt(String.valueOf(poJSON.get("row")));
+                                JFXUtil.runWithDelay(0.70, () -> {
+                                    pnDetail = lnReturned;
+                                    loadTableDetail.reload();
+                                });
                                 JFXUtil.textFieldMoveNext(tfQuantity);
                             }
                             break;
