@@ -3086,6 +3086,8 @@ public class DashboardController implements Initializable {
                     return new DeliveryAcceptance_HistorySPMCController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_HistoryMonarchFood.fxml":
                     return new DeliveryAcceptance_HistoryMonarchFoodController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_HistoryMonarchHospitality.fxml":
+                    return new DeliveryAcceptance_HistoryMonarchHospitalityController();
 
 
                 /*PURCHASE ORDER RETURN*/
