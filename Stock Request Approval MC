@@ -1714,3 +1714,87 @@ Sep 12, 2025 3:38:29 PM org.guanzon.appdriver.base.LogWrapper severe
 SEVERE: Stock Request Approval MC :null
 Sep 12, 2025 3:38:29 PM org.guanzon.appdriver.base.LogWrapper info
 INFO: Stock Request Approval MC : Success on Stock Request Approval MC
+Sep 13, 2025 10:13:17 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Stock Request Approval MC :null
+Sep 13, 2025 10:13:17 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Stock Request Approval MC : Success on Stock Request Approval MC
+Sep 13, 2025 10:13:25 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Stock Request Approval MC :Record loaded successfully.
+Sep 13, 2025 10:13:25 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Stock Request Approval MC : Success on Initialize Search Cluster
+Sep 13, 2025 10:13:25 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Stock Request Approval MC :null
+Sep 13, 2025 10:13:25 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Stock Request Approval MC : Success on Initialize : Load of Transaction List
+Sep 13, 2025 10:13:27 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Stock Request Approval MC :null
+Sep 13, 2025 10:13:27 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Stock Request Approval MC : Success on Initialize Open Transaction
+Sep 13, 2025 10:13:33 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Stock Request Approval MC :null
+Sep 13, 2025 10:13:33 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Stock Request Approval MC : Success on Initialize Update Transaction
+Sep 13, 2025 10:14:14 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Stock Request Approval MC :Transaction saved successfully.
+Sep 13, 2025 10:14:14 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Stock Request Approval MC : Success on Initialize Save Transaction
+Sep 13, 2025 10:14:14 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Stock Request Approval MC :null
+Sep 13, 2025 10:14:14 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Stock Request Approval MC : Success on Initialize Open Transaction
+Sep 13, 2025 10:14:17 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Stock Request Approval MC :null
+Sep 13, 2025 10:14:17 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Stock Request Approval MC : Success on Initialize Open Transaction
+Sep 13, 2025 10:14:18 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Stock Request Approval MC :null
+Sep 13, 2025 10:14:18 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Stock Request Approval MC : Success on Initialize Open Transaction
+Sep 13, 2025 10:14:18 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Stock Request Approval MC :null
+Sep 13, 2025 10:14:18 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Stock Request Approval MC : Success on Initialize Open Transaction
+Sep 13, 2025 10:14:40 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Stock Request Approval MC :Record loaded successfully.
+Sep 13, 2025 10:14:40 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Stock Request Approval MC : Success on Initialize Search Cluster
+Sep 13, 2025 10:14:41 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Stock Request Approval MC :null
+Sep 13, 2025 10:14:41 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Stock Request Approval MC : Success on Initialize : Load of Transaction List
+Sep 13, 2025 10:14:43 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Stock Request Approval MC :null
+Sep 13, 2025 10:14:43 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Stock Request Approval MC : Success on Initialize Open Transaction
+Sep 13, 2025 10:14:45 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Stock Request Approval MC :null
+Sep 13, 2025 10:14:45 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Stock Request Approval MC : Success on Initialize Open Transaction
+Sep 13, 2025 10:14:45 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Stock Request Approval MC :null
+Sep 13, 2025 10:14:45 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Stock Request Approval MC : Success on Initialize Open Transaction
+Sep 13, 2025 11:51:40 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Stock Request Approval MC :null
+Sep 13, 2025 11:51:40 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Stock Request Approval MC : Success on Stock Request Approval MC
+Sep 13, 2025 11:51:46 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Stock Request Approval MC :Record loaded successfully.
+Sep 13, 2025 11:51:46 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Stock Request Approval MC : Success on Initialize Search Cluster
+Sep 13, 2025 11:51:47 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Stock Request Approval MC :null
+Sep 13, 2025 11:51:47 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Stock Request Approval MC : Success on Initialize : Load of Transaction List
+Sep 13, 2025 11:51:48 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Stock Request Approval MC :null
+Sep 13, 2025 11:51:48 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Stock Request Approval MC : Success on Initialize Open Transaction
+Sep 13, 2025 11:52:00 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Stock Request Approval MC :null
+Sep 13, 2025 11:52:00 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Stock Request Approval MC : Success on Initialize Update Transaction
+Sep 13, 2025 11:52:07 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Stock Request Approval MC :null
+Sep 13, 2025 11:52:07 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Stock Request Approval MC : Success on Initialize Transaction

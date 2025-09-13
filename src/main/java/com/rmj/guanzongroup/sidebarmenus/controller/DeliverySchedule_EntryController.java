@@ -200,6 +200,7 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
                     switch (lastFocusedControl.getId()) {
                         //Search Detail 
                         case "tfClusterName":
+                            
                             if (pnClusterDetail >= 0) {
                                 if (!isJSONSuccess(poAppController.searchClusterBranch(pnClusterDetail, tfClusterName.getText(), false),
                                         "Search Cluster! ")) {
@@ -241,7 +242,49 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
                             initButtonDisplay(poAppController.getEditMode());
                             pnEditMode = poAppController.getEditMode();
                             break;
+                            
+                        case "dpSearchDate":
+                            
+                            LocalDate loTransDate = dpSearchDate.getValue();
+                            String lsTransValue = "";
+                            if (loTransDate != null) {
+                                lsTransValue = loTransDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                            }else{
+                                ShowMessageFX.Information("Please entsure date field is not empty", "Delivery Schedule Encoding", "");
+                                break;
+                            }
 
+                            if (!isJSONSuccess(poAppController.searchTransaction(lsTransValue, false, true),
+                                    "Search Transaction!! BY Date")) {
+                                ShowMessageFX.Information("No transactions found", "Delivery Schedule Encoding", "");
+                                break;
+                            }
+                            getLoadedTransaction();
+                            initButtonDisplay(poAppController.getEditMode());
+
+                            break;
+
+                        case "dpSearchScheduleDate":
+                            
+                            LocalDate loSched = dpSearchScheduleDate.getValue();
+                            String lsSched = "";
+                            if (loSched != null) {
+                                lsSched = loSched.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                            }else{
+                                ShowMessageFX.Information("Please entsure date field is not empty", "Delivery Schedule Encoding", "");
+                                break;
+                            }
+
+                            if (!isJSONSuccess(poAppController.searchTransaction(lsSched, false, true),
+                                    "Search Transaction!! BY Schedule Date")) {
+                                ShowMessageFX.Information("No transactions found", "Delivery Schedule Encoding", "");
+                                break;
+                            }
+                            getLoadedTransaction();
+                            initButtonDisplay(poAppController.getEditMode());
+
+                            break;
+                            
                         default:
                             ShowMessageFX.Information(null, psFormName,
                                     "Search unavailable. Please ensure a searchable field is selected or focused before proceeding..");
@@ -349,24 +392,26 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
     @FXML
     private void tblTransaction_MouseClicked(MouseEvent event
     ) {
-        pnTransaction = tblTransaction.getSelectionModel().getSelectedIndex();
-        if (pnTransaction < 0) {
-            return;
-        }
         
         if (event.getClickCount() == 1 && !event.isConsumed()) {
             
-            if (!tfTransactionNo.getText().isEmpty()) {
-                if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                    if (ShowMessageFX.OkayCancel(null, "Search Transaction! by Trasaction", "Do you want to disregard changes?") == false) {
-                        return;
+            try {
+                
+                if (!tfTransactionNo.getText().isEmpty()) {
+                    if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                        if (ShowMessageFX.OkayCancel(null, "Search Transaction! by Trasaction", "Do you want to disregard changes?") == false) {
+                            return;
+                        }
                     }
                 }
-            }
-            
-            try {
-                event.consume();
                 
+                pnTransaction = tblTransaction.getSelectionModel().getSelectedIndex();
+                pnClusterDetail = 0;
+                if (pnTransaction < 0) {
+                    return;
+                }
+                
+                event.consume();
                 if (!isJSONSuccess(poAppController.openTransaction(tblColDeliveryTransaction.getCellData(pnTransaction)),
                         "Initialize Open Transaction")) {
                     return;
@@ -374,10 +419,10 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
                 }
                 
                 getLoadedTransaction();
-                initButtonDisplay(pnEditMode);
+                initButtonDisplay(poAppController.getEditMode());
                 pnEditMode = poAppController.getEditMode();
             } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
-                Logger.getLogger(DeliverySchedule_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(DeliverySchedule_EntryControllerMC.class.getName()).log(Level.SEVERE, null, ex);
                 poLogWrapper.severe(psFormName + " :" + ex.getMessage());
 
             }
@@ -391,18 +436,28 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
     ) {
 
         try {
-            pnClusterDetail = tblClusterDetail.getSelectionModel().getSelectedIndex();
-            if (pnClusterDetail < 0) {
-                return;
-            }
+            
             if (event.getClickCount() == 1 && !event.isConsumed()) {
+                
+                if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                    if (ShowMessageFX.OkayCancel(null, "Search Transaction! by Trasaction", "Do you want to disregard changes?") == false) {
+                        return;
+                    }
+                }
+                
+                pnClusterDetail = tblClusterDetail.getSelectionModel().getSelectedIndex();
+                if (pnClusterDetail < 0) {
+                    return;
+                }
+
                 event.consume();
+                loadSelectedTransactionDetail(pnClusterDetail);
                 loadSelectedBranch(pnClusterDetail);
             } else {
                 loadSelectedTransactionDetail(pnClusterDetail);
             }
         } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
-            Logger.getLogger(DeliverySchedule_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliverySchedule_EntryControllerMC.class.getName()).log(Level.SEVERE, null, ex);
             poLogWrapper.severe(psFormName + " :" + ex.getMessage());
         }
     }
@@ -810,22 +865,24 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
     }
 
     private void loadSelectedTransactionDetail(int fnRow) throws SQLException, GuanzonException, CloneNotSupportedException {
-        tfClusterName.setText(tblColDetailName.getCellData(fnRow));
-        taNotes.setText(poAppController.getDetail(fnRow).getRemarks() == null ? "" : poAppController.getDetail(fnRow).getRemarks());
-        tfAllocation.setText(tblColDetailAllocation.getCellData(fnRow));
+        
+        if (fnRow >= 0) {
+            tfClusterName.setText(tblColDetailName.getCellData(fnRow));
+            taNotes.setText(poAppController.getDetail(fnRow).getRemarks() == null ? "" : poAppController.getDetail(fnRow).getRemarks());
+            tfAllocation.setText(tblColDetailAllocation.getCellData(fnRow));
 
-        if (tfClusterName.getText() == null || tfClusterName.getText().isEmpty()) {
-            tblBranchList.getItems().clear();
-            psClusterNameOld = tfClusterName.getText();
-            cbTruckSize.getItems().clear();
-            return;
-        } else if (tfClusterName.getText() != null
-                && !tfClusterName.getText().isEmpty()
-                && !tfClusterName.getText().equals(psClusterNameOld)) {
-            psClusterNameOld = tfClusterName.getText();
-            loadSelectedBranchClusterDelivery(fnRow);
+            if (tfClusterName.getText() == null || tfClusterName.getText().isEmpty()) {
+                tblBranchList.getItems().clear();
+                psClusterNameOld = tfClusterName.getText();
+                cbTruckSize.getItems().clear();
+                return;
+            } else if (tfClusterName.getText() != null
+                    && !tfClusterName.getText().isEmpty()
+                    && !tfClusterName.getText().equals(psClusterNameOld)) {
+                psClusterNameOld = tfClusterName.getText();
+                loadSelectedBranchClusterDelivery(fnRow);
+            }
         }
-
     }
 
     private void initializeTableDetail() {
