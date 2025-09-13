@@ -464,12 +464,10 @@ public class POQuotationRequest_ApprovalHistoryController implements Initializab
             if (pnSupplier < 0 || pnSupplier > poController.POQuotationRequest().getPOQuotationRequestSupplierCount() - 1) {
                 return;
             }
-            String lsSupplierStatus = poController.POQuotationRequest().POQuotationRequestSupplierList(pnSupplier).isSent() ? "SENT" : "OPEN";
             Platform.runLater(() -> {
+                String lsSupplierStatus = poController.POQuotationRequest().POQuotationRequestSupplierList(pnSupplier).isSent() ? "SENT" : "OPEN";
                 lblStatusSupplier.setText(lsSupplierStatus);
             });
-            boolean lbShow = poController.POQuotationRequest().POQuotationRequestSupplierList(pnSupplier).getEditMode() == EditMode.UPDATE;
-            JFXUtil.setDisabled(lbShow, tfSupplier);
             tfCompany.setText(poController.POQuotationRequest().POQuotationRequestSupplierList(pnSupplier).Company().getCompanyName());
             tfSupplier.setText(poController.POQuotationRequest().POQuotationRequestSupplierList(pnSupplier).Supplier().getCompanyName());
             tfAddress.setText(poController.POQuotationRequest().POQuotationRequestSupplierList(pnSupplier).Address().getAddress());
@@ -502,7 +500,7 @@ public class POQuotationRequest_ApprovalHistoryController implements Initializab
             tfBrand.setText(lsBrand);
             tfModel.setText(lsModel);
             tfBarcode.setText(poController.POQuotationRequest().Detail(pnDetail).Inventory().getBarCode());
-            tfDescription.setText(poController.POQuotationRequest().Detail(pnDetail).Inventory().getDescription());
+            tfDescription.setText(poController.POQuotationRequest().Detail(pnDetail).getDescription());
             tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.POQuotationRequest().Detail(pnDetail).Inventory().getCost(), true));
             tfQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.POQuotationRequest().Detail(pnDetail).getQuantity(), false));
             JFXUtil.updateCaretPositions(apDetail);
@@ -701,8 +699,8 @@ public class POQuotationRequest_ApprovalHistoryController implements Initializab
     }
 
     public void initSupplierGrid() {
-        JFXUtil.setColumnCenter(tblRowNoSupplier);
-        JFXUtil.setColumnLeft(tblCompany, tblSupplier, tblStatus);
+        JFXUtil.setColumnCenter(tblRowNoSupplier, tblStatus);
+        JFXUtil.setColumnLeft(tblCompany, tblSupplier);
         JFXUtil.setColumnsIndexAndDisableReordering(tblViewSupplier);
 
         tblViewSupplier.setItems(supplier_data);

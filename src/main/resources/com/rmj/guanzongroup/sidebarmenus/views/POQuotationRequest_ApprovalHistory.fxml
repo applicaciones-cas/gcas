@@ -417,13 +417,13 @@
                                                             <Label text="Supplier" />
                                                             <Label layoutX="46.0" layoutY="16.0" text="Address" GridPane.rowIndex="1" />
                                                             <Label layoutX="46.0" layoutY="44.0" text="Contact No." GridPane.rowIndex="2" />
-                                                            <TextField fx:id="tfSupplier" GridPane.columnIndex="2" GridPane.columnSpan="2" />
+                                                            <TextField fx:id="tfSupplier" disable="true" editable="false" GridPane.columnIndex="2" GridPane.columnSpan="2" />
                                                             <TextField fx:id="tfAddress" disable="true" editable="false" layoutX="100.0" layoutY="12.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="1" />
                                                             <TextField fx:id="tfContactNumber" disable="true" editable="false" layoutX="100.0" layoutY="40.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                                                                         <Label text="Term" GridPane.rowIndex="3" />
-                                                                        <TextField fx:id="tfTerm" layoutX="100.0" layoutY="12.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                                                        <TextField fx:id="tfTerm" disable="true" editable="false" layoutX="100.0" layoutY="12.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                                                                         <Label text="Company" GridPane.rowIndex="4" />
-                                                                        <TextField fx:id="tfCompany" minWidth="-Infinity" prefHeight="25.0" prefWidth="289.0" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                                                                        <TextField fx:id="tfCompany" disable="true" editable="false" minWidth="-Infinity" prefHeight="25.0" prefWidth="289.0" GridPane.columnIndex="2" GridPane.rowIndex="4" />
                                                          </children>
                                                       </GridPane>
                                                    </children>
