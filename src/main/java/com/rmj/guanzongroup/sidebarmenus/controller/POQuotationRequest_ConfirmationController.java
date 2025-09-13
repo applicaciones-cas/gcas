@@ -182,8 +182,15 @@ public class POQuotationRequest_ConfirmationController implements Initializable,
         if (source instanceof CheckBox) {
             CheckBox checkedBox = (CheckBox) source;
             switch (checkedBox.getId()) {
-                case "cbReverse":
-                    poController.POQuotationRequest().Detail(pnDetail).isReverse(checkedBox.isSelected());
+                case "cbReverse": // this is the id
+                    if(poController.POQuotationRequest().Detail(pnDetail).getEditMode() == EditMode.ADDNEW){
+                        if(!checkedBox.isSelected()){
+                            poController.POQuotationRequest().Detail().remove(pnDetail);
+                        }     
+                    } else {
+                        poController.POQuotationRequest().Detail(pnDetail).isReverse(checkedBox.isSelected());
+                    }
+                    
                     loadTableDetail.reload();
                     break;
             }
