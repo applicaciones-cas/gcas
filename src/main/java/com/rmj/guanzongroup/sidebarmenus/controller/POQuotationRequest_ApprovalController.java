@@ -630,11 +630,12 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 break;
                             } else {
-                                int lnReturned = Integer.parseInt(String.valueOf(poJSON.get("row")));
-                                JFXUtil.runWithDelay(0.70, () -> {
-                                    pnSupplier = lnReturned;
-                                    loadTableSupplier.reload();
-                                });
+//                                int lnReturned = Integer.parseInt(String.valueOf(poJSON.get("row")));
+//                                JFXUtil.runWithDelay(0.70, () -> {
+//                                    pnSupplier = lnReturned;
+//                                    loadTableSupplier.reload();
+//                                });
+                                loadTableSupplier.reload();
                                 JFXUtil.textFieldMoveNext(tfTerm);
                             }
                             break;
@@ -662,10 +663,10 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 break;
                             } else {
-                                int lnReturned = Integer.parseInt(String.valueOf(poJSON.get("row")));
+//                                int lnReturned = Integer.parseInt(String.valueOf(poJSON.get("row")));
+                                loadTableSupplier.reload();
                                 JFXUtil.runWithDelay(0.70, () -> {
-                                    pnSupplier = lnReturned;
-                                    loadTableSupplier.reload();
+//                                    pnSupplier = lnReturned;                                 
                                     moveNextSupplier(false, true);
                                 });
                             }
