@@ -119,6 +119,17 @@
                                     <Font size="12.0" />
                                  </font>
                               </Button>
+                              <Button fx:id="btnExport" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="70.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Export">
+                                 <effect>
+                                    <Blend />
+                                 </effect>
+                                 <graphic>
+                                    <FontAwesomeIconView glyphName="PRINT" size="20" />
+                                 </graphic>
+                                 <font>
+                                    <Font size="12.0" />
+                                 </font>
+                              </Button>
                               <Button fx:id="btnHistory" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="70.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="History">
                                  <graphic>
                                     <FontAwesomeIconView glyphName="BOOK" size="20" />
@@ -406,13 +417,13 @@
                                                             <Label text="Supplier" />
                                                             <Label layoutX="46.0" layoutY="16.0" text="Address" GridPane.rowIndex="1" />
                                                             <Label layoutX="46.0" layoutY="44.0" text="Contact No." GridPane.rowIndex="2" />
-                                                            <TextField fx:id="tfSupplier"  GridPane.columnIndex="2" GridPane.columnSpan="2" />
+                                                            <TextField fx:id="tfSupplier" GridPane.columnIndex="2" GridPane.columnSpan="2" />
                                                             <TextField fx:id="tfAddress" disable="true" editable="false" layoutX="100.0" layoutY="12.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="1" />
                                                             <TextField fx:id="tfContactNumber" disable="true" editable="false" layoutX="100.0" layoutY="40.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                                                                         <Label text="Term" GridPane.rowIndex="3" />
-                                                                        <TextField fx:id="tfTerm" layoutX="100.0" layoutY="12.0"  GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                                                        <TextField fx:id="tfTerm" layoutX="100.0" layoutY="12.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                                                                         <Label text="Company" GridPane.rowIndex="4" />
-                                                                        <TextField fx:id="tfCompany" minWidth="-Infinity" prefHeight="25.0" prefWidth="289.0"  GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                                                                        <TextField fx:id="tfCompany" minWidth="-Infinity" prefHeight="25.0" prefWidth="289.0" GridPane.columnIndex="2" GridPane.rowIndex="4" />
                                                          </children>
                                                       </GridPane>
                                                    </children>

@@ -162,7 +162,6 @@ public class POQuotationRequest_HistoryController implements Initializable, Scre
                 String lsButton = clickedButton.getId();
                 switch (lsButton) {
                     case "btnBrowse":
-                        poController.POQuotationRequest().setTransactionStatus(POQuotationRequestStatus.OPEN);
                         poJSON = poController.POQuotationRequest().searchTransaction();
                         if ("error".equalsIgnoreCase((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -493,7 +492,6 @@ public class POQuotationRequest_HistoryController implements Initializable, Scre
 
                 switch (datePicker.getId()) {
                     case "dpSearchTransactionDate":
-                        retrievePOQuotationRequest();
                         break;
                     default:
                         break;
@@ -502,20 +500,6 @@ public class POQuotationRequest_HistoryController implements Initializable, Scre
         } catch (SQLException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
-    }
-
-    public void retrievePOQuotationRequest() {
-        poJSON = new JSONObject();
-        poController.POQuotationRequest().setTransactionStatus(POQuotationRequestStatus.OPEN + POQuotationRequestStatus.CONFIRMED);
-
-        SimpleDateFormat sdfFormat = new SimpleDateFormat(SQLUtil.FORMAT_SHORT_DATE);
-        String inputText = JFXUtil.isObjectEqualTo(dpSearchTransactionDate.getEditor().getText(), "") ? "01/01/1900" : dpSearchTransactionDate.getEditor().getText();
-        String lsSelectedDate = sdfFormat.format(SQLUtil.toDate(JFXUtil.convertToIsoFormat(inputText), SQLUtil.FORMAT_SHORT_DATE));
-        LocalDate selectedDate = LocalDate.parse(lsSelectedDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
-
-        poJSON = poController.POQuotationRequest().loadPOQuotationRequestList(oApp.getBranchName(), poController.POQuotationRequest().getSearchDepartment(),
-                poController.POQuotationRequest().getSearchCategory(), java.sql.Date.valueOf(selectedDate),
-                tfSearchReferenceNo.getText());
     }
 
     ChangeListener<Boolean> txtField_Focus = JFXUtil.FocusListener(TextField.class,

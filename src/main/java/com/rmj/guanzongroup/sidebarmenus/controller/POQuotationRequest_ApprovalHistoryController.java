@@ -90,7 +90,7 @@ public class POQuotationRequest_ApprovalHistoryController implements Initializab
     @FXML
     private HBox hbButtons, hboxid;
     @FXML
-    private Button btnBrowse, btnHistory, btnClose;
+    private Button btnBrowse, btnExport, btnHistory, btnClose;
     @FXML
     private TabPane tabPane;
     @FXML
@@ -167,7 +167,6 @@ public class POQuotationRequest_ApprovalHistoryController implements Initializab
                 String lsButton = clickedButton.getId();
                 switch (lsButton) {
                     case "btnBrowse":
-                        poController.POQuotationRequest().setTransactionStatus(POQuotationRequestStatus.OPEN);
                         poJSON = poController.POQuotationRequest().searchTransaction();
                         if ("error".equalsIgnoreCase((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -183,6 +182,15 @@ public class POQuotationRequest_ApprovalHistoryController implements Initializab
                             appUnload.unloadForm(apMainAnchor, oApp, pxeModuleName);
                         } else {
                             return;
+                        }
+                        break;
+                    case "btnExport":
+                        poJSON = poController.POQuotationRequest().exportFile();
+                        if (!"success".equals((String) poJSON.get("result"))) {
+                            ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
+                            return;
+                        } else {
+                            ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
                         }
                         break;
                     case "btnHistory":
@@ -214,8 +222,7 @@ public class POQuotationRequest_ApprovalHistoryController implements Initializab
                     JFXUtil.clickTabByTitleText(tabPane, "Information");
                 }
 
-                if (JFXUtil.isObjectEqualTo(lsButton, "btnPrint", "btnAddAttachment", "btnRemoveAttachment",
-                        "btnArrowRight", "btnArrowLeft", "btnRetrieve")) {
+                if (JFXUtil.isObjectEqualTo(lsButton, "btnExport")) {
                 } else {
                     loadRecordMaster();
                     loadTableDetail.reload();
@@ -682,6 +689,7 @@ public class POQuotationRequest_ApprovalHistoryController implements Initializab
         // Manage visibility and managed state of other buttons
         JFXUtil.setButtonsVisibility(lbShow2, btnHistory);
         JFXUtil.setButtonsVisibility(lbShow3, btnBrowse, btnClose);
+        JFXUtil.setButtonsVisibility((poController.POQuotationRequest().getPOQuotationRequestSupplierCount() > 0), btnExport);
 
         JFXUtil.setDisabled(true, taRemarks, apMaster, apDetail);
     }
