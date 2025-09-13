@@ -185,12 +185,16 @@ public class POQuotationRequest_ApprovalHistoryController implements Initializab
                         }
                         break;
                     case "btnExport":
-                        poJSON = poController.POQuotationRequest().exportFile();
-                        if (!"success".equals((String) poJSON.get("result"))) {
-                            ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
-                            return;
+                        if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure you want to export the transaction?") == true) {
+                            poJSON = poController.POQuotationRequest().exportFile();
+                            if (!"success".equals((String) poJSON.get("result"))) {
+                                ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
+                                return;
+                            } else {
+                                ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
+                            }
                         } else {
-                            ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
+                            return;
                         }
                         break;
                     case "btnHistory":
