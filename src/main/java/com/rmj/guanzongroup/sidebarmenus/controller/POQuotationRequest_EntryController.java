@@ -736,12 +736,13 @@ public class POQuotationRequest_EntryController implements Initializable, Screen
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 break;
                             } else {
-                                int lnReturned = Integer.parseInt(String.valueOf(poJSON.get("row")));
-                                JFXUtil.runWithDelay(0.70, () -> {
-//                                    int lnTempRow = JFXUtil.getDetailTempRow(details_data, lnReturned, 7);
-                                    pnDetail = lnReturned;
-                                    loadTableDetail.reload();
-                                });
+//                                int lnReturned = Integer.parseInt(String.valueOf(poJSON.get("row")));
+//                                JFXUtil.runWithDelay(0.70, () -> {
+////                                    int lnTempRow = JFXUtil.getDetailTempRow(details_data, lnReturned, 7);
+////                                    pnDetail = lnReturned;
+////                                    loadTableDetail.reload();
+//                                });
+                                loadTableDetail.reload();
                                 JFXUtil.textFieldMoveNext(tfQuantity);
                             }
                             break;
@@ -758,11 +759,12 @@ public class POQuotationRequest_EntryController implements Initializable, Screen
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 break;
                             } else {
-                                int lnReturned = Integer.parseInt(String.valueOf(poJSON.get("row")));
-                                JFXUtil.runWithDelay(0.70, () -> {
-                                    pnDetail = lnReturned;
-                                    loadTableDetail.reload();
-                                });
+//                                int lnReturned = Integer.parseInt(String.valueOf(poJSON.get("row")));
+//                                JFXUtil.runWithDelay(0.70, () -> {
+//                                    pnDetail = lnReturned;
+//                                    loadTableDetail.reload();
+//                                });
+                                loadTableDetail.reload();
                                 JFXUtil.textFieldMoveNext(tfQuantity);
                             }
                             break;
