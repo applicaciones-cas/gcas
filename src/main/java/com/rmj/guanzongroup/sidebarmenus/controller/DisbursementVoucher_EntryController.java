@@ -227,13 +227,15 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
     @FXML
     private AnchorPane apDVDetail;
     @FXML
-    private TextField tfRefNoDetail, tfParticularsDetail, tfAccountCodeDetail, tfPurchasedAmountDetail, tfTaxCodeDetail, tfTaxRateDetail, tfTaxAmountDetail, tfNetAmountDetail;
+    private TextField tfRefNoDetail, tfParticularsDetail, tfAccountCodeDetail, tfPurchasedAmountDetail, tfTaxCodeDetail, tfTaxRateDetail, tfTaxAmountDetail, tfNetAmountDetail,
+            tfVatableSalesDetail, tfPartialPayment, tfVatAmountDetail, tfVatRateDetail, tfVatZeroRatedSalesDetail, tfVatExemptDetail;
     @FXML
     private CheckBox chbkVatClassification;
     @FXML
     private TableView tblVwDetails;
     @FXML
-    private TableColumn tblDVRowNo, tblReferenceNo, tblAccountCode, tblTransactionTypeDetail, tblParticulars, tblPurchasedAmount, tblTaxCode, tblTaxAmount, tblNetAmount;
+    private TableColumn tblDVRowNo, tblReferenceNo, tblAccountCode, tblTransactionTypeDetail, tblParticulars, tblPurchasedAmount, tblTaxCode, tblTaxAmount, tblNetAmount,
+            tblVatableSales, tblVatAmt, tblVatRate, tblVatZeroRatedSales, tblVatExemptSales;
 
     /*Journal Master */
     @FXML
@@ -775,6 +777,12 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
             
             
             cmbPaymentMode.getSelectionModel().select(!poDisbursementController.Master().getDisbursementType().equals("") ? Integer.valueOf(poDisbursementController.Master().getDisbursementType()) : -1);
+            poJSON = poDisbursementController.modeOfPayment(poDisbursementController.Master().getDisbursementType());
+            if ("error".equals((String) poJSON.get("message"))) {
+                ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
+            }
+            
+//            
             switch (poDisbursementController.Master().getDisbursementType()) {
                 case DisbursementStatic.DisbursementType.CHECK:
                     poJSON = poDisbursementController.setCheckpayment();
@@ -803,7 +811,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
             }
             taDVRemarks.setText(poDisbursementController.Master().getRemarks());
             tfVatableSales.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Master().getVATSale(), true));
-            tfVatRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Master().getVATRates(), false));
+//            tfVatRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Master().getVATRates(), false));
             tfVatAmountMaster.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Master().getVATAmount(), true));
             tfVatZeroRatedSales.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Master().getZeroVATSales(), true));
             tfVatExemptSales.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Master().getVATExmpt(), true));
@@ -815,7 +823,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                 lblDVTransactionStatus.setText(getStatus(poDisbursementController.Master().getTransactionStatus()));
             });
 
-        } catch (GuanzonException | SQLException ex) {
+        } catch (GuanzonException | SQLException | CloneNotSupportedException ex) {
             Logger.getLogger(DisbursementVoucher_EntryController.class
                     .getName()).log(Level.SEVERE, null, ex);
         }
@@ -891,13 +899,21 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
     }
 
     private void loadRecordMasterOnlinePayment() {
-        tfPaymentAmount.setText("");
-        tfSupplierServiceName.setText("");
-        tfSupplierAccountNo.setText("");
-        tfPaymentReferenceNo.setText("");
-        tfBankNameOnlinePayment.setText("");
-        tfBankAccountOnlinePayment.setText("");
         cmbOtherPayment.getSelectionModel().select(null);
+        
+         try {
+            tfBankNameOnlinePayment.setText(poDisbursementController.OtherPayments().getModel().Banks().getBankName() != null ? poDisbursementController.OtherPayments().getModel().Banks().getBankName() : "");
+            tfBankAccountOnlinePayment.setText(poDisbursementController.OtherPayments().getModel().Bank_Account_Master().getAccountNo() != null ? poDisbursementController.OtherPayments().getModel().Bank_Account_Master().getAccountNo() : "");
+            
+            tfPaymentAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.OtherPayments().getModel().getTotalAmount(), true));
+            tfSupplierServiceName.setText(poDisbursementController.OtherPayments().getModel().Banks().getBankName() != null ? poDisbursementController.OtherPayments().getModel().Banks().getBankName() : "");
+            tfSupplierAccountNo.setText(poDisbursementController.OtherPayments().getModel().Bank_Account_Master().getAccountNo() != null ? poDisbursementController.OtherPayments().getModel().Bank_Account_Master().getAccountNo() : "");
+            tfPaymentReferenceNo.setText(poDisbursementController.OtherPayments().getModel().getReferNox() != null ? poDisbursementController.OtherPayments().getModel().getReferNox() : "");
+        } catch (SQLException | GuanzonException ex) {
+            Logger.getLogger(DisbursementVoucher_EntryController.class
+                    .getName()).log(Level.SEVERE, null, ex);
+        }
+        
     }
 
     private void loadRecordDetailDV() {
@@ -912,6 +928,12 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                 tfTaxAmountDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(pnDetailDV).getTaxAmount(), true));
                 tfNetAmountDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(pnDetailDV).getAmount()
                         - poDisbursementController.Detail(pnDetailDV).getTaxAmount(), true));
+                
+                tfVatRateDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(pnDetailDV).getDetailVatRates(), false));
+                tfVatAmountDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(pnDetailDV).getDetailVatAmount(), false));
+                tfVatableSalesDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(pnDetailDV).getDetailVatSales(), false));
+                tfVatZeroRatedSalesDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(pnDetailDV).getDetailZeroVat(), false));
+                tfVatExemptDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(pnDetailDV).getDetailVatExempt(), false));
                 
                     chbkVatClassification.setSelected(poDisbursementController.Detail(pnDetailDV).isWithVat());
                 
@@ -988,27 +1010,32 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                         try {
                             lnNetTotal = poDisbursementController.Detail(lnCtr).getAmount() - poDisbursementController.Detail(lnCtr).getTaxAmount();
                             String lsTransactionType;
-                            switch (poDisbursementController.Detail(lnCtr).getSourceCode()) {
-                                case DisbursementStatic.SourceCode.PAYMENT_REQUEST:
-                                    lsTransactionType = DisbursementStatic.SourceCode.PAYMENT_REQUEST;
-                                    break;
-                                case DisbursementStatic.SourceCode.ACCOUNTS_PAYABLE:
-                                    lsTransactionType = DisbursementStatic.SourceCode.ACCOUNTS_PAYABLE;
-                                    break;
-                                case DisbursementStatic.SourceCode.CASH_PAYABLE:
-                                    lsTransactionType = DisbursementStatic.SourceCode.CASH_PAYABLE;
-                                    break;
-                                default:
-                                    lsTransactionType = "";
-                                    break;
-                            }
+//                            switch (poDisbursementController.Detail(lnCtr).getSourceCode()) {
+//                                case DisbursementStatic.SourceCode.PAYMENT_REQUEST:
+//                                    lsTransactionType = DisbursementStatic.SourceCode.PAYMENT_REQUEST;
+//                                    break;
+//                                case DisbursementStatic.SourceCode.ACCOUNTS_PAYABLE:
+//                                    lsTransactionType = DisbursementStatic.SourceCode.ACCOUNTS_PAYABLE;
+//                                    break;
+//                                case DisbursementStatic.SourceCode.CASH_PAYABLE:
+//                                    lsTransactionType = DisbursementStatic.SourceCode.CASH_PAYABLE;
+//                                    break;
+//                                default:
+//                                    lsTransactionType = "";
+//                                    break;
+//                            }
                             detailsdv_data.add(
                                     new ModelDisbursementVoucher_Detail(String.valueOf(lnCtr + 1),
                                             poDisbursementController.Detail(lnCtr).getSourceNo(),
                                             poDisbursementController.Detail(lnCtr).Particular().getAccountCode(),
-                                            lsTransactionType,
+                                            poDisbursementController.Detail(lnCtr).getSourceCode(),
                                             poDisbursementController.Detail(lnCtr).Particular().getDescription(),
                                             CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(lnCtr).getAmount(), true),
+                                            CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(lnCtr).getDetailVatSales(), true),
+                                            CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(lnCtr).getDetailVatAmount(), true),
+                                            CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(lnCtr).getDetailVatRates(), false),
+                                            CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(lnCtr).getDetailZeroVat(), true),
+                                            CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(lnCtr).getDetailVatExempt(), true),
                                             poDisbursementController.Detail(lnCtr).TaxCode().getTaxCode(),
                                             CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(lnCtr).getTaxAmount(), true),
                                             CustomCommonUtil.setIntegerValueToDecimalFormat(lnNetTotal, true)
@@ -1064,7 +1091,8 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
 
     private void initTableDetailDV() {
         tblAccountCode.setVisible(false);
-        JFXUtil.setColumnCenter(tblDVRowNo, tblReferenceNo, tblTransactionTypeDetail, tblAccountCode, tblParticulars, tblTaxCode);
+        JFXUtil.setColumnCenter(tblDVRowNo, tblReferenceNo, tblTransactionTypeDetail, tblAccountCode, tblParticulars, tblTaxCode,
+                tblVatAmt, tblVatExemptSales, tblVatRate, tblVatZeroRatedSales, tblVatableSales);
         JFXUtil.setColumnRight(tblTaxAmount, tblPurchasedAmount, tblNetAmount);
         JFXUtil.setColumnsIndexAndDisableReordering(tblVwDetails);
         filteredDataDetailDV = new FilteredList<>(detailsdv_data, b -> true);
@@ -1461,7 +1489,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                                 if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                                     tfPayeeName.setText(poDisbursementController.Master().getDisbursementType().equals(DisbursementStatic.DisbursementType.CHECK) ? (poDisbursementController.Master().Payee().getPayeeName() != null ? poDisbursementController.Master().Payee().getPayeeName() : "") : "");
                                 }
-                                loadTableMain();
+//                                loadTableMain();
                                 break;
                             case "tfBankNameCheck":
                                 poJSON = poDisbursementController.SearchBanks(lsValue, false);
