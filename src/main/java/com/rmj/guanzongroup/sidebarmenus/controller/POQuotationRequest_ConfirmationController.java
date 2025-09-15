@@ -1054,6 +1054,7 @@ public class POQuotationRequest_ConfirmationController implements Initializable,
         JFXUtil.setFocusListener(txtDetail_Focus, tfBrand, tfModel, tfBarcode, tfDescription, tfCost, tfQuantity);
         JFXUtil.setKeyPressedListener(this::txtField_KeyPressed, apBrowse, apMaster, apDetail);
         JFXUtil.setCheckboxHoverCursor(apDetail);
+        JFXUtil.setCommaFormatter(tfQuantity);
     }
 
     public void initTableOnClick() {

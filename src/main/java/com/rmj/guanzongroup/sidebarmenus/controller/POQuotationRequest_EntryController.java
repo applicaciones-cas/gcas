@@ -904,6 +904,7 @@ public class POQuotationRequest_EntryController implements Initializable, Screen
 
         JFXUtil.setKeyPressedListener(this::txtField_KeyPressed, apBrowse, apMaster, apDetail);
         JFXUtil.setCheckboxHoverCursor(apDetail);
+        JFXUtil.setCommaFormatter(tfQuantity);
     }
 
     private void initButton(int fnValue) {
