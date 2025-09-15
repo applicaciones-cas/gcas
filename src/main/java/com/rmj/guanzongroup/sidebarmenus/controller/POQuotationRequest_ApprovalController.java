@@ -531,26 +531,6 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
         }
     }
 
-    public boolean checkIfExists() {
-        try {
-            int lnCtr = 0;
-            for (lnCtr = 0; lnCtr < poController.POQuotationRequest().getPOQuotationRequestSupplierCount(); lnCtr++) {
-                if (poController.POQuotationRequest().POQuotationRequestSupplierList(lnCtr).isReverse()) {
-                    if (poController.POQuotationRequest().POQuotationRequestSupplierList(pnSupplier).Supplier().getCompanyName().
-                            equals(poController.POQuotationRequest().POQuotationRequestSupplierList(lnCtr).Supplier().getCompanyName())) {
-                        if (poController.POQuotationRequest().POQuotationRequestSupplierList(pnSupplier).Company().getCompanyName().
-                                equals(poController.POQuotationRequest().POQuotationRequestSupplierList(lnCtr).Company().getCompanyName())) {
-                            return true;
-                        }
-                    }
-                }
-            }
-        } catch (SQLException | GuanzonException ex) {
-            Logger.getLogger(POQuotationRequest_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-           return false;
-    }
-
     private void txtField_KeyPressed(KeyEvent event) {
         try {
             TextField txtField = (TextField) event.getSource();
@@ -689,7 +669,7 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
                                 loadTableSupplier.reload();
                                 JFXUtil.runWithDelay(0.70, () -> {
                                     int lnTempRow = JFXUtil.getDetailTempRow(supplier_data, pnSupplier + 1, 7);
-                                    if (!checkIfExists()) { //check if there is existing supplierid and companyid in 
+                                    if (lnTempRow == supplier_data.size() - 2) { //check if there is existing supplierid and companyid in 
                                         moveNextSupplier(false, true);
                                     }
                                 });
@@ -1107,7 +1087,6 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
         JFXUtil.setFocusListener(txtDetail_Focus, tfBrand, tfModel, tfBarcode, tfDescription, tfCost, tfQuantity);
         JFXUtil.setKeyPressedListener(this::txtField_KeyPressed, apBrowse, apMaster, apDetail, apSupplier);
 
-//        CustomCommonUtil.inputIntegersOnly(tfQuantity);
     }
 
     public void initTableOnClick() {
