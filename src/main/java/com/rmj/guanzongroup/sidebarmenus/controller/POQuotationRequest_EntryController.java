@@ -172,6 +172,7 @@ public class POQuotationRequest_EntryController implements Initializable, Screen
                         }
                     } else {
                         poController.POQuotationRequest().Detail(pnDetail).isReverse(checkedBox.isSelected());
+                        poController.POQuotationRequest().Detail(pnDetail).setQuantity(0.00);
                     }
 
                     loadTableDetail.reload();
@@ -553,6 +554,12 @@ public class POQuotationRequest_EntryController implements Initializable, Screen
                                         int lnTempRow = JFXUtil.getDetailTempRow(details_data, Integer.parseInt(String.valueOf(poJSON.get("row"))) + 1, 7);
                                         pnDetail = lnTempRow;
                                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                    } else {
+                                        int lnReturned = Integer.parseInt(String.valueOf(poJSON.get("row")));
+                                        JFXUtil.runWithDelay(0.80, () -> {
+                                            pnDetail = lnReturned;
+                                            loadTableDetail.reload();
+                                        });
                                     }
                                 } catch (GuanzonException | SQLException ex) {
                                     Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
@@ -736,12 +743,12 @@ public class POQuotationRequest_EntryController implements Initializable, Screen
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 break;
                             } else {
-//                                int lnReturned = Integer.parseInt(String.valueOf(poJSON.get("row")));
-//                                JFXUtil.runWithDelay(0.70, () -> {
-////                                    int lnTempRow = JFXUtil.getDetailTempRow(details_data, lnReturned, 7);
-////                                    pnDetail = lnReturned;
-////                                    loadTableDetail.reload();
-//                                });
+                                int lnReturned = Integer.parseInt(String.valueOf(poJSON.get("row")));
+                                JFXUtil.runWithDelay(0.80, () -> {
+//                                    int lnTempRow = JFXUtil.getDetailTempRow(details_data, lnReturned, 7);
+                                    pnDetail = lnReturned;
+                                    loadTableDetail.reload();
+                                });
                                 loadTableDetail.reload();
                                 JFXUtil.textFieldMoveNext(tfQuantity);
                             }
@@ -759,11 +766,12 @@ public class POQuotationRequest_EntryController implements Initializable, Screen
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 break;
                             } else {
-//                                int lnReturned = Integer.parseInt(String.valueOf(poJSON.get("row")));
-//                                JFXUtil.runWithDelay(0.70, () -> {
-//                                    pnDetail = lnReturned;
-//                                    loadTableDetail.reload();
-//                                });
+                                int lnReturned = Integer.parseInt(String.valueOf(poJSON.get("row")));
+                                JFXUtil.runWithDelay(0.80, () -> {
+//                                    int lnTempRow = JFXUtil.getDetailTempRow(details_data, lnReturned, 7);
+                                    pnDetail = lnReturned;
+                                    loadTableDetail.reload();
+                                });
                                 loadTableDetail.reload();
                                 JFXUtil.textFieldMoveNext(tfQuantity);
                             }

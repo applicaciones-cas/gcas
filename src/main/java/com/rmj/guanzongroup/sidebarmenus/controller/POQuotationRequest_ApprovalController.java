@@ -531,6 +531,26 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
         }
     }
 
+    public boolean checkIfExists() {
+        try {
+            int lnCtr = 0;
+            for (lnCtr = 0; lnCtr < poController.POQuotationRequest().getPOQuotationRequestSupplierCount(); lnCtr++) {
+                if (poController.POQuotationRequest().POQuotationRequestSupplierList(lnCtr).isReverse()) {
+                    if (poController.POQuotationRequest().POQuotationRequestSupplierList(pnSupplier).Supplier().getCompanyName().
+                            equals(poController.POQuotationRequest().POQuotationRequestSupplierList(lnCtr).Supplier().getCompanyName())) {
+                        if (poController.POQuotationRequest().POQuotationRequestSupplierList(pnSupplier).Company().getCompanyName().
+                                equals(poController.POQuotationRequest().POQuotationRequestSupplierList(lnCtr).Company().getCompanyName())) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        } catch (SQLException | GuanzonException ex) {
+            Logger.getLogger(POQuotationRequest_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+           return false;
+    }
+
     private void txtField_KeyPressed(KeyEvent event) {
         try {
             TextField txtField = (TextField) event.getSource();
@@ -630,11 +650,11 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 break;
                             } else {
-//                                int lnReturned = Integer.parseInt(String.valueOf(poJSON.get("row")));
-//                                JFXUtil.runWithDelay(0.70, () -> {
-//                                    pnSupplier = lnReturned;
-//                                    loadTableSupplier.reload();
-//                                });
+                                int lnReturned = Integer.parseInt(String.valueOf(poJSON.get("row")));
+                                JFXUtil.runWithDelay(0.80, () -> {
+                                    pnSupplier = lnReturned;
+                                    loadTableSupplier.reload();
+                                });
                                 loadTableSupplier.reload();
                                 JFXUtil.textFieldMoveNext(tfTerm);
                             }
@@ -663,11 +683,15 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 break;
                             } else {
-//                                int lnReturned = Integer.parseInt(String.valueOf(poJSON.get("row")));
+                                int lnReturned = Integer.parseInt(String.valueOf(poJSON.get("row")));
+
+                                pnSupplier = lnReturned;
                                 loadTableSupplier.reload();
                                 JFXUtil.runWithDelay(0.70, () -> {
-//                                    pnSupplier = lnReturned;                                 
-                                    moveNextSupplier(false, true);
+                                    int lnTempRow = JFXUtil.getDetailTempRow(supplier_data, pnSupplier + 1, 7);
+                                    if (!checkIfExists()) { //check if there is existing supplierid and companyid in 
+                                        moveNextSupplier(false, true);
+                                    }
                                 });
                             }
                             break;
@@ -820,7 +844,7 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
             tfBrand.setText(lsBrand);
             tfModel.setText(lsModel);
             tfBarcode.setText(poController.POQuotationRequest().Detail(pnDetail).Inventory().getBarCode());
-            tfDescription.setText(poController.POQuotationRequest().Detail(pnDetail).Inventory().getDescription());
+            tfDescription.setText(poController.POQuotationRequest().Detail(pnDetail).getDescription());
             tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.POQuotationRequest().Detail(pnDetail).Inventory().getCost(), true));
             tfQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.POQuotationRequest().Detail(pnDetail).getQuantity(), false));
             JFXUtil.updateCaretPositions(apDetail);
