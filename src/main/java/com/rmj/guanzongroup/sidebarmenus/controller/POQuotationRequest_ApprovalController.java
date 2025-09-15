@@ -1161,9 +1161,6 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
                     JFXUtil.setDisabled(false, taRemarks, apSupplier);
                 }
                 break;
-            case POQuotationRequestStatus.CONFIRMED:
-                JFXUtil.setButtonsVisibility(false, btnExport);
-                break;
             case POQuotationRequestStatus.CANCELLED:
                 JFXUtil.setButtonsVisibility(false, btnApprove, btnDisapprove, btnUpdate);
                 break;
