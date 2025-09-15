@@ -780,8 +780,7 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
     public void loadRecordSupplier() {
         try {
             System.out.println("pnSupplier : " + pnSupplier);
-            JFXUtil.setDisabled(!POQuotationRequestStatus.APPROVED.equals(poController.POQuotationRequest().Master().getTransactionStatus()), apSupplier);
-
+            
             if (pnSupplier < 0 || pnSupplier > poController.POQuotationRequest().getPOQuotationRequestSupplierCount() - 1) {
                 return;
             }
