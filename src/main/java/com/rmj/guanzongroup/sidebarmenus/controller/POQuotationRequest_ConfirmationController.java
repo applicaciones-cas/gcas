@@ -83,6 +83,7 @@ public class POQuotationRequest_ConfirmationController implements Initializable,
     private String psSearchClientId = "";
     private String psTransactionNo = "";
     private boolean pbEntered = false;
+    private boolean pbKeyPressed = false;
 
     private ObservableList<ModelPOQuotationRequest_Main> main_data = FXCollections.observableArrayList();
     private ObservableList<ModelPOQuotationRequest_Detail> details_data = FXCollections.observableArrayList();
@@ -472,6 +473,28 @@ public class POQuotationRequest_ConfirmationController implements Initializable,
                         break;
                     case "tfCategory":
                         if (lsValue.isEmpty()) {
+                            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                                if(poController.POQuotationRequest().Master().getCategoryLevel2() != null && !"".equals(poController.POQuotationRequest().Master().getCategoryLevel2())){
+                                    if (poController.POQuotationRequest().getDetailCount() > 0) {
+                                        if(poController.POQuotationRequest().checkExistStockInventory()){
+                                            if(!pbKeyPressed){
+                                                if (ShowMessageFX.YesNo(null, pxeModuleName,
+                                                        "Are you sure you want to change the category?\nPlease note that doing so will delete all transaction details.\n\nDo you wish to proceed?") == true) {
+                                                    poController.POQuotationRequest().removeWithInvDetails();
+                                                    loadTableDetail.reload();
+                                                } else {
+                                                    loadRecordMaster();
+                                                    return;
+                                                }
+                                            } else {
+                                                loadRecordMaster();
+                                                return;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            
                             poJSON = poController.POQuotationRequest().Master().setCategoryLevel2("");
                         }
                         break;
@@ -612,6 +635,24 @@ public class POQuotationRequest_ConfirmationController implements Initializable,
                             loadRecordMaster();
                             return;
                         case "tfCategory":
+                            if(pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE){
+                                if(poController.POQuotationRequest().Master().getCategoryLevel2() != null && !"".equals(poController.POQuotationRequest().Master().getCategoryLevel2())){
+                                    if (poController.POQuotationRequest().getDetailCount() > 0) {
+                                        if(poController.POQuotationRequest().checkExistStockInventory()){
+                                            pbKeyPressed = true;
+                                            if (ShowMessageFX.YesNo(null, pxeModuleName,
+                                                    "Are you sure you want to change the category?\nPlease note that doing so will delete all transaction details.\n\nDo you wish to proceed?") == true) {
+                                                poController.POQuotationRequest().removeWithInvDetails();
+                                                loadTableDetail.reload();
+                                            } else {
+                                                return;
+                                            }
+                                            pbKeyPressed = false;
+                                        }
+                                    }
+                                }
+                            }
+                            
                             poJSON = poController.POQuotationRequest().SearchCategory(lsValue, false, false);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
