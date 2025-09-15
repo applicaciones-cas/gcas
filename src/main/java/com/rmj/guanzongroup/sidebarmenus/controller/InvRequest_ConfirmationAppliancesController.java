@@ -529,7 +529,7 @@ public class InvRequest_ConfirmationAppliancesController implements Initializabl
                                 loadTableInvDetail();
                                 loadDetail();
                                 
-                                
+                                pnEditMode = EditMode.READY;
                             } else {
                                 ShowMessageFX.Warning((String) loJSON.get("message"), "Browse", null);
                             }
@@ -551,7 +551,7 @@ public class InvRequest_ConfirmationAppliancesController implements Initializabl
 
                         clearDetailFields();
                         loadTableInvDetail();
-
+                        pnEditMode = EditMode.UPDATE;
                         if (tblViewOrderDetails.getItems().size() > 0) {
                             Platform.runLater(() -> {
                                 tblViewOrderDetails.getSelectionModel().select(0);
@@ -965,14 +965,14 @@ public class InvRequest_ConfirmationAppliancesController implements Initializabl
         if (invRequestController.StockRequest().Master().getTransactionStatus().equals(StockRequestStatus.OPEN)||
             invRequestController.StockRequest().Master().getTransactionStatus().equals(StockRequestStatus.CONFIRMED)) {
             CustomCommonUtil.setDisable(!lbShow, AnchorDetailMaster);
-            CustomCommonUtil.setDisable(!lbShow,
-                    dpTransactionDate, taRemarks,tfReferenceNo);
+              CustomCommonUtil.setDisable(true,
+                     tfReferenceNo);
 
 
             CustomCommonUtil.setDisable(true,
                     tfInvType,tfReservationQTY
-                    ,tfQOH,tfROQ,tfClassification,tfVariant,tfColor,tfBrand,tfModel,tfBarCode,tfDescription);
-            CustomCommonUtil.setDisable(!lbShow, tfOrderQuantity);
+                    ,tfQOH,tfReferenceNo,tfROQ,dpTransactionDate,tfClassification,tfVariant,tfColor,tfBrand,tfModel,tfBarCode,tfDescription);
+            CustomCommonUtil.setDisable(!lbShow, tfOrderQuantity, taRemarks);
             
             
         } else {
@@ -1057,7 +1057,7 @@ public class InvRequest_ConfirmationAppliancesController implements Initializabl
                                         invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                                         invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
                                         invRequestController.StockRequest().setTransactionStatus("102");
-                                        poJSON = invRequestController.StockRequest().searchTransaction();
+                                        poJSON = invRequestController.StockRequest().searchTransaction(true);
                                         if (!"error".equals((String) poJSON.get("result"))) {
                                             pnTblInvDetailRow = -1;
                                             loadMaster();
@@ -1287,7 +1287,8 @@ public class InvRequest_ConfirmationAppliancesController implements Initializabl
 
         btnClose.setVisible(!lbShow);
         btnClose.setManaged(!lbShow);
-
+        btnCancel.setVisible(lbShow);
+        btnCancel.setManaged(lbShow);
         CustomCommonUtil.setVisible(lbShow, btnSave, btnCancel);
         CustomCommonUtil.setManaged(lbShow, btnSave, btnCancel);
 

@@ -707,19 +707,19 @@ public class DashboardController implements Initializable {
 
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_EntryMonarchFood.fxml":
                     psIndustryID = "04";
-                    psCategoryID = "0021";
+                    psCategoryID = "0009";
                     return "Purchase Order MF";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ConfirmationMonarchFood.fxml":
                     psIndustryID = "04";
-                    psCategoryID = "0021";
+                    psCategoryID = "0009";
                     return "Purchase Order Confirmation MF";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ApprovalMonarchFood.fxml":
                     psIndustryID = "04";
-                    psCategoryID = "0021";
+                    psCategoryID = "0009";
                     return "Purchase Order Approval MF";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_HistoryMonarchFood.fxml":
                     psIndustryID = "04";
-                    psCategoryID = "0021";
+                    psCategoryID = "0009";
                     return "Purchase Order History MF";
 
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_EntryMonarchHospitality.fxml":
@@ -992,21 +992,20 @@ public class DashboardController implements Initializable {
 
                 //Monarch Food
                 case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_EntryMonarchFood.fxml":
-
                     psIndustryID = "04";
-                    psCategoryID = "0008";
+                    psCategoryID = "0009";
                     return "Purchase Order Receiving Entry MF";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ConfirmationMonarchFood.fxml":
                     psIndustryID = "04";
-                    psCategoryID = "0008";
+                    psCategoryID = "0009";
                     return "Purchase Order Receiving Confirmation MF";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalMonarchFood.fxml":
                     psIndustryID = "04";
-                    psCategoryID = "0008";
+                    psCategoryID = "0009";
                     return "Purchase Order Receiving Approval MF";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_HistoryMonarchFood.fxml":
                     psIndustryID = "04";
-                    psCategoryID = "0008";
+                    psCategoryID = "0009";
 
                     return "Purchase Order Receiving History MF";
 
@@ -1144,15 +1143,15 @@ public class DashboardController implements Initializable {
                 //Monarch Food
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrderReturn_EntryMonarchFood.fxml":
                     psIndustryID = "04";
-                    psCategoryID = "0008";
+                    psCategoryID = "0009";
                     return "Purchase Order Return Entry MF";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrderReturn_ConfirmationMonarchFood.fxml":
                     psIndustryID = "04";
-                    psCategoryID = "0008";
+                    psCategoryID = "0009";
                     return "Purchase Order Return Confirmation MF";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrderReturn_HistoryMonarchFood.fxml":
                     psIndustryID = "04";
-                    psCategoryID = "0008";
+                    psCategoryID = "0009";
                     return "Purchase Order Return History MF";
 
                 //Monarch Hospitality
@@ -1544,15 +1543,15 @@ public class DashboardController implements Initializable {
                 //Monarch Food
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SalesInquiry_EntryMonarchFood.fxml":
                     psIndustryID = "04";
-                    psCategoryID = "0008";
+                    psCategoryID = "0009";
                     return "Sales Inquiry Entry MF";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SalesInquiry_ConfirmationMonarchFood.fxml":
                     psIndustryID = "04";
-                    psCategoryID = "0008";
+                    psCategoryID = "0009";
                     return "Sales Inquiry Confirmation MF";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SalesInquiry_HistoryMonarchFood.fxml":
                     psIndustryID = "04";
-                    psCategoryID = "0008";
+                    psCategoryID = "0009";
                     return "Sales Inquiry History MF";
 
                 //Monarch Hospitality
@@ -1954,6 +1953,10 @@ public class DashboardController implements Initializable {
                     return "Measure";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/Relationship.fxml":
                     return "Relationship";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/RequirementSource.fxml":
+                    return "Requirement Source";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/RequirementSourcePerGroup.fxml":
+                    return "Requirement Source Per Group";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/Salesman.fxml":
                     return "Salesman";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/Salesagent.fxml":
@@ -3798,6 +3801,10 @@ public class DashboardController implements Initializable {
                     return new MeasureController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/Relationship.fxml":
                     return new RelationshipController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/RequirementSource.fxml":
+                    return new RequirementSourceController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/RequirementSourcePerGroup.fxml":
+                    return new RequirementSourcePerGroupController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/Salesman.fxml":
                     return new SalesmanController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/Salesagent.fxml":
@@ -5446,6 +5453,10 @@ public class DashboardController implements Initializable {
                 + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Model\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Model.fxml\", \"controller_path\": \"\", \"menu_id\": \"033\", \"menu_parent\": \"030\"},"
                 + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Measure\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Measure.fxml\", \"controller_path\": \"\", \"menu_id\": \"034\", \"menu_parent\": \"030\"},"
                 + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Relationship\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Relationship.fxml\", \"controller_path\": \"\", \"menu_id\": \"035\", \"menu_parent\": \"030\"},"
+                
+                + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Requirement Source\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/RequirementSource.fxml\", \"controller_path\": \"\", \"menu_id\": \"043\", \"menu_parent\": \"030\"},"
+                + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Requirement Source Per Group\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/RequirementSourcePerGroup.fxml\", \"controller_path\": \"\", \"menu_id\": \"044\", \"menu_parent\": \"030\"},"
+                
                 + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Sales Agent\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Salesagent.fxml\", \"controller_path\": \"\", \"menu_id\": \"041\", \"menu_parent\": \"030\"},"
                 + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Salesman\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Salesman.fxml\", \"controller_path\": \"\", \"menu_id\": \"036\", \"menu_parent\": \"030\"},"
                 + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Sales Inquiry Source\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/SalesInquirySource.fxml\", \"controller_path\": \"\", \"menu_id\": \"042\", \"menu_parent\": \"030\"},"

@@ -263,7 +263,7 @@ public class InvRequest_Roq_HistoryLPGeneralController implements Initializable,
     private void loadRecordSearch() {
         try {
 
-            lblSource.setText(invRequestController.StockRequest().Master().Company().getCompanyName() + " - " + invRequestController.StockRequest().Master().Industry().getDescription());
+            lblSource.setText(invRequestController.StockRequest().Master().Company().getCompanyName());
 
         } catch (GuanzonException | SQLException ex) {
             Logger.getLogger(InvRequest_EntryMcController.class.getName()).log(Level.SEVERE, null, ex);
@@ -311,7 +311,7 @@ public class InvRequest_Roq_HistoryLPGeneralController implements Initializable,
                             invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                             invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
                             invRequestController.StockRequest().setTransactionStatus("1024");
-                            poJSON = invRequestController.StockRequest().searchTransaction();
+                            poJSON = invRequestController.StockRequest().searchTransaction(true);
                             if (!"error".equals((String) poJSON.get("result"))) {
                                 pnTblInvDetailRow = -1;
                                 loadMaster();
