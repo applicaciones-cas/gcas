@@ -697,7 +697,7 @@ public class POQuotationRequest_ApprovalHistoryController implements Initializab
         // Manage visibility and managed state of other buttons
         JFXUtil.setButtonsVisibility(lbShow2, btnHistory);
         JFXUtil.setButtonsVisibility(lbShow3, btnBrowse, btnClose);
-        JFXUtil.setButtonsVisibility((poController.POQuotationRequest().getPOQuotationRequestSupplierCount() > 0), btnExport);
+        JFXUtil.setButtonsVisibility((poController.POQuotationRequest().getPOQuotationRequestSupplierCount() > 0 && lbShow2), btnExport);
 
         JFXUtil.setDisabled(true, taRemarks, apMaster, apDetail);
     }
