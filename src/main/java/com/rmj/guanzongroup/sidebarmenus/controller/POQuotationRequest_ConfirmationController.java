@@ -923,7 +923,6 @@ public class POQuotationRequest_ConfirmationController implements Initializable,
     public void loadRecordMaster() {
         try {
             boolean lbShow = (pnEditMode == EditMode.UPDATE);
-            JFXUtil.setDisabled(lbShow, tfBrand, tfModel, tfBarcode, tfDescription);
             JFXUtil.setDisabled(!lbShow, dpTransactionDate);
 
             JFXUtil.setStatusValue(lblStatus, POQuotationRequestStatus.class, pnEditMode == EditMode.UNKNOWN ? "-1" : poController.POQuotationRequest().Master().getTransactionStatus());
