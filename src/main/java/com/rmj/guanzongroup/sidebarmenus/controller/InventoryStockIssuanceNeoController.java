@@ -93,7 +93,7 @@ public class InventoryStockIssuanceNeoController implements Initializable, Scree
             tfVariant, tfMeasure, tfInvType, tfCost, tfIssuedQty;
 
     @FXML
-    Button btnNew, btnUpdate, btnSearch, btnSave, btnCancel, btnHistory, btnRetrieve, btnClose;
+    Button btnNew, btnUpdate, btnSearch, btnBrowse, btnSave, btnCancel, btnHistory, btnRetrieve, btnClose;
 
     @FXML
     TableView<Model_Inventory_Transfer_Master> tblViewMaster;
@@ -283,6 +283,47 @@ public class InventoryStockIssuanceNeoController implements Initializable, Scree
                                 reloadTableDetail();
                                 loadSelectedTransactionDetail(pnTransactionDetail);
                             }
+                            break;
+                    }
+                    break;
+
+                case "btnBrowse":
+                    if (lastFocusedControl == null) {
+                        ShowMessageFX.Information(null, psFormName,
+                                "Search unavailable. Please ensure a searchable field is selected or focused before proceeding..");
+                        return;
+                    }
+
+                    switch (lastFocusedControl.getId()) {
+                        case "tfSearchSourceno":
+                            if (!tfTransNo.getText().isEmpty()) {
+                                if (ShowMessageFX.OkayCancel(null, "Search Transaction! by Trasaction", "Are you sure you want replace loaded Transaction?") == false) {
+                                    return;
+                                }
+                            }
+                            if (!isJSONSuccess(poAppController.searchTransaction(tfSearchSourceno.getText(), true, true),
+                                    "Initialize Search Source No! ")) {
+                                return;
+                            }
+
+//                                tfSearchSourceno.setText(poAppController.getMaster().Branch().getBranchName());
+                            getLoadedTransaction();
+                            initButtonDisplay(poAppController.getEditMode());
+                            break;
+                        case "tfSearchTransNo":
+                            if (!tfTransNo.getText().isEmpty()) {
+                                if (ShowMessageFX.OkayCancel(null, "Search Transaction! by Trasaction", "Are you sure you want replace loaded Transaction?") == false) {
+                                    return;
+                                }
+                            }
+                            if (!isJSONSuccess(poAppController.searchTransaction(tfSearchTransNo.getText(), true, true),
+                                    "Initialize Search Transaction! ")) {
+                                return;
+                            }
+
+//                                tfSearchTransNo.setText(poAppController.getMaster().getTransactionNo());
+                            getLoadedTransaction();
+                            initButtonDisplay(poAppController.getEditMode());
                             break;
                     }
                     break;
@@ -847,11 +888,11 @@ public class InventoryStockIssuanceNeoController implements Initializable, Scree
         boolean lbShow = (fnEditMode == EditMode.ADDNEW || fnEditMode == EditMode.UPDATE);
 
         // Always show these buttons
-        initButtonControls(true, "btnSearch", "btnRetrieve", "btnHistory", "btnClose");
+        initButtonControls(true, "btnRetrieve", "btnHistory", "btnClose");
 
         // Show-only based on mode
-        initButtonControls(lbShow, "btnSave", "btnCancel");
-        initButtonControls(!lbShow, "btnNew", "btnUpdate");
+        initButtonControls(lbShow, "btnSearch", "btnSave", "btnCancel");
+        initButtonControls(!lbShow, "btnBrowse", "btnNew", "btnUpdate");
 
         apMaster.setDisable(!lbShow);
         apDetail.setDisable(!lbShow);
