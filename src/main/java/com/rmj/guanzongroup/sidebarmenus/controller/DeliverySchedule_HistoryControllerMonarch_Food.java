@@ -185,20 +185,6 @@ public class DeliverySchedule_HistoryControllerMonarch_Food implements Initializ
                         break;
                     }
                     switch (lastFocusedControl.getId()) {
-                        //Search Detail 
-                        case "tfClusterName":
-                            
-                            if (pnClusterDetail >= 0) {
-                                if (!isJSONSuccess(poAppController.searchClusterBranch(pnClusterDetail, tfClusterName.getText(), false),
-                                        "Search Cluster! ")) {
-                                    break;
-                                }
-                                loadSelectedTransactionDetail(pnClusterDetail);
-                                pnEditMode = poAppController.getEditMode();
-                                break;
-                            }
-                            break;
-
                         //Browse Transaction 
                         case "tfSearchCluster":
                             
@@ -551,20 +537,6 @@ public class DeliverySchedule_HistoryControllerMonarch_Food implements Initializ
                     case ENTER:
                     case F3:
                         switch (txtFieldID) {
-
-                            //Search Detail 
-                            case "tfClusterName":
-                                if (pnClusterDetail >= 0) {
-                                    if (!isJSONSuccess(poAppController.searchClusterBranch(pnClusterDetail, tfClusterName.getText(), false),
-                                            "Search Cluster")) {
-                                        break;
-                                    }
-                                    loadSelectedTransactionDetail(pnClusterDetail);
-                                    pnEditMode = poAppController.getEditMode();
-                                    break;
-                                }
-                                break;
-
                             //Browse Transaction 
                             case "tfSearchCluster":
 

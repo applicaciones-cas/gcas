@@ -103,7 +103,7 @@ public class DeliverySchedule_ConfirmationControllerAppliance implements Initial
     @FXML
     private Button btnApprove, btnVoid, btnUpdate, btnSearch, btnSave,
             btnCancel, btnHistory, btnRetrieve,
-            btnClose;
+            btnClose,btnBrowse;
     @FXML
     private TextArea taRemarks, taNotes;
     @FXML
@@ -187,6 +187,93 @@ public class DeliverySchedule_ConfirmationControllerAppliance implements Initial
                         break;
                     }
                     pnEditMode = poAppController.getEditMode();
+                    break;
+                    case "btnBrowse":
+                    if (lastFocusedControl == null) {
+                        ShowMessageFX.Information(null, psFormName,
+                                "Search unavailable. Please ensure a searchable field is selected or focused before proceeding..");
+                        break;
+                    }
+                    switch (lastFocusedControl.getId()) {
+                        //Browse Transaction 
+                        case "tfSearchCluster":
+                            
+                            if (tfSearchCluster.getText().isEmpty()) {
+                                ShowMessageFX.Information(null, psFormName,
+                                    "Search unavailable. Please ensure the selected or focused field is not empty");
+                                break;
+                            }
+                            
+                            if (!tfTransactionNo.getText().isEmpty()) {
+                                if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                                    if (ShowMessageFX.OkayCancel(null, "Search Transaction! by Trasaction", "Do you want to disregard changes?") == false) {
+                                        break;
+                                    }
+                                }
+                            }
+                            
+                            if (!isJSONSuccess(poAppController.searchTransaction(tfSearchCluster.getText(), true, true),
+                                    "Search Transaction!")) {
+                                
+                                ShowMessageFX.Information(null, psFormName,
+                                    "Search unavailable. Transaction not found");
+                                break;
+                            }
+                            
+                            clearAllInputs();
+                            getLoadedTransaction();
+                            initButtonDisplay(poAppController.getEditMode());
+                            pnEditMode = poAppController.getEditMode();
+                            break;
+                            
+                        case "dpSearchDate":
+                            
+                            LocalDate loTransDate = dpSearchDate.getValue();
+                            String lsTransValue = "";
+                            if (loTransDate != null) {
+                                lsTransValue = loTransDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                            }else{
+                                ShowMessageFX.Information("Please entsure date field is not empty", "Delivery Schedule Encoding", "");
+                                break;
+                            }
+
+                            if (!isJSONSuccess(poAppController.searchTransaction(lsTransValue, false, true),
+                                    "Search Transaction!! BY Date")) {
+                                ShowMessageFX.Information("No transactions found", "Delivery Schedule Encoding", "");
+                                break;
+                            }
+                            getLoadedTransaction();
+                            initButtonDisplay(poAppController.getEditMode());
+
+                            break;
+
+                        case "dpSearchScheduleDate":
+                            
+                            LocalDate loSched = dpSearchScheduleDate.getValue();
+                            String lsSched = "";
+                            if (loSched != null) {
+                                lsSched = loSched.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                            }else{
+                                ShowMessageFX.Information("Please entsure date field is not empty", "Delivery Schedule Encoding", "");
+                                break;
+                            }
+
+                            if (!isJSONSuccess(poAppController.searchTransaction(lsSched, false, true),
+                                    "Search Transaction!! BY Schedule Date")) {
+                                ShowMessageFX.Information("No transactions found", "Delivery Schedule Encoding", "");
+                                break;
+                            }
+                            getLoadedTransaction();
+                            initButtonDisplay(poAppController.getEditMode());
+
+                            break;
+                            
+                        default:
+                            ShowMessageFX.Information(null, psFormName,
+                                    "Search unavailable. Please ensure a searchable field is selected or focused before proceeding..");
+
+                            break;
+                    }
                     break;
                 case "btnSearch":
                     if (lastFocusedControl == null) {
@@ -626,15 +713,15 @@ public class DeliverySchedule_ConfirmationControllerAppliance implements Initial
         }
     }
 
-    private void initButtonDisplay(int fnEditMode) {
+       private void initButtonDisplay(int fnEditMode) {
         boolean lbShow = (fnEditMode == EditMode.ADDNEW || fnEditMode == EditMode.UPDATE);
 
         // Always show these buttons
-        initButtonControls(true, "btnSearch", "btnRetrieve", "btnHistory", "btnClose");
+        initButtonControls(true, "btnRetrieve", "btnHistory", "btnClose");
 
         // Show-only based on mode
-        initButtonControls(lbShow, "btnSave", "btnCancel");
-        initButtonControls(!lbShow, "btnUpdate", "btnApprove", "btnVoid");
+        initButtonControls(lbShow, "btnSearch", "btnSave", "btnCancel");
+        initButtonControls(!lbShow, "btnBrowse", "btnUpdate", "btnApprove", "btnVoid");
         apMaster.setDisable(!lbShow);
         apDetail.setDisable(!lbShow);
     }
