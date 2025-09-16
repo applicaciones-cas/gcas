@@ -514,7 +514,7 @@ public class InvRequest_Roq_ConfirmationLPFoodController implements Initializabl
                                 loadTableInvDetail();
                                 loadDetail();
                                 
-                                
+                                pnEditMode = EditMode.READY;
                             } else {
                                 ShowMessageFX.Warning((String) loJSON.get("message"), "Browse", null);
                             }
@@ -536,7 +536,7 @@ public class InvRequest_Roq_ConfirmationLPFoodController implements Initializabl
 
                         clearDetailFields();
                         loadTableInvDetail();
-
+                        pnEditMode = EditMode.UPDATE;
                         if (tblViewOrderDetails.getItems().size() > 0) {
                             Platform.runLater(() -> {
                                 tblViewOrderDetails.getSelectionModel().select(0);
@@ -953,12 +953,12 @@ public class InvRequest_Roq_ConfirmationLPFoodController implements Initializabl
             invRequestController.StockRequest().Master().getTransactionStatus().equals(StockRequestStatus.CONFIRMED)) {
             CustomCommonUtil.setDisable(!lbShow, AnchorDetailMaster);
             CustomCommonUtil.setDisable(!lbShow,
-                    dpTransactionDate, taRemarks,tfReferenceNo);
+                     taRemarks);
 
 
             CustomCommonUtil.setDisable(true,
-                    tfInvType,tfReservationQTY
-                    ,tfQOH,tfROQ,tfClassification,tfBrand,tfBarCode,tfDescription);
+                    tfInvType,dpTransactionDate,tfReservationQTY
+                    ,tfQOH,tfROQ,tfReferenceNo,tfClassification,tfBrand,tfBarCode,tfDescription);
             CustomCommonUtil.setDisable(!lbShow, tfOrderQuantity);
             
             
@@ -1044,7 +1044,7 @@ public class InvRequest_Roq_ConfirmationLPFoodController implements Initializabl
                                 invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                                 invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
                                 invRequestController.StockRequest().setTransactionStatus("102");
-                                poJSON = invRequestController.StockRequest().searchTransaction();
+                                poJSON = invRequestController.StockRequest().searchTransaction(true);
                                 if (!"error".equals((String) poJSON.get("result"))) {
                                     pnTblInvDetailRow = -1;
                                     loadMaster();
@@ -1262,7 +1262,8 @@ public class InvRequest_Roq_ConfirmationLPFoodController implements Initializabl
 
         btnClose.setVisible(!lbShow);
         btnClose.setManaged(!lbShow);
-
+        btnCancel.setVisible(lbShow);
+        btnCancel.setManaged(lbShow);
         CustomCommonUtil.setVisible(lbShow, btnSave, btnCancel);
         CustomCommonUtil.setManaged(lbShow, btnSave, btnCancel);
 
@@ -1271,6 +1272,7 @@ public class InvRequest_Roq_ConfirmationLPFoodController implements Initializabl
 
         
         if (fnEditMode == EditMode.READY) {
+        
             switch (invRequestController.StockRequest().Master().getTransactionStatus()) {
                 case StockRequestStatus.OPEN:
                     CustomCommonUtil.setVisible(true, btnConfirm, btnVoid, btnUpdate);

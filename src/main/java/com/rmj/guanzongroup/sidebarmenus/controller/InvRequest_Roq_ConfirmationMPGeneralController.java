@@ -227,8 +227,8 @@ public class InvRequest_Roq_ConfirmationMPGeneralController implements Initializ
     }
         private void loadRecordSearch() {
             try {
-                System.out.print("LBL SOURCE: "+invRequestController.StockRequest().Master().Company().getCompanyName() + " - " + invRequestController.StockRequest().Master().Industry().getDescription());
-                lblSource.setText(invRequestController.StockRequest().Master().Company().getCompanyName() + " - " + invRequestController.StockRequest().Master().Industry().getDescription());
+                System.out.print("LBL SOURCE: "+invRequestController.StockRequest().Master().Company().getCompanyName() );
+                lblSource.setText(invRequestController.StockRequest().Master().Company().getCompanyName() );
 
             } catch (GuanzonException | SQLException ex) {
                 Logger.getLogger(InvRequest_EntryMcController.class.getName()).log(Level.SEVERE, null, ex);
@@ -525,7 +525,7 @@ public class InvRequest_Roq_ConfirmationMPGeneralController implements Initializ
                                 loadTableInvDetail();
                                 loadDetail();
                                 
-                                
+                                pnEditMode = EditMode.READY;
                             } else {
                                 ShowMessageFX.Warning((String) loJSON.get("message"), "Browse", null);
                             }
@@ -546,7 +546,7 @@ public class InvRequest_Roq_ConfirmationMPGeneralController implements Initializ
 
                         clearDetailFields();
                         loadTableInvDetail();
-
+                        pnEditMode = EditMode.UPDATE;
                         if (tblViewOrderDetails.getItems().size() > 0) {
                             Platform.runLater(() -> {
                                 tblViewOrderDetails.getSelectionModel().select(0);
@@ -960,11 +960,11 @@ case "btnSave":
             invRequestController.StockRequest().Master().getTransactionStatus().equals(StockRequestStatus.CONFIRMED)) {
             CustomCommonUtil.setDisable(!lbShow, AnchorDetailMaster);
             CustomCommonUtil.setDisable(!lbShow,
-                    dpTransactionDate, taRemarks,tfReferenceNo);
+                     taRemarks);
 
 
             CustomCommonUtil.setDisable(true,
-                    tfInvType,tfReservationQTY
+                    tfInvType,tfReferenceNo,dpTransactionDate,tfReservationQTY
                     ,tfQOH,tfROQ,tfClassification,tfVariant,tfColor,tfBrand,tfModel,tfBarCode,tfDescription);
             CustomCommonUtil.setDisable(!lbShow, tfOrderQuantity);
             
@@ -1047,7 +1047,7 @@ case "btnSave":
                                 invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                                 invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
                                 invRequestController.StockRequest().setTransactionStatus("102");
-                                poJSON = invRequestController.StockRequest().searchTransaction();
+                                poJSON = invRequestController.StockRequest().searchTransaction(true);
                                 if (!"error".equals((String) poJSON.get("result"))) {
                                     pnTblInvDetailRow = -1;
                                     loadMaster();
@@ -1269,7 +1269,8 @@ case "btnSave":
 
         btnClose.setVisible(!lbShow);
         btnClose.setManaged(!lbShow);
-
+        btnCancel.setVisible(lbShow);
+        btnCancel.setManaged(lbShow);
         CustomCommonUtil.setVisible(lbShow, btnSave, btnCancel);
         CustomCommonUtil.setManaged(lbShow, btnSave, btnCancel);
 
@@ -1278,6 +1279,7 @@ case "btnSave":
 
         
         if (fnEditMode == EditMode.READY) {
+        
             switch (invRequestController.StockRequest().Master().getTransactionStatus()) {
                 case StockRequestStatus.OPEN:
                     CustomCommonUtil.setVisible(true, btnConfirm, btnVoid, btnUpdate);
