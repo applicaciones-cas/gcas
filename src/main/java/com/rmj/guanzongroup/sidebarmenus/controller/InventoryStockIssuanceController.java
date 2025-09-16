@@ -938,11 +938,11 @@ public class InventoryStockIssuanceController implements Initializable, ScreenIn
         boolean lbShow = (fnEditMode == EditMode.ADDNEW || fnEditMode == EditMode.UPDATE);
 
         // Always show these buttons
-        initButtonControls(true, "btnBrowse", "btnRetrieve", "btnHistory", "btnClose");
+        initButtonControls(true,  "btnRetrieve", "btnHistory", "btnClose");
 
         // Show-only based on mode
         initButtonControls(lbShow, "btnSearch", "btnSave", "btnCancel");
-        initButtonControls(!lbShow, "btnNew", "btnUpdate");
+        initButtonControls(!lbShow, "btnBrowse","btnNew", "btnUpdate");
 
         apMaster.setDisable(!lbShow);
         apMasterDelivery.setDisable(!lbShow);

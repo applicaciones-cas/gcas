@@ -149,13 +149,14 @@ public class DeliverySchedule_ConfirmationControllerMP implements Initializable,
         try {
             poLogWrapper = new LogWrapper(psFormName, psFormName + "Log");
             poAppController = new DeliveryIssuanceControllers(poApp, poLogWrapper).DeliverySchedule();
-            poAppController.setTransactionStatus(DeliveryScheduleStatus.OPEN);
             if (!isJSONSuccess(poAppController.initTransaction(), "Initialize Transaction")) {
                 unloadForm appUnload = new unloadForm();
                 appUnload.unloadForm(apMainAnchor, poApp, psFormName);
             }
 
             Platform.runLater(() -> {
+
+                poAppController.setTransactionStatus("10");
                 poAppController.getMaster().setIndustryId(psIndustryID);
                 poAppController.setIndustryID(psIndustryID);
                 poAppController.setCompanyID(psCompanyID);
@@ -438,7 +439,7 @@ public class DeliverySchedule_ConfirmationControllerMP implements Initializable,
                 case "btnCancel":
                     if (ShowMessageFX.OkayCancel(null, psFormName, "Do you want to disregard changes?") == true) {
                         poAppController = new DeliveryIssuanceControllers(poApp, poLogWrapper).DeliverySchedule();
-                        poAppController.setTransactionStatus(DeliveryScheduleStatus.OPEN);
+                        poAppController.setTransactionStatus("10");
 
                         if (!isJSONSuccess(poAppController.initTransaction(), "Initialize Transaction")) {
                             unloadForm appUnload = new unloadForm();

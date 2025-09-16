@@ -103,7 +103,7 @@ public class DeliverySchedule_ConfirmationControllerMC implements Initializable,
     @FXML
     private Button btnApprove, btnVoid, btnUpdate, btnSearch, btnSave,
             btnCancel, btnHistory, btnRetrieve,
-            btnClose,btnBrowse;
+            btnClose, btnBrowse;
     @FXML
     private TextArea taRemarks, taNotes;
     @FXML
@@ -149,13 +149,14 @@ public class DeliverySchedule_ConfirmationControllerMC implements Initializable,
         try {
             poLogWrapper = new LogWrapper(psFormName, psFormName + "Log");
             poAppController = new DeliveryIssuanceControllers(poApp, poLogWrapper).DeliverySchedule();
-            poAppController.setTransactionStatus(DeliveryScheduleStatus.OPEN);
             if (!isJSONSuccess(poAppController.initTransaction(), "Initialize Transaction")) {
                 unloadForm appUnload = new unloadForm();
                 appUnload.unloadForm(apMainAnchor, poApp, psFormName);
             }
 
             Platform.runLater(() -> {
+
+                poAppController.setTransactionStatus("10");
                 poAppController.getMaster().setIndustryId(psIndustryID);
                 poAppController.setIndustryID(psIndustryID);
                 poAppController.setCompanyID(psCompanyID);
@@ -438,7 +439,7 @@ public class DeliverySchedule_ConfirmationControllerMC implements Initializable,
                 case "btnCancel":
                     if (ShowMessageFX.OkayCancel(null, psFormName, "Do you want to disregard changes?") == true) {
                         poAppController = new DeliveryIssuanceControllers(poApp, poLogWrapper).DeliverySchedule();
-                        poAppController.setTransactionStatus(DeliveryScheduleStatus.OPEN);
+                        poAppController.setTransactionStatus("10");
 
                         if (!isJSONSuccess(poAppController.initTransaction(), "Initialize Transaction")) {
                             unloadForm appUnload = new unloadForm();
@@ -713,7 +714,7 @@ public class DeliverySchedule_ConfirmationControllerMC implements Initializable,
         }
     }
 
-       private void initButtonDisplay(int fnEditMode) {
+    private void initButtonDisplay(int fnEditMode) {
         boolean lbShow = (fnEditMode == EditMode.ADDNEW || fnEditMode == EditMode.UPDATE);
 
         // Always show these buttons

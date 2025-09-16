@@ -148,13 +148,15 @@ public class DeliverySchedule_HistoryControllerCar implements Initializable, Scr
         try {
             poLogWrapper = new LogWrapper(psFormName, psFormName + "Log");
             poAppController = new DeliveryIssuanceControllers(poApp, poLogWrapper).DeliverySchedule();
-            poAppController.setTransactionStatus(DeliveryScheduleStatus.OPEN);
+
             if (!isJSONSuccess(poAppController.initTransaction(), "Initialize Transaction")) {
                 unloadForm appUnload = new unloadForm();
                 appUnload.unloadForm(apMainAnchor, poApp, psFormName);
             }
 
             Platform.runLater(() -> {
+
+                poAppController.setTransactionStatus("12340");
                 poAppController.getMaster().setIndustryId(psIndustryID);
                 poAppController.setIndustryID(psIndustryID);
                 poAppController.setCompanyID(psCompanyID);
@@ -177,7 +179,7 @@ public class DeliverySchedule_HistoryControllerCar implements Initializable, Scr
         String lsButton = ((Button) event.getSource()).getId();
         try {
             switch (lsButton) {
-                
+
                 case "btnSearch":
                     if (lastFocusedControl == null) {
                         ShowMessageFX.Information(null, psFormName,
@@ -187,13 +189,13 @@ public class DeliverySchedule_HistoryControllerCar implements Initializable, Scr
                     switch (lastFocusedControl.getId()) {
                         //Browse Transaction 
                         case "tfSearchCluster":
-                            
+
                             if (tfSearchCluster.getText().isEmpty()) {
                                 ShowMessageFX.Information(null, psFormName,
-                                    "Search unavailable. Please ensure the selected or focused field is not empty");
+                                        "Search unavailable. Please ensure the selected or focused field is not empty");
                                 break;
                             }
-                            
+
                             if (!tfTransactionNo.getText().isEmpty()) {
                                 if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                                     if (ShowMessageFX.OkayCancel(null, "Search Transaction! by Trasaction", "Do you want to disregard changes?") == false) {
@@ -201,28 +203,28 @@ public class DeliverySchedule_HistoryControllerCar implements Initializable, Scr
                                     }
                                 }
                             }
-                            
+
                             if (!isJSONSuccess(poAppController.searchTransaction(tfSearchCluster.getText(), true, true),
                                     "Search Transaction!")) {
-                                
+
                                 ShowMessageFX.Information(null, psFormName,
-                                    "Search unavailable. Transaction not found");
+                                        "Search unavailable. Transaction not found");
                                 break;
                             }
-                            
+
                             clearAllInputs();
                             getLoadedTransaction();
                             initButtonDisplay(poAppController.getEditMode());
                             pnEditMode = poAppController.getEditMode();
                             break;
-                            
+
                         case "dpSearchDate":
-                            
+
                             LocalDate loTransDate = dpSearchDate.getValue();
                             String lsTransValue = "";
                             if (loTransDate != null) {
                                 lsTransValue = loTransDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-                            }else{
+                            } else {
                                 ShowMessageFX.Information("Please entsure date field is not empty", "Delivery Schedule Encoding", "");
                                 break;
                             }
@@ -238,12 +240,12 @@ public class DeliverySchedule_HistoryControllerCar implements Initializable, Scr
                             break;
 
                         case "dpSearchScheduleDate":
-                            
+
                             LocalDate loSched = dpSearchScheduleDate.getValue();
                             String lsSched = "";
                             if (loSched != null) {
                                 lsSched = loSched.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-                            }else{
+                            } else {
                                 ShowMessageFX.Information("Please entsure date field is not empty", "Delivery Schedule Encoding", "");
                                 break;
                             }
@@ -257,7 +259,7 @@ public class DeliverySchedule_HistoryControllerCar implements Initializable, Scr
                             initButtonDisplay(poAppController.getEditMode());
 
                             break;
-                            
+
                         default:
                             ShowMessageFX.Information(null, psFormName,
                                     "Search unavailable. Please ensure a searchable field is selected or focused before proceeding..");
@@ -321,11 +323,11 @@ public class DeliverySchedule_HistoryControllerCar implements Initializable, Scr
     @FXML
     private void tblTransaction_MouseClicked(MouseEvent event
     ) {
-        
+
         if (event.getClickCount() == 1 && !event.isConsumed()) {
-            
+
             try {
-                
+
                 if (!tfTransactionNo.getText().isEmpty()) {
                     if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                         if (ShowMessageFX.OkayCancel(null, "Search Transaction! by Trasaction", "Do you want to disregard changes?") == false) {
@@ -333,20 +335,20 @@ public class DeliverySchedule_HistoryControllerCar implements Initializable, Scr
                         }
                     }
                 }
-                
+
                 pnTransaction = tblTransaction.getSelectionModel().getSelectedIndex();
                 pnClusterDetail = 0;
                 if (pnTransaction < 0) {
                     return;
                 }
-                
+
                 event.consume();
                 if (!isJSONSuccess(poAppController.openTransaction(tblColDeliveryTransaction.getCellData(pnTransaction)),
                         "Initialize Open Transaction")) {
                     return;
 
                 }
-                
+
                 getLoadedTransaction();
                 initButtonDisplay(poAppController.getEditMode());
                 pnEditMode = poAppController.getEditMode();
@@ -365,15 +367,15 @@ public class DeliverySchedule_HistoryControllerCar implements Initializable, Scr
     ) {
 
         try {
-            
+
             if (event.getClickCount() == 1 && !event.isConsumed()) {
-                
+
                 if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                     if (ShowMessageFX.OkayCancel(null, "Search Transaction! by Trasaction", "Do you want to disregard changes?") == false) {
                         return;
                     }
                 }
-                
+
                 pnClusterDetail = tblClusterDetail.getSelectionModel().getSelectedIndex();
                 if (pnClusterDetail < 0) {
                     return;
@@ -543,7 +545,7 @@ public class DeliverySchedule_HistoryControllerCar implements Initializable, Scr
 
                                 if (tfSearchCluster.getText().isEmpty()) {
                                     ShowMessageFX.Information(null, psFormName,
-                                        "Search unavailable. Please ensure the selected or focused field is not empty");
+                                            "Search unavailable. Please ensure the selected or focused field is not empty");
                                     break;
                                 }
 
@@ -559,7 +561,7 @@ public class DeliverySchedule_HistoryControllerCar implements Initializable, Scr
                                         "Search Transaction!")) {
 
                                     ShowMessageFX.Information(null, psFormName,
-                                        "Search unavailable. Transaction not found");
+                                            "Search unavailable. Transaction not found");
                                     break;
                                 }
 
@@ -613,10 +615,10 @@ public class DeliverySchedule_HistoryControllerCar implements Initializable, Scr
         String loDatePickerID = loDateField.getParent().getId(); // cautious cast
         String loValue = loDateField.getText().toString();
         String lsValue = "";
-        
+
         try {
             if (loValue != null && !loValue.isEmpty()) {
-                  lsValue = LocalDate.parse(loValue, DateTimeFormatter.ofPattern("M/d/yyyy")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                lsValue = LocalDate.parse(loValue, DateTimeFormatter.ofPattern("M/d/yyyy")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             }
 
             if (event.getCode() != null) {
@@ -627,7 +629,7 @@ public class DeliverySchedule_HistoryControllerCar implements Initializable, Scr
                         event.consume();
                         switch (loDatePickerID) {
                             case "dpSearchDate":
-                                
+
                                 if (!isJSONSuccess(poAppController.searchTransaction(lsValue, false, true),
                                         "Search Transaction!! BY Date")) {
                                     ShowMessageFX.Information("No transactions found", "Delivery Schedule Encoding", "");
@@ -639,7 +641,7 @@ public class DeliverySchedule_HistoryControllerCar implements Initializable, Scr
                                 break;
 
                             case "dpSearchScheduleDate":
-                                
+
                                 if (!isJSONSuccess(poAppController.searchTransaction(lsValue, false, true),
                                         "Search Transaction!! BY Schedule Date")) {
                                     ShowMessageFX.Information("No transactions found", "Delivery Schedule Encoding", "");
@@ -702,7 +704,7 @@ public class DeliverySchedule_HistoryControllerCar implements Initializable, Scr
     }
 
     private void loadSelectedTransactionDetail(int fnRow) throws SQLException, GuanzonException, CloneNotSupportedException {
-        
+
         if (fnRow >= 0) {
             tfClusterName.setText(tblColDetailName.getCellData(fnRow));
             taNotes.setText(poAppController.getDetail(fnRow).getRemarks() == null ? "" : poAppController.getDetail(fnRow).getRemarks());

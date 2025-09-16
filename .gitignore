@@ -24,3 +24,23 @@ hs_err_pid*
 replay_pid*
 /target/
 target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst
+*.lck
+Issuance PostingLog
+Delivery Schedule Confirmation MCLog
+Delivery Schedule ConfirmationLog
+Delivery Schedule ConfirmationLog.lck
+Delivery Schedule EntryLog
+Delivery Schedule History MC SPLog
+Delivery Schedule History MCLog
+Delivery Schedule HistoryLog
+Issuance Approval
+Issuance Entry
+Issuance Entry.1
+Issuance Entry.2
+Issuance Entry.2.lck
+Issuance Entry.3
+Issuance Entry.3.lck
+Issuance Entry.4
+Issuance Entry.4.lck
+Issuance PostingLog
+Issuance PostingLog.lck
