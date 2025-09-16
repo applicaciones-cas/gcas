@@ -381,8 +381,8 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
             String lsSelectedDate = sdfFormat.format(SQLUtil.toDate(JFXUtil.convertToIsoFormat(inputText), SQLUtil.FORMAT_SHORT_DATE));
             LocalDate selectedDate = LocalDate.parse(lsSelectedDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
 
-            poJSON = poController.POQuotationRequest().loadPOQuotationRequestList(poController.POQuotationRequest().getSearchBranch(), poController.POQuotationRequest().getSearchDepartment(),
-                    poController.POQuotationRequest().getSearchCategory(), java.sql.Date.valueOf(selectedDate),
+            poJSON = poController.POQuotationRequest().loadPOQuotationRequestList(tfSearchBranch.getText(), tfSearchDepartment.getText(),
+                    tfSearchCategory.getText(), java.sql.Date.valueOf(selectedDate),
                     tfSearchReferenceNo.getText());
             if (!"success".equals((String) poJSON.get("result"))) {
                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -1228,7 +1228,7 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
     }
 
     public void clearTextFields() {
-        
+
         JFXUtil.setValueToNull(previousSearchedTextField, lastFocusedTextField);
         JFXUtil.clearTextFields(apMaster, apDetail, apBrowse, apSupplier);
     }
