@@ -143,8 +143,7 @@ public class InventoryStockIssuanceNeoController_ApprovalMP implements Initializ
         try {
             poLogWrapper = new LogWrapper(psFormName, psFormName);
             poAppController = new DeliveryIssuanceControllers(poApp, poLogWrapper).InventoryStockIssuanceNeo();
-            poAppController.setTransactionStatus(InventoryStockIssuanceStatus.OPEN);
-
+      
             //initlalize and validate transaction objects from class controller
             if (!isJSONSuccess(poAppController.initTransaction(), psFormName)) {
                 unloadForm appUnload = new unloadForm();
@@ -424,7 +423,7 @@ public class InventoryStockIssuanceNeoController_ApprovalMP implements Initializ
                 case "btnCancel":
                     if (ShowMessageFX.OkayCancel(null, psFormName, "Do you want to disregard changes?") == true) {
                         poAppController = new DeliveryIssuanceControllers(poApp, poLogWrapper).InventoryStockIssuanceNeo();
-                        poAppController.setTransactionStatus(null);
+                        poAppController.setTransactionStatus("10");
 
                         if (!isJSONSuccess(poAppController.initTransaction(), "Initialize Transaction")) {
                             unloadForm appUnload = new unloadForm();

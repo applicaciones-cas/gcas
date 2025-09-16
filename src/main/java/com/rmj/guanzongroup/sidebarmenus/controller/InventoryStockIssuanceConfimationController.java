@@ -64,7 +64,7 @@ import ph.com.guanzongroup.cas.inv.warehouse.t4.model.services.DeliveryIssuanceC
  *
  * @author User
  */
-public class InventoryStockIssuanceController implements Initializable, ScreenInterface {
+public class InventoryStockIssuanceConfimationController implements Initializable, ScreenInterface {
 
     private GRiderCAS poApp;
     private LogWrapper poLogWrapper;
@@ -98,7 +98,7 @@ public class InventoryStockIssuanceController implements Initializable, ScreenIn
     @FXML
     private Button btnBrowse, btnUpdateDelivery, btnSearch, btnUpdate, btnSave,
             btnCancel, btnHistory, btnRetrieve, btnClose,
-            btnSaveDelivery, btnPrintDelivery, btnCancelDelivery, btnNew;
+            btnSaveDelivery, btnPrintDelivery, btnCancelDelivery, btnApprove, btnVoid;
 
     @FXML
     private Label lblMainStatus, lblDeliveryStatus;
@@ -159,7 +159,7 @@ public class InventoryStockIssuanceController implements Initializable, ScreenIn
         try {
             poLogWrapper = new LogWrapper(psFormName, psFormName);
             poAppController = new DeliveryIssuanceControllers(poApp, poLogWrapper).InventoryStockIssuance();
-            poAppController.setTransactionStatus(InventoryStockIssuanceStatus.OPEN);
+           
 
             //initlalize and validate transaction objects from class controller
             if (!isJSONSuccess(poAppController.initTransaction(), psFormName)) {
@@ -169,7 +169,7 @@ public class InventoryStockIssuanceController implements Initializable, ScreenIn
 
             //background thread
             Platform.runLater(() -> {
-                poAppController.setTransactionStatus("0");
+                poAppController.setTransactionStatus("10");
                 //initialize logged in category
                 poAppController.setIndustryID(psIndustryID);
                 poAppController.setCompanyID(psCompanyID);
@@ -178,7 +178,6 @@ public class InventoryStockIssuanceController implements Initializable, ScreenIn
                         + "\nCompany :" + psCompanyID
                         + "\nCategory:" + psCategoryID);
 
-                btnNew.fire();
             });
             initializeTableDetail();
             initializeTableDetailOther();
@@ -374,16 +373,7 @@ public class InventoryStockIssuanceController implements Initializable, ScreenIn
                             }
                     }
                     break;
-
-                case "btnNew":
-                    if (!isJSONSuccess(poAppController.NewTransaction(), "Initialize New Transaction")) {
-                        return;
-                    }
-                    clearAllInputs();
-                    getLoadedTransaction();
-                    pnEditMode = poAppController.getEditMode();
-                    break;
-
+                    
                 case "btnUpdate":
                     if (poAppController.getMaster().getTransactionNo() == null || poAppController.getMaster().getTransactionNo().isEmpty()) {
                         ShowMessageFX.Information("Please load transaction before proceeding..", "Stock Request Issuance", "");
@@ -395,6 +385,70 @@ public class InventoryStockIssuanceController implements Initializable, ScreenIn
                     }
                     getLoadedTransaction();
                     pnEditMode = poAppController.getEditMode();
+                    break;
+
+                case "btnApprove":
+                    if (tfTransNo.getText().isEmpty()) {
+                        ShowMessageFX.Information("Please load transaction before proceeding..", null, "Issuance Approval");
+                        return;
+                    }
+
+                    if (!poAppController.getMaster().getTransactionStatus().equalsIgnoreCase(InventoryStockIssuanceStatus.OPEN)) {
+                        ShowMessageFX.Information("Status was already " + InventoryStockIssuanceStatus.STATUS.get(Integer.parseInt(poAppController.getMaster().getTransactionStatus())).toLowerCase(), null, "Issuance Approval");
+                        return;
+                    }
+
+                    if (ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to confirm transaction?") == true) {
+                        if (!isJSONSuccess(poAppController.CloseTransaction(), "Initialize Close Transaction")) {
+                            return;
+                        }
+                        reloadTableDetail();
+                        clearAllInputs();
+                        pnEditMode = poAppController.getEditMode();
+                        break;
+                    }
+                    break;
+                case "btnVoid":
+                    if (tfTransNo.getText().isEmpty()) {
+                        ShowMessageFX.Information("Please load transaction before proceeding..", null, "Issuance Approval");
+                        return;
+                    }
+
+                    if (ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to Void/Cancel transaction?") == true) {
+                        if (btnVoid.getText().equals("Void")) {
+                            if (!isJSONSuccess(poAppController.VoidTransaction(), "Initialize Void Transaction")) {
+                                return;
+                            }
+                        } else {
+                            if (!isJSONSuccess(poAppController.CancelTransaction(), "Initialize Cancel Transaction")) {
+                                return;
+                            }
+
+                        }
+                        reloadTableDetail();
+                        clearAllInputs();
+                        pnEditMode = poAppController.getEditMode();
+                        break;
+                    }
+                    break;
+
+                case "btnDeparture":
+                    if (tfTransNo.getText().isEmpty()) {
+                        ShowMessageFX.Information("Please load transaction before proceeding..", null, "Issuance Approval");
+                        return;
+                    }
+
+                    if (ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to tag Departure of this transaction?") == true) {
+
+                        if (!isJSONSuccess(poAppController.TagDepartureTransaction(), "Initialize Tag Departured Transaction")) {
+                            return;
+                        }
+
+                        reloadTableDetail();
+                        clearAllInputs();
+                        pnEditMode = poAppController.getEditMode();
+                        break;
+                    }
                     break;
 
                 case "btnSave":
@@ -415,7 +469,7 @@ public class InventoryStockIssuanceController implements Initializable, ScreenIn
                 case "btnCancel":
                     if (ShowMessageFX.OkayCancel(null, psFormName, "Do you want to disregard changes?") == true) {
                         poAppController = new DeliveryIssuanceControllers(poApp, poLogWrapper).InventoryStockIssuance();
-                        poAppController.setTransactionStatus("0");
+                        poAppController.setTransactionStatus("01");
 
                         if (!isJSONSuccess(poAppController.initTransaction(), "Initialize Transaction")) {
                             unloadForm appUnload = new unloadForm();
@@ -424,7 +478,7 @@ public class InventoryStockIssuanceController implements Initializable, ScreenIn
 
                         Platform.runLater(() -> {
 
-                            poAppController.setTransactionStatus("0");
+                            poAppController.setTransactionStatus("01");
                             poAppController.getMaster().setIndustryId(psIndustryID);
                             poAppController.setIndustryID(psIndustryID);
                             poAppController.setCompanyID(psCompanyID);
@@ -825,6 +879,11 @@ public class InventoryStockIssuanceController implements Initializable, ScreenIn
             tfAssistant1.setText(poAppController.getMaster().CompanyEmployee01().getCompanyName());
             tfAssistant2.setText(poAppController.getMaster().CompanyEmployee02().getCompanyName());
 
+            if (poAppController.getMaster().getTransactionStatus().equals(InventoryStockIssuanceStatus.CONFIRMED)) {
+                btnVoid.setText("Cancel");
+            } else {
+                btnVoid.setText("Void");
+            }
             cbDeliveryType.getSelectionModel().select(1);
         } catch (SQLException | GuanzonException e) {
             poLogWrapper.severe(psFormName, e.getMessage());
@@ -938,11 +997,11 @@ public class InventoryStockIssuanceController implements Initializable, ScreenIn
         boolean lbShow = (fnEditMode == EditMode.ADDNEW || fnEditMode == EditMode.UPDATE);
 
         // Always show these buttons
-        initButtonControls(true, "btnBrowse", "btnRetrieve", "btnHistory", "btnClose");
+        initButtonControls(true, "btnRetrieve", "btnHistory", "btnClose");
 
         // Show-only based on mode
         initButtonControls(lbShow, "btnSearch", "btnSave", "btnCancel");
-        initButtonControls(!lbShow, "btnNew", "btnUpdate");
+        initButtonControls(!lbShow, "btnBrowse",  "btnUpdate", "btnDeparture", "btnApprove", "btnVoid");
 
         apMaster.setDisable(!lbShow);
         apMasterDelivery.setDisable(!lbShow);

@@ -64,7 +64,7 @@ import ph.com.guanzongroup.cas.inv.warehouse.t4.model.services.DeliveryIssuanceC
  *
  * @author User
  */
-public class InventoryStockIssuanceController implements Initializable, ScreenInterface {
+public class InventoryStockIssuanceControllerMC implements Initializable, ScreenInterface {
 
     private GRiderCAS poApp;
     private LogWrapper poLogWrapper;

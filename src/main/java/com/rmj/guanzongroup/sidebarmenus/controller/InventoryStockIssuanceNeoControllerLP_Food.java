@@ -327,7 +327,7 @@ public class InventoryStockIssuanceNeoControllerLP_Food implements Initializable
                 case "btnCancel":
                     if (ShowMessageFX.OkayCancel(null, psFormName, "Do you want to disregard changes?") == true) {
                         poAppController = new DeliveryIssuanceControllers(poApp, poLogWrapper).InventoryStockIssuanceNeo();
-                        poAppController.setTransactionStatus(null);
+                        poAppController.setTransactionStatus("0");
 
                         if (!isJSONSuccess(poAppController.initTransaction(), "Initialize Transaction")) {
                             unloadForm appUnload = new unloadForm();
@@ -414,7 +414,7 @@ public class InventoryStockIssuanceNeoControllerLP_Food implements Initializable
                 switch (lsTextFieldID) {
                     case "tfDiscountRate":
                         if (lsValue.isEmpty()) {
-                            ShowMessageFX.Information("Imvalid freight amount", psFormName, null);
+                            ShowMessageFX.Information("Invalid freight amount", psFormName, null);
                             loTextField.requestFocus();
                             return;
                         }
@@ -427,7 +427,7 @@ public class InventoryStockIssuanceNeoControllerLP_Food implements Initializable
 
                     case "tfDiscountAmount":
                         if (lsValue.isEmpty()) {
-                            ShowMessageFX.Information("Imvalid discount amount", psFormName, null);
+                            ShowMessageFX.Information("Invalid discount amount", psFormName, null);
                             loTextField.requestFocus();
                             return;
                         }
@@ -439,7 +439,7 @@ public class InventoryStockIssuanceNeoControllerLP_Food implements Initializable
                         break;
                     case "tfIssuedQty":
                         if (lsValue.isEmpty()) {
-                            ShowMessageFX.Information("Imvalid quantity", psFormName, null);
+                            ShowMessageFX.Information("Invalid quantity", psFormName, null);
                             loTextField.requestFocus();
                             return;
                         }
@@ -474,7 +474,7 @@ public class InventoryStockIssuanceNeoControllerLP_Food implements Initializable
                         switch (txtFieldID) {
                             case "tfDiscountRate":
                                 if (lsValue.isEmpty()) {
-                                    ShowMessageFX.Information("Imvalid freight amount", psFormName, null);
+                                    ShowMessageFX.Information("Invalid freight amount", psFormName, null);
                                     loTxtField.requestFocus();
                                     return;
                                 }
@@ -487,7 +487,7 @@ public class InventoryStockIssuanceNeoControllerLP_Food implements Initializable
                                 break;
                             case "tfDiscountAmount":
                                 if (lsValue.isEmpty()) {
-                                    ShowMessageFX.Information("Imvalid discount amount", psFormName, null);
+                                    ShowMessageFX.Information("Invalid discount amount", psFormName, null);
                                     loTxtField.requestFocus();
                                     return;
                                 }
@@ -500,7 +500,7 @@ public class InventoryStockIssuanceNeoControllerLP_Food implements Initializable
                                 break;
                             case "tfIssuedQty":
                                 if (lsValue.isEmpty()) {
-                                    ShowMessageFX.Information("Imvalid quantity", psFormName, null);
+                                    ShowMessageFX.Information("Invalid quantity", psFormName, null);
                                     loTxtField.requestFocus();
                                     return;
                                 }

@@ -143,8 +143,7 @@ public class InventoryStockIssuanceNeoController_History implements Initializabl
         try {
             poLogWrapper = new LogWrapper(psFormName, psFormName);
             poAppController = new DeliveryIssuanceControllers(poApp, poLogWrapper).InventoryStockIssuanceNeo();
-            poAppController.setTransactionStatus(InventoryStockIssuanceStatus.OPEN);
-
+            
             //initlalize and validate transaction objects from class controller
             if (!isJSONSuccess(poAppController.initTransaction(), psFormName)) {
                 unloadForm appUnload = new unloadForm();
