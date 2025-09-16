@@ -347,6 +347,11 @@
                                                                                                 <Font size="12.0" />
                                                                                              </font>
                                                                                           </Label>
+                                                                                          <Label layoutX="55.0" layoutY="138.0" text="Department" GridPane.rowIndex="6">
+                                                                                             <font>
+                                                                                                <Font size="12.0" />
+                                                                                             </font>
+                                                                                          </Label>
                                                                                           <Label layoutX="423.0" layoutY="139.0" text="Source No" GridPane.columnIndex="5" GridPane.rowIndex="4">
                                                                                              <font>
                                                                                                 <Font size="12.0" />
@@ -368,7 +373,7 @@
                                                                   <TextField fx:id="tfDiscRate" alignment="CENTER_RIGHT" layoutX="800.0" layoutY="106.0" maxHeight="25.0" maxWidth="139.0" promptText="0.00" GridPane.columnIndex="10" GridPane.rowIndex="3" />
                                                                   <TextField fx:id="tfAddlDiscAmt" alignment="CENTER_RIGHT" layoutX="800.0" layoutY="50.0" maxHeight="25.0" maxWidth="139.0" promptText="0.0000" GridPane.columnIndex="10" GridPane.rowIndex="4" />
                                                                   <TextField fx:id="tfFreight" alignment="CENTER_RIGHT" layoutX="800.0" layoutY="78.0" maxHeight="25.0" maxWidth="139.0" promptText="0.00" GridPane.columnIndex="10" GridPane.rowIndex="5" />
-                                                                  <CheckBox fx:id="cbVatable" mnemonicParsing="false" GridPane.columnIndex="10" GridPane.rowIndex="8" />
+                                                                  <CheckBox fx:id="cbVatable" mnemonicParsing="false" onAction="#cmdCheckBox_Click" GridPane.columnIndex="10" GridPane.rowIndex="8" />
                                                                   <TextField fx:id="tfVATAmount" alignment="CENTER_RIGHT" layoutX="755.0" layoutY="105.0" maxHeight="25.0" maxWidth="139.0" promptText="0.0000" GridPane.columnIndex="10" GridPane.rowIndex="9" />
                                                                   <TextField fx:id="tfTransactionTotal" alignment="CENTER_RIGHT" disable="true" editable="false" layoutX="800.0" layoutY="134.0" maxHeight="25.0" maxWidth="139.0" promptText="0.0000" styleClass="DisabledTextField" GridPane.columnIndex="10" GridPane.rowIndex="10" />
                                                       <TextArea fx:id="taRemarks" minHeight="-Infinity" prefHeight="27.0" GridPane.columnIndex="2" GridPane.columnSpan="5" GridPane.rowIndex="9" GridPane.rowSpan="2">
@@ -376,12 +381,7 @@
                                                             <Insets top="1.0" />
                                                          </GridPane.margin>
                                                       </TextArea>
-                                                                                          <Label layoutX="55.0" layoutY="138.0" text="Department" GridPane.rowIndex="6">
-                                                                                             <font>
-                                                                                                <Font size="12.0" />
-                                                                                             </font>
-                                                                                          </Label>
-                                                                                          <TextField fx:id="tfBranch1" layoutX="102.0" layoutY="134.0" maxHeight="25.0" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="6" />
+                                                                                          <TextField fx:id="tfDepartment" layoutX="102.0" layoutY="134.0" maxHeight="25.0" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="6" />
                                                                       </children>
                                                                   </GridPane>
                                                               </children>
@@ -400,7 +400,7 @@
                                                                           <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="143.0" prefWidth="143.0" />
                                                                   <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="123.0" />
                                                                   <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
-                                                                  <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="139.0" />
+                                                                  <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="139.0" />
                                                                       </columnConstraints>
                                                                       <rowConstraints>
                                                                   <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
@@ -448,6 +448,7 @@
                                                                           <TextField fx:id="tfQuantity" maxHeight="25.0" maxWidth="139.0" GridPane.columnIndex="7" GridPane.rowIndex="2" />
                                                                   <TextField fx:id="tfDiscRateDetail" alignment="CENTER_RIGHT" layoutX="499.0" layoutY="12.0" maxHeight="25.0" maxWidth="139.0" promptText="0.0000" GridPane.columnIndex="10" GridPane.rowIndex="1" />
                                                                   <TextField fx:id="tfAddlDiscAmtDetail" alignment="CENTER_RIGHT" layoutX="785.0" layoutY="12.0" maxHeight="25.0" maxWidth="139.0" promptText="0.0000" GridPane.columnIndex="10" GridPane.rowIndex="2" />
+                                                                                          <CheckBox fx:id="cbReverse" alignment="BOTTOM_RIGHT" mnemonicParsing="false" nodeOrientation="RIGHT_TO_LEFT" onAction="#cmdCheckBox_Click" text="Reverse" GridPane.columnIndex="10" />
                                                                       </children>
                                                                   </GridPane>
                                                               </children>
