@@ -491,7 +491,7 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
                         break;
                     case "tfSearchCategory":
                         if (lsValue.equals("")) {
-                            poController.POQuotationRequest().setSearchDepartment("");
+                            poController.POQuotationRequest().setSearchCategory("");
                         }
                         loadRecordSearch();
                         break;

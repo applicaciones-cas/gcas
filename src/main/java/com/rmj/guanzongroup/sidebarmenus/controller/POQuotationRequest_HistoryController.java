@@ -162,7 +162,13 @@ public class POQuotationRequest_HistoryController implements Initializable, Scre
                 String lsButton = clickedButton.getId();
                 switch (lsButton) {
                     case "btnBrowse":
-                        poJSON = poController.POQuotationRequest().searchTransaction();
+                        SimpleDateFormat sdfFormat = new SimpleDateFormat(SQLUtil.FORMAT_SHORT_DATE);
+                        String inputText = JFXUtil.isObjectEqualTo(dpSearchTransactionDate.getEditor().getText(), "") ? "01/01/1900" : dpSearchTransactionDate.getEditor().getText();
+                        String lsSelectedDate = sdfFormat.format(SQLUtil.toDate(JFXUtil.convertToIsoFormat(inputText), SQLUtil.FORMAT_SHORT_DATE));
+                        LocalDate selectedDate = LocalDate.parse(lsSelectedDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
+                        poJSON = poController.POQuotationRequest().searchTransaction(oApp.getBranchName(),
+                                poController.POQuotationRequest().getSearchDepartment(), poController.POQuotationRequest().getSearchCategory(),
+                                lsSelectedDate, tfSearchReferenceNo.getText());
                         if ("error".equalsIgnoreCase((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                             tfTransactionNo.requestFocus();
