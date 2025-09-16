@@ -172,7 +172,6 @@ public class POQuotationRequest_EntryController implements Initializable, Screen
                         }
                     } else {
                         poController.POQuotationRequest().Detail(pnDetail).isReverse(checkedBox.isSelected());
-                        poController.POQuotationRequest().Detail(pnDetail).setQuantity(0.00);
                     }
 
                     loadTableDetail.reload();

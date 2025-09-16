@@ -82,7 +82,6 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
     private String psIndustryId = "";
     private String psCompanyId = "";
     private String psCategoryId = "";
-    private String psSearchClientId = "";
     private String psTransactionNo = "";
     private boolean pbEntered = false;
 
@@ -590,7 +589,6 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 txtField.setText("");
-                                psSearchClientId = "";
                                 break;
                             }
                             loadRecordSearch();
@@ -601,7 +599,6 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 txtField.setText("");
-                                psSearchClientId = "";
                                 break;
                             }
                             loadRecordSearch();
@@ -612,7 +609,6 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 txtField.setText("");
-                                psSearchClientId = "";
                                 break;
                             }
                             loadRecordSearch();
@@ -784,7 +780,7 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
     public void loadRecordSupplier() {
         try {
             System.out.println("pnSupplier : " + pnSupplier);
-            
+
             if (pnSupplier < 0 || pnSupplier > poController.POQuotationRequest().getPOQuotationRequestSupplierCount() - 1) {
                 return;
             }
@@ -1089,7 +1085,7 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
                 tfSupplier, tfTerm, tfCompany);
         JFXUtil.setFocusListener(txtDetail_Focus, tfBrand, tfModel, tfBarcode, tfDescription, tfCost, tfQuantity);
         JFXUtil.setKeyPressedListener(this::txtField_KeyPressed, apBrowse, apMaster, apDetail, apSupplier);
-
+        JFXUtil.setCheckboxHoverCursor(apSupplier);
     }
 
     public void initTableOnClick() {
@@ -1232,7 +1228,7 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
     }
 
     public void clearTextFields() {
-        psSearchClientId = "";
+        
         JFXUtil.setValueToNull(previousSearchedTextField, lastFocusedTextField);
         JFXUtil.clearTextFields(apMaster, apDetail, apBrowse, apSupplier);
     }

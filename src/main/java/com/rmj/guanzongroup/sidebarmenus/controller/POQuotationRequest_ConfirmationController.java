@@ -190,7 +190,6 @@ public class POQuotationRequest_ConfirmationController implements Initializable,
                         }
                     } else {
                         poController.POQuotationRequest().Detail(pnDetail).isReverse(checkedBox.isSelected());
-                        poController.POQuotationRequest().Detail(pnDetail).setQuantity(0.00);
                     }
 
                     loadTableDetail.reload();
