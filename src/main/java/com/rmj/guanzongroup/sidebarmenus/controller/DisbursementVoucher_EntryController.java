@@ -1008,7 +1008,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                     double lnNetTotal = 0.0000;
                     for (lnCtr = 0; lnCtr < poDisbursementController.getDetailCount(); lnCtr++) {
                         try {
-                            lnNetTotal = poDisbursementController.Detail(lnCtr).getAmount() - poDisbursementController.Detail(lnCtr).getTaxAmount();
+                            lnNetTotal = poDisbursementController.Detail(lnCtr).getAmount() - (poDisbursementController.Detail(lnCtr).getTaxAmount()+ poDisbursementController.Detail(lnCtr).getDetailVatAmount());
                             String lsTransactionType;
 //                            switch (poDisbursementController.Detail(lnCtr).getSourceCode()) {
 //                                case DisbursementStatic.SourceCode.PAYMENT_REQUEST:
@@ -1534,7 +1534,10 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                                     return;
                                 }
 
-                                tfBankNameCheck.setText(poDisbursementController.Master().getDisbursementType().equals(DisbursementStatic.DisbursementType.CHECK) ? (poDisbursementController.CheckPayments().getModel().Banks().getBankName() != null ? poDisbursementController.CheckPayments().getModel().Banks().getBankName() : "") : "");
+                                tfBankNameCheck.setText(poDisbursementController.Master().getDisbursementType().equals(
+                                        DisbursementStatic.DisbursementType.CHECK) ? 
+                                        (poDisbursementController.CheckPayments().getModel().Banks().getBankName() != null ? 
+                                                poDisbursementController.CheckPayments().getModel().Banks().getBankName() : "") : "");
                                 break;
                             case "tfBankAccountCheck":
                                 poJSON = poDisbursementController.SearchBankAccount(lsValue, poDisbursementController.CheckPayments().getModel().getBankID(), false);
