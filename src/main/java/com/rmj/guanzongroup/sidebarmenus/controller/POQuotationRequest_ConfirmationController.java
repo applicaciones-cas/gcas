@@ -426,6 +426,9 @@ public class POQuotationRequest_ConfirmationController implements Initializable,
                                             pnDetail = lnReturned;
                                             loadTableDetail.reload();
                                         });
+                                        if (!JFXUtil.isObjectEqualTo(poController.POQuotationRequest().Detail(pnDetail).getDescription(), null, "")) {
+                                            JFXUtil.textFieldMoveNext(tfQuantity);
+                                        }
                                     }
                                 } catch (GuanzonException | SQLException ex) {
                                     Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
@@ -473,10 +476,10 @@ public class POQuotationRequest_ConfirmationController implements Initializable,
                     case "tfCategory":
                         if (lsValue.isEmpty()) {
                             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                                if(poController.POQuotationRequest().Master().getCategoryLevel2() != null && !"".equals(poController.POQuotationRequest().Master().getCategoryLevel2())){
+                                if (poController.POQuotationRequest().Master().getCategoryLevel2() != null && !"".equals(poController.POQuotationRequest().Master().getCategoryLevel2())) {
                                     if (poController.POQuotationRequest().getDetailCount() > 0) {
-                                        if(poController.POQuotationRequest().checkExistStockInventory()){
-                                            if(!pbKeyPressed){
+                                        if (poController.POQuotationRequest().checkExistStockInventory()) {
+                                            if (!pbKeyPressed) {
                                                 if (ShowMessageFX.YesNo(null, pxeModuleName,
                                                         "Are you sure you want to change the category?\nPlease note that doing so will delete all transaction details.\n\nDo you wish to proceed?") == true) {
                                                     poController.POQuotationRequest().removeWithInvDetails();
@@ -493,7 +496,7 @@ public class POQuotationRequest_ConfirmationController implements Initializable,
                                     }
                                 }
                             }
-                            
+
                             poJSON = poController.POQuotationRequest().Master().setCategoryLevel2("");
                         }
                         break;
@@ -634,10 +637,10 @@ public class POQuotationRequest_ConfirmationController implements Initializable,
                             loadRecordMaster();
                             return;
                         case "tfCategory":
-                            if(pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE){
-                                if(poController.POQuotationRequest().Master().getCategoryLevel2() != null && !"".equals(poController.POQuotationRequest().Master().getCategoryLevel2())){
+                            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                                if (poController.POQuotationRequest().Master().getCategoryLevel2() != null && !"".equals(poController.POQuotationRequest().Master().getCategoryLevel2())) {
                                     if (poController.POQuotationRequest().getDetailCount() > 0) {
-                                        if(poController.POQuotationRequest().checkExistStockInventory()){
+                                        if (poController.POQuotationRequest().checkExistStockInventory()) {
                                             pbKeyPressed = true;
                                             if (ShowMessageFX.YesNo(null, pxeModuleName,
                                                     "Are you sure you want to change the category?\nPlease note that doing so will delete all transaction details.\n\nDo you wish to proceed?") == true) {
@@ -651,7 +654,7 @@ public class POQuotationRequest_ConfirmationController implements Initializable,
                                     }
                                 }
                             }
-                            
+
                             poJSON = poController.POQuotationRequest().SearchCategory(lsValue, false, false);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -705,7 +708,9 @@ public class POQuotationRequest_ConfirmationController implements Initializable,
                                     loadTableDetail.reload();
                                 });
                                 loadTableDetail.reload();
-                                JFXUtil.textFieldMoveNext(tfQuantity);
+                                if (!JFXUtil.isObjectEqualTo(poController.POQuotationRequest().Detail(pnDetail).getDescription(), null, "")) {
+                                    JFXUtil.textFieldMoveNext(tfQuantity);
+                                }
                             }
                             break;
                         case "tfDescription":
@@ -728,7 +733,9 @@ public class POQuotationRequest_ConfirmationController implements Initializable,
                                     loadTableDetail.reload();
                                 });
                                 loadTableDetail.reload();
-                                JFXUtil.textFieldMoveNext(tfQuantity);
+                                if (!JFXUtil.isObjectEqualTo(poController.POQuotationRequest().Detail(pnDetail).getDescription(), null, "")) {
+                                    JFXUtil.textFieldMoveNext(tfQuantity);
+                                }
                             }
                             break;
                     }

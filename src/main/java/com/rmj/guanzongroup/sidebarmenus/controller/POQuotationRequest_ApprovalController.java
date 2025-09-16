@@ -381,7 +381,7 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
             String lsSelectedDate = sdfFormat.format(SQLUtil.toDate(JFXUtil.convertToIsoFormat(inputText), SQLUtil.FORMAT_SHORT_DATE));
             LocalDate selectedDate = LocalDate.parse(lsSelectedDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
 
-            poJSON = poController.POQuotationRequest().loadPOQuotationRequestList(oApp.getBranchName(), poController.POQuotationRequest().getSearchDepartment(),
+            poJSON = poController.POQuotationRequest().loadPOQuotationRequestList(poController.POQuotationRequest().getSearchBranch(), poController.POQuotationRequest().getSearchDepartment(),
                     poController.POQuotationRequest().getSearchCategory(), java.sql.Date.valueOf(selectedDate),
                     tfSearchReferenceNo.getText());
             if (!"success".equals((String) poJSON.get("result"))) {
