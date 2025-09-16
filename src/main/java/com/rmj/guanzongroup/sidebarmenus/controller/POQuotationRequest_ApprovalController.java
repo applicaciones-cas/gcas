@@ -383,7 +383,7 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
 
             poJSON = poController.POQuotationRequest().loadPOQuotationRequestList(tfSearchBranch.getText(), tfSearchDepartment.getText(),
                     tfSearchCategory.getText(), java.sql.Date.valueOf(selectedDate),
-                    tfSearchReferenceNo.getText());
+                    tfSearchReferenceNo.getText(), true);
             if (!"success".equals((String) poJSON.get("result"))) {
                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
             } else {

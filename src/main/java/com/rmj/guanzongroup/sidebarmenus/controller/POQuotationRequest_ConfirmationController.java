@@ -361,7 +361,7 @@ public class POQuotationRequest_ConfirmationController implements Initializable,
         
         poJSON = poController.POQuotationRequest().loadPOQuotationRequestList(oApp.getBranchName(), tfSearchDepartment.getText(),
                 tfSearchCategory.getText(), java.sql.Date.valueOf(selectedDate),
-                tfSearchReferenceNo.getText());
+                tfSearchReferenceNo.getText(), false);
         if (!"success".equals((String) poJSON.get("result"))) {
             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
         } else {
