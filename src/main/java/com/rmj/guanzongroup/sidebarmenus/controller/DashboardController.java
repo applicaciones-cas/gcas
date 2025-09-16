@@ -669,7 +669,37 @@ public class DashboardController implements Initializable {
                     return "Accounts Accreditation";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/AccountsAccreditationHistory.fxml":
                     return "Accounts Accreditation History";
-
+                    
+                /*PO Quotation Request*/
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POQuotationRequest_Entry.fxml":
+                    psCategoryID = "0007";
+                    return "PO Quotation Request Entry";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POQuotationRequest_Confirmation.fxml":
+                    psCategoryID = "0007";
+                    return "PO Quotation Request Confirmation";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POQuotationRequest_History.fxml":
+                    psCategoryID = "0007";
+                    return "PO Quotation Request History";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POQuotationRequest_Approval.fxml":
+                    psCategoryID = "0007";
+                    return "PO Quotation Request Approval";
+		case "/com/rmj/guanzongroup/sidebarmenus/views/POQuotationRequest_ApprovalHistory.fxml":
+                    psCategoryID = "0007";
+                    return "PO Quotation Request Approval History";
+                /*END*/
+                    
+                /*PO Quotation*/
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POQuotation_Entry.fxml":
+                    psCategoryID = "0007";
+                    return "PO Quotation Entry";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POQuotation_Confirmation.fxml":
+                    psCategoryID = "0007";
+                    return "PO Quotation Confirmation";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POQuotation_History.fxml":
+                    psCategoryID = "0007";
+                    return "PO Quotation History";
+                /*END*/
+                    
                 /*Purchase Order*/
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_Entry.fxml":
                     psIndustryID = "";
@@ -2091,6 +2121,34 @@ public class DashboardController implements Initializable {
 
     public String getFormName(String fsTabTitle) {
         switch (fsTabTitle) {
+            
+            /*PO Quotation Request*/
+            case "PO Quotation Request Entry":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/POQuotationRequest_Entry.fxml";
+            //Confirmation
+            case "PO Quotation Request Confirmation":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/POQuotationRequest_Confirmation.fxml";
+            //History
+            case "PO Quotation Request History":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/POQuotationRequest_History.fxml";
+            //Approval
+            case "PO Quotation Request Approval":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/POQuotationRequest_Approval.fxml";
+            //Approval History
+            case "PO Quotation Request Approval History":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/POQuotationRequest_ApprovalHistory.fxml";
+            /*END*/
+                
+            /*PO Quotation */
+            case "PO Quotation Entry":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/POQuotation_Entry.fxml";
+            //Confirmation
+            case "PO Quotation Confirmation":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/POQuotation_Confirmation.fxml";
+            //History
+            case "PO Quotation History":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/POQuotation_History.fxml";
+            /*END*/
 
             /*Purchase Order*/
             case "Purchase Order":
@@ -2930,6 +2988,27 @@ public class DashboardController implements Initializable {
                     return new Log_InController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/DefaultScreen.fxml":
                     return new DefaultScreenController();
+                    
+                /* PO QUOTATION REQUEST*/
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POQuotationRequest_Entry.fxml":
+                    return new POQuotationRequest_EntryController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POQuotationRequest_Confirmation.fxml":
+                    return new POQuotationRequest_ConfirmationController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POQuotationRequest_History.fxml":
+                    return new POQuotationRequest_HistoryController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POQuotationRequest_Approval.fxml":
+                    return new POQuotationRequest_ApprovalController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POQuotationRequest_ApprovalHistory.fxml":
+                    return new POQuotationRequest_ApprovalHistoryController();
+//                /*END*/
+//                    
+//                /* PO QUOTATION REQUEST*/
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/POQuotation_Entry.fxml":
+//                    return new POQuotation_EntryController();
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/POQuotation_Confirmation.fxml":
+//                    return new POQuotation_ConfirmationController();
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/POQuotation_History.fxml":
+                /*END*/
 
                 /*PURCHASE ORDER */
                 // GENERAL
@@ -4858,6 +4937,10 @@ public class DashboardController implements Initializable {
     private void purchasingMenuItems() {
         String jsonString = "[{\"access_level\":\"01 02 03 04 05 06 07\",\"menu_name\":\"Purchasing\",\"fxml_path\":\"Purchasing\",\"controller_path\":\"purchasing.controller\",\"menu_id\":\"001\",\"menu_parent\":\"\"},"
                 + "{\"access_level\":\"01 02 03 04 05 06 07\",\"menu_name\":\"Entry\",\"fxml_path\":\"Entry\",\"controller_path\":\"entry.controller\",\"menu_id\":\"002\",\"menu_parent\":\"001\"},"
+                //PO Quotation Reuqest Entry
+                + "{\"access_level\":\"01 02 03 04 05 06 07\",\"menu_name\":\"PO Quotation Request\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/POQuotationRequest_Entry.fxml\",\"controller_path\":\"poquotationrequest.controller\",\"menu_id\":\"126\",\"menu_parent\":\"002\"},"
+                //PO Quotation Entry
+                + "{\"access_level\":\"01 02 03 04 05 06 07\",\"menu_name\":\"PO Quotation\",\"fxml_path\":\"PO Quotation\",\"controller_path\":\"poquotation.controller\",\"menu_id\":\"127\",\"menu_parent\":\"002\"},"
                 // Purchase Order Entry
                 + "{\"access_level\":\"01 02 03 04 05 06 07\",\"menu_name\":\"Purchase Order\",\"fxml_path\":\"Purchase Order\",\"controller_path\":\"po.controller\",\"menu_id\":\"003\",\"menu_parent\":\"002\"},"
                 + "{\"access_level\":\"07\",\"menu_name\":\"Appliances\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_EntryAppliances.fxml\",\"controller_path\":\"PurchaseOrder_EntryAppliances.controller\",\"menu_id\":\"122\",\"menu_parent\":\"003\"},"
@@ -4894,8 +4977,13 @@ public class DashboardController implements Initializable {
                 + "{\"access_level\":\"01\",\"menu_name\":\"Mobile Phone\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrderReturn_EntryMP.fxml\",\"controller_path\":\"PurchaseOrderReturn_EntryMP.controller\",\"menu_id\":\"094\",\"menu_parent\":\"086\"},"
                 + "{\"access_level\":\"03\",\"menu_name\":\"Spare Parts Car\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrderReturn_EntrySPCar.fxml\",\"controller_path\":\"PurchaseOrderReturn_SPCar.controller\",\"menu_id\":\"095\",\"menu_parent\":\"086\"},"
                 + "{\"access_level\":\"02\",\"menu_name\":\"Spare Parts Motorycle\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrderReturn_EntrySPMC.fxml\",\"controller_path\":\"PurchaseOrderReturn_EntrySPMC.controller\",\"menu_id\":\"096\",\"menu_parent\":\"086\"},"
-                // Purchase Order Confirmation
+                /*Confirmation*/
                 + "{\"access_level\":\"01 02 03 04 05 06 07\",\"menu_name\":\"Confirmation\",\"fxml_path\":\"Confirmation\",\"controller_path\":\"confirmation.controller\",\"menu_id\":\"023\",\"menu_parent\":\"001\"},"
+                //PO Quotation Reuqest Confirmation
+                + "{\"access_level\":\"01 02 03 04 05 06 07\",\"menu_name\":\"PO Quotation Request\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/POQuotationRequest_Confirmation.fxml\",\"controller_path\":\"poquotationrequest.controller\",\"menu_id\":\"128\",\"menu_parent\":\"023\"},"
+                //PO Quotation Confirmation
+                + "{\"access_level\":\"01 02 03 04 05 06 07\",\"menu_name\":\"PO Quotation\",\"fxml_path\":\"PO Quotation\",\"controller_path\":\"poquotation.controller\",\"menu_id\":\"129\",\"menu_parent\":\"023\"},"
+                // Purchase Order Confirmation
                 + "{\"access_level\":\"01 02 03 04 05 06 07\",\"menu_name\":\"Purchase Order\",\"fxml_path\":\"Purchase Order\",\"controller_path\":\"po.controller\",\"menu_id\":\"024\",\"menu_parent\":\"023\"},"
                 + "{\"access_level\":\"07\",\"menu_name\":\"Appliances\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ConfirmationAppliances.fxml\",\"controller_path\":\"PurchaseOrder_ConfirmationAppliances.controller\",\"menu_id\":\"123\",\"menu_parent\":\"024\"},"
                 + "{\"access_level\":\"03\",\"menu_name\":\"Car\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ConfirmationCar.fxml\",\"controller_path\":\"PurchaseOrder_ConfirmationCar.controller\",\"menu_id\":\"025\",\"menu_parent\":\"024\"},"
@@ -4933,6 +5021,11 @@ public class DashboardController implements Initializable {
                 + "{\"access_level\":\"02\",\"menu_name\":\"Spare Parts Motorycle\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrderReturn_ConfirmationSPMC.fxml\",\"controller_path\":\"PurchaseOrderReturn_ConfirmationSPMC.controller\",\"menu_id\":\"107\",\"menu_parent\":\"097\"},"
                 // Purchase Order Approval
                 + "{\"access_level\":\"01 02 03 04 05 06 07\",\"menu_name\":\"Approval\",\"fxml_path\":\"Approval\",\"controller_path\":\"approval.controller\",\"menu_id\":\"044\",\"menu_parent\":\"001\"},"
+                
+                //PO Quotation Reuqest Approval
+                + "{\"access_level\":\"01 02 03 04 05 06 07\",\"menu_name\":\"PO Quotation Request\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/POQuotationRequest_Approval.fxml\",\"controller_path\":\"poquotationrequest.controller\",\"menu_id\":\"130\",\"menu_parent\":\"044\"},"
+                
+                
                 + "{\"access_level\":\"01 02 03 04 05 06 07\",\"menu_name\":\"Purchase Order\",\"fxml_path\":\"Purchase Order\",\"controller_path\":\"po.controller\",\"menu_id\":\"045\",\"menu_parent\":\"044\"},"
                 + "{\"access_level\":\"07\",\"menu_name\":\"Appliances\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ApprovalAppliances.fxml\",\"controller_path\":\"PurchaseOrder_ApprovalAppliances.controller\",\"menu_id\":\"124\",\"menu_parent\":\"045\"},"
                 + "{\"access_level\":\"03\",\"menu_name\":\"Car\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ApprovalCar.fxml\",\"controller_path\":\"PurchaseOrder_ApprovalCar.controller\",\"menu_id\":\"046\",\"menu_parent\":\"045\"},"
@@ -4968,6 +5061,15 @@ public class DashboardController implements Initializable {
 
                 // Purchase Order History
                 + "{\"access_level\":\"01 02 03 04 05 06 07\",\"menu_name\":\"History\",\"fxml_path\":\"History\",\"controller_path\":\"history.controller\",\"menu_id\":\"065\",\"menu_parent\":\"001\"},"
+                
+                //PO Quotation Reuqest History
+                + "{\"access_level\":\"01 02 03 04 05 06 07\",\"menu_name\":\"PO Quotation Request\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/POQuotationRequest_History.fxml\",\"controller_path\":\"poquotationrequest.controller\",\"menu_id\":\"131\",\"menu_parent\":\"065\"},"
+                //PO Quotation Reuqest Approval History
+                + "{\"access_level\":\"01 02 03 04 05 06 07\",\"menu_name\":\"PO Quotation Request Approval History\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/POQuotationRequest_ApprovalHistory.fxml\",\"controller_path\":\"poquotationrequest.controller\",\"menu_id\":\"132\",\"menu_parent\":\"065\"},"
+                //PO Quotation History
+                + "{\"access_level\":\"01 02 03 04 05 06 07\",\"menu_name\":\"PO Quotation\",\"fxml_path\":\"PO Quotation\",\"controller_path\":\"poquotation.controller\",\"menu_id\":\"133\",\"menu_parent\":\"065\"},"
+                
+                
                 + "{\"access_level\":\"01 02 03 04 05 06 07\",\"menu_name\":\"Purchase Order\",\"fxml_path\":\"Purchase Order\",\"controller_path\":\"po.controller\",\"menu_id\":\"066\",\"menu_parent\":\"065\"},"
                 + "{\"access_level\":\"07\",\"menu_name\":\"Appliances\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_HistoryAppliances.fxml\",\"controller_path\":\"PurchaseOrder_HistoryAppliances.controller\",\"menu_id\":\"125\",\"menu_parent\":\"066\"},"
                 + "{\"access_level\":\"03\",\"menu_name\":\"Car\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_HistoryCar.fxml\",\"controller_path\":\"PurchaseOrder_HistoryCar.controller\",\"menu_id\":\"067\",\"menu_parent\":\"066\"},"
