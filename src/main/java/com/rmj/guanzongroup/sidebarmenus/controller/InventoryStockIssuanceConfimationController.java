@@ -68,7 +68,7 @@ public class InventoryStockIssuanceConfimationController implements Initializabl
 
     private GRiderCAS poApp;
     private LogWrapper poLogWrapper;
-    private String psFormName = "Issuance Entry";
+    private String psFormName = "Issuance Confirmation";
     private String psIndustryID, psCompanyID, psCategoryID;
     private Control lastFocusedControl;
     private InventoryStockIssuance poAppController;
@@ -159,7 +159,6 @@ public class InventoryStockIssuanceConfimationController implements Initializabl
         try {
             poLogWrapper = new LogWrapper(psFormName, psFormName);
             poAppController = new DeliveryIssuanceControllers(poApp, poLogWrapper).InventoryStockIssuance();
-           
 
             //initlalize and validate transaction objects from class controller
             if (!isJSONSuccess(poAppController.initTransaction(), psFormName)) {
@@ -373,7 +372,7 @@ public class InventoryStockIssuanceConfimationController implements Initializabl
                             }
                     }
                     break;
-                    
+
                 case "btnUpdate":
                     if (poAppController.getMaster().getTransactionNo() == null || poAppController.getMaster().getTransactionNo().isEmpty()) {
                         ShowMessageFX.Information("Please load transaction before proceeding..", "Stock Request Issuance", "");
@@ -553,9 +552,13 @@ public class InventoryStockIssuanceConfimationController implements Initializabl
                         return;
                     }
 
-                    if (!isJSONSuccess(poAppController.getDetail(pnTransactionDetail).InventoryTransfer().UpdateTransaction(), "Initialize Cancel Delivery Transaction")) {
+                    if (!isJSONSuccess(poAppController.getDetail(pnTransactionDetail).InventoryTransfer().UpdateTransaction(), "Initialize Update Delivery Transaction")) {
                         return;
                     }
+                    if (!isJSONSuccess(poAppController.retrieveDetail(pnTransactionDetail), "Initialize retrieve stock request transaction")) {
+
+                    }
+
                     reloadTableDetail();
                     loadSelectedTransactionDetail(pnTransactionDetail);
                     reloadTableDetailOther();
@@ -899,7 +902,7 @@ public class InventoryStockIssuanceConfimationController implements Initializabl
 
         dpDeliveryDate.setValue(ParseDate(poAppController.getDetail(fnRow).InventoryTransfer().getMaster().getTransactionDate()));
         taDeliveryRemarks.setText(poAppController.getDetail(fnRow).InventoryTransfer().getMaster().getRemarks());
-        initButtonDisplayDetail(fnRow, poAppController.getDetail(fnRow).InventoryTransfer().getMaster().getEditMode());
+        initButtonDisplayDetail(poAppController.getDetail(fnRow).InventoryTransfer().getMaster().getEditMode());
     }
 
     private void loadSelectedTransactionDetailOther(int fnRow) throws SQLException, GuanzonException, CloneNotSupportedException {
@@ -981,9 +984,10 @@ public class InventoryStockIssuanceConfimationController implements Initializabl
         pnEditMode = poAppController.getEditMode();
         loadDeliveryTypes();
         initButtonDisplay(poAppController.getEditMode());
+        initButtonDisplayDetail(EditMode.UNKNOWN);
     }
 
-    private void initButtonDisplayDetail(int EntryNo, int fnEditMode) {
+    private void initButtonDisplayDetail(int fnEditMode) {
 
         boolean lbShow = (fnEditMode == EditMode.ADDNEW || fnEditMode == EditMode.UPDATE);
         // Show-only based on mode
@@ -1001,7 +1005,7 @@ public class InventoryStockIssuanceConfimationController implements Initializabl
 
         // Show-only based on mode
         initButtonControls(lbShow, "btnSearch", "btnSave", "btnCancel");
-        initButtonControls(!lbShow, "btnBrowse",  "btnUpdate", "btnDeparture", "btnApprove", "btnVoid");
+        initButtonControls(!lbShow, "btnBrowse", "btnUpdate", "btnDeparture", "btnApprove", "btnVoid");
 
         apMaster.setDisable(!lbShow);
         apMasterDelivery.setDisable(!lbShow);

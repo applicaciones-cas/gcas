@@ -167,7 +167,7 @@ public class InventoryStockIssuanceNeoController_ApprovalCar_SP implements Initi
             initializeTableDetail();
             initControlEvents();
         } catch (SQLException | GuanzonException e) {
-            Logger.getLogger(InventoryStockIssuanceNeo.class.getName()).log(Level.SEVERE, null, e);
+            
             poLogWrapper.severe(psFormName + " :" + e.getMessage());
         }
     }

@@ -193,7 +193,7 @@ public class InventoryStockIssuanceNeoControllerMP implements Initializable, Scr
 
                 getLoadedTransaction();
             } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
-                Logger.getLogger(DeliverySchedule_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+                
                 poLogWrapper.severe(psFormName + " :" + ex.getMessage());
 
             }

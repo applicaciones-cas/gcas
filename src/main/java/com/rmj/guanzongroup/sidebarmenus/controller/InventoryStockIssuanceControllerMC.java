@@ -213,7 +213,7 @@ public class InventoryStockIssuanceControllerMC implements Initializable, Screen
                 loadSelectedTransactionDetail(poAppController.getDetailCount());
                 reloadTableDetailOther();
             } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
-                Logger.getLogger(DeliverySchedule_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+
                 poLogWrapper.severe(psFormName + " :" + ex.getMessage());
 
             }
@@ -499,9 +499,13 @@ public class InventoryStockIssuanceControllerMC implements Initializable, Screen
                         return;
                     }
 
-                    if (!isJSONSuccess(poAppController.getDetail(pnTransactionDetail).InventoryTransfer().UpdateTransaction(), "Initialize Cancel Delivery Transaction")) {
+                    if (!isJSONSuccess(poAppController.getDetail(pnTransactionDetail).InventoryTransfer().UpdateTransaction(), "Initialize Update Delivery Transaction")) {
                         return;
                     }
+                    if (!isJSONSuccess(poAppController.retrieveDetail(pnTransactionDetail), "Initialize retrieve stock request transaction")) {
+
+                    }
+
                     reloadTableDetail();
                     loadSelectedTransactionDetail(pnTransactionDetail);
                     reloadTableDetailOther();
@@ -840,7 +844,7 @@ public class InventoryStockIssuanceControllerMC implements Initializable, Screen
 
         dpDeliveryDate.setValue(ParseDate(poAppController.getDetail(fnRow).InventoryTransfer().getMaster().getTransactionDate()));
         taDeliveryRemarks.setText(poAppController.getDetail(fnRow).InventoryTransfer().getMaster().getRemarks());
-        initButtonDisplayDetail(fnRow, poAppController.getDetail(fnRow).InventoryTransfer().getMaster().getEditMode());
+        initButtonDisplayDetail(poAppController.getDetail(fnRow).InventoryTransfer().getMaster().getEditMode());
     }
 
     private void loadSelectedTransactionDetailOther(int fnRow) throws SQLException, GuanzonException, CloneNotSupportedException {
@@ -922,9 +926,10 @@ public class InventoryStockIssuanceControllerMC implements Initializable, Screen
         pnEditMode = poAppController.getEditMode();
         loadDeliveryTypes();
         initButtonDisplay(poAppController.getEditMode());
+        initButtonDisplayDetail(EditMode.UNKNOWN);
     }
 
-    private void initButtonDisplayDetail(int EntryNo, int fnEditMode) {
+    private void initButtonDisplayDetail(int fnEditMode) {
 
         boolean lbShow = (fnEditMode == EditMode.ADDNEW || fnEditMode == EditMode.UPDATE);
         // Show-only based on mode
@@ -938,11 +943,11 @@ public class InventoryStockIssuanceControllerMC implements Initializable, Screen
         boolean lbShow = (fnEditMode == EditMode.ADDNEW || fnEditMode == EditMode.UPDATE);
 
         // Always show these buttons
-        initButtonControls(true,  "btnRetrieve", "btnHistory", "btnClose");
+        initButtonControls(true, "btnRetrieve", "btnHistory", "btnClose");
 
         // Show-only based on mode
         initButtonControls(lbShow, "btnSearch", "btnSave", "btnCancel");
-        initButtonControls(!lbShow, "btnBrowse","btnNew", "btnUpdate");
+        initButtonControls(!lbShow, "btnBrowse", "btnNew", "btnUpdate");
 
         apMaster.setDisable(!lbShow);
         apMasterDelivery.setDisable(!lbShow);

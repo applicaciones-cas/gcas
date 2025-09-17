@@ -21,7 +21,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="apMainAnchor" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:id="apMainAnchor" stylesheets="@../css/Tables.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
     <children>
     <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
@@ -60,7 +60,7 @@
                                        </font>
                                     </Label>
                                     <TextField fx:id="tfSearchCluster" promptText="Press F3: Search" GridPane.columnIndex="2" />
-                                    <TextField fx:id="tfSeacrchTransNo" promptText="Press F3: Search" GridPane.columnIndex="6" />
+                                    <TextField fx:id="tfSearchTransNo" promptText="Press F3: Search" GridPane.columnIndex="6" />
                                  </children>
                               </GridPane>
                               <Label fx:id="lblSource" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Company - Industry" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="0.0">
@@ -290,8 +290,8 @@
                                                             <Insets top="1.0" />
                                                          </GridPane.margin>
                                                       </TextArea>
-                                                      <ComboBox fx:id="cbDeliveryType" disable="true" prefWidth="150.0" GridPane.columnIndex="15" GridPane.columnSpan="2" GridPane.rowIndex="3" />
-                                                      <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" text="Delivery Type" GridPane.columnIndex="13" GridPane.rowIndex="3">
+                                                      <ComboBox fx:id="cbDeliveryType" disable="true" prefWidth="150.0" GridPane.columnIndex="15" GridPane.columnSpan="2" GridPane.rowIndex="4" />
+                                                      <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" text="Delivery Type" GridPane.columnIndex="13" GridPane.rowIndex="4">
                                                          <font>
                                                             <Font size="12.0" />
                                                          </font>
@@ -316,8 +316,8 @@
                                                          </font>
                                                       </Label>
                                                       <TextField fx:id="tfTownName" maxHeight="25.0" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="4" />
-                                                      <DatePicker fx:id="dpTransactionDeparture" disable="true" maxWidth="1.7976931348623157E308" GridPane.columnIndex="15" GridPane.columnSpan="2" GridPane.rowIndex="4" />
-                                                      <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" text="Departure Date" GridPane.columnIndex="13" GridPane.rowIndex="4">
+                                                      <DatePicker fx:id="dpTransactionDeparture" disable="true" maxWidth="1.7976931348623157E308" GridPane.columnIndex="6" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+                                                      <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" text="Departure Date" GridPane.columnIndex="4" GridPane.rowIndex="2">
                                                          <font>
                                                             <Font size="12.0" />
                                                          </font>

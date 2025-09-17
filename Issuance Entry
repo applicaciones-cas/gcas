@@ -1222,3 +1222,277 @@ Sep 16, 2025 5:22:50 PM org.guanzon.appdriver.base.LogWrapper severe
 SEVERE: Issuance Entry :null
 Sep 16, 2025 5:22:50 PM org.guanzon.appdriver.base.LogWrapper info
 INFO: Issuance Entry : Success on Initialize Browse Transaction
+Sep 17, 2025 9:59:59 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :null
+Sep 17, 2025 9:59:59 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Entry : Success on Issuance Entry
+Sep 17, 2025 10:00:01 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :null
+Sep 17, 2025 10:00:01 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Entry : Success on Initialize Browse Transaction
+Sep 17, 2025 10:00:08 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :null
+Sep 17, 2025 10:00:08 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Entry : Success on Initialize Browse Transaction
+Sep 17, 2025 10:00:22 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :Transaction was already confirmed.
+Sep 17, 2025 1:57:04 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :null
+Sep 17, 2025 1:57:04 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Entry : Success on Issuance Entry
+Sep 17, 2025 1:57:07 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :No record loaded.
+Sep 17, 2025 1:57:10 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :null
+Sep 17, 2025 1:57:10 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Entry : Success on Initialize Browse Transaction
+Sep 17, 2025 2:07:59 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :null
+Sep 17, 2025 2:07:59 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Entry : Success on Issuance Entry
+Sep 17, 2025 2:08:02 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :null
+Sep 17, 2025 2:08:02 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Entry : Success on Initialize Browse Transaction
+Sep 17, 2025 2:16:46 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :Transaction was not confirmed.
+Sep 17, 2025 2:17:02 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :null
+Sep 17, 2025 2:17:02 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Entry : Success on Initialize Browse Transaction
+Sep 17, 2025 2:17:06 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :Transaction Printed successfully.
+Sep 17, 2025 2:17:06 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Entry : Success on Initialize Tag Departured Transaction
+Sep 17, 2025 2:30:22 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :null
+Sep 17, 2025 2:30:22 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Entry : Success on Issuance Entry
+Sep 17, 2025 2:30:23 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :null
+Sep 17, 2025 2:30:23 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Entry : Success on Initialize New Transaction
+Sep 17, 2025 2:30:31 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :null
+Sep 17, 2025 2:30:31 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Entry : Success on Issuance Entry
+Sep 17, 2025 2:30:32 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :null
+Sep 17, 2025 2:30:32 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Entry : Success on Initialize New Transaction
+Sep 17, 2025 2:30:36 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :null
+Sep 17, 2025 2:30:36 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Entry : Success on Initialize Browse Transaction
+Sep 17, 2025 2:30:46 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :null
+Sep 17, 2025 2:30:46 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Entry : Success on Initialize Update Transaction
+Sep 17, 2025 2:30:48 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :null
+Sep 17, 2025 2:30:48 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Entry : Success on Initialize Cancel Delivery Transaction
+Sep 17, 2025 2:39:19 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :null
+Sep 17, 2025 2:39:19 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Entry : Success on Issuance Entry
+Sep 17, 2025 2:39:21 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :null
+Sep 17, 2025 2:39:21 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Entry : Success on Initialize New Transaction
+Sep 17, 2025 2:39:30 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :null
+Sep 17, 2025 2:39:30 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Entry : Success on Initialize Browse Transaction
+Sep 17, 2025 2:39:36 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :null
+Sep 17, 2025 2:39:36 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Entry : Success on Initialize Update Transaction
+Sep 17, 2025 2:39:38 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :Transaction was already confirmed.
+Sep 17, 2025 2:39:43 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :null
+Sep 17, 2025 2:39:43 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Entry : Success on Initialize Browse Transaction
+Sep 17, 2025 2:39:48 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :null
+Sep 17, 2025 2:39:48 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Entry : Success on Initialize Update Transaction
+Sep 17, 2025 2:39:58 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :null
+Sep 17, 2025 2:39:58 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Entry : Success on Initialize Cancel Delivery Transaction
+Sep 17, 2025 2:40:02 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :null
+Sep 17, 2025 2:40:02 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Entry : Success on Initialize Cancel Delivery Transaction
+Sep 17, 2025 2:41:31 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :null
+Sep 17, 2025 2:41:31 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Entry : Success on Initialize Transaction
+Sep 17, 2025 2:41:34 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :null
+Sep 17, 2025 2:41:34 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Entry : Success on Initialize Browse Transaction
+Sep 17, 2025 2:41:43 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :null
+Sep 17, 2025 2:41:43 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Entry : Success on Initialize Browse Transaction
+Sep 17, 2025 2:41:53 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :null
+Sep 17, 2025 2:41:53 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Entry : Success on Initialize Browse Transaction
+Sep 17, 2025 2:41:56 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :null
+Sep 17, 2025 2:41:56 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Entry : Success on Initialize Update Transaction
+Sep 17, 2025 2:41:58 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :null
+Sep 17, 2025 2:41:58 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Entry : Success on Initialize Cancel Delivery Transaction
+Sep 17, 2025 2:42:04 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :null
+Sep 17, 2025 2:42:04 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Entry : Success on Initialize Transaction
+Sep 17, 2025 2:42:08 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :null
+Sep 17, 2025 2:42:08 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Entry : Success on Initialize Browse Transaction
+Sep 17, 2025 2:42:19 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :null
+Sep 17, 2025 2:42:19 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Entry : Success on Initialize Update Transaction
+Sep 17, 2025 2:42:21 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :null
+Sep 17, 2025 2:42:21 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Entry : Success on Initialize Cancel Delivery Transaction
+Sep 17, 2025 2:49:49 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :null
+Sep 17, 2025 2:49:49 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Entry : Success on Issuance Entry
+Sep 17, 2025 2:49:50 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :null
+Sep 17, 2025 2:49:50 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Entry : Success on Initialize New Transaction
+Sep 17, 2025 2:49:54 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :null
+Sep 17, 2025 2:49:54 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Entry : Success on Initialize Transaction
+Sep 17, 2025 2:49:55 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :null
+Sep 17, 2025 2:49:55 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Entry : Success on Initialize Browse Transaction
+Sep 17, 2025 2:49:59 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :null
+Sep 17, 2025 2:49:59 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Entry : Success on Initialize Update Transaction
+Sep 17, 2025 2:50:02 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :null
+Sep 17, 2025 2:50:02 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Entry : Success on Initialize Update Delivery Transaction
+Sep 17, 2025 2:50:02 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :null
+Sep 17, 2025 2:50:02 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Entry : Success on Initialize retrieve stock request transaction
+Sep 17, 2025 2:50:38 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :null
+Sep 17, 2025 2:50:38 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Entry : Success on Initialize Transaction
+Sep 17, 2025 2:50:40 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :null
+Sep 17, 2025 2:50:40 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Entry : Success on Initialize Browse Transaction
+Sep 17, 2025 2:50:44 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :null
+Sep 17, 2025 2:50:44 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Entry : Success on Initialize Update Transaction
+Sep 17, 2025 2:50:55 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :null
+Sep 17, 2025 2:50:55 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Entry : Success on Initialize Update Delivery Transaction
+Sep 17, 2025 2:51:30 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :null
+Sep 17, 2025 2:51:30 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Entry : Success on Initialize retrieve stock request transaction
+Sep 17, 2025 2:51:35 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :null
+Sep 17, 2025 2:51:35 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Entry : Success on Initialize Transaction
+Sep 17, 2025 2:51:40 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :null
+Sep 17, 2025 2:51:40 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Entry : Success on Initialize Browse Transaction
+Sep 17, 2025 2:59:44 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :null
+Sep 17, 2025 2:59:44 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Entry : Success on Initialize Update Transaction
+Sep 17, 2025 2:59:48 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :null
+Sep 17, 2025 2:59:48 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Entry : Success on Initialize Update Delivery Transaction
+Sep 17, 2025 3:00:30 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :null
+Sep 17, 2025 3:00:30 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Entry : Success on Initialize retrieve stock request transaction
+Sep 17, 2025 3:01:24 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :null
+Sep 17, 2025 3:01:24 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Entry : Success on Initialize Transaction
+Sep 17, 2025 3:01:29 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :null
+Sep 17, 2025 3:01:29 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Entry : Success on Initialize Browse Transaction
+Sep 17, 2025 3:01:32 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :null
+Sep 17, 2025 3:01:32 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Entry : Success on Initialize Update Transaction
+Sep 17, 2025 3:01:34 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :null
+Sep 17, 2025 3:01:34 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Entry : Success on Initialize Update Delivery Transaction
+Sep 17, 2025 3:04:05 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :null
+Sep 17, 2025 3:04:05 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Entry : Success on Initialize retrieve stock request transaction
+Sep 17, 2025 3:06:22 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :null
+Sep 17, 2025 3:06:22 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Entry : Success on Initialize Transaction
+Sep 17, 2025 3:06:30 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :null
+Sep 17, 2025 3:06:30 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Entry : Success on Initialize Browse Transaction
+Sep 17, 2025 3:06:33 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :null
+Sep 17, 2025 3:06:33 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Entry : Success on Initialize Update Transaction
+Sep 17, 2025 3:06:35 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :null
+Sep 17, 2025 3:06:35 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Entry : Success on Initialize Update Delivery Transaction
+Sep 17, 2025 3:06:42 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :null
+Sep 17, 2025 3:07:06 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :null
+Sep 17, 2025 3:07:06 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Entry : Success on Initialize Transaction
+Sep 17, 2025 3:07:08 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :null
+Sep 17, 2025 3:07:08 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Entry : Success on Initialize Browse Transaction
+Sep 17, 2025 3:07:13 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :null
+Sep 17, 2025 3:07:13 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Entry : Success on Initialize Update Transaction
+Sep 17, 2025 3:07:15 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :null
+Sep 17, 2025 3:07:15 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Entry : Success on Initialize Update Delivery Transaction
+Sep 17, 2025 3:09:03 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :null
+Sep 17, 2025 3:09:03 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Entry : Success on Initialize retrieve stock request transaction
+Sep 17, 2025 3:09:14 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Issuance Entry :null
+Sep 17, 2025 3:09:14 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Issuance Entry : Success on Initialize Save Delivery Transaction
