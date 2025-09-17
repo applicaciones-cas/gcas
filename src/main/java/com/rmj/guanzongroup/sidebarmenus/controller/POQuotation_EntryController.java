@@ -60,6 +60,7 @@ import org.guanzon.appdriver.constant.EditMode;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicReference;
 import javafx.animation.PauseTransition;
 import javafx.scene.Scene;
@@ -94,7 +95,8 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
     private String psCategoryId = "";
     private String openedAttachment = "";
     private boolean pbEntered = false;
-
+    List<Pair<String, String>> plOrderNoPartial = new ArrayList<>();
+    List<Pair<String, String>> plOrderNoFinal = new ArrayList<>();
     private ObservableList<ModelPOQuotation_Main> main_data = FXCollections.observableArrayList();
     private ObservableList<ModelPOQuotation_Detail> details_data = FXCollections.observableArrayList();
     private final ObservableList<ModelDeliveryAcceptance_Attachment> attachment_data = FXCollections.observableArrayList();
@@ -127,7 +129,7 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
     @FXML
     private HBox hbButtons, hboxid;
     @FXML
-    private Button btnBrowse, btnNew, btnUpdate, btnSearch, btnSave, btnCancel, btnVoid, btnHistory, btnClose, btnAddAttachment, btnRemoveAttachment, btnArrowLeft, btnArrowRight;
+    private Button btnBrowse, btnNew, btnUpdate, btnSearch, btnSave, btnCancel, btnVoid, btnHistory, btnRetrieve, btnClose, btnAddAttachment, btnRemoveAttachment, btnArrowLeft, btnArrowRight;
     @FXML
     private TabPane tabPane;
     @FXML
@@ -186,7 +188,7 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
             poController.POQuotation().initFields();
             poController.POQuotation().setWithUI(true);
             loadRecordSearch();
-
+            btnNew.fire();
             TriggerWindowEvent();
         });
 
@@ -314,6 +316,17 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
                 Button clickedButton = (Button) source;
                 String lsButton = clickedButton.getId();
                 switch (lsButton) {
+                    case "btnBrowse":
+                        poController.POQuotation().setTransactionStatus(POQuotationStatus.OPEN);
+                        poJSON = poController.POQuotation().searchTransaction();
+                        if ("error".equalsIgnoreCase((String) poJSON.get("result"))) {
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                            tfTransactionNo.requestFocus();
+                            return;
+                        }
+                        JFXUtil.showRetainedHighlight(false, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, true);
+                        pnEditMode = poController.POQuotation().getEditMode();
+                        break;
                     case "btnClose":
                         unloadForm appUnload = new unloadForm();
                         if (ShowMessageFX.OkayCancel(null, "Close Tab", "Are you sure you want to close this Tab?") == true) {
@@ -336,6 +349,7 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
                         }
                         poController.POQuotation().initFields();
                         pnEditMode = poController.POQuotation().getEditMode();
+                        JFXUtil.showRetainedHighlight(true, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, true);
                         break;
                     case "btnUpdate":
                         poJSON = poController.POQuotation().OpenTransaction(poController.POQuotation().Master().getTransactionNo());
@@ -351,7 +365,17 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
                         break;
                     case "btnCancel":
                         if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to disregard changes?") == true) {
-                            JFXUtil.disableAllHighlightByColor(tblViewMainList, "#A7C7E7", highlightedRowsMain);
+                            JFXUtil.showRetainedHighlight(false, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, true);
+                            //Clear data
+                            poController.POQuotation().resetMaster();
+                            poController.POQuotation().Detail().clear();
+                            clearTextFields();
+
+                            poController.POQuotation().Master().setIndustryId(psIndustryId);
+                            poController.POQuotation().setCompanyId(psCompanyId);
+                            poController.POQuotation().Master().setCategoryCode(psCategoryId);
+//                            poController.POQuotationRequest().initFields();
+                            pnEditMode = EditMode.UNKNOWN;
                             break;
                         } else {
                             return;
@@ -381,7 +405,6 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
                                             loJSON = poController.POQuotation().ConfirmTransaction("Confirmed");
                                             if ("success".equals((String) loJSON.get("result"))) {
                                                 ShowMessageFX.Information((String) loJSON.get("message"), pxeModuleName, null);
-                                                JFXUtil.highlightByKey(tblViewMainList, String.valueOf(pnMain + 1), "#C1E1C1", highlightedRowsMain);
                                             } else {
                                                 ShowMessageFX.Information((String) loJSON.get("message"), pxeModuleName, null);
                                             }
@@ -389,6 +412,8 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
                                     }
                                 }
                                 JFXUtil.disableAllHighlightByColor(tblViewMainList, "#A7C7E7", highlightedRowsMain);
+                                JFXUtil.showRetainedHighlight(false, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, true);
+
                             }
                         } else {
                             return;
@@ -445,6 +470,36 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
             }
         } catch (CloneNotSupportedException | SQLException | GuanzonException | ParseException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+        }
+    }
+
+    public void loadHighlightFromDetail() {
+        try {
+            String lsTransNoBasis = "", lsCompany = "", lsSupplier = "";
+            lsTransNoBasis = poController.POQuotation().Master().getTransactionNo();
+            lsCompany = poController.POQuotation().Master().Company().getCompanyName();
+            lsSupplier = poController.POQuotation().Master().Client().getCompanyName();
+
+            for (int lnCtr = 0; lnCtr < poController.POQuotation().getDetailCount(); lnCtr++) {
+                if (poController.POQuotation().Detail(lnCtr).isReverse()) {
+                    String lsHighlightbasis = lsTransNoBasis + lsCompany + lsSupplier;
+                    if (!JFXUtil.isObjectEqualTo(poController.POQuotation().Detail(lnCtr).getQuantity(), null, "")) {
+                        if (poController.POQuotation().Detail(lnCtr).getQuantity().doubleValue() > 0.0000) {
+                            plOrderNoPartial.add(new Pair<>(lsHighlightbasis, "1"));
+                        } else {
+                            plOrderNoPartial.add(new Pair<>(lsHighlightbasis, "0"));
+                        }
+                    }
+                }
+            }
+            for (Pair<String, String> pair : plOrderNoPartial) {
+                if (!"".equals(pair.getKey()) && pair.getKey() != null) {
+                    JFXUtil.highlightByKey(tblViewMainList, pair.getKey(), "#A7C7E7", highlightedRowsMain);
+                }
+            }
+            JFXUtil.showRetainedHighlight(false, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, false);
+        } catch (SQLException | GuanzonException ex) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -1097,8 +1152,6 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
             if (selected != null) {
                 int pnRowMain = Integer.parseInt(selected.getIndex01()) - 1;
                 pnMain = pnRowMain;
-                JFXUtil.disableAllHighlightByColor(tblViewMainList, "#A7C7E7", highlightedRowsMain);
-                JFXUtil.highlightByKey(tblViewMainList, String.valueOf(pnRowMain + 1), "#A7C7E7", highlightedRowsMain);
 
                 poJSON = poController.POQuotation().OpenTransaction(poController.POQuotation().POQuotationList(pnMain).getTransactionNo());
                 if ("error".equals((String) poJSON.get("result"))) {
@@ -1190,6 +1243,7 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
                     Platform.runLater(() -> {
                         int lnCtr;
                         details_data.clear();
+                        plOrderNoPartial.clear();
                         try {
                             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
 //                                poController.POQuotation().ReloadDetails();
@@ -1219,6 +1273,8 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
                                     lsDescription = "";
                                 }
                             }
+                            JFXUtil.showRetainedHighlight(false, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, true);
+                            loadHighlightFromDetail();
                             int lnTempRow = JFXUtil.getDetailRow(details_data, pnDetail, 8); //this method is only used when Reverse is applied
                             if (lnTempRow < 0 || lnTempRow
                                     >= details_data.size()) {
@@ -1268,6 +1324,7 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
 //                                    JFXUtil.highlightByKey(tblViewMainList, String.valueOf(lnCtr + 1), "#C1E1C1", highlightedRowsMain);
 //                                }
                             }
+                            loadHighlightFromDetail();
                         }
 
                         if (pnMain < 0 || pnMain
