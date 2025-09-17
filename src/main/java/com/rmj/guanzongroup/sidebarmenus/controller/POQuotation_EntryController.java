@@ -1038,7 +1038,8 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
                             filePath2 = imageinfo_temp.get((String) attachment_data.get(pnAttachment).getIndex02());
                         } else {
                             // in server
-                            filePath2 = "D:\\GGC_Maven_Systems\\temp\\attachments\\" + (String) attachment_data.get(pnAttachment).getIndex02();
+                            filePath2 = System.getProperty("sys.default.path.config") + "/temp//attachments//" + (String) attachment_data.get(pnAttachment).getIndex02();
+
                         }
                         if (filePath != null && !filePath.isEmpty()) {
                             Path imgPath = Paths.get(filePath2);
@@ -1248,6 +1249,7 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
                     });
                 }
         );
+
         loadTableDetail = new JFXUtil.ReloadableTableTask(
                 tblViewTransDetails,
                 details_data,
@@ -1263,10 +1265,14 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
                             }
                             String lsBarcode = "";
                             String lsDescription = "";
+
                             int lnRowCount = 0;
                             for (lnCtr = 0; lnCtr < poController.POQuotation().getDetailCount(); lnCtr++) {
                                 if (poController.POQuotation().Detail(lnCtr).isReverse()) {
-                                    if (poController.POQuotation().Detail(lnCtr).getStockId() != null) {
+                                    if (poController.POQuotation().Detail(lnCtr).getReplaceId() != null) {
+                                        lsBarcode = poController.POQuotation().Detail(lnCtr).ReplacedInventory().getBarCode();
+                                        lsDescription = poController.POQuotation().Detail(lnCtr).getReplaceDescription();
+                                    } else {
                                         lsBarcode = poController.POQuotation().Detail(lnCtr).Inventory().getBarCode();
                                         lsDescription = poController.POQuotation().Detail(lnCtr).getDescription();
                                     }
@@ -1479,7 +1485,7 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
 
         if (newIndex != -1 && (newIndex <= attachment_data.size() - 1)) {
             ModelDeliveryAcceptance_Attachment image = attachment_data.get(newIndex);
-            String filePath2 = "D:\\GGC_Maven_Systems\\temp\\attachments\\" + image.getIndex02();
+            String filePath2 = System.getProperty("sys.default.path.config") + "/temp//attachments//" + image.getIndex02();
             TranslateTransition slideOut = new TranslateTransition(Duration.millis(300), imageView);
             slideOut.setByX(direction * -400); // Move left or right
 
