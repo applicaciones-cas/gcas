@@ -184,7 +184,7 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
             poController.POQuotation().Master().setCompanyId(psCompanyId);
             poController.POQuotation().setIndustryId(psIndustryId);
             poController.POQuotation().setCompanyId(psCompanyId);
-            poController.POQuotation().setCategoryId(psCategoryId);
+//            poController.POQuotation().setCategoryId(psCategoryId);
             poController.POQuotation().initFields();
             poController.POQuotation().setWithUI(true);
             loadRecordSearch();
@@ -217,7 +217,7 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
 
     @Override
     public void setCategoryID(String fsValue) {
-        psCategoryId = fsValue;
+//        psCategoryId = fsValue;
     }
     ChangeListener<Scene> WindowKeyEvent = (obs, oldScene, newScene) -> {
         if (newScene != null) {
