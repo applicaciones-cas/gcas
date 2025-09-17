@@ -1,0 +1,304 @@
+Sep 10, 2025 4:09:20 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 10, 2025 4:09:20 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Initialize Transaction
+Sep 10, 2025 4:29:04 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 10, 2025 4:29:04 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Initialize Transaction
+Sep 10, 2025 4:29:33 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 10, 2025 4:29:33 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Search Transaction!
+Sep 10, 2025 4:29:33 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 10, 2025 4:29:33 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Initialize : Load of Branch Cluster Delivery List
+Sep 10, 2025 4:29:42 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 10, 2025 4:29:42 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Search Transaction!
+Sep 10, 2025 4:29:42 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 10, 2025 4:29:42 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Initialize : Load of Branch Cluster Delivery List
+Sep 10, 2025 4:29:46 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 10, 2025 4:29:46 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Initialize Update Transaction
+Sep 10, 2025 4:29:48 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :Username or password is not set.
+Sep 10, 2025 4:29:51 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :Username or password is not set.
+Sep 10, 2025 4:29:57 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 10, 2025 4:29:57 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Initialize Transaction
+Sep 10, 2025 4:35:43 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 10, 2025 4:35:43 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Initialize Transaction
+Sep 10, 2025 4:38:53 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 10, 2025 4:38:53 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Initialize Transaction
+Sep 10, 2025 4:39:07 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 10, 2025 4:39:07 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Initialize : Load of Transaction List
+Sep 10, 2025 4:39:09 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 10, 2025 4:39:09 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Initialize Open Transaction
+Sep 10, 2025 4:39:09 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 10, 2025 4:39:09 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Initialize : Load of Branch Cluster Delivery List
+Sep 10, 2025 4:44:11 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 10, 2025 4:44:11 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Initialize Transaction
+Sep 10, 2025 4:44:14 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 10, 2025 4:44:14 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Initialize : Load of Transaction List
+Sep 10, 2025 4:44:15 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 10, 2025 4:44:15 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Initialize Open Transaction
+Sep 10, 2025 4:44:15 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 10, 2025 4:44:15 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Initialize : Load of Branch Cluster Delivery List
+Sep 10, 2025 4:44:17 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 10, 2025 4:44:17 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Initialize Open Transaction
+Sep 10, 2025 4:44:17 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 10, 2025 4:44:17 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Initialize : Load of Branch Cluster Delivery List
+Sep 10, 2025 4:44:17 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 10, 2025 4:44:17 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Initialize Open Transaction
+Sep 10, 2025 4:44:17 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 10, 2025 4:44:17 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Initialize : Load of Branch Cluster Delivery List
+Sep 10, 2025 4:44:18 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 10, 2025 4:44:18 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Initialize Open Transaction
+Sep 10, 2025 4:44:19 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 10, 2025 4:44:19 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Initialize Open Transaction
+Sep 10, 2025 4:44:19 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 10, 2025 4:44:19 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Initialize : Load of Branch Cluster Delivery List
+Sep 10, 2025 4:44:21 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 10, 2025 4:44:21 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Initialize Update Transaction
+Sep 10, 2025 4:44:42 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 10, 2025 4:44:42 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Initialize Transaction
+Sep 10, 2025 4:50:07 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 10, 2025 4:50:07 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Initialize Transaction
+Sep 10, 2025 4:50:13 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 10, 2025 4:50:13 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Initialize : Load of Transaction List
+Sep 10, 2025 4:50:14 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 10, 2025 4:50:14 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Initialize Open Transaction
+Sep 10, 2025 4:50:14 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 10, 2025 4:50:14 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Initialize : Load of Branch Cluster Delivery List
+Sep 10, 2025 4:50:18 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 10, 2025 4:50:18 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Initialize Update Transaction
+Sep 10, 2025 4:50:31 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 10, 2025 4:50:31 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Initialize Transaction
+Sep 10, 2025 4:59:19 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 10, 2025 4:59:19 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Initialize Transaction
+Sep 10, 2025 4:59:23 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 10, 2025 4:59:23 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Initialize : Load of Transaction List
+Sep 10, 2025 4:59:24 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 10, 2025 4:59:24 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Initialize Open Transaction
+Sep 10, 2025 4:59:24 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 10, 2025 4:59:24 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Initialize : Load of Branch Cluster Delivery List
+Sep 10, 2025 4:59:27 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 10, 2025 4:59:27 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Initialize Update Transaction
+Sep 10, 2025 4:59:38 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 10, 2025 4:59:38 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Initialize Transaction
+Sep 10, 2025 4:59:40 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 10, 2025 4:59:40 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Initialize : Load of Transaction List
+Sep 10, 2025 4:59:42 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 10, 2025 4:59:42 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Initialize Open Transaction
+Sep 10, 2025 4:59:49 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 10, 2025 4:59:49 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Initialize Update Transaction
+Sep 10, 2025 5:02:39 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 10, 2025 5:02:39 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Initialize Transaction
+Sep 10, 2025 5:02:41 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 10, 2025 5:02:41 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Initialize : Load of Transaction List
+Sep 10, 2025 5:02:41 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 10, 2025 5:02:41 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Initialize Open Transaction
+Sep 10, 2025 5:02:41 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 10, 2025 5:02:41 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Initialize : Load of Branch Cluster Delivery List
+Sep 10, 2025 5:02:45 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 10, 2025 5:02:45 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Initialize Update Transaction
+Sep 10, 2025 5:02:48 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 10, 2025 5:02:48 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Initialize Transaction
+Sep 10, 2025 5:02:50 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 10, 2025 5:02:50 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Initialize : Load of Transaction List
+Sep 10, 2025 5:02:51 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 10, 2025 5:02:51 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Initialize Open Transaction
+Sep 10, 2025 5:02:51 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 10, 2025 5:02:51 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Initialize Open Transaction
+Sep 10, 2025 5:02:51 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 10, 2025 5:02:51 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Initialize : Load of Branch Cluster Delivery List
+Sep 10, 2025 5:02:59 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 10, 2025 5:02:59 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Initialize Update Transaction
+Sep 10, 2025 5:03:03 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 10, 2025 5:03:03 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Initialize Transaction
+Sep 10, 2025 5:03:05 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 10, 2025 5:03:05 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Initialize : Load of Transaction List
+Sep 11, 2025 9:01:46 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 11, 2025 9:01:46 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Initialize Transaction
+Sep 11, 2025 9:02:20 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :No record loaded.
+Sep 11, 2025 9:02:31 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 11, 2025 9:02:31 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Search Transaction!
+Sep 11, 2025 9:02:31 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 11, 2025 9:02:31 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Initialize : Load of Branch Cluster Delivery List
+Sep 11, 2025 9:02:47 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 11, 2025 9:02:47 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Search Transaction!
+Sep 11, 2025 9:02:47 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 11, 2025 9:02:47 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Initialize : Load of Branch Cluster Delivery List
+Sep 11, 2025 9:02:53 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :No record loaded.
+Sep 11, 2025 9:03:17 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 11, 2025 9:03:17 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Initialize Update Transaction
+Sep 11, 2025 9:03:26 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :No record found.
+Sep 11, 2025 9:03:30 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 11, 2025 9:03:30 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Initialize : Load of Transaction List
+Sep 11, 2025 9:03:38 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 11, 2025 9:03:38 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Initialize Transaction
+Sep 11, 2025 9:03:41 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 11, 2025 9:03:41 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Initialize : Load of Transaction List
+Sep 11, 2025 9:03:42 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 11, 2025 9:03:42 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Initialize Open Transaction
+Sep 11, 2025 9:03:42 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 11, 2025 9:03:42 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Initialize : Load of Branch Cluster Delivery List
+Sep 11, 2025 9:03:44 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 11, 2025 9:03:44 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Initialize Update Transaction
+Sep 11, 2025 9:03:47 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 11, 2025 9:03:47 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Initialize Open Transaction
+Sep 11, 2025 9:03:47 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 11, 2025 9:03:47 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Initialize : Load of Branch Cluster Delivery List
+Sep 11, 2025 4:18:52 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 11, 2025 4:18:52 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Initialize Transaction
+Sep 11, 2025 4:20:14 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :No record loaded.
+Sep 11, 2025 4:20:22 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :No record loaded.
+Sep 12, 2025 3:48:48 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 12, 2025 3:48:48 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Initialize Transaction
+Sep 12, 2025 3:48:55 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :No record loaded.
+Sep 12, 2025 3:49:00 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 12, 2025 3:49:00 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Initialize : Load of Transaction List
+Sep 16, 2025 4:14:10 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Confirmation :null
+Sep 16, 2025 4:14:10 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Confirmation : Success on Initialize Transaction

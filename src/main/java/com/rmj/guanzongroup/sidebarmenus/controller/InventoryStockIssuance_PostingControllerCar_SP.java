@@ -145,7 +145,8 @@ public class InventoryStockIssuance_PostingControllerCar_SP implements Initializ
         try {
             poLogWrapper = new LogWrapper(psFormName, psFormName + "Log");
             poAppController = new DeliveryIssuanceControllers(poApp, poLogWrapper).InventoryStockIssuanceNeo();
-            poAppController.setTransactionStatus(InventoryStockIssuanceStatus.OPEN);
+            
+           
             if (!isJSONSuccess(poAppController.initTransaction(), "Initialize Transaction")) {
                 unloadForm appUnload = new unloadForm();
                 appUnload.unloadForm(apMainAnchor, poApp, psFormName);
@@ -427,14 +428,14 @@ public class InventoryStockIssuance_PostingControllerCar_SP implements Initializ
                         if (lnReceived < 0.00) {
                             return;
                         }
-                        //check if Serialize
-                        if (lnReceived > 1.00 && lnReceived < 1.00) {
-                            if (poAppController.getDetail(pnDetailRow).Inventory().isSerialized()) {
-                                ShowMessageFX.Information("Invalid quantity for serialize item", psFormName, null);
-                                lnReceived = 1;
+                        // check if serialized
+                        if (poAppController.getDetail(pnDetailRow).Inventory().isSerialized()) {
+                            // must be whole number AND exactly 1
+                            if (lnReceived != 1 || lnReceived % 1 != 0) {
+                                ShowMessageFX.Information("Invalid quantity for serialized item", psFormName, null);
+                                lnReceived = 1; // force to 1
                             }
                         }
-
                         poAppController.getDetail(pnDetailRow).setReceivedQuantity(lnReceived);
 
                         reloadTableDetail();

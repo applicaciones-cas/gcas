@@ -143,8 +143,7 @@ public class InventoryStockIssuanceNeoController_HistoryCar implements Initializ
         try {
             poLogWrapper = new LogWrapper(psFormName, psFormName);
             poAppController = new DeliveryIssuanceControllers(poApp, poLogWrapper).InventoryStockIssuanceNeo();
-            poAppController.setTransactionStatus(InventoryStockIssuanceStatus.OPEN);
-
+            
             //initlalize and validate transaction objects from class controller
             if (!isJSONSuccess(poAppController.initTransaction(), psFormName)) {
                 unloadForm appUnload = new unloadForm();
@@ -168,7 +167,7 @@ public class InventoryStockIssuanceNeoController_HistoryCar implements Initializ
             initializeTableDetail();
             initControlEvents();
         } catch (SQLException | GuanzonException e) {
-            Logger.getLogger(InventoryStockIssuanceNeo.class.getName()).log(Level.SEVERE, null, e);
+            
             poLogWrapper.severe(psFormName + " :" + e.getMessage());
         }
     }
