@@ -1417,29 +1417,24 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
     }
 
     private void initButton(int fnValue) {
-        boolean lbShow1 = (fnValue == EditMode.UPDATE);
-        boolean lbShow2 = (fnValue == EditMode.READY || fnValue == EditMode.UPDATE);
-        boolean lbShow3 = (fnValue == EditMode.READY);
-        boolean lbShow4 = (fnValue == EditMode.UNKNOWN || fnValue == EditMode.READY);
-        // Manage visibility and managed state of other buttons
-        //Update 
-        JFXUtil.setButtonsVisibility(lbShow1, btnSearch, btnSave, btnCancel);
-        //Ready
-        JFXUtil.setButtonsVisibility(lbShow3, btnUpdate, btnHistory);
+        boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
+        boolean lbShow2 = fnValue == EditMode.READY;
+        boolean lbShow3 = (fnValue == EditMode.READY || fnValue == EditMode.UNKNOWN);
 
-        //Unkown || Ready
-        JFXUtil.setButtonsVisibility(lbShow4, btnClose);
-        JFXUtil.setDisabled(!lbShow1, apMaster, apDetail, apAttachments);
+        // Manage visibility and managed state of other buttons
+        JFXUtil.setButtonsVisibility(!lbShow, btnNew);
+        JFXUtil.setButtonsVisibility(lbShow, btnSearch, btnSave, btnCancel);
+        JFXUtil.setButtonsVisibility(lbShow2, btnUpdate, btnHistory);
+        JFXUtil.setButtonsVisibility(lbShow3, btnBrowse, btnClose);
+
+        JFXUtil.setDisabled(!lbShow, taRemarks, apMaster, apDetail);
 
         switch (poController.POQuotation().Master().getTransactionStatus()) {
-            case POQuotationStatus.CONFIRMED:
-//                JFXUtil.setButtonsVisibility(lbShow3, btnPost);
-                break;
-            case POQuotationStatus.POSTED:
 //            case POQuotationStatus.PAID:
+//                JFXUtil.setButtonsVisibility(false, btnUpdate);
+//                break;
             case POQuotationStatus.VOID:
             case POQuotationStatus.CANCELLED:
-//            case POQuotationStatus.RETURNED:
                 JFXUtil.setButtonsVisibility(false, btnUpdate);
                 break;
         }
