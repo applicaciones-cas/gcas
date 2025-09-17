@@ -460,7 +460,7 @@
                                                                                  <font>
                                                                                     <Font size="12.0" />
                                                                                  </font></Label>
-                                                                          <Label text="Quantity" GridPane.columnIndex="5" GridPane.rowIndex="1">
+                                                                          <Label text="Quantity" GridPane.columnIndex="8" GridPane.rowIndex="1">
                                                                                  <font>
                                                                                     <Font size="12.0" />
                                                                                  </font></Label>
@@ -474,12 +474,12 @@
                                                                         <Font size="12.0" />
                                                                      </font>
                                                                   </Label>
-                                                                  <Label layoutX="465.0" layoutY="16.0" text="Disc. Rate (%)" GridPane.columnIndex="5" GridPane.rowIndex="2">
+                                                                  <Label layoutX="465.0" layoutY="16.0" text="Disc. Rate (%)" GridPane.columnIndex="5" GridPane.rowIndex="1">
                                                                      <font>
                                                                         <Font size="12.0" />
                                                                      </font>
                                                                   </Label>
-                                                                  <Label layoutX="761.0" layoutY="16.0" text="Addl. Disc. Amt" GridPane.columnIndex="8" GridPane.rowIndex="1">
+                                                                  <Label layoutX="761.0" layoutY="16.0" text="Addl. Discount" GridPane.columnIndex="5" GridPane.rowIndex="2">
                                                                      <font>
                                                                         <Font size="12.0" />
                                                                      </font>
@@ -493,9 +493,9 @@
                                                                           <TextField fx:id="tfReplaceId" maxHeight="25.0" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                                                                   <TextField fx:id="tfReplaceDescription" layoutX="519.0" layoutY="42.0" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="2" />
                                                                   <TextField fx:id="tfUnitPrice" alignment="CENTER_RIGHT" layoutX="519.0" layoutY="41.0" maxHeight="25.0" maxWidth="139.0" promptText="0.0000" GridPane.columnIndex="7" GridPane.halignment="LEFT" />
-                                                                          <TextField fx:id="tfQuantity" maxHeight="25.0" maxWidth="139.0" GridPane.columnIndex="7" GridPane.rowIndex="1" />
-                                                                  <TextField fx:id="tfDiscRateDetail" alignment="CENTER_RIGHT" layoutX="499.0" layoutY="12.0" maxHeight="25.0" maxWidth="139.0" promptText="0.0000" GridPane.columnIndex="7" GridPane.rowIndex="2" />
-                                                                  <TextField fx:id="tfAddlDiscAmtDetail" alignment="CENTER_RIGHT" layoutX="785.0" layoutY="12.0" maxHeight="25.0" maxWidth="139.0" promptText="0.0000" GridPane.columnIndex="10" GridPane.rowIndex="1" />
+                                                                          <TextField fx:id="tfQuantity" maxHeight="25.0" maxWidth="139.0" GridPane.columnIndex="10" GridPane.rowIndex="1" />
+                                                                  <TextField fx:id="tfDiscRateDetail" alignment="CENTER_RIGHT" layoutX="499.0" layoutY="12.0" maxHeight="25.0" maxWidth="139.0" promptText="0.0000" GridPane.columnIndex="7" GridPane.rowIndex="1" />
+                                                                  <TextField fx:id="tfAddlDiscAmtDetail" alignment="CENTER_RIGHT" layoutX="785.0" layoutY="12.0" maxHeight="25.0" maxWidth="139.0" promptText="0.0000" GridPane.columnIndex="7" GridPane.rowIndex="2" />
                                                                                           <CheckBox fx:id="cbReverse" alignment="BOTTOM_RIGHT" mnemonicParsing="false" nodeOrientation="RIGHT_TO_LEFT" onAction="#cmdCheckBox_Click" text="Reverse" GridPane.columnIndex="10" />
                                                                                           <Label layoutX="674.0" layoutY="44.0" text="Cost" GridPane.columnIndex="8" GridPane.rowIndex="2">
                                                                                              <font>
