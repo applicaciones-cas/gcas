@@ -157,7 +157,11 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
     public void initialize(URL location, ResourceBundle resources) {
         poController = new QuotationControllers(oApp, null);
         poJSON = new JSONObject();
-        poJSON = poController.POQuotation().InitTransaction(); // Initialize transaction
+        try {
+            poJSON = poController.POQuotation().InitTransaction(); // Initialize transaction
+        } catch (Exception e) {
+
+        }
         if (!"success".equals((String) poJSON.get("result"))) {
             System.err.println((String) poJSON.get("message"));
             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -319,6 +323,20 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
                             return;
                         }
                         break;
+                    case "btnNew":
+                        //Clear data
+                        poController.POQuotation().resetMaster();
+                        poController.POQuotation().Detail().clear();
+                        clearTextFields();
+
+                        poJSON = poController.POQuotation().NewTransaction();
+                        if ("error".equals((String) poJSON.get("result"))) {
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                            return;
+                        }
+                        poController.POQuotation().initFields();
+                        pnEditMode = poController.POQuotation().getEditMode();
+                        break;
                     case "btnUpdate":
                         poJSON = poController.POQuotation().OpenTransaction(poController.POQuotation().Master().getTransactionNo());
                         poJSON = poController.POQuotation().UpdateTransaction();
@@ -372,6 +390,26 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
                                 }
                                 JFXUtil.disableAllHighlightByColor(tblViewMainList, "#A7C7E7", highlightedRowsMain);
                             }
+                        } else {
+                            return;
+                        }
+                        break;
+                    case "btnVoid":
+                        poJSON = new JSONObject();
+                        if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure you want to void transaction?") == true) {
+                            if (POQuotationStatus.CONFIRMED.equals(poController.POQuotation().Master().getTransactionStatus())) {
+                                poJSON = poController.POQuotation().CancelTransaction("");
+                            } else {
+                                poJSON = poController.POQuotation().VoidTransaction("");
+                            }
+                            if ("error".equals((String) poJSON.get("result"))) {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                return;
+                            } else {
+                                ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
+                            }
+
+                            btnNew.fire();
                         } else {
                             return;
                         }
