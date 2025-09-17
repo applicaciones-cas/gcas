@@ -348,7 +348,7 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
                         }
                         poController.POQuotation().initFields();
                         pnEditMode = poController.POQuotation().getEditMode();
-                        JFXUtil.showRetainedHighlight(true, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, true);
+                        JFXUtil.showRetainedHighlight(false, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, true);
                         break;
                     case "btnUpdate":
                         poJSON = poController.POQuotation().OpenTransaction(poController.POQuotation().Master().getTransactionNo());
@@ -411,7 +411,7 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
                                     }
                                 }
                                 JFXUtil.disableAllHighlightByColor(tblViewMainList, "#A7C7E7", highlightedRowsMain);
-                                JFXUtil.showRetainedHighlight(false, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, true);
+                                JFXUtil.showRetainedHighlight(true, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, true);
 
                             }
                         } else {
@@ -474,13 +474,12 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
 
     public void loadHighlightFromDetail() {
         try {
-            String lsTransNoBasis = "", lsCompany = "", lsSupplier = "";
-            lsTransNoBasis = poController.POQuotation().Master().getTransactionNo();
-            lsCompany = poController.POQuotation().Master().Company().getCompanyName();
-            lsSupplier = poController.POQuotation().Master().Client().getCompanyName();
-
             for (int lnCtr = 0; lnCtr < poController.POQuotation().getDetailCount(); lnCtr++) {
                 if (poController.POQuotation().Detail(lnCtr).isReverse()) {
+                    String lsTransNoBasis = "", lsCompany = "", lsSupplier = "";
+                    lsTransNoBasis = poController.POQuotation().Master().getTransactionNo();
+                    lsCompany = poController.POQuotation().Master().Company().getCompanyName();
+                    lsSupplier = poController.POQuotation().Master().Supplier().getCompanyName();
                     String lsHighlightbasis = lsTransNoBasis + lsCompany + lsSupplier;
                     if (!JFXUtil.isObjectEqualTo(poController.POQuotation().Detail(lnCtr).getQuantity(), null, "")) {
                         if (poController.POQuotation().Detail(lnCtr).getQuantity().doubleValue() > 0.0000) {
@@ -504,7 +503,7 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
 
     public void retrievePOQuotation() {
         poJSON = new JSONObject();
-        poJSON = poController.POQuotation().loadPOQuotationRequestSupplierList(tfCompany.getText(), tfBranch.getText(), tfDepartment.getText(), tfSupplier.getText(),
+        poJSON = poController.POQuotation().loadPOQuotationRequestSupplierList(poController.POQuotation().Master().getCompanyId(), tfBranch.getText(), tfDepartment.getText(), tfSupplier.getText(),
                 tfCategory.getText());
         if (!"success".equals((String) poJSON.get("result"))) {
             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -792,7 +791,7 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
                             loadRecordMaster();
                             return;
                         case "tfSupplier":
-                            poJSON = poController.POQuotation().SearchSupplier(lsValue, false);
+                            poJSON = poController.POQuotation().SearchSupplier(lsValue, false, false);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 txtField.setText("");
@@ -1085,7 +1084,7 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
             tfQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.POQuotation().Detail(pnDetail).getQuantity(), false));
             tfDiscRateDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.POQuotation().Detail(pnDetail).getDiscountRate(), false));
             tfAddlDiscAmtDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.POQuotation().Detail(pnDetail).getDiscountAmount(), false));
-            tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.POQuotation().Detail(pnDetail).Inventory().getCost(), true));
+            tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.POQuotation().getCost(pnDetail), true));
             cbReverse.setSelected(poController.POQuotation().Detail(pnDetail).isReverse());
             JFXUtil.updateCaretPositions(apDetail);
         } catch (SQLException | GuanzonException ex) {
@@ -1100,7 +1099,7 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
 
             JFXUtil.setStatusValue(lblStatus, POQuotationStatus.class, pnEditMode == EditMode.UNKNOWN ? "-1" : poController.POQuotation().Master().getTransactionStatus());
 
-            tfTransactionNo.setText(poController.POQuotation().Master().getTransactionNo());
+            tfTransactionNo.setText(poController.POQuotation().Master().POQuotationRequest().getTransactionNo());
             String lsTransactionDate = CustomCommonUtil.formatDateToShortString(poController.POQuotation().Master().getTransactionDate());
             dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsTransactionDate, "yyyy-MM-dd"));
             tfReferenceNo.setText(poController.POQuotation().Master().getReferenceNo());
@@ -1108,9 +1107,10 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
             String lsReferenceDate = CustomCommonUtil.formatDateToShortString(poController.POQuotation().Master().getReferenceDate());
             dpReferenceDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsReferenceDate, "yyyy-MM-dd"));
 
-            tfBranch.setText(poController.POQuotation().Master().Branch().getDescription());
-            tfSupplier.setText(poController.POQuotation().Master().Client().getCompanyName());
-            tfAddress.setText(poController.POQuotation().Master().ClientAddress().getAddress());
+            tfCompany.setText(poController.POQuotation().Master().Company().getCompanyName());
+            tfBranch.setText(poController.POQuotation().Master().POQuotationRequest().Branch().getDescription());
+            tfSupplier.setText(poController.POQuotation().Master().Supplier().getCompanyName());
+            tfAddress.setText(poController.POQuotation().Master().Address().getAddress());
 
             String lsValidityDate = CustomCommonUtil.formatDateToShortString(poController.POQuotation().Master().getValidityDate());
             dpValidityDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsValidityDate, "yyyy-MM-dd"));
@@ -1126,7 +1126,7 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
             }
 
             tfTerm.setText(poController.POQuotation().Master().getTerm());
-            tfContact.setText(poController.POQuotation().Master().ClientMobile().getMobileNo());
+            tfContact.setText(poController.POQuotation().Master().Contact().getMobileNo());
 
             tfGrossAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.POQuotation().Master().getGrossAmount(), true));
             tfDiscRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.POQuotation().Master().getDiscountRate(), true));
@@ -1157,6 +1157,14 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
             poJSON = new JSONObject();
             ModelPOQuotation_Main selected = (ModelPOQuotation_Main) tblViewMainList.getSelectionModel().getSelectedItem();
             if (selected != null) {
+                if (poController.POQuotation().getDetailCount() > 1) {
+                    if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure you want to select another transaction?\nTransaction details will be deleted") == false) {
+                        return;
+                    }
+                }
+                poController.POQuotation().resetMaster();
+                poController.POQuotation().removeDetails();
+
                 int pnRowMain = Integer.parseInt(selected.getIndex01()) - 1;
                 pnMain = pnRowMain;
                 poJSON = poController.POQuotation().populatePOQuotation(pnRowMain);
@@ -1165,7 +1173,6 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
                     ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                     return;
                 } else {
-
 //                    if ("error".equals((String) poJSON.get("result"))) {
 //                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
 //                        return;
@@ -1194,7 +1201,7 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
                 loadTableAttachment.reload();
             });
 
-        } catch (SQLException | GuanzonException  ex) {
+        } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
@@ -1253,7 +1260,7 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
                         plOrderNoPartial.clear();
                         try {
                             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-//                                poController.POQuotation().ReloadDetails();
+                                poController.POQuotation().ReloadDetail();
                             }
                             String lsBarcode = "";
                             String lsDescription = "";
@@ -1300,7 +1307,7 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
                                 loadRecordDetail();
                             }
                             loadRecordMaster();
-                        } catch (SQLException | GuanzonException ex) {
+                        } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
                             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                         }
                     });
@@ -1318,12 +1325,17 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
                             //retreiving using column index
                             for (int lnCtr = 0; lnCtr <= poController.POQuotation().getPOQuotationRequestSupplierCount() - 1; lnCtr++) {
                                 try {
+                                    String lsTransNoBasis = poController.POQuotation().POQuotationRequestSupplierList(lnCtr).getTransactionNo();
+                                    String lsCompany = poController.POQuotation().POQuotationRequestSupplierList(lnCtr).Company().getCompanyName();
+                                    String lsSupplier = poController.POQuotation().POQuotationRequestSupplierList(lnCtr).Supplier().getCompanyName();
+                                    String lsHighlightbasis = lsTransNoBasis + lsCompany + lsSupplier;
                                     main_data.add(new ModelPOQuotation_Main(String.valueOf(lnCtr + 1),
                                             String.valueOf(poController.POQuotation().POQuotationRequestSupplierList(lnCtr).Company().getCompanyName()),
                                             String.valueOf(poController.POQuotation().POQuotationRequestSupplierList(lnCtr).POQuotationRequestMaster().Branch().getBranchName()),
                                             String.valueOf(poController.POQuotation().POQuotationRequestSupplierList(lnCtr).Supplier().getCompanyName()),
                                             String.valueOf(CustomCommonUtil.formatDateToShortString(poController.POQuotation().POQuotationRequestSupplierList(lnCtr).POQuotationRequestMaster().getTransactionDate())),
-                                            String.valueOf(poController.POQuotation().POQuotationRequestSupplierList(lnCtr).getTransactionNo())
+                                            String.valueOf(poController.POQuotation().POQuotationRequestSupplierList(lnCtr).getTransactionNo()),
+                                            lsHighlightbasis
                                     ));
                                 } catch (GuanzonException | SQLException ex) {
                                     Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
@@ -1418,7 +1430,7 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
                 }
             }
         });
-        JFXUtil.applyRowHighlighting(tblViewMainList, item -> ((ModelPOQuotation_Main) item).getIndex01(), highlightedRowsMain);
+        JFXUtil.applyRowHighlighting(tblViewMainList, item -> ((ModelPOQuotation_Main) item).getIndex07(), highlightedRowsMain);
         JFXUtil.applyRowHighlighting(tblViewTransDetails, item -> ((ModelPOQuotation_Detail) item).getIndex01(), highlightedRowsDetail);
         JFXUtil.setKeyEventFilter(this::tableKeyEvents, tblViewTransDetails, tblAttachments);
         JFXUtil.adjustColumnForScrollbar(tblViewMainList, tblViewTransDetails, tblAttachments);
