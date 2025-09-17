@@ -700,10 +700,10 @@
                                                           <TableView fx:id="tblViewMainList" prefWidth="551.0" GridPane.rowIndex="1">
                                                               <columns>
                                                                   <TableColumn fx:id="tblRowNo" editable="false" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="No." />
-                                                      <TableColumn fx:id="tblBranch" editable="false" maxWidth="150.0" minWidth="-1.0" prefWidth="150.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Branch" />
-                                                                  <TableColumn fx:id="tblSupplier" editable="false" maxWidth="245.0" minWidth="-1.0" prefWidth="245.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Supplier" />
-                                                                  <TableColumn fx:id="tblDate" editable="false" maxWidth="90.0" minWidth="90.0" prefWidth="90.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Date" />
-                                                                 <TableColumn fx:id="tblReferenceNo" editable="false" maxWidth="125.0" minWidth="125.0" prefWidth="125.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Refer No" />
+                                                      <TableColumn fx:id="tblBranch" editable="false" maxWidth="134.0" minWidth="-1.0" prefWidth="140.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Branch" />
+                                                                  <TableColumn fx:id="tblSupplier" editable="false" maxWidth="210.0" minWidth="-1.0" prefWidth="210.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Supplier" />
+                                                                  <TableColumn fx:id="tblDate" editable="false" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Date" />
+                                                                 <TableColumn fx:id="tblReferenceNo" editable="false" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Refer No" />
                                                       <TableColumn fx:id="tblReferenceNo1" editable="false" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Total" />
                                                               </columns>
                                                               <GridPane.margin>
