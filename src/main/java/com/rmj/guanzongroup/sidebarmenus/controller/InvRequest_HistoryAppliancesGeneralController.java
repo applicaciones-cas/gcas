@@ -151,7 +151,7 @@ public class InvRequest_HistoryAppliancesGeneralController implements Initializa
                 try {
                     //set edit mode to new transaction temporily to assign industry and company
                     invRequestController.StockRequest().NewTransaction();
-                    invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
+                    
                     invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                     invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
 
@@ -262,7 +262,7 @@ public class InvRequest_HistoryAppliancesGeneralController implements Initializa
     private void loadRecordSearch() {
         try {
 
-            lblSource.setText(invRequestController.StockRequest().Master().Company().getCompanyName() + " - " + invRequestController.StockRequest().Master().Industry().getDescription());
+            lblSource.setText(invRequestController.StockRequest().Master().Company().getCompanyName());
 
         } catch (GuanzonException | SQLException ex) {
             Logger.getLogger(InvRequest_EntryMcController.class.getName()).log(Level.SEVERE, null, ex);
@@ -287,7 +287,6 @@ public class InvRequest_HistoryAppliancesGeneralController implements Initializa
                     switch (fieldId) {
                         case "tfSearchTransNo":
                             System.out.print("Enter pressed");
-                            invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                             invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                             invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
                             invRequestController.StockRequest().setTransactionStatus("1024");
@@ -306,11 +305,11 @@ public class InvRequest_HistoryAppliancesGeneralController implements Initializa
                             break;
                             case "tfSearchReferenceNo":
                             System.out.print("Enter pressed");
-                            invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
+                            
                             invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                             invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
                             invRequestController.StockRequest().setTransactionStatus("1024");
-                            poJSON = invRequestController.StockRequest().searchTransaction();
+                            poJSON = invRequestController.StockRequest().searchTransaction(true);
                             if (!"error".equals((String) poJSON.get("result"))) {
                                 pnTblInvDetailRow = -1;
                                 loadMaster();
@@ -347,14 +346,14 @@ public class InvRequest_HistoryAppliancesGeneralController implements Initializa
             switch (lsButton) {
                 case "btnRetrieve":
                     System.out.print("loaded table this is btnRetrieve");
-                    invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
+                    
                     invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                     invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
                     invRequestController.StockRequest().setTransactionStatus("1024");
                     loadTableList();
                     break;
                 case "btnBrowse":
-                    invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
+                    
                     invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                     invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
                     invRequestController.StockRequest().setTransactionStatus("1024");

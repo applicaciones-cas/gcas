@@ -486,7 +486,11 @@ public class InvRequest_EntryLPFoodController implements Initializable, ScreenIn
                         lsOrderQuantity = String.valueOf(invRequestController.StockRequest().Detail(pnTblInvDetailRow).getQuantity());
                     }
                     tfOrderQuantity.setText(lsOrderQuantity);
-
+                    Platform.runLater(() -> {
+                if (tfOrderQuantity.isFocused()) {
+                    tfOrderQuantity.selectAll();
+                }
+            });
                 }
             } catch (SQLException | GuanzonException e) {
                 ShowMessageFX.Error(getStage(), e.getMessage(), "Error",psFormName);
@@ -575,6 +579,7 @@ public class InvRequest_EntryLPFoodController implements Initializable, ScreenIn
 
                         if (tblViewOrderDetails.getItems().size() > 0) {
                             Platform.runLater(() -> {
+                                tfOrderQuantity.requestFocus();
                                 tblViewOrderDetails.getSelectionModel().select(0);
                                 pnTblInvDetailRow = 0; 
                                 loadDetail();
@@ -582,7 +587,7 @@ public class InvRequest_EntryLPFoodController implements Initializable, ScreenIn
                                
                             });
                         }
-
+                        initDetailFocus();
                         initFields(pnEditMode);
                         tableListInformation.toFront();
                         break;
@@ -967,14 +972,14 @@ public class InvRequest_EntryLPFoodController implements Initializable, ScreenIn
         if (invRequestController.StockRequest().Master().getTransactionStatus().equals(StockRequestStatus.OPEN)||
             invRequestController.StockRequest().Master().getTransactionStatus().equals(StockRequestStatus.CONFIRMED)) {
             CustomCommonUtil.setDisable(!lbShow, AnchorDetailMaster);
-            CustomCommonUtil.setDisable(!lbNew,
-                    dpTransactionDate, taRemarks,tfReferenceNo);
+             CustomCommonUtil.setDisable(!lbNew,
+                    dpTransactionDate, tfReferenceNo);
 
 
             CustomCommonUtil.setDisable(true,
                     tfInvType,tfReservationQTY
                     ,tfQOH,tfROQ,tfClassification,tfBrand,tfDescription,tfBarCode,tfMeasure);
-            CustomCommonUtil.setDisable(!lbShow, tfOrderQuantity);
+            CustomCommonUtil.setDisable(!lbShow, tfOrderQuantity, taRemarks);
             CustomCommonUtil.setDisable(!lbNew, tfDescription,tfBarCode);
             
             
@@ -1035,6 +1040,17 @@ public class InvRequest_EntryLPFoodController implements Initializable, ScreenIn
                   case ENTER:
                   case F3:
                       switch (fieldId) {
+                                case "tfOrderQuantity":
+    setOrderQuantityToDetail(tfOrderQuantity.getText(), tfROQ.getText());
+    
+    // Focus on remarks and select all text for immediate typing
+    Platform.runLater(() -> {
+        taRemarks.requestFocus();
+        taRemarks.selectAll();
+    });
+    
+    event.consume();
+    break;
                                 case "tfSearchTransNo":
                                     System.out.print("Company ID" + psCompanyID);
                                     invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
@@ -1060,7 +1076,7 @@ public class InvRequest_EntryLPFoodController implements Initializable, ScreenIn
                             invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                             invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
                             invRequestController.StockRequest().setTransactionStatus("102");
-                            poJSON = invRequestController.StockRequest().searchTransaction();
+                            poJSON = invRequestController.StockRequest().searchTransaction(true);
                             if (!"error".equals((String) poJSON.get("result"))) {
                                 pnTblInvDetailRow = -1;
                                 loadMaster();

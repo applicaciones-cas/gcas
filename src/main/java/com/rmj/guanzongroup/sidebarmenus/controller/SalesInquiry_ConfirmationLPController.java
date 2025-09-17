@@ -472,9 +472,9 @@ public class SalesInquiry_ConfirmationLPController implements Initializable, Scr
                 tfBrand.requestFocus();
             }
         } catch (SQLException ex) {
-            Logger.getLogger(SalesInquiry_EntrySPMCController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(SalesInquiry_EntrySPMCController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
         }
     }
 
