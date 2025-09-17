@@ -477,7 +477,7 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
             for (int lnCtr = 0; lnCtr < poController.POQuotation().getDetailCount(); lnCtr++) {
                 if (poController.POQuotation().Detail(lnCtr).isReverse()) {
                     String lsTransNoBasis = "", lsCompany = "", lsSupplier = "";
-                    lsTransNoBasis = poController.POQuotation().Master().getTransactionNo();
+                    lsTransNoBasis = poController.POQuotation().Master().POQuotationRequest().getTransactionNo();
                     lsCompany = poController.POQuotation().Master().Company().getCompanyName();
                     lsSupplier = poController.POQuotation().Master().Supplier().getCompanyName();
                     String lsHighlightbasis = lsTransNoBasis + lsCompany + lsSupplier;
@@ -1108,7 +1108,7 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
             dpReferenceDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsReferenceDate, "yyyy-MM-dd"));
 
             tfCompany.setText(poController.POQuotation().Master().Company().getCompanyName());
-            tfBranch.setText(poController.POQuotation().Master().POQuotationRequest().Branch().getDescription());
+            tfBranch.setText(poController.POQuotation().Master().Branch().getBranchName());
             tfSupplier.setText(poController.POQuotation().Master().Supplier().getCompanyName());
             tfAddress.setText(poController.POQuotation().Master().Address().getAddress());
 
@@ -1157,14 +1157,13 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
             poJSON = new JSONObject();
             ModelPOQuotation_Main selected = (ModelPOQuotation_Main) tblViewMainList.getSelectionModel().getSelectedItem();
             if (selected != null) {
-                if (poController.POQuotation().getDetailCount() > 1) {
+                if (poController.POQuotation().getDetailCount() > 0) {
                     if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure you want to select another transaction?\nTransaction details will be deleted") == false) {
                         return;
                     }
                 }
-                poController.POQuotation().resetMaster();
                 poController.POQuotation().removeDetails();
-
+                poController.POQuotation().ReloadDetail();
                 int pnRowMain = Integer.parseInt(selected.getIndex01()) - 1;
                 pnMain = pnRowMain;
                 poJSON = poController.POQuotation().populatePOQuotation(pnRowMain);
@@ -1201,7 +1200,7 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
                 loadTableAttachment.reload();
             });
 
-        } catch (SQLException | GuanzonException ex) {
+        } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
