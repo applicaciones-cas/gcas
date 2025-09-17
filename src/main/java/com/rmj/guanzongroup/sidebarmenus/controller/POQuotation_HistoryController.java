@@ -537,6 +537,8 @@ public class POQuotation_HistoryController implements Initializable, ScreenInter
                                 pnEditMode = poController.POQuotation().getEditMode();
                                 loadRecordMaster();
                                 loadTableDetail.reload();
+                                poController.POQuotation().loadAttachments();
+                                loadTableAttachment.reload();
                                 initButton(pnEditMode);
                             }
                             loadRecordSearch();
