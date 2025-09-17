@@ -1116,7 +1116,15 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
             dpValidityDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsValidityDate, "yyyy-MM-dd"));
 
             tfSourceNo.setText(poController.POQuotation().Master().getSourceNo());
-            tfCategory.setText(poController.POQuotation().Master().Category2().getDescription());
+
+            if (!JFXUtil.isObjectEqualTo(poController.POQuotation().Master().getSourceNo(), null, "")) {
+                tfCategory.setText(poController.POQuotation().Master().POQuotationRequest().Category2().getDescription());
+                tfDepartment.setText(poController.POQuotation().Master().POQuotationRequest().Department().getDescription());
+            } else {
+                tfCategory.setText(poController.POQuotation().getSearchCategory());
+                tfDepartment.setText(poController.POQuotation().getSearchCategory());
+            }
+
             tfTerm.setText(poController.POQuotation().Master().getTerm());
             tfContact.setText(poController.POQuotation().Master().ClientMobile().getMobileNo());
 
@@ -1129,7 +1137,7 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
             tfVATAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.POQuotation().Master().getVatAmount(), true));
             tfTransactionTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.POQuotation().Master().getTransactionTotal(), true));
             taRemarks.setText(poController.POQuotation().Master().getRemarks());
-            tfDepartment.setText(poController.POQuotation().Master().POQuotationRequest().Department().getDescription());
+
             JFXUtil.updateCaretPositions(apMaster);
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
@@ -1151,17 +1159,17 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
             if (selected != null) {
                 int pnRowMain = Integer.parseInt(selected.getIndex01()) - 1;
                 pnMain = pnRowMain;
-
-                poJSON = poController.POQuotation().OpenTransaction(poController.POQuotation().POQuotationList(pnMain).getTransactionNo());
+                poJSON = poController.POQuotation().populatePOQuotation(pnRowMain);
+//                poJSON = poController.POQuotation().OpenTransaction(poController.POQuotation().POQuotationList(pnMain).getTransactionNo());
                 if ("error".equals((String) poJSON.get("result"))) {
                     ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                     return;
                 } else {
-                    poController.POQuotation().populatePOQuotation(pnRowMain);
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                        return;
-                    }
+
+//                    if ("error".equals((String) poJSON.get("result"))) {
+//                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+//                        return;
+//                    }
                 }
             }
 
@@ -1186,7 +1194,7 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
                 loadTableAttachment.reload();
             });
 
-        } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
+        } catch (SQLException | GuanzonException  ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
@@ -1314,7 +1322,8 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
                                             String.valueOf(poController.POQuotation().POQuotationRequestSupplierList(lnCtr).Company().getCompanyName()),
                                             String.valueOf(poController.POQuotation().POQuotationRequestSupplierList(lnCtr).POQuotationRequestMaster().Branch().getBranchName()),
                                             String.valueOf(poController.POQuotation().POQuotationRequestSupplierList(lnCtr).Supplier().getCompanyName()),
-                                            String.valueOf(CustomCommonUtil.formatDateToShortString(poController.POQuotation().POQuotationRequestSupplierList(lnCtr).POQuotationRequestMaster().getTransactionDate()))
+                                            String.valueOf(CustomCommonUtil.formatDateToShortString(poController.POQuotation().POQuotationRequestSupplierList(lnCtr).POQuotationRequestMaster().getTransactionDate())),
+                                            String.valueOf(poController.POQuotation().POQuotationRequestSupplierList(lnCtr).getTransactionNo())
                                     ));
                                 } catch (GuanzonException | SQLException ex) {
                                     Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
