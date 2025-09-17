@@ -179,7 +179,6 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
         initLoadTable();
 
         Platform.runLater(() -> {
-            psIndustryId = "";
             poController.POQuotation().Master().setIndustryId(psIndustryId);
             poController.POQuotation().Master().setCompanyId(psCompanyId);
             poController.POQuotation().setIndustryId(psIndustryId);
