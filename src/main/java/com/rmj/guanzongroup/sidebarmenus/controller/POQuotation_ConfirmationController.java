@@ -701,16 +701,7 @@ public class POQuotation_ConfirmationController implements Initializable, Screen
                             break;
                         }
                         if (pbEntered) {
-                            if (lnNewVal != lnOldVal) {
-                                if ((Double.valueOf(lsValue) > 0
-                                && !JFXUtil.isObjectEqualTo(poController.POQuotation().Detail(pnDetail).getStockId(), null, ""))) {
-                                    moveNext(false, true);
-                                } else {
-                                    moveNext(false, false);
-                                }
-                            } else {
-                                moveNext(false, false);
-                            }
+                             moveNext(false, true);
                             pbEntered = false;
                         }
                         break;
@@ -736,9 +727,9 @@ public class POQuotation_ConfirmationController implements Initializable, Screen
             {poController.POQuotation().Detail(pnDetail).getReplaceId(), tfReplaceId}, // if null or empty, then requesting focus to the txtfield
             {poController.POQuotation().Detail(pnDetail).getReplaceDescription(), tfReplaceDescription},
             {poController.POQuotation().Detail(pnDetail).getUnitPrice(), tfCost},
-            {poController.POQuotation().Detail(pnDetail).getQuantity(), tfQuantity},
             {poController.POQuotation().Detail(pnDetail).getDiscountRate(), tfDiscRateDetail},
-            {poController.POQuotation().Detail(pnDetail).getDiscountAmount(), tfAddlDiscAmtDetail},}, tfReplaceId); // default
+            {poController.POQuotation().Detail(pnDetail).getDiscountAmount(), tfAddlDiscAmtDetail},
+            {poController.POQuotation().Detail(pnDetail).getQuantity(), tfQuantity},}, tfQuantity); // default
 
 //        } catch (SQLException | GuanzonException ex) {
 //            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
@@ -1170,7 +1161,7 @@ public class POQuotation_ConfirmationController implements Initializable, Screen
 
         } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } 
+        }
     }
 
     public void initLoadTable() {

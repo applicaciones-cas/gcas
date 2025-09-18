@@ -812,16 +812,7 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
                             break;
                         }
                         if (pbEntered) {
-                            if (lnNewVal != lnOldVal) {
-                                if ((Double.valueOf(lsValue) > 0
-                                && !JFXUtil.isObjectEqualTo(poController.POQuotation().Detail(pnDetail).getStockId(), null, ""))) {
-                                    moveNext(false, true);
-                                } else {
-                                    moveNext(false, false);
-                                }
-                            } else {
-                                moveNext(false, false);
-                            }
+                            moveNext(false, true);
                             pbEntered = false;
                         }
                         break;
@@ -847,13 +838,10 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
             {poController.POQuotation().Detail(pnDetail).getReplaceId(), tfReplaceId}, // if null or empty, then requesting focus to the txtfield
             {poController.POQuotation().Detail(pnDetail).getReplaceDescription(), tfReplaceDescription},
             {poController.POQuotation().Detail(pnDetail).getUnitPrice(), tfCost},
-            {poController.POQuotation().Detail(pnDetail).getQuantity(), tfQuantity},
             {poController.POQuotation().Detail(pnDetail).getDiscountRate(), tfDiscRateDetail},
-            {poController.POQuotation().Detail(pnDetail).getDiscountAmount(), tfAddlDiscAmtDetail},}, tfReplaceId); // default
+            {poController.POQuotation().Detail(pnDetail).getDiscountAmount(), tfAddlDiscAmtDetail},
+            {poController.POQuotation().Detail(pnDetail).getQuantity(), tfQuantity},}, tfQuantity); // default
 
-//            if (!JFXUtil.isObjectEqualTo(poController.POQuotation().Detail(pnDetail).getDescription(), null, "")) {
-//                tfQuantity.requestFocus();
-//            }
 //        } catch (SQLException | GuanzonException ex) {
 //            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
 //        }
@@ -1302,7 +1290,7 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
                 if ("error".equals((String) poJSON.get("result"))) {
                     ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                     return;
-                } 
+                }
             }
 
             poController.POQuotation().loadAttachments();
