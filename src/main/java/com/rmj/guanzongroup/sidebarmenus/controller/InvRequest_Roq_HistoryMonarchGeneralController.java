@@ -151,7 +151,6 @@ public class InvRequest_Roq_HistoryMonarchGeneralController implements Initializ
                 try {
                     //set edit mode to new transaction temporily to assign industry and company
                     invRequestController.StockRequest().NewTransaction();
-                    invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                     invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                     invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
 
@@ -286,8 +285,6 @@ public class InvRequest_Roq_HistoryMonarchGeneralController implements Initializ
                 case F3:
                     switch (fieldId) {
                         case "tfSearchTransNo":
-                            System.out.print("Enter pressed");
-                            invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                             invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                             invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
                             invRequestController.StockRequest().setTransactionStatus("1024");
@@ -305,8 +302,6 @@ public class InvRequest_Roq_HistoryMonarchGeneralController implements Initializ
                             }
                             break;
                         case "tfSearchReferenceNo":
-                            System.out.print("Enter pressed");
-                            invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                             invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                             invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
                             invRequestController.StockRequest().setTransactionStatus("1024");
@@ -347,15 +342,12 @@ public class InvRequest_Roq_HistoryMonarchGeneralController implements Initializ
             String lsButton = ((Button) event.getSource()).getId();
             switch (lsButton) {
                 case "btnRetrieve":
-                    System.out.print("loaded table this is btnRetrieve");
-                    invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                     invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                     invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
                     invRequestController.StockRequest().setTransactionStatus("1024");
                     loadTableList();
                     break;
                 case "btnBrowse":
-                    invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                     invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                     invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
                     invRequestController.StockRequest().setTransactionStatus("1024");

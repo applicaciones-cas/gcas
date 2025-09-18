@@ -151,7 +151,6 @@ public class InvRequest_Roq_HistoryMPGeneralController implements Initializable,
                 try {
                     //set edit mode to new transaction temporily to assign industry and company
                     invRequestController.StockRequest().NewTransaction();
-                    invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                     invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                     invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
 
@@ -286,8 +285,6 @@ public class InvRequest_Roq_HistoryMPGeneralController implements Initializable,
                 case F3:
                     switch (fieldId) {
                         case "tfSearchTransNo":
-                            System.out.print("Enter pressed");
-                            invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                             invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                             invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
                             invRequestController.StockRequest().setTransactionStatus("1024");
@@ -305,11 +302,9 @@ public class InvRequest_Roq_HistoryMPGeneralController implements Initializable,
                             }
                             break;
                         case "tfSearchReferenceNo":
-                            System.out.print("Enter pressed");
-                            invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                             invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                             invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
-                            invRequestController.StockRequest().setTransactionStatus("102");
+                            invRequestController.StockRequest().setTransactionStatus("1024");
                             poJSON = invRequestController.StockRequest().searchTransaction(true);
                             if (!"error".equals((String) poJSON.get("result"))) {
                                 pnTblInvDetailRow = -1;

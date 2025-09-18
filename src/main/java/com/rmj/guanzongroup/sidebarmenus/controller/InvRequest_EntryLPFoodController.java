@@ -504,7 +504,7 @@ public class InvRequest_EntryLPFoodController implements Initializable, ScreenIn
             String lsButton = ((Button) event.getSource()).getId(); 
             switch (lsButton) {
                         case "btnVoid":
-                            String status = invRequestController.StockRequest().Master().getTransactionStatus();
+                          String status = invRequestController.StockRequest().Master().getTransactionStatus();
 
                             if (!ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to return this transaction?")) {
                                 return;
