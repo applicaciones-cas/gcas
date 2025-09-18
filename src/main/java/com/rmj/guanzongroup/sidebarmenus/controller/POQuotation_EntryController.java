@@ -7,6 +7,7 @@ import com.rmj.guanzongroup.sidebarmenus.utility.CustomCommonUtil;
 import com.rmj.guanzongroup.sidebarmenus.utility.JFXUtil;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
@@ -245,7 +246,7 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
             if (event.getCode() == KeyCode.F5) {
                 System.out.println("tested key press");
 
-                if (JFXUtil.isObjectEqualTo(poController.POQuotation().getEditMode(), EditMode.READY, EditMode.UPDATE)) {
+                if (JFXUtil.isObjectEqualTo(poController.POQuotation().getEditMode(), EditMode.ADDNEW, EditMode.READY, EditMode.UPDATE)) {
                     showAttachmentDialog();
                 }
             }
@@ -270,7 +271,7 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
             ShowMessageFX.Warning(null, pxeModuleName, "No transaction attachment to load.");
             return;
         }
-        openedAttachment = poController.POQuotation().Master().getTransactionNo();
+        openedAttachment = poController.POQuotation().TransactionAttachmentList(pnAttachment).getModel().getTransactionNo();
         Map<String, Pair<String, String>> data = new HashMap<>();
         data.clear();
         for (int lnCtr = 0; lnCtr < poController.POQuotation().getTransactionAttachmentCount(); lnCtr++) {
@@ -279,6 +280,8 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
         }
         AttachmentDialogController controller = new AttachmentDialogController();
         controller.addData(data);
+        controller.setOpenedImage(pnAttachment);
+
         try {
             stageAttachment.showDialog((Stage) btnSave.getScene().getWindow(), getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/AttachmentDialog.fxml"), controller, "Attachment Dialog", false, false, true);
         } catch (IOException ex) {
@@ -357,6 +360,7 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                             return;
                         }
+                        poController.POQuotation().loadAttachments();
                         pnEditMode = poController.POQuotation().getEditMode();
                         break;
                     case "btnSearch":
@@ -398,6 +402,7 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
 
                                 // Confirmation Prompt
                                 JSONObject loJSON = poController.POQuotation().OpenTransaction(poController.POQuotation().Master().getTransactionNo());
+                                poController.POQuotation().loadAttachments();
                                 if ("success".equals(loJSON.get("result"))) {
                                     if (poController.POQuotation().Master().getTransactionStatus().equals(POQuotationStatus.OPEN)) {
                                         if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to confirm this transaction?")) {
@@ -438,6 +443,57 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
                             return;
                         }
                         break;
+                    case "btnAddAttachment":
+                        fileChooser = new FileChooser();
+                        fileChooser.setTitle("Choose Image");
+                        fileChooser.getExtensionFilters().addAll(
+                                new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.gif")
+                        );
+                        java.io.File selectedFile = fileChooser.showOpenDialog((Stage) btnAddAttachment.getScene().getWindow());
+
+                        if (selectedFile != null) {
+                            // Read image from the selected file
+                            Path imgPath = selectedFile.toPath();
+                            Image loimage = new Image(Files.newInputStream(imgPath));
+                            imageView.setImage(loimage);
+
+                            String imgPath2 = selectedFile.getName().toString();
+                            for (int lnCtr = 0; lnCtr <= poController.POQuotation().getTransactionAttachmentCount() - 1; lnCtr++) {
+                                if (imgPath2.equals(poController.POQuotation().TransactionAttachmentList(lnCtr).getModel().getFileName())) {
+                                    ShowMessageFX.Warning(null, pxeModuleName, "File name already exists.");
+                                    pnAttachment = lnCtr;
+                                    loadRecordAttachment(true);
+                                    return;
+                                }
+                            }
+                            if (imageinfo_temp.containsKey(selectedFile.getName().toString())) {
+                                ShowMessageFX.Warning(null, pxeModuleName, "File name already exists.");
+                                loadRecordAttachment(true);
+                                return;
+                            } else {
+                                imageinfo_temp.put(selectedFile.getName().toString(), imgPath.toString());
+                            }
+                            poJSON = poController.POQuotation().addAttachment();
+                            if ("error".equals((String) poJSON.get("result"))) {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                            }
+                            pnAttachment = poController.POQuotation().getTransactionAttachmentCount() - 1;
+                            poController.POQuotation().TransactionAttachmentList(pnAttachment).getModel().setFileName(imgPath2);
+                            poController.POQuotation().TransactionAttachmentList(pnAttachment).getModel().setSourceNo(poController.POQuotation().Master().getTransactionNo());
+                            poController.POQuotation().getTransactionAttachmentCount();
+                            loadTableAttachment.reload();
+                            tblAttachments.getFocusModel().focus(pnAttachment);
+                            tblAttachments.getSelectionModel().select(pnAttachment);
+                        }
+                        break;
+                    case "btnRemoveAttachment":
+//                        attachment_data.remove(pnAttachment);
+//                        if (pnAttachment != 0) {
+//                            pnAttachment -= 1;
+//                        }
+//                        loadTableAttachment.reload();
+//                        initAttachmentsGrid();
+                        break;
                     case "btnArrowRight":
                         slideImage(1);
                         break;
@@ -458,17 +514,18 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
                     clearTextFields();
                 }
 
-                if (JFXUtil.isObjectEqualTo(lsButton, "btnArrowRight", "btnArrowLeft", "btnRetrieve")) {
+                if (JFXUtil.isObjectEqualTo(lsButton, "btnArrowRight", "btnArrowLeft", "btnRetrieve", "btnAddAttachment", "btnRemoveAttachment")) {
                 } else {
                     loadRecordMaster();
                     loadTableDetail.reload();
-                    poController.POQuotation().loadAttachments();
                     loadTableAttachment.reload();
                 }
                 initButton(pnEditMode);
             }
         } catch (CloneNotSupportedException | SQLException | GuanzonException | ParseException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+        } catch (IOException ex) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -563,11 +620,11 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
                             break;
                         case "tfDiscRate":
                             lsValue = JFXUtil.removeComma(lsValue);
-//                        poJSON = poController.POQuotation().computeDiscountRate(Double.valueOf(lsValue));
-//                        if ("error".equals(poJSON.get("result"))) {
-//                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-//                            break;
-//                        }
+                            poJSON = poController.POQuotation().computeDiscountRate(Double.valueOf(lsValue));
+                            if ("error".equals(poJSON.get("result"))) {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                break;
+                            }
                             poJSON = poController.POQuotation().Master().setDiscountRate(Double.valueOf(lsValue));
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -576,18 +633,18 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
                             break;
                         case "tfAddlDiscAmt":
                             lsValue = JFXUtil.removeComma(lsValue);
-//                        poJSON = poController.POQuotation().computeDiscountRate(Double.valueOf(lsValue));
-//                        if ("error".equals(poJSON.get("result"))) {
-//                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-//                            break;
-//                        }
-                            poJSON = poController.POQuotation().Master().setDiscountRate(Double.valueOf(lsValue));
+                            poJSON = poController.POQuotation().computeDiscount(Double.valueOf(lsValue));
+                            if ("error".equals(poJSON.get("result"))) {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                break;
+                            }
+                            poJSON = poController.POQuotation().Master().setAdditionalDiscountAmount(Double.valueOf(lsValue));
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 break;
                             }
                             break;
-                        case "tfFreightAmt":
+                        case "tfFreight":
                             lsValue = JFXUtil.removeComma(lsValue);
                             if (Double.valueOf(lsValue) > poController.POQuotation().Master().getTransactionTotal().doubleValue()) {
                                 ShowMessageFX.Warning(null, pxeModuleName, "Invalid freight amount");
@@ -595,6 +652,19 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
                             }
 
                             poJSON = poController.POQuotation().Master().setFreightAmount(Double.valueOf(lsValue));
+                            if ("error".equals(poJSON.get("result"))) {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                break;
+                            }
+                            break;
+                        case "tfVATAmount":
+                            lsValue = JFXUtil.removeComma(lsValue);
+                            if (Double.valueOf(lsValue) > poController.POQuotation().Master().getTransactionTotal().doubleValue()) {
+                                ShowMessageFX.Warning(null, pxeModuleName, "Invalid freight amount");
+                                break;
+                            }
+
+                            poJSON = poController.POQuotation().Master().setVatAmount(Double.valueOf(lsValue));
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 break;
@@ -679,6 +749,19 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
                             System.err.println((String) poJSON.get("message"));
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                             break;
+                        } else {
+//                            try {
+//                                poJSON = poController.POQuotation().computeFields();
+//                                if ("error".equals((String) poJSON.get("result"))) {
+//                                    System.err.println((String) poJSON.get("message"));
+//                                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+//                                    poController.POQuotation().Detail(pnDetail).setUnitPrce(ldblOldVal);
+//                                    tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.POQuotation().Detail(pnDetail).getUnitPrce(), true));
+//                                    return;
+//                                }
+//                            } catch (SQLException | GuanzonException ex) {
+//                                Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+//                            }
                         }
                         if (pbEntered) {
                             if (lnNewVal != lnOldVal) {
@@ -959,7 +1042,7 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
                                 || poController.POQuotation().getEditMode() == EditMode.UPDATE) {
 
                             if (selectedDate.isBefore(transactionDate)) {
-                                JFXUtil.setJSONError(poJSON, "Expected Purchase Date cannot be before the transaction date.");
+                                JFXUtil.setJSONError(poJSON, "Reference Date cannot be before the transaction date.");
                                 pbSuccess = false;
                             } else {
                                 poController.POQuotation().Master().setReferenceDate((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
@@ -980,7 +1063,7 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
                                 || poController.POQuotation().getEditMode() == EditMode.UPDATE) {
 
                             if (selectedDate.isBefore(transactionDate)) {
-                                JFXUtil.setJSONError(poJSON, "Expected Purchase Date cannot be before the transaction date.");
+                                JFXUtil.setJSONError(poJSON, "Validity Date cannot be before the transaction date.");
                                 pbSuccess = false;
                             } else {
                                 poController.POQuotation().Master().setValidityDate((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
@@ -1072,13 +1155,11 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
 
     public void loadRecordDetail() {
         try {
-//            boolean lbShow = (poController.POQuotation().Detail(pnDetail).getEditMode() == EditMode.UPDATE);
-//            JFXUtil.setDisabled(lbShow, tfBrand, tfModel, tfBarcode, tfDescription);
             if (pnDetail < 0 || pnDetail > poController.POQuotation().getDetailCount() - 1) {
                 return;
             }
             tfDescription.setText(poController.POQuotation().Detail(pnDetail).getDescription());
-            tfReplaceId.setText(poController.POQuotation().Detail(pnDetail).getReplaceId());
+            tfReplaceId.setText(poController.POQuotation().Detail(pnDetail).ReplacedInventory().getBarCode());
             tfReplaceDescription.setText(poController.POQuotation().Detail(pnDetail).ReplacedInventory().getDescription());
             tfUnitPrice.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.POQuotation().Detail(pnDetail).getUnitPrice(), true));
 
@@ -1099,35 +1180,28 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
             JFXUtil.setDisabled(!lbShow, dpTransactionDate);
 
             JFXUtil.setStatusValue(lblStatus, POQuotationStatus.class, pnEditMode == EditMode.UNKNOWN ? "-1" : poController.POQuotation().Master().getTransactionStatus());
+            poController.POQuotation().computeFields();
 
-            tfTransactionNo.setText(poController.POQuotation().Master().POQuotationRequest().getTransactionNo());
+            tfTransactionNo.setText(poController.POQuotation().Master().getTransactionNo());
             String lsTransactionDate = CustomCommonUtil.formatDateToShortString(poController.POQuotation().Master().getTransactionDate());
             dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsTransactionDate, "yyyy-MM-dd"));
+
             tfReferenceNo.setText(poController.POQuotation().Master().getReferenceNo());
-
             String lsReferenceDate = CustomCommonUtil.formatDateToShortString(poController.POQuotation().Master().getReferenceDate());
-            dpReferenceDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsReferenceDate, "yyyy-MM-dd"));
-
-            tfCompany.setText(poController.POQuotation().Master().Company().getCompanyName());
-            tfBranch.setText(poController.POQuotation().Master().Branch().getBranchName());
-            tfSupplier.setText(poController.POQuotation().Master().Supplier().getCompanyName());
-            tfAddress.setText(poController.POQuotation().Master().Address().getAddress());
+            dpReferenceDate.setValue(JFXUtil.isObjectEqualTo(lsReferenceDate, "1900-01-01") ? null : CustomCommonUtil.parseDateStringToLocalDate(lsReferenceDate, "yyyy-MM-dd"));
 
             String lsValidityDate = CustomCommonUtil.formatDateToShortString(poController.POQuotation().Master().getValidityDate());
-            dpValidityDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsValidityDate, "yyyy-MM-dd"));
+            dpValidityDate.setValue(JFXUtil.isObjectEqualTo(lsValidityDate, "1900-01-01") ? null : CustomCommonUtil.parseDateStringToLocalDate(lsValidityDate, "yyyy-MM-dd"));
 
-            tfSourceNo.setText(poController.POQuotation().Master().getSourceNo());
-
-            if (!JFXUtil.isObjectEqualTo(poController.POQuotation().Master().getSourceNo(), null, "")) {
-                tfCategory.setText(poController.POQuotation().Master().POQuotationRequest().Category2().getDescription());
-                tfDepartment.setText(poController.POQuotation().Master().POQuotationRequest().Department().getDescription());
-            } else {
-                tfCategory.setText(poController.POQuotation().getSearchCategory());
-                tfDepartment.setText(poController.POQuotation().getSearchCategory());
-            }
-
-            tfTerm.setText(poController.POQuotation().Master().getTerm());
+            tfBranch.setText(poController.POQuotation().Master().Branch().getBranchName());
+            tfCompany.setText(poController.POQuotation().Master().Company().getCompanyName());
+            tfDepartment.setText(poController.POQuotation().Master().POQuotationRequest().Department().getDescription());
+            tfSupplier.setText(poController.POQuotation().Master().Supplier().getCompanyName());
+            tfAddress.setText(poController.POQuotation().Master().Address().getAddress());
             tfContact.setText(poController.POQuotation().Master().Contact().getMobileNo());
+            tfSourceNo.setText(poController.POQuotation().Master().getSourceNo());
+            tfCategory.setText(poController.POQuotation().Master().POQuotationRequest().Category2().getDescription());
+            tfTerm.setText(poController.POQuotation().Master().getTerm());
 
             tfGrossAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.POQuotation().Master().getGrossAmount(), true));
             tfDiscRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.POQuotation().Master().getDiscountRate(), true));
@@ -1138,13 +1212,11 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
             tfVATAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.POQuotation().Master().getVatAmount(), true));
             tfTransactionTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.POQuotation().Master().getTransactionTotal(), true));
             taRemarks.setText(poController.POQuotation().Master().getRemarks());
-
             JFXUtil.updateCaretPositions(apMaster);
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
-
 //    private double getGrossTotal() {
 //        double ldblGrossTotal = 0.0000;
 //        for (int lnCtr = 0; lnCtr <= poController.POQuotation().getDetailCount() - 1; lnCtr++) {
@@ -1153,12 +1225,14 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
 //        }
 //        return ldblGrossTotal;
 //    }
+
     public void loadTableDetailFromMain() {
         try {
             poJSON = new JSONObject();
             ModelPOQuotation_Main selected = (ModelPOQuotation_Main) tblViewMainList.getSelectionModel().getSelectedItem();
             if (selected != null) {
-                if (poController.POQuotation().getDetailCount() > 0) {
+                if (poController.POQuotation().getDetailCount() > 0
+                        && !JFXUtil.isObjectEqualTo(poController.POQuotation().Detail(pnDetail).getStockId(), null, "")) {
                     if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure you want to select another transaction?\nTransaction details will be deleted") == false) {
                         return;
                     }
@@ -1188,6 +1262,7 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
             } else {
                 stageAttachment.closeDialog();
             }
+            poController.POQuotation().loadAttachments();
 
             Platform.runLater(() -> {
                 loadTableDetail.reload();
@@ -1211,13 +1286,9 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
                 tblAttachments,
                 attachment_data,
                 () -> {
+                    imageviewerutil.scaleFactor = 1.0;
+                    JFXUtil.resetImageBounds(imageView, stackPane1);
                     Platform.runLater(() -> {
-                        imageviewerutil.scaleFactor = 1.0;
-                        JFXUtil.resetImageBounds(imageView, stackPane1);
-                        // Setting data to table detail
-                        JFXUtil.LoadScreenComponents loading = JFXUtil.createLoadingComponents();
-                        tblAttachments.setPlaceholder(loading.loadingPane);
-
                         try {
                             attachment_data.clear();
                             int lnCtr;
