@@ -526,7 +526,7 @@ public class InvRequest_EntryMcController implements Initializable, ScreenInterf
                             clearMasterFields();
                             clearDetailFields();
                             invOrderDetail_data.clear();
-                            pnEditMode = EditMode.UNKNOWN;
+                            pnEditMode = invRequestController.StockRequest().getEditMode();
 
                             break;
                         case "btnBrowse":

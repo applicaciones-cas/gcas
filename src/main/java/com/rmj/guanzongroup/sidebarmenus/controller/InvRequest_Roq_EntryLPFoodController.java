@@ -522,8 +522,7 @@ public class InvRequest_Roq_EntryLPFoodController implements Initializable, Scre
                             clearMasterFields();
                             clearDetailFields();
                             invOrderDetail_data.clear();
-                            pnEditMode = EditMode.UNKNOWN;
-
+                           pnEditMode = invRequestController.StockRequest().getEditMode();
                             break;
                         case "btnBrowse":
                             invRequestController.StockRequest().Master().setIndustryId(psIndustryID);

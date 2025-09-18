@@ -542,7 +542,7 @@ public class InvRequest_EntryMPController implements Initializable, ScreenInterf
                             clearMasterFields();
                             clearDetailFields();
                             invOrderDetail_data.clear();
-                            pnEditMode = EditMode.UNKNOWN;
+                            pnEditMode = invRequestController.StockRequest().getEditMode();
 
                             break;
                         case "btnBrowse":

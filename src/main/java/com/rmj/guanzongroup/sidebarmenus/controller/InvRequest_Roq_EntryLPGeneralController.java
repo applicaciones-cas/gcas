@@ -540,7 +540,7 @@ public class InvRequest_Roq_EntryLPGeneralController implements Initializable, S
                             clearMasterFields();
                             clearDetailFields();
                             invOrderDetail_data.clear();
-                            pnEditMode = EditMode.UNKNOWN;
+                            pnEditMode = invRequestController.StockRequest().getEditMode();
 
                             break;
                         case "btnBrowse":

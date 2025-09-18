@@ -526,8 +526,7 @@ public class InvRequest_Roq_EntryCarController implements Initializable, ScreenI
                             clearMasterFields();
                             clearDetailFields();
                             invOrderDetail_data.clear();
-                            pnEditMode = EditMode.UNKNOWN;
-
+                        pnEditMode = invRequestController.StockRequest().getEditMode();
                             break;
                 case "btnBrowse":
                     invRequestController.StockRequest().Master().setIndustryId(psIndustryID);

@@ -531,7 +531,7 @@ public class InvRequest_EntryLPFoodController implements Initializable, ScreenIn
                             clearMasterFields();
                             clearDetailFields();
                             invOrderDetail_data.clear();
-                            pnEditMode = EditMode.UNKNOWN;
+                           pnEditMode = invRequestController.StockRequest().getEditMode();
 
                             break;
                         case "btnBrowse":

@@ -545,8 +545,7 @@ public class InvRequest_EntryMonarchGeneralController implements Initializable, 
                             clearMasterFields();
                             clearDetailFields();
                             invOrderDetail_data.clear();
-                            pnEditMode = EditMode.UNKNOWN;
-
+                            pnEditMode = invRequestController.StockRequest().getEditMode();
                             break;
                         case "btnBrowse":
                             invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
