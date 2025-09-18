@@ -136,7 +136,7 @@ public class POQuotation_HistoryController implements Initializable, ScreenInter
     @FXML
     private DatePicker dpTransactionDate, dpReferenceDate, dpValidityDate;
     @FXML
-    private CheckBox cbVatable, cbReverse;
+    private CheckBox cbVatable;
     @FXML
     private TextArea taRemarks;
     @FXML
@@ -283,13 +283,7 @@ public class POQuotation_HistoryController implements Initializable, ScreenInter
         if (source instanceof CheckBox) {
             CheckBox checkedBox = (CheckBox) source;
             switch (checkedBox.getId()) {
-                case "cbVatInclusive":
-                    poController.POQuotation().Master().isVatable(checkedBox.isSelected());
-                    loadRecordMaster();
-                    break;
                 case "cbVatable":
-                    poController.POQuotation().Detail(pnDetail).isReverse(checkedBox.isSelected());
-                    loadRecordMaster();
                     break;
             }
         }
@@ -340,86 +334,6 @@ public class POQuotation_HistoryController implements Initializable, ScreenInter
         }
     }
 
-    ChangeListener<Boolean> txtDetail_Focus = JFXUtil.FocusListener(TextField.class,
-            (lsID, lsValue) -> {
-                /*Lost Focus*/
-                switch (lsID) {
-                    case "tfReplaceId":
-                        if (lsValue.isEmpty()) {
-                            poController.POQuotation().Detail(pnDetail).setReplaceId("");
-                        }
-                        break;
-                    case "tfReplaceDescription":
-                        if (lsValue.isEmpty()) {
-                            poController.POQuotation().Detail(pnDetail).setReplaceId("");
-                        }
-                        break;
-                    case "tfUnitPrice":
-                        lsValue = JFXUtil.removeComma(lsValue);
-                        poJSON = poController.POQuotation().Detail(pnDetail).setUnitPrice((Double.valueOf(lsValue)));
-                        if ("error".equals((String) poJSON.get("result"))) {
-                            System.err.println((String) poJSON.get("message"));
-                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                            break;
-                        }
-                        break;
-                    case "tfDiscRateDetail":
-                        lsValue = JFXUtil.removeComma(lsValue);
-                        if (Double.valueOf(lsValue) > 100.00) {
-                            ShowMessageFX.Warning(null, pxeModuleName, "Invalid discount rate.");
-                            break;
-                        }
-
-                        poJSON = poController.POQuotation().Detail(pnDetail).setDiscountRate((Double.valueOf(lsValue)));
-                        if ("error".equals((String) poJSON.get("result"))) {
-                            System.err.println((String) poJSON.get("message"));
-                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                        }
-                        break;
-                    case "tfAddlDiscAmtDetail":
-                        lsValue = JFXUtil.removeComma(lsValue);
-                        poJSON = poController.POQuotation().Detail(pnDetail).setDiscountAmount((Double.valueOf(lsValue)));
-                        if ("error".equals((String) poJSON.get("result"))) {
-                            System.err.println((String) poJSON.get("message"));
-                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                            break;
-                        }
-
-                        break;
-                    case "tfQuantity":
-                        lsValue = JFXUtil.removeComma(lsValue);
-                        double lnNewVal = Double.valueOf(lsValue);
-                        double lnOldVal = poController.POQuotation().Detail(pnDetail).getQuantity().doubleValue();
-
-                        poJSON = poController.POQuotation().Detail(pnDetail).setQuantity((Double.valueOf(lsValue)));
-                        if ("error".equals((String) poJSON.get("result"))) {
-                            System.err.println((String) poJSON.get("message"));
-                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                            break;
-                        }
-                        if (pbEntered) {
-                            if (lnNewVal != lnOldVal) {
-                                if ((Double.valueOf(lsValue) > 0
-                                && !JFXUtil.isObjectEqualTo(poController.POQuotation().Detail(pnDetail).getStockId(), null, ""))) {
-                                    moveNext(false, true);
-                                } else {
-                                    moveNext(false, false);
-                                }
-                            } else {
-                                moveNext(false, false);
-                            }
-                            pbEntered = false;
-                        }
-                        break;
-                }
-                Platform.runLater(() -> {
-                    PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
-                    delay.setOnFinished(event -> {
-                        loadTableDetail.reload();
-                    });
-                    delay.play();
-                });
-            });
     ChangeListener<Boolean> txtField_Focus = JFXUtil.FocusListener(TextField.class,
         (lsID, lsValue) -> {
             if (lsValue == null) {
@@ -655,7 +569,6 @@ public class POQuotation_HistoryController implements Initializable, ScreenInter
             tfDiscRateDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.POQuotation().Detail(pnDetail).getDiscountRate(), false));
             tfAddlDiscAmtDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.POQuotation().Detail(pnDetail).getDiscountAmount(), false));
             tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.POQuotation().getCost(pnDetail), true));
-            cbReverse.setSelected(poController.POQuotation().Detail(pnDetail).isReverse());
             JFXUtil.updateCaretPositions(apDetail);
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);

@@ -374,7 +374,7 @@
                                                                         <Font size="12.0" />
                                                                      </font>
                                                                   </Label>
-                                                                  <Label layoutX="676.0" layoutY="176.0" text="VATable" GridPane.columnIndex="8" GridPane.rowIndex="9">
+                                                                  <Label layoutX="676.0" layoutY="176.0" text="Add VAT" GridPane.columnIndex="8" GridPane.rowIndex="9">
                                                                      <font>
                                                                         <Font size="12.0" />
                                                                      </font>
