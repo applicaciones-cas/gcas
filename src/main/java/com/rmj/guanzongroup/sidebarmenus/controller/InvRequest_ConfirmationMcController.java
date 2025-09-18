@@ -638,6 +638,7 @@ public class InvRequest_ConfirmationMcController implements Initializable, Scree
                                 clearMasterFields();
                                 clearDetailFields();
                                 invOrderDetail_data.clear();
+                                tableListInformation.getItems().clear();
                                 pnEditMode = EditMode.UNKNOWN;
                                 ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
                             }
@@ -660,6 +661,7 @@ public class InvRequest_ConfirmationMcController implements Initializable, Scree
                                         clearMasterFields();
                                         clearDetailFields();
                                         invOrderDetail_data.clear();
+                                        tableListInformation.getItems().clear();
                                         pnEditMode = EditMode.UNKNOWN;
                                         ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
                                     } catch (ParseException ex) {
