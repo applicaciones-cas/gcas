@@ -635,6 +635,10 @@ public class InvRequest_ConfirmationMcController implements Initializable, Scree
                                     && ShowMessageFX.YesNo(null, psFormName, "Do you want to confirm this transaction?")) {
                         try {
                             if ("success".equals((poJSON = invRequestController.StockRequest().ConfirmTransaction("Confirmed")).get("result"))) {
+                                clearMasterFields();
+                                clearDetailFields();
+                                invOrderDetail_data.clear();
+                                pnEditMode = EditMode.UNKNOWN;
                                 ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
                             }
                         } catch (ParseException ex) {
@@ -653,6 +657,10 @@ public class InvRequest_ConfirmationMcController implements Initializable, Scree
                                             ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                                             return;
                                         }
+                                        clearMasterFields();
+                                        clearDetailFields();
+                                        invOrderDetail_data.clear();
+                                        pnEditMode = EditMode.UNKNOWN;
                                         ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
                                     } catch (ParseException ex) {
                                         Logger.getLogger(InvRequest_Roq_EntryMcController.class.getName()).log(Level.SEVERE, null, ex);
