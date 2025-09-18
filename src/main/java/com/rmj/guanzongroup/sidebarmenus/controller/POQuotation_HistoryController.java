@@ -307,6 +307,15 @@ public class POQuotation_HistoryController implements Initializable, ScreenInter
                         }
                         pnEditMode = poController.POQuotation().getEditMode();
                         break;
+                    case "btnClose":
+                        unloadForm appUnload = new unloadForm();
+                        if (ShowMessageFX.OkayCancel(null, "Close Tab", "Are you sure you want to close this Tab?") == true) {
+                            stageAttachment.closeDialog();
+                            appUnload.unloadForm(apMainAnchor, oApp, pxeModuleName);
+                        } else {
+                            return;
+                        }
+                        break;
                     case "btnHistory":
                         break;
                     case "btnArrowRight":
