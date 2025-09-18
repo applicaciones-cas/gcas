@@ -278,8 +278,8 @@ public class POQuotation_ConfirmationController implements Initializable, Screen
                     poController.POQuotation().TransactionAttachmentList(lnCtr).getModel().getDocumentType()));
         }
         AttachmentDialogController controller = new AttachmentDialogController();
-        controller.addData(data);
         controller.setOpenedImage(pnAttachment);
+        controller.addData(data);
 
         try {
             stageAttachment.showDialog((Stage) btnSave.getScene().getWindow(), getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/AttachmentDialog.fxml"), controller, "Attachment Dialog", false, false, true);
@@ -1399,8 +1399,8 @@ public class POQuotation_ConfirmationController implements Initializable, Screen
         JFXUtil.setButtonsVisibility(lbShow3, btnUpdate, btnHistory, btnVoid);
 
         //Unkown || Ready
-        JFXUtil.setDisabled(!lbShow1, apMaster,apDetail, apAttachments);
-        if(fnValue == EditMode.UPDATE){
+        JFXUtil.setDisabled(!lbShow1, apMaster, apDetail, apAttachments, apAttachmentButtons);
+        if (fnValue == EditMode.UPDATE) {
             JFXUtil.setDisabled(true, apMaster);
         }
         JFXUtil.setButtonsVisibility(lbShow4, btnClose);
