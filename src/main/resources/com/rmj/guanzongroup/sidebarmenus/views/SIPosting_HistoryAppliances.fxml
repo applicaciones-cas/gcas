@@ -254,7 +254,7 @@
                                                                               <Label text="Branch" GridPane.rowIndex="4" />
                                                                               <Label text="Freight" GridPane.columnIndex="9" GridPane.rowIndex="5" />
                                                                               <Label text="VAT inclusive" GridPane.columnIndex="9" GridPane.rowIndex="6" />
-                                                                              <Label text="VAT Sales" GridPane.columnIndex="9" GridPane.rowIndex="8" />
+                                                                              <Label text="VAT able Sales" GridPane.columnIndex="9" GridPane.rowIndex="8" />
                                                                               <Label text="VAT Amount" GridPane.columnIndex="9" GridPane.rowIndex="9" />
                                                                               <Label text="SI No" GridPane.columnIndex="5" GridPane.rowIndex="4" />
                                                                               <Label text="Zero VAT Sales" GridPane.columnIndex="9" GridPane.rowIndex="10" />

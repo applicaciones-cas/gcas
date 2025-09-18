@@ -116,7 +116,7 @@
                                                         <Insets right="5.0" />
                                                     </HBox.margin>
                                                 </FontAwesomeIconView>
-                                                 <Label fx:id="AppUser" text="DE CELIS, TEEJEI F. - MIS | Rank &amp; File" textFill="#141313">
+                                                <Label fx:id="AppUser" minWidth="213.0" text="DE CELIS, TEEJEI F. - MIS | Rank &amp; File" textFill="#141313">
                                                     <font>
                                                         <Font name="System Bold" size="12.0" />
                                                     </font>
