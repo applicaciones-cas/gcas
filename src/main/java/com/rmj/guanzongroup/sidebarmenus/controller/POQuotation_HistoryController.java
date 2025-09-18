@@ -664,6 +664,7 @@ public class POQuotation_HistoryController implements Initializable, ScreenInter
 
     public void loadRecordMaster() {
         try {
+            poController.POQuotation().computeFields();
             boolean lbShow = (JFXUtil.isObjectEqualTo(pnEditMode, EditMode.UPDATE, EditMode.ADDNEW));
             JFXUtil.setDisabled(!lbShow, dpTransactionDate);
 
@@ -688,7 +689,7 @@ public class POQuotation_HistoryController implements Initializable, ScreenInter
             tfContact.setText(poController.POQuotation().Master().Contact().getMobileNo());
             tfSourceNo.setText(poController.POQuotation().Master().getSourceNo());
             tfCategory.setText(poController.POQuotation().Master().POQuotationRequest().Category2().getDescription());
-            tfTerm.setText(poController.POQuotation().Master().getTerm());
+            tfTerm.setText(poController.POQuotation().Master().Term().getDescription());
 
             tfGrossAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.POQuotation().Master().getGrossAmount(), true));
             tfDiscRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.POQuotation().Master().getDiscountRate(), true));
@@ -777,16 +778,15 @@ public class POQuotation_HistoryController implements Initializable, ScreenInter
                                         lsDescription = poController.POQuotation().Detail(lnCtr).getDescription();
                                     }
                                     lnRowCount += 1;
-                                    double lnTotal = poController.POQuotation().Detail(lnCtr).getQuantity() * poController.POQuotation().Detail(lnCtr).Inventory().getCost().doubleValue();
                                     details_data.add(
                                             new ModelPOQuotation_Detail(
                                                     String.valueOf(lnRowCount),
                                                     String.valueOf(lsBarcode),
                                                     lsDescription,
-                                                    String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.POQuotation().Detail(lnCtr).Inventory().getCost(), true)),
-                                                    String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.POQuotation().Detail(lnCtr).getDiscountAmount(), true)),
+                                                    String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.POQuotation().Detail(lnCtr).getUnitPrice(), true)),
+                                                    String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.POQuotation().getDiscount(lnCtr), true)),
                                                     String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.POQuotation().Detail(lnCtr).getQuantity(), false)),
-                                                    CustomCommonUtil.setIntegerValueToDecimalFormat(String.valueOf(lnTotal), true), String.valueOf(lnCtr)
+                                                    CustomCommonUtil.setIntegerValueToDecimalFormat(String.valueOf(poController.POQuotation().getCost(lnCtr)), true), String.valueOf(lnCtr)
                                             ));
                                     lsBarcode = "";
                                     lsDescription = "";
