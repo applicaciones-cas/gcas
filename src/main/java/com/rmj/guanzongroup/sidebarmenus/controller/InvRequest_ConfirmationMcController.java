@@ -704,8 +704,7 @@ public class InvRequest_ConfirmationMcController implements Initializable, Scree
                     clearMasterFields();
                     clearDetailFields();
                     invOrderDetail_data.clear();
-                    pnEditMode = EditMode.UNKNOWN;
-
+                    pnEditMode = invRequestController.StockRequest().getEditMode();
                     break;
 
                case "btnCancel":

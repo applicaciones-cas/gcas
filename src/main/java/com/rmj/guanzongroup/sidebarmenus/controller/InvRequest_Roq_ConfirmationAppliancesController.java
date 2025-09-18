@@ -723,8 +723,7 @@ case "btnSave":
                     clearMasterFields();
                     clearDetailFields();
                     invOrderDetail_data.clear();
-                    pnEditMode = EditMode.UNKNOWN;
-
+                   pnEditMode = invRequestController.StockRequest().getEditMode();
                     break;
 
                case "btnCancel":

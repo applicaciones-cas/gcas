@@ -720,8 +720,7 @@ public class InvRequest_Roq_ConfirmationMonarchGeneralController implements Init
                     clearMasterFields();
                     clearDetailFields();
                     invOrderDetail_data.clear();
-                    pnEditMode = EditMode.UNKNOWN;
-
+                    pnEditMode = invRequestController.StockRequest().getEditMode();
                     break;
 
                case "btnCancel":
