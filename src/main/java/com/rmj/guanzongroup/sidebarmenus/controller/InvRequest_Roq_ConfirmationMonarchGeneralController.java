@@ -495,7 +495,11 @@ public class InvRequest_Roq_ConfirmationMonarchGeneralController implements Init
                         lsOrderQuantity = String.valueOf(invRequestController.StockRequest().Detail(pnTblInvDetailRow).getQuantity());
                     }
                     tfOrderQuantity.setText(lsOrderQuantity);
-
+                     Platform.runLater(() -> {
+                if (tfOrderQuantity.isFocused()) {
+                    tfOrderQuantity.selectAll();
+                }
+            });
                 }
             } catch (SQLException | GuanzonException e) {
                 ShowMessageFX.Error(getStage(), e.getMessage(), "Error",psFormName);
@@ -549,13 +553,14 @@ public class InvRequest_Roq_ConfirmationMonarchGeneralController implements Init
                         pnEditMode = EditMode.UPDATE;
                         if (tblViewOrderDetails.getItems().size() > 0) {
                             Platform.runLater(() -> {
+                                tfOrderQuantity.requestFocus();
                                 tblViewOrderDetails.getSelectionModel().select(0);
                                 pnTblInvDetailRow = 0; 
                                 loadDetail();
-                                tfOrderQuantity.requestFocus(); 
+                                
                             });
                         }
-
+                        initDetailFocus();
                         initFields(pnEditMode);
                         tableListInformation.toFront();
                         break;
@@ -1038,6 +1043,17 @@ public class InvRequest_Roq_ConfirmationMonarchGeneralController implements Init
                   case ENTER:
                   case F3:
                       switch (fieldId) {
+                                 case "tfOrderQuantity":
+    setOrderQuantityToDetail(tfOrderQuantity.getText());
+    
+    // Focus on remarks and select all text for immediate typing
+    Platform.runLater(() -> {
+        taRemarks.requestFocus();
+        taRemarks.selectAll();
+    });
+    
+    event.consume();
+    break;
                                 case "tfSearchTransNo":
                                     invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                                     invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
