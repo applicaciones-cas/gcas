@@ -92,7 +92,6 @@ public class POQuotation_HistoryController implements Initializable, ScreenInter
     private String psCompanyId = "";
     private String psCategoryId = "";
     private String openedAttachment = "";
-    private String psPath = System.getProperty("sys.default.path.config") + "/temp//attachments//";
     private boolean pbEntered = false;
 
     private ObservableList<ModelPOQuotation_Detail> details_data = FXCollections.observableArrayList();
@@ -142,7 +141,7 @@ public class POQuotation_HistoryController implements Initializable, ScreenInter
     @FXML
     private TableView tblViewTransDetails, tblAttachments;
     @FXML
-    private TableColumn tblRowNoDetail, tblBarcodeDetail, tblDescriptionDetail, tblUnitPriceDetail, tblDiscountDetail, tblQuantityDetail, tblTotalDetail, tblRowNoAttachment, tblFileNameAttachment;
+    private TableColumn tblRowNoDetail, tblReplacementDetail, tblDescriptionDetail, tblUnitPriceDetail, tblDiscountDetail, tblQuantityDetail, tblTotalDetail, tblRowNoAttachment, tblFileNameAttachment;
     @FXML
     private ComboBox cmbAttachmentType;
     @FXML
@@ -305,6 +304,28 @@ public class POQuotation_HistoryController implements Initializable, ScreenInter
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                             return;
                         }
+                        
+                        poController.POQuotation().loadAttachments();
+                        if (poController.POQuotation().getTransactionAttachmentCount() > 1) {
+                            if (!openedAttachment.equals(poController.POQuotation().POQuotationList(pnMain).getTransactionNo())) {
+                                stageAttachment.closeDialog();
+                            }
+                        } else {
+                            stageAttachment.closeDialog();
+                        }
+                        poController.POQuotation().loadAttachments();
+
+                        Platform.runLater(() -> {
+                            loadTableDetail.reload();
+                        });
+                        tfAttachmentNo.clear();
+                        cmbAttachmentType.setItems(documentType);
+
+                        imageView.setImage(null);
+                        JFXUtil.stackPaneClip(stackPane1);
+                        Platform.runLater(() -> {
+                            loadTableAttachment.reload();
+                        });
                         pnEditMode = poController.POQuotation().getEditMode();
                         break;
                     case "btnClose":
@@ -460,8 +481,30 @@ public class POQuotation_HistoryController implements Initializable, ScreenInter
                                 pnEditMode = poController.POQuotation().getEditMode();
                                 loadRecordMaster();
                                 loadTableDetail.reload();
+                                
                                 poController.POQuotation().loadAttachments();
-                                loadTableAttachment.reload();
+                                if (poController.POQuotation().getTransactionAttachmentCount() > 1) {
+                                    if (!openedAttachment.equals(poController.POQuotation().POQuotationList(pnMain).getTransactionNo())) {
+                                        stageAttachment.closeDialog();
+                                    }
+                                } else {
+                                    stageAttachment.closeDialog();
+                                }
+                                poController.POQuotation().loadAttachments();
+
+                                Platform.runLater(() -> {
+                                    loadTableDetail.reload();
+                                });
+                                tfAttachmentNo.clear();
+                                cmbAttachmentType.setItems(documentType);
+
+                                imageView.setImage(null);
+                                JFXUtil.stackPaneClip(stackPane1);
+                                Platform.runLater(() -> {
+                                    loadTableAttachment.reload();
+                                });
+                                
+                                
                                 initButton(pnEditMode);
                             }
                             loadRecordSearch();
@@ -533,7 +576,8 @@ public class POQuotation_HistoryController implements Initializable, ScreenInter
                             filePath2 = imageinfo_temp.get((String) attachment_data.get(pnAttachment).getIndex02());
                         } else {
                             // in server
-                            filePath2 = psPath + (String) attachment_data.get(pnAttachment).getIndex02();
+                            filePath2 = System.getProperty("sys.default.path.config") + "/temp//attachments//" + (String) attachment_data.get(pnAttachment).getIndex02();
+
                         }
                         if (filePath != null && !filePath.isEmpty()) {
                             Path imgPath = Paths.get(filePath2);
@@ -563,6 +607,7 @@ public class POQuotation_HistoryController implements Initializable, ScreenInter
         } catch (Exception e) {
         }
     }
+
 
     public void loadRecordDetail() {
         try {
@@ -614,7 +659,7 @@ public class POQuotation_HistoryController implements Initializable, ScreenInter
             tfTerm.setText(poController.POQuotation().Master().Term().getDescription());
 
             tfGrossAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.POQuotation().Master().getGrossAmount(), true));
-            tfDiscRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.POQuotation().Master().getDiscountRate(), true));
+            tfDiscRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.POQuotation().Master().getDiscountRate(), false));
             tfAddlDiscAmt.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.POQuotation().Master().getAdditionalDiscountAmount(), true));
             tfFreight.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.POQuotation().Master().getFreightAmount(), true));
 
@@ -679,62 +724,43 @@ public class POQuotation_HistoryController implements Initializable, ScreenInter
                     Platform.runLater(() -> {
                         int lnCtr;
                         details_data.clear();
-                        try {
-                            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
 //                                poController.POQuotation().ReloadDetails();
-                            }
-                            String lsBarcode = "";
-                            String lsDescription = "";
-                            int lnRowCount = 0;
-                            for (lnCtr = 0; lnCtr < poController.POQuotation().getDetailCount(); lnCtr++) {
-                                if (poController.POQuotation().Detail(lnCtr).isReverse()) {
-                                    if (poController.POQuotation().Detail(lnCtr).getReplaceDescription() != null && !"".equals(poController.POQuotation().Detail(lnCtr).getReplaceDescription())) {
-                                        if (poController.POQuotation().Detail(lnCtr).getReplaceId() != null) {
-                                            lsBarcode = poController.POQuotation().Detail(lnCtr).ReplacedInventory().getBarCode();
-                                        }
-                                        lsDescription = poController.POQuotation().Detail(lnCtr).getReplaceDescription();
-                                    } else {
-                                        if (poController.POQuotation().Detail(lnCtr).getStockId()!= null && !"".equals(poController.POQuotation().Detail(lnCtr).getStockId())) {
-                                            lsBarcode = poController.POQuotation().Detail(lnCtr).Inventory().getBarCode();
-                                        }
-                                        lsDescription = poController.POQuotation().Detail(lnCtr).getDescription();
-                                    }
+                        }
+                        int lnRowCount = 0;
+                        for (lnCtr = 0; lnCtr < poController.POQuotation().getDetailCount(); lnCtr++) {
+//                                if (poController.POQuotation().Detail(lnCtr).isReverse()) {
                                     lnRowCount += 1;
                                     details_data.add(
                                             new ModelPOQuotation_Detail(
                                                     String.valueOf(lnRowCount),
-                                                    String.valueOf(lsBarcode),
-                                                    lsDescription,
+                                                    String.valueOf(poController.POQuotation().Detail(lnCtr).getDescription()),
+                                                    String.valueOf(poController.POQuotation().Detail(lnCtr).getReplaceDescription()),
                                                     String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.POQuotation().Detail(lnCtr).getUnitPrice(), true)),
                                                     String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.POQuotation().getDiscount(lnCtr), true)),
                                                     String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.POQuotation().Detail(lnCtr).getQuantity(), false)),
                                                     CustomCommonUtil.setIntegerValueToDecimalFormat(String.valueOf(poController.POQuotation().getCost(lnCtr)), true), String.valueOf(lnCtr)
                                             ));
-                                    lsBarcode = "";
-                                    lsDescription = "";
-                                }
-                            }
-                            int lnTempRow = JFXUtil.getDetailRow(details_data, pnDetail, 8); //this method is only used when Reverse is applied
-                            if (lnTempRow < 0 || lnTempRow
-                                    >= details_data.size()) {
-                                if (!details_data.isEmpty()) {
-                                    /* FOCUS ON FIRST ROW */
-                                    JFXUtil.selectAndFocusRow(tblViewTransDetails, 0);
-                                    int lnRow = Integer.parseInt(details_data.get(0).getIndex08());
-                                    pnDetail = lnRow;
-                                    loadRecordDetail();
-                                }
-                            } else {
-                                /* FOCUS ON THE ROW THAT pnRowDetail POINTS TO */
-                                JFXUtil.selectAndFocusRow(tblViewTransDetails, lnTempRow);
-                                int lnRow = Integer.parseInt(details_data.get(tblViewTransDetails.getSelectionModel().getSelectedIndex()).getIndex08());
+//                                }
+                        }
+                        int lnTempRow = JFXUtil.getDetailRow(details_data, pnDetail, 8); //this method is only used when Reverse is applied
+                        if (lnTempRow < 0 || lnTempRow
+                                >= details_data.size()) {
+                            if (!details_data.isEmpty()) {
+                                /* FOCUS ON FIRST ROW */
+                                JFXUtil.selectAndFocusRow(tblViewTransDetails, 0);
+                                int lnRow = Integer.parseInt(details_data.get(0).getIndex08());
                                 pnDetail = lnRow;
                                 loadRecordDetail();
                             }
-                            loadRecordMaster();
-                        } catch (SQLException | GuanzonException ex) {
-                            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+                        } else {
+                            /* FOCUS ON THE ROW THAT pnRowDetail POINTS TO */
+                            JFXUtil.selectAndFocusRow(tblViewTransDetails, lnTempRow);
+                            int lnRow = Integer.parseInt(details_data.get(tblViewTransDetails.getSelectionModel().getSelectedIndex()).getIndex08());
+                            pnDetail = lnRow;
+                            loadRecordDetail();
                         }
+                        loadRecordMaster();
                     });
                 });
 
@@ -750,6 +776,8 @@ public class POQuotation_HistoryController implements Initializable, ScreenInter
     public void initTextFields() {
         JFXUtil.setFocusListener(txtField_Focus, tfSearchBranch,tfSearchSupplier,tfSearchDepartment, tfSearchCategory, tfSearchReferenceNo);
 
+        // Combobox
+        cmbAttachmentType.setItems(documentType);
         JFXUtil.setKeyPressedListener(this::txtField_KeyPressed, apBrowse, apMaster, apDetail);
         JFXUtil.setCheckboxHoverCursor(apDetail);
     }
@@ -811,8 +839,6 @@ public class POQuotation_HistoryController implements Initializable, ScreenInter
 
         if (newIndex != -1 && (newIndex <= attachment_data.size() - 1)) {
             ModelDeliveryAcceptance_Attachment image = attachment_data.get(newIndex);
-            String filePath2 = psPath + (String) attachment_data.get(pnAttachment).getIndex02();
-//            String filePath2 = "D:\\GGC_Maven_Systems\\temp\\attachments\\" + image.getIndex02();
             TranslateTransition slideOut = new TranslateTransition(Duration.millis(300), imageView);
             slideOut.setByX(direction * -400); // Move left or right
 
@@ -847,7 +873,7 @@ public class POQuotation_HistoryController implements Initializable, ScreenInter
 
     public void initDetailsGrid() {
         JFXUtil.setColumnCenter(tblRowNoDetail);
-        JFXUtil.setColumnLeft(tblBarcodeDetail, tblDescriptionDetail);
+        JFXUtil.setColumnLeft(tblReplacementDetail, tblDescriptionDetail);
         JFXUtil.setColumnRight(tblUnitPriceDetail, tblDiscountDetail,tblQuantityDetail, tblTotalDetail);
         JFXUtil.setColumnsIndexAndDisableReordering(tblViewTransDetails);
 
