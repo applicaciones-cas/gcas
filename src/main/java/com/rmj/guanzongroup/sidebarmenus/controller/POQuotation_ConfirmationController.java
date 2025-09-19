@@ -860,7 +860,7 @@ public class POQuotation_ConfirmationController implements Initializable, Screen
                                 });
                                 loadTableDetail.reload();
                                 if (!JFXUtil.isObjectEqualTo(poController.POQuotation().Detail(pnDetail).getDescription(), null, "")) {
-                                    JFXUtil.textFieldMoveNext(tfCost);
+                                    JFXUtil.textFieldMoveNext(tfReplaceId);
                                 }
                             }
                             return;
