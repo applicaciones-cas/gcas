@@ -26,7 +26,6 @@ public class ModelDisbursementVoucher_Detail {
     public SimpleStringProperty index12;
     public SimpleStringProperty index13;
     public SimpleStringProperty index14;
-    public SimpleStringProperty index15;
 
     public ModelDisbursementVoucher_Detail(String index01,
             String index02,
@@ -41,8 +40,7 @@ public class ModelDisbursementVoucher_Detail {
             String index11,
             String index12,
             String index13,
-            String index14,
-            String index15) {
+            String index14) {
 
         this.index01 = new SimpleStringProperty(index01);
         this.index02 = new SimpleStringProperty(index02);
@@ -58,7 +56,6 @@ public class ModelDisbursementVoucher_Detail {
         this.index12 = new SimpleStringProperty(index12);
         this.index13 = new SimpleStringProperty(index13);
         this.index14 = new SimpleStringProperty(index14);
-        this.index15 = new SimpleStringProperty(index15);
     }
 
     public ModelDisbursementVoucher_Detail(
@@ -231,13 +228,13 @@ public class ModelDisbursementVoucher_Detail {
     public void setIndex14(String index14) {
         this.index14.set(index14);
     }
-    
-    public String getIndex15() {
-        return index15.get();
-    }
-
-    public void setIndex15(String index15) {
-        this.index15.set(index15);
-    }
+//    
+//    public String getIndex15() {
+//        return index15.get();
+//    }
+//
+//    public void setIndex15(String index15) {
+//        this.index15.set(index15);
+//    }
 
 }
