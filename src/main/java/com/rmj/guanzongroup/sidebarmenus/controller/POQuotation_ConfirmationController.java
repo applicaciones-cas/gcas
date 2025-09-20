@@ -305,6 +305,8 @@ public class POQuotation_ConfirmationController implements Initializable, Screen
                     if (poController.POQuotation().Detail(pnDetail).getEditMode() == EditMode.ADDNEW) {
                         if (!checkedBox.isSelected()) {
                             poController.POQuotation().ReverseItem(pnDetail);
+                        } else {
+                            poController.POQuotation().Detail(pnDetail).isReverse(checkedBox.isSelected());
                         }
                     } else {
                         poController.POQuotation().Detail(pnDetail).isReverse(checkedBox.isSelected());
@@ -667,11 +669,20 @@ public class POQuotation_ConfirmationController implements Initializable, Screen
                         if (lsValue.isEmpty()) {
                             poController.POQuotation().Detail(pnDetail).setStockId("");
                             poController.POQuotation().Detail(pnDetail).setDescription("");
+                            poController.POQuotation().Detail(pnDetail).setReplaceId("");
+                            poController.POQuotation().Detail(pnDetail).setReplaceDescription("");
                         }
                         break;
                     case "tfReplaceId":
                     case "tfReplaceDescription":
                         if (lsValue.isEmpty()) {
+                            poJSON = poController.POQuotation().RemovedExcessRequestItem(pnDetail);
+                            if ("error".equals((String) poJSON.get("result"))) {
+                                System.err.println((String) poJSON.get("message"));
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                break;
+                            }
+                            
                             poController.POQuotation().Detail(pnDetail).setReplaceId("");
                             poController.POQuotation().Detail(pnDetail).setReplaceDescription("");
                         }
@@ -691,6 +702,12 @@ public class POQuotation_ConfirmationController implements Initializable, Screen
                             ShowMessageFX.Warning(null, pxeModuleName, "Invalid discount rate.");
                             break;
                         }
+                        
+                        poJSON = poController.POQuotation().computeCost(pnDetail,Double.valueOf(lsValue),poController.POQuotation().Detail(pnDetail).getDiscountAmount());
+                        if ("error".equals(poJSON.get("result"))) {
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                            break;
+                        }
 
                         poJSON = poController.POQuotation().Detail(pnDetail).setDiscountRate((Double.valueOf(lsValue)));
                         if ("error".equals((String) poJSON.get("result"))) {
@@ -700,6 +717,13 @@ public class POQuotation_ConfirmationController implements Initializable, Screen
                         break;
                     case "tfAddlDiscAmtDetail":
                         lsValue = JFXUtil.removeComma(lsValue);
+                        
+                        poJSON = poController.POQuotation().computeCost(pnDetail,poController.POQuotation().Detail(pnDetail).getDiscountRate(),Double.valueOf(lsValue));
+                        if ("error".equals(poJSON.get("result"))) {
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                            break;
+                        }
+                        
                         poJSON = poController.POQuotation().Detail(pnDetail).setDiscountAmount((Double.valueOf(lsValue)));
                         if ("error".equals((String) poJSON.get("result"))) {
                             System.err.println((String) poJSON.get("message"));
@@ -881,7 +905,7 @@ public class POQuotation_ConfirmationController implements Initializable, Screen
                                 });
                                 loadTableDetail.reload();
                                 if (!JFXUtil.isObjectEqualTo(poController.POQuotation().Detail(pnDetail).getDescription(), null, "")) {
-                                    JFXUtil.textFieldMoveNext(tfCost);
+                                    JFXUtil.textFieldMoveNext(tfUnitPrice);
                                 }
                             }
                             return;
@@ -906,7 +930,7 @@ public class POQuotation_ConfirmationController implements Initializable, Screen
                                 });
                                 loadTableDetail.reload();
                                 if (!JFXUtil.isObjectEqualTo(poController.POQuotation().Detail(pnDetail).getDescription(), null, "")) {
-                                    JFXUtil.textFieldMoveNext(tfCost);
+                                    JFXUtil.textFieldMoveNext(tfUnitPrice);
                                 }
                             }
                             break;
@@ -1115,13 +1139,33 @@ public class POQuotation_ConfirmationController implements Initializable, Screen
             if (pnDetail < 0 || pnDetail > poController.POQuotation().getDetailCount() - 1) {
                 return;
             }
-            boolean lbShow = ((poController.POQuotation().Detail(pnDetail).getEditMode() == EditMode.UPDATE)
-                    && (poController.POQuotation().Detail(pnDetail).getReplaceDescription() != null
-                    && !"".equals(poController.POQuotation().Detail(pnDetail).getReplaceDescription())
-                    && (poController.POQuotation().Detail(pnDetail).getDescription() == null
-                    || "".equals(poController.POQuotation().Detail(pnDetail).getDescription()))));
+            if(!poController.POQuotation().Detail(pnDetail).isReverse()){
+                JFXUtil.setDisabled(true, tfDescription, tfReplaceId, tfReplaceDescription, tfUnitPrice, tfQuantity, tfDiscRateDetail, tfAddlDiscAmtDetail);
+            } else {
+                boolean lbIsUpdate = poController.POQuotation().Detail(pnDetail).getEditMode() == EditMode.UPDATE;
+                boolean lbReqItem = poController.POQuotation().Detail(pnDetail).getDescription() != null && !"".equals(poController.POQuotation().Detail(pnDetail).getDescription());
+                boolean lbRepItem = poController.POQuotation().Detail(pnDetail).getReplaceDescription() != null && !"".equals(poController.POQuotation().Detail(pnDetail).getReplaceDescription());
+                boolean lbIsReqMoreThanOne = poController.POQuotation().RequestMultipleItem(poController.POQuotation().Detail(pnDetail).getDescription());
+//                boolean lbShow = (lbIsUpdate && (lbReqItem && lbRepItem));
+//                JFXUtil.setDisabled(lbShow, tfReplaceId, tfReplaceDescription);
 
-            JFXUtil.setDisabled(lbShow, tfReplaceId, tfReplaceDescription);
+                if(lbIsUpdate){
+                    JFXUtil.setDisabled(true, tfDescription);
+                } else {
+                    if(lbRepItem){
+                        JFXUtil.setDisabled(true, tfDescription);
+                    } else {
+                        if((!lbIsReqMoreThanOne && lbReqItem)){
+                            JFXUtil.setDisabled(true, tfDescription);
+                        } else {
+                            JFXUtil.setDisabled(false, tfDescription);
+                        }
+                    }
+                }
+                
+                JFXUtil.setDisabled(false, tfReplaceId, tfReplaceDescription, tfUnitPrice, tfQuantity, tfDiscRateDetail, tfAddlDiscAmtDetail);
+            }
+            
             tfDescription.setText(poController.POQuotation().Detail(pnDetail).getDescription());
             tfReplaceId.setText(poController.POQuotation().Detail(pnDetail).ReplacedInventory().getBarCode());
             tfReplaceDescription.setText(poController.POQuotation().Detail(pnDetail).getReplaceDescription());
