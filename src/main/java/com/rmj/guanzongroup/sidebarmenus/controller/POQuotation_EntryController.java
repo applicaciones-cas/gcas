@@ -280,8 +280,8 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
                     poController.POQuotation().TransactionAttachmentList(lnCtr).getModel().getDocumentType()));
         }
         AttachmentDialogController controller = new AttachmentDialogController();
-        controller.addData(data);
         controller.setOpenedImage(pnAttachment);
+        controller.addData(data);
 
         try {
             stageAttachment.showDialog((Stage) btnSave.getScene().getWindow(), getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/AttachmentDialog.fxml"), controller, "Attachment Dialog", false, false, true);
@@ -843,13 +843,13 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
                     event.consume();
                     break;
                 case UP:
-                    if (JFXUtil.isObjectEqualTo(lsID, "tfDescription","tfReplaceId", "tfReplaceDescription", "tfCost", "tfQuantity", "tfDiscRateDetail", "tfAddlDiscAmt")) {
+                    if (JFXUtil.isObjectEqualTo(lsID, "tfDescription", "tfReplaceId", "tfReplaceDescription", "tfCost", "tfQuantity", "tfDiscRateDetail", "tfAddlDiscAmt")) {
                         moveNext(true, true);
                         event.consume();
                     }
                     break;
                 case DOWN:
-                    if (JFXUtil.isObjectEqualTo(lsID, "tfDescription","tfReplaceId", "tfReplaceDescription", "tfCost", "tfQuantity", "tfDiscRateDetail", "tfAddlDiscAmt")) {
+                    if (JFXUtil.isObjectEqualTo(lsID, "tfDescription", "tfReplaceId", "tfReplaceDescription", "tfCost", "tfQuantity", "tfDiscRateDetail", "tfAddlDiscAmt")) {
                         moveNext(false, true);
                         event.consume();
                     }
@@ -1209,7 +1209,7 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
                     && !"".equals(poController.POQuotation().Detail(pnDetail).getReplaceDescription())
                     && (poController.POQuotation().Detail(pnDetail).getDescription() == null
                     || "".equals(poController.POQuotation().Detail(pnDetail).getDescription()))));
-            JFXUtil.setDisabled(lbShow, tfDescription,tfReplaceId, tfReplaceDescription);
+            JFXUtil.setDisabled(lbShow, tfDescription, tfReplaceId, tfReplaceDescription);
             tfDescription.setText(poController.POQuotation().Detail(pnDetail).getDescription());
             tfReplaceId.setText(poController.POQuotation().Detail(pnDetail).ReplacedInventory().getBarCode());
             tfReplaceDescription.setText(poController.POQuotation().Detail(pnDetail).getReplaceDescription());
@@ -1378,22 +1378,26 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
                             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                                 poController.POQuotation().ReloadDetail();
                             }
+                            JFXUtil.disableAllHighlight(tblViewTransDetails, highlightedRowsDetail);
                             int lnRowCount = 0;
                             for (lnCtr = 0; lnCtr < poController.POQuotation().getDetailCount(); lnCtr++) {
-//                                if (poController.POQuotation().Detail(lnCtr).isReverse()) {
-                                    lnRowCount += 1;
-                                    details_data.add(
-                                            new ModelPOQuotation_Detail(
-                                                    String.valueOf(lnRowCount),
-                                                    String.valueOf(poController.POQuotation().Detail(lnCtr).getDescription()),
-                                                    String.valueOf(poController.POQuotation().Detail(lnCtr).getReplaceDescription()),
-                                                    String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.POQuotation().Detail(lnCtr).getUnitPrice(), true)),
-                                                    String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.POQuotation().getDiscount(lnCtr), true)),
-                                                    String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.POQuotation().Detail(lnCtr).getQuantity(), false)),
-                                                    CustomCommonUtil.setIntegerValueToDecimalFormat(String.valueOf(poController.POQuotation().getCost(lnCtr)), true), String.valueOf(lnCtr)
-                                            ));
+                                if (!poController.POQuotation().Detail(lnCtr).isReverse()) {
+                                    JFXUtil.highlightByKey(tblViewTransDetails, String.valueOf(lnCtr + 1), "#FAA0A0", highlightedRowsDetail);
+                                }
+                                lnRowCount += 1;
+                                details_data.add(
+                                        new ModelPOQuotation_Detail(
+                                                String.valueOf(lnRowCount),
+                                                String.valueOf(poController.POQuotation().Detail(lnCtr).getDescription()),
+                                                String.valueOf(poController.POQuotation().Detail(lnCtr).getReplaceDescription()),
+                                                String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.POQuotation().Detail(lnCtr).getUnitPrice(), true)),
+                                                String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.POQuotation().getDiscount(lnCtr), true)),
+                                                String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.POQuotation().Detail(lnCtr).getQuantity(), false)),
+                                                CustomCommonUtil.setIntegerValueToDecimalFormat(String.valueOf(poController.POQuotation().getCost(lnCtr)), true), String.valueOf(lnCtr)
+                                        ));
 //                                }
                             }
+
                             JFXUtil.showRetainedHighlight(false, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, true);
                             loadHighlightFromDetail();
                             int lnTempRow = JFXUtil.getDetailRow(details_data, pnDetail, 8); //this method is only used when Reverse is applied
@@ -1478,10 +1482,10 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
 
     public void initTextFields() {
         JFXUtil.setFocusListener(txtArea_Focus, taRemarks);
-        JFXUtil.setFocusListener(txtMaster_Focus, tfTransactionNo, tfReferenceNo, tfCompany, tfBranch, tfDepartment,tfSupplier,
-                tfSourceNo, tfCategory, tfTerm, tfDiscRate, tfAddlDiscAmt, tfFreight );
+        JFXUtil.setFocusListener(txtMaster_Focus, tfTransactionNo, tfReferenceNo, tfCompany, tfBranch, tfDepartment, tfSupplier,
+                tfSourceNo, tfCategory, tfTerm, tfDiscRate, tfAddlDiscAmt, tfFreight);
 
-        JFXUtil.setFocusListener(txtDetail_Focus, tfDescription,tfReplaceId, tfReplaceDescription, tfUnitPrice, tfQuantity,
+        JFXUtil.setFocusListener(txtDetail_Focus, tfDescription, tfReplaceId, tfReplaceDescription, tfUnitPrice, tfQuantity,
                 tfDiscRateDetail, tfAddlDiscAmtDetail);
 
         JFXUtil.setKeyPressedListener(this::txtField_KeyPressed, apMaster, apDetail, apBrowse);
@@ -1554,7 +1558,7 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
         JFXUtil.setButtonsVisibility(lbShow2, btnUpdate, btnHistory, btnVoid);
         JFXUtil.setButtonsVisibility(lbShow3, btnBrowse, btnClose);
 
-        JFXUtil.setDisabled(!lbShow, taRemarks, apMaster, apDetail);
+        JFXUtil.setDisabled(!lbShow, taRemarks, apMaster, apDetail, apAttachments, apAttachmentButtons);
         if (fnValue == EditMode.UPDATE) {
             JFXUtil.setDisabled(true, tfCompany, tfBranch, tfSupplier, tfCategory, tfDepartment);
         }

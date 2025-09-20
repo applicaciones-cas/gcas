@@ -56,7 +56,7 @@ public class AttachmentDialogController implements Initializable, ScreenInterfac
     private double yOffset = 0;
     private final ObservableList<ModelDeliveryAcceptance_Attachment> attachment_data = FXCollections.observableArrayList();
     ObservableList<String> documentType = ModelDeliveryAcceptance_Attachment.documentType;
-    private int pnAttachment;
+    private int pnAttachment = 0;
     Map<String, Pair<String, String>> cloned;
     private final JFXUtil.ImageViewer imageviewerutil = new JFXUtil.ImageViewer();
 
@@ -93,7 +93,6 @@ public class AttachmentDialogController implements Initializable, ScreenInterfac
         Platform.runLater(() -> {
             loadTableAttachment();
             JFXUtil.stackPaneClip(stackPane1);
-            pnAttachment = 0;
             loadRecordAttachment(true);
         });
     }

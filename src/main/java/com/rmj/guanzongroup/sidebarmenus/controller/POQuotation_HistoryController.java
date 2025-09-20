@@ -299,12 +299,12 @@ public class POQuotation_HistoryController implements Initializable, ScreenInter
                 switch (lsButton) {
                     case "btnBrowse":
                         poJSON = poController.POQuotation().searchTransaction(tfSearchBranch.getText(),
-                                tfSearchDepartment.getText(), tfSearchSupplier.getText(),tfSearchCategory.getText(),tfSearchReferenceNo.getText());
+                                tfSearchDepartment.getText(), tfSearchSupplier.getText(), tfSearchCategory.getText(), tfSearchReferenceNo.getText());
                         if ("error".equalsIgnoreCase((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                             return;
                         }
-                        
+
                         poController.POQuotation().loadAttachments();
                         if (poController.POQuotation().getTransactionAttachmentCount() > 1) {
                             if (!openedAttachment.equals(poController.POQuotation().POQuotationList(pnMain).getTransactionNo())) {
@@ -359,47 +359,47 @@ public class POQuotation_HistoryController implements Initializable, ScreenInter
                 }
                 initButton(pnEditMode);
             }
-        } catch (CloneNotSupportedException | SQLException | GuanzonException  ex) {
+        } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
 
     ChangeListener<Boolean> txtField_Focus = JFXUtil.FocusListener(TextField.class,
-        (lsID, lsValue) -> {
-            if (lsValue == null) {
-                return;
-            }
-            /*Lost Focus*/
-            switch (lsID) {
-                case "tfSearchBranch":
-                    if (lsValue.equals("")) {
-                        poController.POQuotation().setSearchBranch("");
-                    }
-                    loadRecordSearch();
-                    break;
-                case "tfSearchDepartment":
-                    if (lsValue.equals("")) {
-                        poController.POQuotation().setSearchDepartment("");
-                    }
-                    loadRecordSearch();
-                    break;
-                case "tfSearchSupplier":
-                    if (lsValue.equals("")) {
-                        poController.POQuotation().setSearchSupplier("");
-                    }
-                    loadRecordSearch();
-                    break;
-                case "tfSearchCategory":
-                    if (lsValue.equals("")) {
-                        poController.POQuotation().setSearchCategory("");
-                    }
-                    loadRecordSearch();
-                    break;
-                case "tfSearchReferenceNo":
-                    break;
-            }
-        });
-        
+            (lsID, lsValue) -> {
+                if (lsValue == null) {
+                    return;
+                }
+                /*Lost Focus*/
+                switch (lsID) {
+                    case "tfSearchBranch":
+                        if (lsValue.equals("")) {
+                            poController.POQuotation().setSearchBranch("");
+                        }
+                        loadRecordSearch();
+                        break;
+                    case "tfSearchDepartment":
+                        if (lsValue.equals("")) {
+                            poController.POQuotation().setSearchDepartment("");
+                        }
+                        loadRecordSearch();
+                        break;
+                    case "tfSearchSupplier":
+                        if (lsValue.equals("")) {
+                            poController.POQuotation().setSearchSupplier("");
+                        }
+                        loadRecordSearch();
+                        break;
+                    case "tfSearchCategory":
+                        if (lsValue.equals("")) {
+                            poController.POQuotation().setSearchCategory("");
+                        }
+                        loadRecordSearch();
+                        break;
+                    case "tfSearchReferenceNo":
+                        break;
+                }
+            });
+
     public void moveNext(boolean isUp, boolean continueNext) {
 //        try {
         if (continueNext) {
@@ -481,7 +481,7 @@ public class POQuotation_HistoryController implements Initializable, ScreenInter
                                 pnEditMode = poController.POQuotation().getEditMode();
                                 loadRecordMaster();
                                 loadTableDetail.reload();
-                                
+
                                 poController.POQuotation().loadAttachments();
                                 if (poController.POQuotation().getTransactionAttachmentCount() > 1) {
                                     if (!openedAttachment.equals(poController.POQuotation().POQuotationList(pnMain).getTransactionNo())) {
@@ -503,8 +503,7 @@ public class POQuotation_HistoryController implements Initializable, ScreenInter
                                 Platform.runLater(() -> {
                                     loadTableAttachment.reload();
                                 });
-                                
-                                
+
                                 initButton(pnEditMode);
                             }
                             loadRecordSearch();
@@ -519,7 +518,6 @@ public class POQuotation_HistoryController implements Initializable, ScreenInter
         }
     }
 
-    
     boolean pbSuccess = true;
 
     private void datepicker_Action(ActionEvent event) {
@@ -531,13 +529,13 @@ public class POQuotation_HistoryController implements Initializable, ScreenInter
             DatePicker datePicker = (DatePicker) source;
             String inputText = datePicker.getEditor().getText();
             SimpleDateFormat sdfFormat = new SimpleDateFormat(SQLUtil.FORMAT_SHORT_DATE);
-            
+
             if (JFXUtil.isObjectEqualTo(inputText, null, "", "01/01/1900")) {
                 return;
             }
         }
     }
-    
+
     public void loadRecordSearch() {
         try {
             if (poController.POQuotation().Master().Industry().getDescription() != null && !"".equals(poController.POQuotation().Master().Industry().getDescription())) {
@@ -608,7 +606,6 @@ public class POQuotation_HistoryController implements Initializable, ScreenInter
         }
     }
 
-
     public void loadRecordDetail() {
         try {
             if (pnDetail < 0 || pnDetail > poController.POQuotation().getDetailCount() - 1) {
@@ -640,7 +637,7 @@ public class POQuotation_HistoryController implements Initializable, ScreenInter
             tfTransactionNo.setText(poController.POQuotation().Master().getTransactionNo());
             String lsTransactionDate = CustomCommonUtil.formatDateToShortString(poController.POQuotation().Master().getTransactionDate());
             dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsTransactionDate, "yyyy-MM-dd"));
-            
+
             tfReferenceNo.setText(poController.POQuotation().Master().getReferenceNo());
             String lsReferenceDate = CustomCommonUtil.formatDateToShortString(poController.POQuotation().Master().getReferenceDate());
             dpReferenceDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsReferenceDate, "yyyy-MM-dd"));
@@ -727,20 +724,23 @@ public class POQuotation_HistoryController implements Initializable, ScreenInter
                         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
 //                                poController.POQuotation().ReloadDetails();
                         }
+                        JFXUtil.disableAllHighlight(tblViewTransDetails, highlightedRowsDetail);
                         int lnRowCount = 0;
                         for (lnCtr = 0; lnCtr < poController.POQuotation().getDetailCount(); lnCtr++) {
-//                                if (poController.POQuotation().Detail(lnCtr).isReverse()) {
-                                    lnRowCount += 1;
-                                    details_data.add(
-                                            new ModelPOQuotation_Detail(
-                                                    String.valueOf(lnRowCount),
-                                                    String.valueOf(poController.POQuotation().Detail(lnCtr).getDescription()),
-                                                    String.valueOf(poController.POQuotation().Detail(lnCtr).getReplaceDescription()),
-                                                    String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.POQuotation().Detail(lnCtr).getUnitPrice(), true)),
-                                                    String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.POQuotation().getDiscount(lnCtr), true)),
-                                                    String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.POQuotation().Detail(lnCtr).getQuantity(), false)),
-                                                    CustomCommonUtil.setIntegerValueToDecimalFormat(String.valueOf(poController.POQuotation().getCost(lnCtr)), true), String.valueOf(lnCtr)
-                                            ));
+                            if (!poController.POQuotation().Detail(lnCtr).isReverse()) {
+                                JFXUtil.highlightByKey(tblViewTransDetails, String.valueOf(lnCtr + 1), "#FAA0A0", highlightedRowsDetail);
+                            }
+                            lnRowCount += 1;
+                            details_data.add(
+                                    new ModelPOQuotation_Detail(
+                                            String.valueOf(lnRowCount),
+                                            String.valueOf(poController.POQuotation().Detail(lnCtr).getDescription()),
+                                            String.valueOf(poController.POQuotation().Detail(lnCtr).getReplaceDescription()),
+                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.POQuotation().Detail(lnCtr).getUnitPrice(), true)),
+                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.POQuotation().getDiscount(lnCtr), true)),
+                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.POQuotation().Detail(lnCtr).getQuantity(), false)),
+                                            CustomCommonUtil.setIntegerValueToDecimalFormat(String.valueOf(poController.POQuotation().getCost(lnCtr)), true), String.valueOf(lnCtr)
+                                    ));
 //                                }
                         }
                         int lnTempRow = JFXUtil.getDetailRow(details_data, pnDetail, 8); //this method is only used when Reverse is applied
@@ -764,7 +764,6 @@ public class POQuotation_HistoryController implements Initializable, ScreenInter
                     });
                 });
 
-
     }
 
     public void initDatePickers() {
@@ -772,9 +771,8 @@ public class POQuotation_HistoryController implements Initializable, ScreenInter
         JFXUtil.setActionListener(this::datepicker_Action, dpTransactionDate, dpReferenceDate, dpValidityDate);
     }
 
-    
     public void initTextFields() {
-        JFXUtil.setFocusListener(txtField_Focus, tfSearchBranch,tfSearchSupplier,tfSearchDepartment, tfSearchCategory, tfSearchReferenceNo);
+        JFXUtil.setFocusListener(txtField_Focus, tfSearchBranch, tfSearchSupplier, tfSearchDepartment, tfSearchCategory, tfSearchReferenceNo);
 
         // Combobox
         cmbAttachmentType.setItems(documentType);
@@ -874,7 +872,7 @@ public class POQuotation_HistoryController implements Initializable, ScreenInter
     public void initDetailsGrid() {
         JFXUtil.setColumnCenter(tblRowNoDetail);
         JFXUtil.setColumnLeft(tblReplacementDetail, tblDescriptionDetail);
-        JFXUtil.setColumnRight(tblUnitPriceDetail, tblDiscountDetail,tblQuantityDetail, tblTotalDetail);
+        JFXUtil.setColumnRight(tblUnitPriceDetail, tblDiscountDetail, tblQuantityDetail, tblTotalDetail);
         JFXUtil.setColumnsIndexAndDisableReordering(tblViewTransDetails);
 
         filteredDataDetail = new FilteredList<>(details_data, b -> true);
