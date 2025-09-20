@@ -1370,6 +1370,6 @@ public class InvRequest_Roq_ConfirmationMcGeneralController implements Initializ
 }
        private void initTextFieldPattern() {
         
-        CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
+        CustomCommonUtil.inputIntegersOnly(tfOrderQuantity);
     }
 }

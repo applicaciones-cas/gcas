@@ -1334,6 +1334,6 @@ public class InvRequest_Roq_EntryLPFoodController implements Initializable, Scre
 }
        private void initTextFieldPattern() {
         
-        CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
+        CustomCommonUtil.inputIntegersOnly(tfOrderQuantity);
     }
 }

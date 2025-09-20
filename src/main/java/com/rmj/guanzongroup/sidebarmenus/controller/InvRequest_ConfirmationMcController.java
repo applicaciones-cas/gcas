@@ -1369,6 +1369,6 @@ public class InvRequest_ConfirmationMcController implements Initializable, Scree
 }
        private void initTextFieldPattern() {
         
-        CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
+        CustomCommonUtil.inputIntegersOnly(tfOrderQuantity);
     }
 }

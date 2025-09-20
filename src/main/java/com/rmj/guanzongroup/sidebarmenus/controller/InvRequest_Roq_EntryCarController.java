@@ -1331,6 +1331,6 @@ public class InvRequest_Roq_EntryCarController implements Initializable, ScreenI
 
     private void initTextFieldPattern() {
 
-        CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
+        CustomCommonUtil.inputIntegersOnly(tfOrderQuantity);
     }
 }

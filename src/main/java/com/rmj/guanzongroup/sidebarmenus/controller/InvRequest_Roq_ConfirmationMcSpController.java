@@ -1378,6 +1378,6 @@ public class InvRequest_Roq_ConfirmationMcSpController implements Initializable,
 }
        private void initTextFieldPattern() {
         
-        CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
+        CustomCommonUtil.inputIntegersOnly(tfOrderQuantity);
     }
 }

@@ -1361,6 +1361,6 @@ public class InvRequest_ConfirmationMonarchGeneralController implements Initiali
 }
        private void initTextFieldPattern() {
         
-        CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
+        CustomCommonUtil.inputIntegersOnly(tfOrderQuantity);
     }
 }

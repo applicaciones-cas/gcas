@@ -1354,6 +1354,6 @@ public class InvRequest_Roq_EntryAppliancesController implements Initializable, 
 }
        private void initTextFieldPattern() {
         
-        CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
+        CustomCommonUtil.inputIntegersOnly(tfOrderQuantity);
     }
 }

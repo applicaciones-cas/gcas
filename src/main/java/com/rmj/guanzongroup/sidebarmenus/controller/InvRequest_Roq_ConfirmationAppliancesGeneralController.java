@@ -1367,6 +1367,6 @@ public class InvRequest_Roq_ConfirmationAppliancesGeneralController implements I
 }
        private void initTextFieldPattern() {
         
-        CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
+        CustomCommonUtil.inputIntegersOnly(tfOrderQuantity);
     }
 }

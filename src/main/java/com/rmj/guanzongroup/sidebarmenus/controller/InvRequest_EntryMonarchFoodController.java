@@ -1489,6 +1489,6 @@ public class InvRequest_EntryMonarchFoodController implements Initializable, Scr
 }
        private void initTextFieldPattern() {
         
-        CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
+        CustomCommonUtil.inputIntegersOnly(tfOrderQuantity);
     }
 }

@@ -1529,6 +1529,6 @@ public class InvRequest_EntryMcSpController implements Initializable, ScreenInte
 }
        private void initTextFieldPattern() {
         
-        CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
+        CustomCommonUtil.inputIntegersOnly(tfOrderQuantity);
     }
 }

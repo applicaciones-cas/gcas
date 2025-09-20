@@ -1375,6 +1375,6 @@ public class InvRequest_ConfirmationCarController implements Initializable, Scre
 }
        private void initTextFieldPattern() {
         
-        CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
+        CustomCommonUtil.inputIntegersOnly(tfOrderQuantity);
     }
 }

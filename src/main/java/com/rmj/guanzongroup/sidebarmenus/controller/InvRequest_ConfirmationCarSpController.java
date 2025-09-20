@@ -1372,6 +1372,6 @@ public class InvRequest_ConfirmationCarSpController implements Initializable, Sc
 }
        private void initTextFieldPattern() {
         
-        CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
+        CustomCommonUtil.inputIntegersOnly(tfOrderQuantity);
     }
 }

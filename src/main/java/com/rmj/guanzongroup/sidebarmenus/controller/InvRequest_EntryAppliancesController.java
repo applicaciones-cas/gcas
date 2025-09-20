@@ -1574,6 +1574,6 @@ public class InvRequest_EntryAppliancesController implements Initializable, Scre
 }
        private void initTextFieldPattern() {
         
-        CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
+        CustomCommonUtil.inputIntegersOnly(tfOrderQuantity);
     }
 }

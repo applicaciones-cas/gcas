@@ -1490,6 +1490,6 @@ public class InvRequest_EntryLPFoodController implements Initializable, ScreenIn
 }
        private void initTextFieldPattern() {
         
-        CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
+        CustomCommonUtil.inputIntegersOnly(tfOrderQuantity);
     }
 }

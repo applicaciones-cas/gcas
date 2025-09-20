@@ -1360,6 +1360,6 @@ public class InvRequest_ConfirmationLPGeneralController implements Initializable
 }
        private void initTextFieldPattern() {
         
-        CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
+        CustomCommonUtil.inputIntegersOnly(tfOrderQuantity);
     }
 }

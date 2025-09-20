@@ -1361,6 +1361,6 @@ public class InvRequest_Roq_ConfirmationLPFoodController implements Initializabl
 }
        private void initTextFieldPattern() {
         
-        CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
+        CustomCommonUtil.inputIntegersOnly(tfOrderQuantity);
     }
 }

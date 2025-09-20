@@ -1372,6 +1372,6 @@ public class InvRequest_ConfirmationMcSpController implements Initializable, Scr
 }
        private void initTextFieldPattern() {
         
-        CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
+        CustomCommonUtil.inputIntegersOnly(tfOrderQuantity);
     }
 }

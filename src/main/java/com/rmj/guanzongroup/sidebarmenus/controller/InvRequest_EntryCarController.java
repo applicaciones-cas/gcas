@@ -1475,6 +1475,6 @@ public class InvRequest_EntryCarController implements Initializable, ScreenInter
 }
        private void initTextFieldPattern() {
         
-        CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
+        CustomCommonUtil.inputIntegersOnly(tfOrderQuantity);
     }
 }

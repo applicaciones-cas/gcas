@@ -1569,6 +1569,6 @@ public class InvRequest_EntryMPController implements Initializable, ScreenInterf
 }
        private void initTextFieldPattern() {
         
-        CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
+        CustomCommonUtil.inputIntegersOnly(tfOrderQuantity);
     }
 }

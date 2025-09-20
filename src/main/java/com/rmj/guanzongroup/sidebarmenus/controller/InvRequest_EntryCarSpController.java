@@ -1530,6 +1530,6 @@ public class InvRequest_EntryCarSpController implements Initializable, ScreenInt
 }
        private void initTextFieldPattern() {
         
-        CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
+        CustomCommonUtil.inputIntegersOnly(tfOrderQuantity);
     }
 }

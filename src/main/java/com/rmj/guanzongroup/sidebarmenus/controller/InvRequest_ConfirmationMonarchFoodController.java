@@ -1353,6 +1353,6 @@ public class InvRequest_ConfirmationMonarchFoodController implements Initializab
 }
        private void initTextFieldPattern() {
         
-        CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
+        CustomCommonUtil.inputIntegersOnly(tfOrderQuantity);
     }
 }

@@ -1359,6 +1359,6 @@ public class InvRequest_Roq_EntryMcSpController implements Initializable, Screen
 }
        private void initTextFieldPattern() {
         
-        CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
+        CustomCommonUtil.inputIntegersOnly(tfOrderQuantity);
     }
 }

@@ -1348,6 +1348,6 @@ public class InvRequest_Roq_EntryAppliancesGeneralController implements Initiali
 }
        private void initTextFieldPattern() {
         
-        CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
+        CustomCommonUtil.inputIntegersOnly(tfOrderQuantity);
     }
 }

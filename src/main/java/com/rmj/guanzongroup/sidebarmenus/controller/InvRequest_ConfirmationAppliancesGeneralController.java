@@ -1362,6 +1362,6 @@ public class InvRequest_ConfirmationAppliancesGeneralController implements Initi
 }
        private void initTextFieldPattern() {
         
-        CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
+        CustomCommonUtil.inputIntegersOnly(tfOrderQuantity);
     }
 }

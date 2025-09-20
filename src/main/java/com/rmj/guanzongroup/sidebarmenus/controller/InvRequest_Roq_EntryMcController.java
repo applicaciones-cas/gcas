@@ -1337,6 +1337,6 @@ public class InvRequest_Roq_EntryMcController implements Initializable, ScreenIn
 
     private void initTextFieldPattern() {
 
-        CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
+        CustomCommonUtil.inputIntegersOnly(tfOrderQuantity);
     }
 }

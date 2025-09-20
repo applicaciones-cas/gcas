@@ -1358,6 +1358,6 @@ public class InvRequest_Roq_EntryCarSpController implements Initializable, Scree
 }
        private void initTextFieldPattern() {
         
-        CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
+        CustomCommonUtil.inputIntegersOnly(tfOrderQuantity);
     }
 }

@@ -1367,6 +1367,6 @@ public class InvRequest_ConfirmationAppliancesController implements Initializabl
 }
        private void initTextFieldPattern() {
         
-        CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
+        CustomCommonUtil.inputIntegersOnly(tfOrderQuantity);
     }
 }

@@ -1369,6 +1369,6 @@ public class InvRequest_Roq_ConfirmationMonarchGeneralController implements Init
 }
        private void initTextFieldPattern() {
         
-        CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
+        CustomCommonUtil.inputIntegersOnly(tfOrderQuantity);
     }
 }

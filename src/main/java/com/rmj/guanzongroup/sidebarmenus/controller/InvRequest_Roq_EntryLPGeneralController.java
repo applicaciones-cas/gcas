@@ -1349,6 +1349,6 @@ public class InvRequest_Roq_EntryLPGeneralController implements Initializable, S
 }
        private void initTextFieldPattern() {
         
-        CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
+        CustomCommonUtil.inputIntegersOnly(tfOrderQuantity);
     }
 }
