@@ -725,12 +725,8 @@ public class POQuotation_ConfirmationController implements Initializable, Screen
                         }
                         break;
                 }
-                Platform.runLater(() -> {
-                    PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
-                    delay.setOnFinished(event -> {
-                        loadTableDetail.reload();
-                    });
-                    delay.play();
+                JFXUtil.runWithDelay(0.50, () -> {
+                    loadTableDetail.reload();
                 });
             });
 

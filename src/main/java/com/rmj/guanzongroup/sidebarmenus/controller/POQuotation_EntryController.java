@@ -796,17 +796,12 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
                         }
                         break;
                 }
-                Platform.runLater(() -> {
-                    PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
-                    delay.setOnFinished(event -> {
-                        loadTableDetail.reload();
-                    });
-                    delay.play();
+                JFXUtil.runWithDelay(0.50, () -> {
+                    loadTableDetail.reload();
                 });
             });
 
     public void moveNext(boolean isUp, boolean continueNext) {
-//        try {
         if (continueNext) {
             apDetail.requestFocus();
             pnDetail = isUp ? Integer.parseInt(details_data.get(JFXUtil.moveToPreviousRow(tblViewTransDetails)).getIndex08())
@@ -821,10 +816,6 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
             {poController.POQuotation().Detail(pnDetail).getDiscountRate(), tfDiscRateDetail},
             {poController.POQuotation().Detail(pnDetail).getDiscountAmount(), tfAddlDiscAmtDetail},
             {poController.POQuotation().Detail(pnDetail).getQuantity(), tfQuantity},}, tfQuantity); // default
-
-//        } catch (SQLException | GuanzonException ex) {
-//            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
-//        }
     }
 
     private void txtField_KeyPressed(KeyEvent event) {
@@ -1451,9 +1442,6 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
                                 } catch (GuanzonException | SQLException ex) {
                                     Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                                 }
-//                                if (poController.POQuotation().POQuotationRequestSupplierList(lnCtr).getTransactionStatus().equals(POQuotationRequestStatus.CONFIRMED)) {
-//                                    JFXUtil.highlightByKey(tblViewMainList, String.valueOf(lnCtr + 1), "#C1E1C1", highlightedRowsMain);
-//                                }
                             }
                             loadHighlightFromDetail();
                         }
@@ -1564,9 +1552,6 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
         }
 
         switch (poController.POQuotation().Master().getTransactionStatus()) {
-//            case POQuotationStatus.PAID:
-//                JFXUtil.setButtonsVisibility(false, btnUpdate);
-//                break;
             case POQuotationStatus.VOID:
             case POQuotationStatus.CANCELLED:
                 JFXUtil.setButtonsVisibility(false, btnUpdate);
