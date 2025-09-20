@@ -2,7 +2,6 @@ package com.rmj.guanzongroup.sidebarmenus.controller;
 
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Attachment;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelPOQuotation_Detail;
-import com.rmj.guanzongroup.sidebarmenus.table.model.ModelPOQuotation_Main;
 import com.rmj.guanzongroup.sidebarmenus.utility.CustomCommonUtil;
 import com.rmj.guanzongroup.sidebarmenus.utility.JFXUtil;
 import java.io.IOException;
@@ -10,8 +9,6 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +27,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
-import javafx.scene.control.Pagination;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
@@ -39,11 +35,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
-import static javafx.scene.input.KeyCode.DOWN;
-import static javafx.scene.input.KeyCode.ENTER;
 import static javafx.scene.input.KeyCode.F3;
-import static javafx.scene.input.KeyCode.TAB;
-import static javafx.scene.input.KeyCode.UP;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
@@ -51,17 +43,12 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
 import org.guanzon.appdriver.agent.ShowMessageFX;
-import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRiderCAS;
 import org.guanzon.appdriver.base.GuanzonException;
 import org.guanzon.appdriver.base.MiscUtil;
-import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.ParseException;
-import java.time.format.DateTimeFormatter;
 import java.util.concurrent.atomic.AtomicReference;
-import javafx.animation.PauseTransition;
 import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
@@ -70,8 +57,6 @@ import javafx.scene.control.TabPane;
 import javafx.stage.Stage;
 import org.guanzon.appdriver.constant.DocumentType;
 import javafx.util.Pair;
-import org.guanzon.appdriver.agent.ShowDialogFX;
-import org.guanzon.appdriver.constant.UserRight;
 import ph.com.guanzongroup.cas.purchasing.t2.services.QuotationControllers;
 import ph.com.guanzongroup.cas.purchasing.t2.status.POQuotationStatus;
 
@@ -272,20 +257,10 @@ public class POQuotation_HistoryController implements Initializable, ScreenInter
         } catch (IOException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
         }
-
     }
 
     @FXML
     private void cmdCheckBox_Click(ActionEvent event) {
-        poJSON = new JSONObject();
-        Object source = event.getSource();
-        if (source instanceof CheckBox) {
-            CheckBox checkedBox = (CheckBox) source;
-            switch (checkedBox.getId()) {
-                case "cbVatable":
-                    break;
-            }
-        }
     }
 
     @FXML
@@ -303,29 +278,10 @@ public class POQuotation_HistoryController implements Initializable, ScreenInter
                         if ("error".equalsIgnoreCase((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                             return;
-                        }
-
-                        poController.POQuotation().loadAttachments();
-                        if (poController.POQuotation().getTransactionAttachmentCount() > 1) {
-                            if (!openedAttachment.equals(poController.POQuotation().POQuotationList(pnMain).getTransactionNo())) {
-                                stageAttachment.closeDialog();
-                            }
                         } else {
+                            imageinfo_temp.clear();
                             stageAttachment.closeDialog();
                         }
-                        poController.POQuotation().loadAttachments();
-
-                        Platform.runLater(() -> {
-                            loadTableDetail.reload();
-                        });
-                        tfAttachmentNo.clear();
-                        cmbAttachmentType.setItems(documentType);
-
-                        imageView.setImage(null);
-                        JFXUtil.stackPaneClip(stackPane1);
-                        Platform.runLater(() -> {
-                            loadTableAttachment.reload();
-                        });
                         pnEditMode = poController.POQuotation().getEditMode();
                         break;
                     case "btnClose":
@@ -401,7 +357,6 @@ public class POQuotation_HistoryController implements Initializable, ScreenInter
             });
 
     public void moveNext(boolean isUp, boolean continueNext) {
-//        try {
         if (continueNext) {
             apDetail.requestFocus();
             pnDetail = isUp ? Integer.parseInt(details_data.get(JFXUtil.moveToPreviousRow(tblViewTransDetails)).getIndex08())
@@ -415,13 +370,6 @@ public class POQuotation_HistoryController implements Initializable, ScreenInter
             {poController.POQuotation().Detail(pnDetail).getQuantity(), tfQuantity},
             {poController.POQuotation().Detail(pnDetail).getDiscountRate(), tfDiscRateDetail},
             {poController.POQuotation().Detail(pnDetail).getDiscountAmount(), tfAddlDiscAmtDetail},}, tfReplaceId); // default
-
-//            if (!JFXUtil.isObjectEqualTo(poController.POQuotation().Detail(pnDetail).getDescription(), null, "")) {
-//                tfQuantity.requestFocus();
-//            }
-//        } catch (SQLException | GuanzonException ex) {
-//            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
-//        }
     }
 
     private void txtField_KeyPressed(KeyEvent event) {
@@ -480,18 +428,9 @@ public class POQuotation_HistoryController implements Initializable, ScreenInter
                             } else {
                                 pnEditMode = poController.POQuotation().getEditMode();
                                 loadRecordMaster();
-                                loadTableDetail.reload();
-
+                              
+                                stageAttachment.closeDialog();
                                 poController.POQuotation().loadAttachments();
-                                if (poController.POQuotation().getTransactionAttachmentCount() > 1) {
-                                    if (!openedAttachment.equals(poController.POQuotation().POQuotationList(pnMain).getTransactionNo())) {
-                                        stageAttachment.closeDialog();
-                                    }
-                                } else {
-                                    stageAttachment.closeDialog();
-                                }
-                                poController.POQuotation().loadAttachments();
-
                                 Platform.runLater(() -> {
                                     loadTableDetail.reload();
                                 });
@@ -515,24 +454,6 @@ public class POQuotation_HistoryController implements Initializable, ScreenInter
             }
         } catch (GuanzonException | SQLException | CloneNotSupportedException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        }
-    }
-
-    boolean pbSuccess = true;
-
-    private void datepicker_Action(ActionEvent event) {
-        poJSON = new JSONObject();
-        JFXUtil.setJSONSuccess(poJSON, "success");
-
-        Object source = event.getSource();
-        if (source instanceof DatePicker) {
-            DatePicker datePicker = (DatePicker) source;
-            String inputText = datePicker.getEditor().getText();
-            SimpleDateFormat sdfFormat = new SimpleDateFormat(SQLUtil.FORMAT_SHORT_DATE);
-
-            if (JFXUtil.isObjectEqualTo(inputText, null, "", "01/01/1900")) {
-                return;
-            }
         }
     }
 
@@ -768,7 +689,6 @@ public class POQuotation_HistoryController implements Initializable, ScreenInter
 
     public void initDatePickers() {
         JFXUtil.setDatePickerFormat("MM/dd/yyyy", dpTransactionDate, dpReferenceDate, dpValidityDate);
-        JFXUtil.setActionListener(this::datepicker_Action, dpTransactionDate, dpReferenceDate, dpValidityDate);
     }
 
     public void initTextFields() {
@@ -836,7 +756,6 @@ public class POQuotation_HistoryController implements Initializable, ScreenInter
         int newIndex = currentIndex + direction;
 
         if (newIndex != -1 && (newIndex <= attachment_data.size() - 1)) {
-            ModelDeliveryAcceptance_Attachment image = attachment_data.get(newIndex);
             TranslateTransition slideOut = new TranslateTransition(Duration.millis(300), imageView);
             slideOut.setByX(direction * -400); // Move left or right
 
@@ -862,7 +781,6 @@ public class POQuotation_HistoryController implements Initializable, ScreenInter
     }
 
     public void initAttachmentsGrid() {
-        /*FOCUS ON FIRST ROW*/
         JFXUtil.setColumnCenter(tblRowNoAttachment);
         JFXUtil.setColumnLeft(tblFileNameAttachment);
         JFXUtil.setColumnsIndexAndDisableReordering(tblAttachments);
