@@ -523,7 +523,7 @@
                                           <TableView fx:id="tblAttachments" stylesheets="@../css/Tables.css" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
                                             <columns>
                                               <TableColumn fx:id="tblRowNoAttachment" editable="false" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" sortable="false" style="-fx-font-size: 12;" text="No" />
-                                              <TableColumn fx:id="tblFileNameAttachment" editable="false" maxWidth="283.0" minWidth="-1.0" prefWidth="283.0" sortable="false" style="-fx-font-size: 12;" text="File Name" />
+                                              <TableColumn fx:id="tblFileNameAttachment" editable="false" maxWidth="305.0" minWidth="-1.0" prefWidth="305.0" sortable="false" style="-fx-font-size: 12;" text="File Name" />
                                             </columns>
                                           </TableView>
                                                                </children>
