@@ -701,36 +701,14 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
                 if (JFXUtil.isObjectEqualTo(inputText, null, "", "01/01/1900")) {
                     return;
                 }
+                String lsServerDate = sdfFormat.format(oApp.getServerDate());
+                String lsTransDate = sdfFormat.format(poController.POQuotationRequest().Master().getTransactionDate());
+                String lsSelectedDate = sdfFormat.format(SQLUtil.toDate(JFXUtil.convertToIsoFormat(inputText), SQLUtil.FORMAT_SHORT_DATE));
+                LocalDate currentDate = LocalDate.parse(lsTransDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
+                LocalDate selectedDate = LocalDate.parse(lsSelectedDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
 
                 switch (datePicker.getId()) {
-                    case "dpExpectedDate":
-                        String lsServerDate = sdfFormat.format(oApp.getServerDate());
-                        String lsTransDate = sdfFormat.format(poController.POQuotationRequest().Master().getTransactionDate());
-                        String lsSelectedDate = sdfFormat.format(SQLUtil.toDate(JFXUtil.convertToIsoFormat(inputText), SQLUtil.FORMAT_SHORT_DATE));
-                        LocalDate currentDate = LocalDate.parse(lsTransDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
-                        LocalDate selectedDate = LocalDate.parse(lsSelectedDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
-                        if (poController.POQuotationRequest().getEditMode() == EditMode.ADDNEW
-                                || poController.POQuotationRequest().getEditMode() == EditMode.UPDATE) {
-                            if (selectedDate.isBefore(currentDate)) {
-                                JFXUtil.setJSONError(poJSON, "Target date cannot be before the transaction date.");
-                                pbSuccess = false;
-                            } else {
-                                poController.POQuotationRequest().Master().setExpectedPurchaseDate((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
-                            }
-                            if (pbSuccess) {
-                            } else {
-                                if ("error".equals((String) poJSON.get("result"))) {
-                                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                }
-                            }
-                            pbSuccess = false; //Set to false to prevent multiple message box: Conflict with server date vs transaction date validation
-                            loadRecordMaster();
-                            pbSuccess = true; //Set to original value
-                        }
-                        break;
                     case "dpSearchTransactionDate":
-                        loadRecordSearch();
-                        retrievePOQuotationRequest();
                         break;
                     default:
                         break;
@@ -842,7 +820,7 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
             String lsTransactionDate = CustomCommonUtil.formatDateToShortString(poController.POQuotationRequest().Master().getTransactionDate());
             dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsTransactionDate, "yyyy-MM-dd"));
 
-            String lsExpectedDate = CustomCommonUtil.formatDateToShortString(poController.POQuotationRequest().Master().getTransactionDate());
+            String lsExpectedDate = CustomCommonUtil.formatDateToShortString(poController.POQuotationRequest().Master().getExpectedPurchaseDate());
             dpExpectedDate.setValue(JFXUtil.isObjectEqualTo(lsExpectedDate, "1900-01-01") ? null : CustomCommonUtil.parseDateStringToLocalDate(lsExpectedDate, "yyyy-MM-dd"));
 
             tfBranch.setText(poController.POQuotationRequest().Master().Branch().getBranchName());
