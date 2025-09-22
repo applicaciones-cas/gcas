@@ -398,7 +398,7 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
                         break;
                     }
                     reloadTableDetail();
-                    clearAllInputs();
+//                    clearAllInputs();
                     pnEditMode = poAppController.getEditMode();
                     break;
                 case "btnCancel":

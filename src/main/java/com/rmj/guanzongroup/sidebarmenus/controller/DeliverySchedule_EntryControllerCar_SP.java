@@ -398,7 +398,7 @@ public class DeliverySchedule_EntryControllerCar_SP implements Initializable, Sc
                         break;
                     }
                     reloadTableDetail();
-                    clearAllInputs();
+//                    clearAllInputs();
                     pnEditMode = poAppController.getEditMode();
                     break;
                 case "btnCancel":

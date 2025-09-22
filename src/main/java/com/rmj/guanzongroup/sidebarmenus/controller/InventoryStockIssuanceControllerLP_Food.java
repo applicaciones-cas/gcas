@@ -407,7 +407,7 @@ public class InventoryStockIssuanceControllerLP_Food implements Initializable, S
                         return;
                     }
                     reloadTableDetail();
-                    clearAllInputs();
+//                    clearAllInputs();
                     pnEditMode = poAppController.getEditMode();
 
                     break;

@@ -432,7 +432,7 @@ public class DeliverySchedule_ConfirmationControllerMonarch_Food implements Init
                         break;
                     }
                     reloadTableDetail();
-                    clearAllInputs();
+//                    clearAllInputs();
                     pnEditMode = poAppController.getEditMode();
                     break;
                 case "btnCancel":

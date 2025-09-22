@@ -407,7 +407,7 @@ public class InventoryStockIssuanceControllerMC_SP implements Initializable, Scr
                         return;
                     }
                     reloadTableDetail();
-                    clearAllInputs();
+//                    clearAllInputs();
                     pnEditMode = poAppController.getEditMode();
 
                     break;

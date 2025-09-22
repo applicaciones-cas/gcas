@@ -167,7 +167,7 @@ public class InventoryStockIssuanceNeoController_ApprovalCar implements Initiali
             initializeTableDetail();
             initControlEvents();
         } catch (SQLException | GuanzonException e) {
-            
+
             poLogWrapper.severe(psFormName + " :" + e.getMessage());
         }
     }
@@ -361,15 +361,6 @@ public class InventoryStockIssuanceNeoController_ApprovalCar implements Initiali
                     }
                     break;
 
-                case "btnNew":
-                    if (!isJSONSuccess(poAppController.NewTransaction(), "Initialize New Transaction")) {
-                        return;
-                    }
-                    clearAllInputs();
-                    getLoadedTransaction();
-                    pnEditMode = poAppController.getEditMode();
-                    break;
-
                 case "btnUpdate":
                     if (poAppController.getMaster().getTransactionNo() == null || poAppController.getMaster().getTransactionNo().isEmpty()) {
                         ShowMessageFX.Information("Please load transaction before proceeding..", "Stock Request Issuance", "");
@@ -455,7 +446,7 @@ public class InventoryStockIssuanceNeoController_ApprovalCar implements Initiali
                         return;
                     }
                     reloadTableDetail();
-                    clearAllInputs();
+//                    clearAllInputs();
                     pnEditMode = poAppController.getEditMode();
 
                     break;
@@ -575,12 +566,55 @@ public class InventoryStockIssuanceNeoController_ApprovalCar implements Initiali
                         loadTransactionMaster();
                         break;
                     case "tfIssuedQty":
-                        if (lsValue.isEmpty()) {
-                            ShowMessageFX.Information("Imvalid quantity", psFormName, null);
-                            loTextField.requestFocus();
+                        if (poAppController.getDetail(pnTransactionDetail).getStockId() == null
+                                || poAppController.getDetail(pnTransactionDetail).getStockId().isEmpty()) {
+                            if (Double.parseDouble(tfIssuedQty.getText()) > 0.0) {
+                                tfIssuedQty.setText("0.00");
+                                loTextField.requestFocus();
+                                ShowMessageFX.Information("Unable to set quantity! No Stock Invetory Detected", psFormName, null);
+                            }
                             return;
                         }
-                        poAppController.getDetail(pnTransactionDetail).setQuantity(Double.parseDouble(lsValue));
+                        double lnIssuedQty;
+                        try {
+                            lnIssuedQty = Double.parseDouble(lsValue);
+                        } catch (NumberFormatException e) {
+                            lnIssuedQty = 0.0; // default if parsing fails
+                            poAppController.getDetail(pnTransactionDetail).setQuantity(lnIssuedQty);
+                            reloadTableDetail();
+                            loadSelectedTransactionDetail(pnTransactionDetail);
+                            loTextField.requestFocus();
+                        }
+                        if (lnIssuedQty < 0.00) {
+                            return;
+                        }
+                        // check if serialized
+                        if (poAppController.getDetail(pnTransactionDetail).Inventory().isSerialized()) {
+                            // must be whole number AND exactly 1
+                            if (lnIssuedQty != 1 || lnIssuedQty % 1 != 0) {
+                                ShowMessageFX.Information("Invalid quantity for serialized item", psFormName, null);
+                                lnIssuedQty = 1; // force to 1
+                                loTextField.setText("1");
+                            }
+                            if (poAppController.getDetail(pnTransactionDetail).getSerialID() == null
+                                    || poAppController.getDetail(pnTransactionDetail).getSerialID().isEmpty()) {
+                                //Search record and sepate the row
+                                if (!isJSONSuccess(poAppController.searchDetailByIssuance(pnTransactionDetail, tfSearchSerial.getText(), true, true),
+                                        "Initialize Search Serial")) {
+                                    lnIssuedQty = 0;
+                                    return;
+                                }
+
+                            }
+                        }
+                        if (lnIssuedQty > poAppController.getDetail(pnTransactionDetail).InventoryStockRequest().getApproved()) {
+                            lnIssuedQty = poAppController.getDetail(pnTransactionDetail).InventoryStockRequest().getApproved();
+                            ShowMessageFX.Information("Issued Quantity exceed Approved Detected", psFormName, null);
+                            loTextField.setText(String.valueOf(lnIssuedQty));
+                        }
+
+                        poAppController.getDetail(pnTransactionDetail).setQuantity(lnIssuedQty);
+
                         reloadTableDetail();
                         loadSelectedTransactionDetail(pnTransactionDetail);
                         break;
@@ -991,7 +1025,7 @@ public class InventoryStockIssuanceNeoController_ApprovalCar implements Initiali
 
         // Show-only based on mode
         initButtonControls(lbShow, "btnSearch", "btnSave", "btnCancel");
-        initButtonControls(!lbShow, "btnBrowse", "btnNew", "btnUpdate", "btnPrint", "btnApprove", "btnVoid");
+        initButtonControls(!lbShow, "btnBrowse", "btnUpdate", "btnPrint", "btnApprove", "btnVoid");
 
         apMaster.setDisable(!lbShow);
         apDetail.setDisable(!lbShow);

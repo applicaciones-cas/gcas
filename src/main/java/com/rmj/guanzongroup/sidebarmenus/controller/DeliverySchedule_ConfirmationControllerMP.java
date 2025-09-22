@@ -433,7 +433,7 @@ public class DeliverySchedule_ConfirmationControllerMP implements Initializable,
                         break;
                     }
                     reloadTableDetail();
-                    clearAllInputs();
+//                    clearAllInputs();
                     pnEditMode = poAppController.getEditMode();
                     break;
                 case "btnCancel":

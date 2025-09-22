@@ -748,14 +748,14 @@ public class InventoryStockIssuanceNeoController_History implements Initializabl
             });
             return false;
         }
-        String message = (String) loJSON.get("message");
-
-        poLogWrapper.severe(psFormName + " :" + message);
-        Platform.runLater(() -> {
-            if (message != null) {
-                ShowMessageFX.Information(null, psFormName, fsModule + ": " + message);
-            }
-        });
+//        String message = (String) loJSON.get("message");
+//
+//        poLogWrapper.severe(psFormName + " :" + message);
+//        Platform.runLater(() -> {
+//            if (message != null) {
+//                ShowMessageFX.Information(null, psFormName, fsModule + ": " + message);
+//            }
+//        });
         poLogWrapper.info(psFormName + " : Success on " + fsModule);
         return true;
 

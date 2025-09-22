@@ -407,7 +407,7 @@ public class InventoryStockIssuanceControllerCar implements Initializable, Scree
                         return;
                     }
                     reloadTableDetail();
-                    clearAllInputs();
+//                    clearAllInputs();
                     pnEditMode = poAppController.getEditMode();
 
                     break;

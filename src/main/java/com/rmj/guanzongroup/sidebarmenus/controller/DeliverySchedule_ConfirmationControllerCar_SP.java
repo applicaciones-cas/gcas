@@ -434,7 +434,7 @@ public class DeliverySchedule_ConfirmationControllerCar_SP implements Initializa
                         break;
                     }
                     reloadTableDetail();
-                    clearAllInputs();
+//                    clearAllInputs();
                     pnEditMode = poAppController.getEditMode();
                     break;
                 case "btnCancel":

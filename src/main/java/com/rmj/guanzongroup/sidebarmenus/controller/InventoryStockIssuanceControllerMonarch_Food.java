@@ -407,7 +407,7 @@ public class InventoryStockIssuanceControllerMonarch_Food implements Initializab
                         return;
                     }
                     reloadTableDetail();
-                    clearAllInputs();
+//                    clearAllInputs();
                     pnEditMode = poAppController.getEditMode();
 
                     break;
@@ -1192,14 +1192,14 @@ public class InventoryStockIssuanceControllerMonarch_Food implements Initializab
             });
             return false;
         }
-        String message = (String) loJSON.get("message");
-
-        poLogWrapper.severe(psFormName + " :" + message);
-        Platform.runLater(() -> {
-            if (message != null) {
-                ShowMessageFX.Information(null, psFormName, fsModule + ": " + message);
-            }
-        });
+//        String message = (String) loJSON.get("message");
+//
+//        poLogWrapper.severe(psFormName + " :" + message);
+//        Platform.runLater(() -> {
+//            if (message != null) {
+//                ShowMessageFX.Information(null, psFormName, fsModule + ": " + message);
+//            }
+//        });
         poLogWrapper.info(psFormName + " : Success on " + fsModule);
         return true;
 

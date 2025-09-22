@@ -407,7 +407,7 @@ public class InventoryStockIssuanceController implements Initializable, ScreenIn
                         return;
                     }
                     reloadTableDetail();
-                    clearAllInputs();
+//                    clearAllInputs();
                     pnEditMode = poAppController.getEditMode();
 
                     break;

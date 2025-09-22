@@ -433,7 +433,7 @@ public class DeliverySchedule_ConfirmationControllerLP_Food implements Initializ
                         break;
                     }
                     reloadTableDetail();
-                    clearAllInputs();
+//                    clearAllInputs();
                     pnEditMode = poAppController.getEditMode();
                     break;
                 case "btnCancel":

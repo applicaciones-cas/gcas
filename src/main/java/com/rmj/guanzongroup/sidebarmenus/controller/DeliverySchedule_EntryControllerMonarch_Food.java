@@ -398,7 +398,7 @@ public class DeliverySchedule_EntryControllerMonarch_Food implements Initializab
                         break;
                     }
                     reloadTableDetail();
-                    clearAllInputs();
+//                    clearAllInputs();
                     pnEditMode = poAppController.getEditMode();
                     break;
                 case "btnCancel":

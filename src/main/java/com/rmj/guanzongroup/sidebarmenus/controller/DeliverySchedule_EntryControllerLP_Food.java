@@ -398,7 +398,7 @@ public class DeliverySchedule_EntryControllerLP_Food implements Initializable, S
                         break;
                     }
                     reloadTableDetail();
-                    clearAllInputs();
+//                    clearAllInputs();
                     pnEditMode = poAppController.getEditMode();
                     break;
                 case "btnCancel":

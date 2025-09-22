@@ -433,7 +433,7 @@ public class DeliverySchedule_ConfirmationControllerAppliance implements Initial
                         break;
                     }
                     reloadTableDetail();
-                    clearAllInputs();
+//                    clearAllInputs();
                     pnEditMode = poAppController.getEditMode();
                     break;
                 case "btnCancel":

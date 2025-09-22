@@ -407,7 +407,7 @@ public class InventoryStockIssuanceControllerAppliance implements Initializable,
                         return;
                     }
                     reloadTableDetail();
-                    clearAllInputs();
+//                    clearAllInputs();
                     pnEditMode = poAppController.getEditMode();
 
                     break;
