@@ -1040,7 +1040,7 @@ public class POQuotation_ConfirmationController implements Initializable, Screen
                             if (selectedDate.isBefore(transactionDate)) {
                                 JFXUtil.setJSONError(poJSON, "Reference Date cannot be before the transaction date.");
                                 pbSuccess = false;
-                            } else if (selectedDate.isAfter(transactionDate)) {
+                            } else if (selectedDate.isAfter(currentDate)) {
                                 JFXUtil.setJSONError(poJSON, "Future dates are not allowed.");
                                 pbSuccess = false;
                             } else {
