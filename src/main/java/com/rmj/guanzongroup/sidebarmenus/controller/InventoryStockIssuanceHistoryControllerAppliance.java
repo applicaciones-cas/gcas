@@ -63,7 +63,7 @@ public class InventoryStockIssuanceHistoryControllerAppliance implements Initial
 
     private GRiderCAS poApp;
     private LogWrapper poLogWrapper;
-    private String psFormName = "Issuance Entry";
+    private String psFormName = "Issuance History";
     private String psIndustryID, psCompanyID, psCategoryID;
     private Control lastFocusedControl;
     private InventoryStockIssuance poAppController;
@@ -85,7 +85,9 @@ public class InventoryStockIssuanceHistoryControllerAppliance implements Initial
     private TextField tfSearchCluster, tfSearchTransNo, tfTransNo, tfPlateNo, tfDriver,
             tfAssistant1, tfAssistant2, tfClusterName, tfTownName, tfBranch,
             tfDelilveryTransNo, tfOrderNo, tfBarcode,
-            tfDescription, tfSupersede, tfCost, tfIssuedQty, tfBrand, tfColor, tfMeasure, tfVariant, tfApprovedQty, tfModel, tfSerial, tfInvType, tfOrderQuantity;
+            tfDescription, tfSupersede, tfCost, tfIssuedQty, tfBrand, tfColor,
+            tfMeasure, tfVariant, tfApprovedQty, tfModel, tfSerial, tfInvType,
+            tfOrderQuantity, tfReceiveQuantity, tfReceiverNote;
 
     @FXML
     private Label lblSource;
@@ -114,7 +116,7 @@ public class InventoryStockIssuanceHistoryControllerAppliance implements Initial
     private TableColumn<Model_Inventory_Transfer_Detail, String> tblColDetailNo, tblColDetailOrderNo, tblColDetailSerial,
             tblColDetailBarcode, tblColDetailDescr,
             tblColDetailBrand, tblColDetailVariant, tblColDetailSerialStatus, tblColDetailCost,
-            tblColDetailOrderQty, tblColDetailApprovedQty, tblColDetailIssuedQty;
+            tblColDetailOrderQty, tblColDetailApprovedQty, tblColDetailIssuedQty, tblColDetailReceivedQty;
 
     @Override
     public void setGRider(GRiderCAS foValue) {
@@ -427,6 +429,9 @@ public class InventoryStockIssuanceHistoryControllerAppliance implements Initial
         tfOrderQuantity.setText(tblColDetailOrderQty.getCellData(tblIndex));
         tfApprovedQty.setText(tblColDetailApprovedQty.getCellData(tblIndex));
         tfIssuedQty.setText(tblColDetailIssuedQty.getCellData(tblIndex));
+        tfReceiveQuantity.setText(tblColDetailReceivedQty.getCellData(tblIndex));
+        tfReceiverNote.setText(poAppController.getDetail(pnTransactionDetail).InventoryTransfer()
+                .getDetail(fnRow).getNote());
 
         tfSupersede.setText(poAppController.getDetail(pnTransactionDetail).InventoryTransfer()
                 .getDetail(fnRow).InventorySupersede().getBarCode());
@@ -554,6 +559,7 @@ public class InventoryStockIssuanceHistoryControllerAppliance implements Initial
             tblColDetailOrderQty.setStyle("-fx-alignment: CENTER-RIGHT; -fx-padding: 0 5 0 0;");
             tblColDetailApprovedQty.setStyle("-fx-alignment: CENTER-RIGHT; -fx-padding: 0 5 0 0;");
             tblColDetailIssuedQty.setStyle("-fx-alignment: CENTER-RIGHT; -fx-padding: 0 5 0 0;");
+            tblColDetailReceivedQty.setStyle("-fx-alignment: CENTER-RIGHT; -fx-padding: 0 5 0 0;");
 
             tblColDetailNo.setCellValueFactory((loModel) -> {
                 int index = tblViewDetails.getItems().indexOf(loModel.getValue()) + 1;
@@ -652,6 +658,7 @@ public class InventoryStockIssuanceHistoryControllerAppliance implements Initial
                 }
             });
             tblColDetailIssuedQty.setCellValueFactory((loModel) -> new SimpleStringProperty(String.valueOf(loModel.getValue().getQuantity())));
+            tblColDetailReceivedQty.setCellValueFactory((loModel) -> new SimpleStringProperty(String.valueOf(loModel.getValue().getReceivedQuantity())));
 
         }
     }

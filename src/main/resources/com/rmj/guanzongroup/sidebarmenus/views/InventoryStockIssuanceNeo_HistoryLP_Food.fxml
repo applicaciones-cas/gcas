@@ -284,6 +284,7 @@
                               <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
                               <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
                               <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
+                                                      <RowConstraints maxHeight="-Infinity" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                               </rowConstraints>
                                               <children>
                                                   <Label text="Barcode" GridPane.rowIndex="1">
@@ -358,6 +359,14 @@
                                                          </font>
                                                       </Label>
                                                       <TextField fx:id="tfInvType" disable="true" editable="false" maxHeight="25.0" styleClass="DisabledTextField" GridPane.columnIndex="7" GridPane.columnSpan="2" GridPane.rowIndex="6" />
+                                                      <Label text="Receiver Note" GridPane.rowIndex="7" />
+                                                      <TextField fx:id="tfReceiverNote" alignment="TOP_LEFT" editable="false" maxHeight="1.7976931348623157E308" GridPane.columnIndex="2" GridPane.columnSpan="7" GridPane.rowIndex="7" />
+                                                      <Label text="Received Qty" GridPane.columnIndex="10" GridPane.rowIndex="7">
+                                                         <font>
+                                                            <Font name="System Bold" size="12.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField fx:id="tfReceiveQuantity" alignment="CENTER_RIGHT" promptText="0.0" GridPane.columnIndex="12" GridPane.rowIndex="7" />
                                               </children>
                                           </GridPane>
                                       </children>
@@ -381,6 +390,7 @@
                                                       <TableColumn fx:id="tblColDetailVariant" editable="false" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Variant" />
                                               <TableColumn fx:id="tblColDetailCost" editable="false" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Cost" />
                                                       <TableColumn fx:id="tblColDetailOrderQty" editable="false" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="QTY" />
+                                                      <TableColumn fx:id="tblColDetailReceiveQty" editable="false" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Rec. Qty" />
                                                   </columns>
                                                    <columnResizePolicy>
                                                       <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

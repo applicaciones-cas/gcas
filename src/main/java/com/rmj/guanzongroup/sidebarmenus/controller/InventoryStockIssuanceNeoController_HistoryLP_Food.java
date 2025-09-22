@@ -93,7 +93,7 @@ public class InventoryStockIssuanceNeoController_HistoryLP_Food implements Initi
 
     @FXML
     TextField tfSearchSerial, tfSearchBarcode, tfSearchDescription, tfSupersede, tfBrand, tfModel, tfColor,
-            tfVariant, tfMeasure, tfInvType, tfCost, tfIssuedQty;
+            tfVariant, tfMeasure, tfInvType, tfCost, tfIssuedQty, tfReceiveQuantity, tfReceiverNote;
 
     @FXML
     Button btnSearch, btnPrint, btnHistory, btnRetrieve, btnClose;
@@ -109,7 +109,7 @@ public class InventoryStockIssuanceNeoController_HistoryLP_Food implements Initi
 
     @FXML
     TableColumn<Model_Inventory_Transfer_Detail, String> tblColDetailNo, tblColDetailOrderNo, tblColDetailSerial, tblColDetailBarcode, tblColDetailDescr,
-            tblColDetailBrand, tblColDetailVariant, tblColDetailCost, tblColDetailOrderQty;
+            tblColDetailBrand, tblColDetailVariant, tblColDetailCost, tblColDetailOrderQty, tblColDetailReceiveQty;
 
     @FXML
     Label lblSource, lblStatus;
@@ -143,7 +143,7 @@ public class InventoryStockIssuanceNeoController_HistoryLP_Food implements Initi
         try {
             poLogWrapper = new LogWrapper(psFormName, psFormName);
             poAppController = new DeliveryIssuanceControllers(poApp, poLogWrapper).InventoryStockIssuanceNeo();
-            
+
             //initlalize and validate transaction objects from class controller
             if (!isJSONSuccess(poAppController.initTransaction(), psFormName)) {
                 unloadForm appUnload = new unloadForm();
@@ -167,7 +167,7 @@ public class InventoryStockIssuanceNeoController_HistoryLP_Food implements Initi
             initializeTableDetail();
             initControlEvents();
         } catch (SQLException | GuanzonException e) {
-            
+
             poLogWrapper.severe(psFormName + " :" + e.getMessage());
         }
     }
@@ -213,7 +213,7 @@ public class InventoryStockIssuanceNeoController_HistoryLP_Food implements Initi
 
             loadSelectedTransactionDetail(pnTransactionDetail);
         } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
-            Logger.getLogger(InventoryStockIssuanceNeoController_HistoryLP_Food.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(InventoryStockIssuanceNeoController_History.class.getName()).log(Level.SEVERE, null, ex);
             poLogWrapper.severe(psFormName + " :" + ex.getMessage());
         }
     }
@@ -471,7 +471,7 @@ public class InventoryStockIssuanceNeoController_HistoryLP_Food implements Initi
                 pi.setVisible(false);
                 Throwable ex = getException();
                 Logger
-                        .getLogger(InventoryStockIssuanceNeoController_HistoryLP_Food.class
+                        .getLogger(InventoryStockIssuanceNeoController_History.class
                                 .getName()).log(Level.SEVERE, null, ex);
                 poLogWrapper.severe(psFormName + " : " + ex.getMessage());
             }
@@ -518,9 +518,9 @@ public class InventoryStockIssuanceNeoController_HistoryLP_Food implements Initi
         tfVariant.setText(tblColDetailVariant.getCellData(tblIndex));
         tfCost.setText(tblColDetailCost.getCellData(tblIndex));
         tfIssuedQty.setText(tblColDetailOrderQty.getCellData(tblIndex));
-//        tfReceiveQuantity.setText(tblColDetailRecQty.getCellData(tblIndex));
+        tfReceiveQuantity.setText(tblColDetailReceiveQty.getCellData(tblIndex));
 
-//        taNote.setText(poAppController.getDetail(fnRow).getNote());
+        tfReceiverNote.setText(poAppController.getDetail(fnRow).getNote());
         tfSupersede.setText(poAppController.getDetail(fnRow).InventorySupersede().getBarCode());
         tfModel.setText(poAppController.getDetail(fnRow).Inventory().Model().getDescription());
         tfColor.setText(poAppController.getDetail(fnRow).Inventory().Color().getDescription());
@@ -640,6 +640,7 @@ public class InventoryStockIssuanceNeoController_HistoryLP_Food implements Initi
 
             tblColDetailCost.setStyle("-fx-alignment: CENTER-RIGHT; -fx-padding: 0 5 0 0;");
             tblColDetailOrderQty.setStyle("-fx-alignment: CENTER; -fx-padding: 0 5 0 0;");
+            tblColDetailReceiveQty.setStyle("-fx-alignment: CENTER; -fx-padding: 0 5 0 0;");
 
             tblColDetailNo.setCellValueFactory((loModel) -> {
                 int index = tblViewDetails.getItems().indexOf(loModel.getValue()) + 1;
@@ -659,7 +660,7 @@ public class InventoryStockIssuanceNeoController_HistoryLP_Food implements Initi
 
                     return new SimpleStringProperty(xserialname);
                 } catch (SQLException | GuanzonException ex) {
-                    Logger.getLogger(InventoryStockIssuanceNeoController_HistoryLP_Food.class
+                    Logger.getLogger(InventoryStockIssuanceNeoController_History.class
                             .getName()).log(Level.SEVERE, null, ex);
                     poLogWrapper.severe(psFormName + " :" + ex.getMessage());
                     return new SimpleStringProperty("");
@@ -712,6 +713,7 @@ public class InventoryStockIssuanceNeoController_HistoryLP_Food implements Initi
             });
 
             tblColDetailOrderQty.setCellValueFactory((loModel) -> new SimpleStringProperty(String.valueOf(loModel.getValue().getQuantity())));
+            tblColDetailReceiveQty.setCellValueFactory((loModel) -> new SimpleStringProperty(String.valueOf(loModel.getValue().getReceivedQuantity())));
 
         }
     }
