@@ -138,7 +138,11 @@ public class POQuotation_HistoryController implements Initializable, ScreenInter
     public void initialize(URL location, ResourceBundle resources) {
         poController = new QuotationControllers(oApp, null);
         poJSON = new JSONObject();
-        poJSON = poController.POQuotation().InitTransaction(); // Initialize transaction
+        try {
+            poJSON = poController.POQuotation().InitTransaction(); // Initialize transaction
+        } catch (Exception e) {
+            poJSON.put("message", "Error in Initialize");
+        }
         if (!"success".equals((String) poJSON.get("result"))) {
             System.err.println((String) poJSON.get("message"));
             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -251,6 +255,7 @@ public class POQuotation_HistoryController implements Initializable, ScreenInter
                     poController.POQuotation().TransactionAttachmentList(lnCtr).getModel().getDocumentType()));
         }
         AttachmentDialogController controller = new AttachmentDialogController();
+        controller.setOpenedImage(pnAttachment);
         controller.addData(data);
         try {
             stageAttachment.showDialog((Stage) btnBrowse.getScene().getWindow(), getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/AttachmentDialog.fxml"), controller, "Attachment Dialog", false, false, true);
@@ -428,7 +433,7 @@ public class POQuotation_HistoryController implements Initializable, ScreenInter
                             } else {
                                 pnEditMode = poController.POQuotation().getEditMode();
                                 loadRecordMaster();
-                              
+
                                 stageAttachment.closeDialog();
                                 poController.POQuotation().loadAttachments();
                                 Platform.runLater(() -> {

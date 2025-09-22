@@ -63,7 +63,6 @@ import org.json.simple.parser.ParseException;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicReference;
-import javafx.animation.PauseTransition;
 import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
@@ -163,7 +162,7 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
         try {
             poJSON = poController.POQuotation().InitTransaction(); // Initialize transaction
         } catch (Exception e) {
-
+             poJSON.put("message", "Error in Initialize");
         }
         if (!"success".equals((String) poJSON.get("result"))) {
             System.err.println((String) poJSON.get("message"));
