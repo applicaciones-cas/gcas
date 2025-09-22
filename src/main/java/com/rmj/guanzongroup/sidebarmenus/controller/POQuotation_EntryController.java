@@ -404,6 +404,10 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
                             if (!"success".equals((String) poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 poController.POQuotation().AddDetail();
+                                loadRecordMaster();
+                                loadTableDetail.reload();
+                                poController.POQuotation().loadAttachments();
+                                loadTableAttachment.reload();
                                 return;
                             } else {
                                 ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
@@ -425,12 +429,12 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
                                 }
                                 JFXUtil.disableAllHighlightByColor(tblViewMainList, "#A7C7E7", highlightedRowsMain);
                                 JFXUtil.showRetainedHighlight(true, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, true);
-
+                                btnNew.fire();
+                                return;
                             }
                         } else {
                             return;
                         }
-                        break;
                     case "btnVoid":
                         poJSON = new JSONObject();
                         if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure you want to void transaction?") == true) {
