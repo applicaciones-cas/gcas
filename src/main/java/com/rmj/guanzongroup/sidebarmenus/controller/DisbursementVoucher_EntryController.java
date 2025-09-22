@@ -33,6 +33,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
@@ -329,6 +330,13 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
         initFields(pnEditMode);
         initButton(pnEditMode);
         pagination.setPageCount(0);
+        Node[] txtField_Focusx = {
+            tfTaxCodeDetail
+            
+        };
+        for (Node txtInput : txtField_Focusx) {
+            txtInput.focusedProperty().addListener(txtField_Focus);
+        }
     }
 
     private void loadRecordSearch() {
@@ -450,6 +458,16 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                         CustomCommonUtil.switchToTab(tabDetails, tabPaneMain);
                         return;
                     }
+                    poJSON = poDisbursementController.validateTAXandVat();
+                    if("error".equals((String)poJSON.get("result"))){
+                        ShowMessageFX.Information((String)poJSON.get("message"), pxeModuleName, null);
+                        pnDetailDV = (int) poJSON.get("pnDetailDV");
+                        JFXUtil.selectAndFocusRow(tblVwDetails, pnDetailDV);
+                        loadRecordDetailDV();
+                        return;
+                        
+                    }
+               
                     if (pnEditMode == EditMode.UPDATE || pnEditMode == EditMode.ADDNEW) {
                         if (oApp.getUserLevel() > UserRight.ENCODER) {
                             if (!pbIsCheckedJournalTab) {
@@ -1126,6 +1144,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
             if (!detailsdv_data.isEmpty() && event.getClickCount() == 1) {
                 try {
                     pnDetailDV = tblVwDetails.getSelectionModel().getSelectedIndex();
+                    poJSONVAT.clear();
                     poJSONVAT = poDisbursementController.validateDetailVATAndTAX(poDisbursementController.Detail(pnDetailDV).getSourceCode(),
                             poDisbursementController.Detail(pnDetailDV).getSourceNo());
                     totalPartialPay = (Double) poJSONVAT.get("totalAmount");
@@ -1300,11 +1319,13 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
         JFXUtil.setFocusListener(txtMasterOnlinePayment_Focus, tfBankNameOnlinePayment, tfBankAccountOnlinePayment, tfSupplierServiceName, tfSupplierAccountNo);
 
         JFXUtil.setFocusListener(txtDetailJE_Focus, tfAccountCode, tfAccountDescription, tfDebitAmount, tfCreditAmount);
-
+//        JFXUtil.setFocusListener(txtField_Focus,tfTaxCodeDetail);
         //Initialise  TextField KeyPressed
         List<TextField> loTxtFieldKeyPressed = Arrays.asList(tfSupplier, tfPayeeName, tfBankNameCheck, tfBankAccountCheck, tfPurchasedAmountDetail, tfTaxCodeDetail, tfParticularsDetail, tfAuthorizedPerson,
                 tfAccountCode, tfAccountDescription, tfDebitAmount, tfCreditAmount,tfVatAmountDetail,tfVatRateDetail);
         loTxtFieldKeyPressed.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
+        
+        
 
     }
     final ChangeListener<? super Boolean> txtMasterCheck_Focus = (o, ov, nv) -> {
@@ -1447,6 +1468,52 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
 
     };
 
+    final ChangeListener<Boolean> txtField_Focus = (obs, oldVal, newVal) -> {
+        TextField loTextField = (TextField) ((ReadOnlyBooleanPropertyBase) obs).getBean();
+        String lsTextFieldID = loTextField.getId();
+        String lsValue = loTextField.getText();
+        
+//        if (lsValue == null) {
+//            return;
+//        }
+
+        if (!newVal) {
+            try {
+                switch (lsTextFieldID) {
+                    case "tfTaxCodeDetail":
+                        if(poDisbursementController.Detail(pnDetailDV).getTaxCode().isEmpty() && poDisbursementController.Detail(pnDetailDV).isWithVat() ){
+                            if(ShowMessageFX.YesNo("No Tax Code has been assigned. \n "
+                                    + " VAT will not be applied, and this transaction requires user approval before proceeding.\n "
+                                    + " Do you want to proceed?", pxeModuleName, null)){
+                                poJSON = poDisbursementController.callapproval();
+                                if("error".equals(poJSON.get("result"))){
+                                    ShowMessageFX.Information((String)poJSON.get("message"), pxeModuleName, lsValue);
+                                    return;
+                                }
+                                
+                                poDisbursementController.Detail(pnDetailDV).isWithVat(false);
+                                poDisbursementController.Detail(pnDetailDV).setDetailVatRates(DisbursementStatic.DefaultValues.default_value_double);
+                                poDisbursementController.computeVat(pnDetailDV, 
+                                        poDisbursementController.Detail(pnDetailDV).getAmount(), 
+                                        poDisbursementController.Detail(pnDetailDV).getDetailVatRates(), 
+                                        (double) poJSONVAT.get("totalApplied"), 
+                                        true);
+                                
+                                loadTableDetailDV();
+                            }
+                        }
+                        break;
+                    default:
+                        break;
+                }
+                
+            } catch (Exception e) {
+                System.err.println("Error processing input [" + lsTextFieldID + "]: " + e.getMessage());
+            }
+        } 
+    };
+    
+    
     private void txtField_KeyPressed(KeyEvent event) {
         TextField txtField = (TextField) event.getSource();
         String lsID = (((TextField) event.getSource()).getId());
@@ -1502,6 +1569,8 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                             case "tfPurchasedAmountDetail":
                             case "tfTaxCodeDetail":
                             case "tfParticularsDetail":
+                                
+                                 
                                 poDisbursementController.Detail(pnDetailDV).setAmountApplied(Double.parseDouble(JFXUtil.removeComma(tfPurchasedAmountDetail.getText())));
                                 
                                 poDisbursementController.computeVat(pnDetailDV,
@@ -1517,13 +1586,17 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                                     ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
                                     return;
                                 }
-                                if (Double.parseDouble(poJSONVAT.get("totalApplied").toString()) 
-                                        + poDisbursementController.Detail(pnDetailDV).getAmountApplied() 
+                                if (poDisbursementController.Detail(pnDetailDV).getAmountApplied() 
                                         > poDisbursementController.Detail(pnDetailDV).getAmount()){
-                                    ShowMessageFX.Warning("Invalid Amount : Please check the amount value", pxeModuleName, null);
+                                    ShowMessageFX.Warning("Invalid Amount: The entered amount cannot exceed the remaining balance.", pxeModuleName, null);
+                                    tfPurchasedAmountDetail.setText(String.valueOf(poDisbursementController.Detail(pnDetailDV).getAmount()));
                                     tfPurchasedAmountDetail.requestFocus();
                                     return;
                                 }
+                                 if(poJSONVAT.get("totalTaxAmt").equals("0.0000")){
+                                    ShowMessageFX.Warning("Tax: The entered amount cannot exceed the remaining balance.", pxeModuleName, null);
+                                 }
+                                 if(!lsID.equals("tfPurchasedAmountDetail")){
                                 Platform.runLater(() -> {
                                     PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
                                     delay.setOnFinished(event1 -> {
@@ -1534,6 +1607,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                                 });
                                 loadTableDetailDV();
                                 event.consume();
+                                 }
                                 break;
                         }
                         switch (lsID) {
@@ -1639,6 +1713,16 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                                     ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
                                     return;
                                 }
+                                if (!poDisbursementController.Detail(pnDetailDV).isWithVat()){
+                                    poDisbursementController.Detail(pnDetailDV).isWithVat(true);
+                                    poDisbursementController.Detail(pnDetailDV).setDetailVatRates((double) poJSONVAT.get("totalVatRa"));
+                                    poDisbursementController.computeVat(pnDetailDV, 
+                                            poDisbursementController.Detail(pnDetailDV).getAmount(),
+                                            poDisbursementController.Detail(pnDetailDV).getDetailVatRates(),
+                                            (double) poJSONVAT.get("totalApplied"), true);
+                                    
+                                }
+                                
                                 Platform.runLater(() -> {
                                     PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
                                     delay.setOnFinished(event1 -> {
@@ -1823,6 +1907,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                 tfParticularsDetail.requestFocus();
             } else if (!lsTaxCode.isEmpty() && amount <= 0.0000 && !lsParticular.isEmpty()) {
                 tfPurchasedAmountDetail.requestFocus();
+                
             } else {
                 tfTaxCodeDetail.requestFocus();
             }
@@ -1831,6 +1916,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                 tfTaxCodeDetail.requestFocus();
             } else if (lsTaxCode.isEmpty() && amount <= 0.0000) {
                 tfPurchasedAmountDetail.requestFocus();
+                
             }
             tfVatRateDetail.setDisable(false);
             tfVatAmountDetail.setDisable(false);
