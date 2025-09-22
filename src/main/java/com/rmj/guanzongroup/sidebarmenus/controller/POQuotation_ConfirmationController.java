@@ -531,8 +531,9 @@ public class POQuotation_ConfirmationController implements Initializable, Screen
                     loadTableAttachment.reload();
                 }
                 initButton(pnEditMode);
-                moveNext(false, false);
-                initButton(pnEditMode);
+                if (lsButton.equals("btnUpdate")) {
+                    moveNext(false,false);
+                }
             }
         } catch (CloneNotSupportedException | SQLException | GuanzonException | ParseException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
@@ -667,7 +668,7 @@ public class POQuotation_ConfirmationController implements Initializable, Screen
                 switch (lsID) {
                     case "tfDescription":
                         if (lsValue.isEmpty()) {
-                            if(poController.POQuotation().Detail(pnDetail).getEditMode() == EditMode.ADDNEW){
+                            if (poController.POQuotation().Detail(pnDetail).getEditMode() == EditMode.ADDNEW) {
                                 poController.POQuotation().Detail(pnDetail).setStockId("");
                                 poController.POQuotation().Detail(pnDetail).setDescription("");
                                 poController.POQuotation().Detail(pnDetail).setReplaceId("");
@@ -1154,15 +1155,15 @@ public class POQuotation_ConfirmationController implements Initializable, Screen
 //                if(lbIsUpdate){
 //                    JFXUtil.setDisabled(true, tfDescription);
 //                } else {
-                    if(lbRepItem){
+                if (lbRepItem) {
+                    JFXUtil.setDisabled(true, tfDescription);
+                } else {
+                    if ((!lbIsReqMoreThanOne && lbReqItem)) {
                         JFXUtil.setDisabled(true, tfDescription);
                     } else {
-                        if((!lbIsReqMoreThanOne && lbReqItem)){
-                            JFXUtil.setDisabled(true, tfDescription);
-                        } else {
-                            JFXUtil.setDisabled(false, tfDescription);
-                        }
+                        JFXUtil.setDisabled(false, tfDescription);
                     }
+                }
 //                }
 
                 JFXUtil.setDisabled(false, tfReplaceId, tfReplaceDescription, tfUnitPrice, tfQuantity, tfDiscRateDetail, tfAddlDiscAmtDetail);
