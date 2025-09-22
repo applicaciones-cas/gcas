@@ -1,5 +1,6 @@
 package com.rmj.guanzongroup.sidebarmenus.controller;
 
+import static com.rmj.guanzongroup.sidebarmenus.controller.POQuotationRequest_EntryController.poController;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Attachment;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelPOQuotation_Detail;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelPOQuotation_Main;
@@ -806,9 +807,6 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
                         break;
                     case "tfQuantity":
                         lsValue = JFXUtil.removeComma(lsValue);
-                        double lnNewVal = Double.valueOf(lsValue);
-                        double lnOldVal = poController.POQuotation().Detail(pnDetail).getQuantity().doubleValue();
-
                         poJSON = poController.POQuotation().Detail(pnDetail).setQuantity((Double.valueOf(lsValue)));
                         if ("error".equals((String) poJSON.get("result"))) {
                             System.err.println((String) poJSON.get("message"));
@@ -1029,7 +1027,6 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
     }
 
     boolean pbSuccess = true;
-
     private void datepicker_Action(ActionEvent event) {
         poJSON = new JSONObject();
         JFXUtil.setJSONSuccess(poJSON, "success");
@@ -1042,12 +1039,16 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
                 SimpleDateFormat sdfFormat = new SimpleDateFormat(SQLUtil.FORMAT_SHORT_DATE);
 
                 if (JFXUtil.isObjectEqualTo(inputText, null, "", "01/01/1900")) {
+                    switch (datePicker.getId()) {
+                        case "dpValidityDate":
+                            poJSON = poController.POQuotation().Master().setValidityDate(null);
+                            break;
+                    }
                     return;
                 }
                 if (!datePicker.isShowing() && !datePicker.getEditor().isFocused()) {
-                    return; // ignore programmatic sets
+                    return; 
                 }
-
                 String lsServerDate = sdfFormat.format(oApp.getServerDate());
                 String lsTransDate = sdfFormat.format(poController.POQuotation().Master().getTransactionDate());
                 String lsSelectedDate = sdfFormat.format(SQLUtil.toDate(JFXUtil.convertToIsoFormat(inputText), SQLUtil.FORMAT_SHORT_DATE));

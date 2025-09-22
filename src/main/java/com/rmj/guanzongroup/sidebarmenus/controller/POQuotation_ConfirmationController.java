@@ -1,6 +1,5 @@
 package com.rmj.guanzongroup.sidebarmenus.controller;
 
-import static com.rmj.guanzongroup.sidebarmenus.controller.POQuotation_EntryController.poController;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Attachment;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelPOQuotation_Detail;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelPOQuotation_Main;
@@ -736,8 +735,6 @@ public class POQuotation_ConfirmationController implements Initializable, Screen
                         break;
                     case "tfQuantity":
                         lsValue = JFXUtil.removeComma(lsValue);
-                        double lnNewVal = Double.valueOf(lsValue);
-                        double lnOldVal = poController.POQuotation().Detail(pnDetail).getQuantity().doubleValue();
 
                         poJSON = poController.POQuotation().Detail(pnDetail).setQuantity((Double.valueOf(lsValue)));
                         if ("error".equals((String) poJSON.get("result"))) {
@@ -757,7 +754,6 @@ public class POQuotation_ConfirmationController implements Initializable, Screen
             });
 
     public void moveNext(boolean isUp, boolean continueNext) {
-//        try {
         if (continueNext) {
             apDetail.requestFocus();
             pnDetail = isUp ? Integer.parseInt(details_data.get(JFXUtil.moveToPreviousRow(tblViewTransDetails)).getIndex08())
@@ -772,10 +768,6 @@ public class POQuotation_ConfirmationController implements Initializable, Screen
             {poController.POQuotation().Detail(pnDetail).getDiscountRate(), tfDiscRateDetail},
             {poController.POQuotation().Detail(pnDetail).getDiscountAmount(), tfAddlDiscAmtDetail},
             {poController.POQuotation().Detail(pnDetail).getQuantity(), tfQuantity},}, tfQuantity); // default
-
-//        } catch (SQLException | GuanzonException ex) {
-//            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
-//        }
     }
 
     private void txtField_KeyPressed(KeyEvent event) {
@@ -947,7 +939,6 @@ public class POQuotation_ConfirmationController implements Initializable, Screen
     }
 
     boolean pbSuccess = true;
-
     private void datepicker_Action(ActionEvent event) {
         poJSON = new JSONObject();
         JFXUtil.setJSONSuccess(poJSON, "success");
@@ -960,12 +951,16 @@ public class POQuotation_ConfirmationController implements Initializable, Screen
                 SimpleDateFormat sdfFormat = new SimpleDateFormat(SQLUtil.FORMAT_SHORT_DATE);
 
                 if (JFXUtil.isObjectEqualTo(inputText, null, "", "01/01/1900")) {
+                    switch (datePicker.getId()) {
+                        case "dpValidityDate":
+                            poJSON = poController.POQuotation().Master().setValidityDate(null);
+                            break;
+                    }
                     return;
                 }
                 if (!datePicker.isShowing() && !datePicker.getEditor().isFocused()) {
-                    return; // ignore programmatic sets
+                    return; 
                 }
-
                 String lsServerDate = sdfFormat.format(oApp.getServerDate());
                 String lsTransDate = sdfFormat.format(poController.POQuotation().Master().getTransactionDate());
                 String lsSelectedDate = sdfFormat.format(SQLUtil.toDate(JFXUtil.convertToIsoFormat(inputText), SQLUtil.FORMAT_SHORT_DATE));
