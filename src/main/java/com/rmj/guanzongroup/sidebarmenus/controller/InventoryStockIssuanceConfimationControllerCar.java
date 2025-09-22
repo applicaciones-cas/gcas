@@ -402,7 +402,7 @@ public class InventoryStockIssuanceConfimationControllerCar implements Initializ
                             return;
                         }
                         reloadTableDetail();
-                        clearAllInputs();
+//                        clearAllInputs();
                         pnEditMode = poAppController.getEditMode();
                         break;
                     }
@@ -425,7 +425,7 @@ public class InventoryStockIssuanceConfimationControllerCar implements Initializ
 
                         }
                         reloadTableDetail();
-                        clearAllInputs();
+//                        clearAllInputs();
                         pnEditMode = poAppController.getEditMode();
                         break;
                     }

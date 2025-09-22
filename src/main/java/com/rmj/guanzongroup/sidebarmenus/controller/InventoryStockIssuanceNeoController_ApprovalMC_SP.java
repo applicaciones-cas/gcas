@@ -389,7 +389,7 @@ public class InventoryStockIssuanceNeoController_ApprovalMC_SP implements Initia
                             return;
                         }
                         reloadTableDetail();
-                        clearAllInputs();
+//                        clearAllInputs();
                         pnEditMode = poAppController.getEditMode();
                         break;
                     }
@@ -412,7 +412,7 @@ public class InventoryStockIssuanceNeoController_ApprovalMC_SP implements Initia
 
                         }
                         reloadTableDetail();
-                        clearAllInputs();
+//                        clearAllInputs();
                         pnEditMode = poAppController.getEditMode();
                         break;
                     }
@@ -430,7 +430,7 @@ public class InventoryStockIssuanceNeoController_ApprovalMC_SP implements Initia
                         }
                     }
                     //refresh ui 
-                    clearAllInputs();
+//                    clearAllInputs();
                     reloadTableDetail();
 
                     pnEditMode = poAppController.getEditMode();

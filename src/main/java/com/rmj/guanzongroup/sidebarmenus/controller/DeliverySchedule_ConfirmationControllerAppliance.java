@@ -394,7 +394,7 @@ public class DeliverySchedule_ConfirmationControllerAppliance implements Initial
                             break;
                         }
                         reloadTableDetail();
-                        clearAllInputs();
+//                        clearAllInputs();
                         pnEditMode = poAppController.getEditMode();
                         break;
                     }
@@ -418,7 +418,7 @@ public class DeliverySchedule_ConfirmationControllerAppliance implements Initial
 
                         }
                         reloadTableDetail();
-                        clearAllInputs();
+//                        clearAllInputs();
                         pnEditMode = poAppController.getEditMode();
                         break;
                     }

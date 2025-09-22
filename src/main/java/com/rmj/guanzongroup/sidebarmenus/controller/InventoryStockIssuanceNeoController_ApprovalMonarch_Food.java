@@ -389,7 +389,7 @@ public class InventoryStockIssuanceNeoController_ApprovalMonarch_Food implements
                             return;
                         }
                         reloadTableDetail();
-                        clearAllInputs();
+//                        clearAllInputs();
                         pnEditMode = poAppController.getEditMode();
                         break;
                     }
@@ -412,7 +412,7 @@ public class InventoryStockIssuanceNeoController_ApprovalMonarch_Food implements
 
                         }
                         reloadTableDetail();
-                        clearAllInputs();
+//                        clearAllInputs();
                         pnEditMode = poAppController.getEditMode();
                         break;
                     }
@@ -430,7 +430,7 @@ public class InventoryStockIssuanceNeoController_ApprovalMonarch_Food implements
                         }
                     }
                     //refresh ui 
-                    clearAllInputs();
+//                    clearAllInputs();
                     reloadTableDetail();
 
                     pnEditMode = poAppController.getEditMode();

@@ -395,7 +395,7 @@ public class DeliverySchedule_ConfirmationControllerCar_SP implements Initializa
                             break;
                         }
                         reloadTableDetail();
-                        clearAllInputs();
+//                        clearAllInputs();
                         pnEditMode = poAppController.getEditMode();
                         break;
                     }
@@ -419,7 +419,7 @@ public class DeliverySchedule_ConfirmationControllerCar_SP implements Initializa
 
                         }
                         reloadTableDetail();
-                        clearAllInputs();
+//                        clearAllInputs();
                         pnEditMode = poAppController.getEditMode();
                         break;
                     }

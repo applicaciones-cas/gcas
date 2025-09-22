@@ -394,7 +394,7 @@ public class DeliverySchedule_ConfirmationControllerLP_Food implements Initializ
                             break;
                         }
                         reloadTableDetail();
-                        clearAllInputs();
+//                        clearAllInputs();
                         pnEditMode = poAppController.getEditMode();
                         break;
                     }
@@ -418,7 +418,7 @@ public class DeliverySchedule_ConfirmationControllerLP_Food implements Initializ
 
                         }
                         reloadTableDetail();
-                        clearAllInputs();
+//                        clearAllInputs();
                         pnEditMode = poAppController.getEditMode();
                         break;
                     }
