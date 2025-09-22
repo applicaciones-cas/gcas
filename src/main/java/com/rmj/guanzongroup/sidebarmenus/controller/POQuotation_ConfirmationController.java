@@ -163,7 +163,7 @@ public class POQuotation_ConfirmationController implements Initializable, Screen
         try {
             poJSON = poController.POQuotation().InitTransaction(); // Initialize transaction
         } catch (Exception e) {
-             poJSON.put("message", "Error in Initialize");
+            poJSON.put("message", "Error in Initialize");
         }
         if (!"success".equals((String) poJSON.get("result"))) {
             System.err.println((String) poJSON.get("message"));
@@ -531,7 +531,7 @@ public class POQuotation_ConfirmationController implements Initializable, Screen
                 }
                 initButton(pnEditMode);
                 if (lsButton.equals("btnUpdate")) {
-                    moveNext(false,false);
+                    moveNext(false, false);
                 }
             }
         } catch (CloneNotSupportedException | SQLException | GuanzonException | ParseException ex) {
@@ -962,22 +962,32 @@ public class POQuotation_ConfirmationController implements Initializable, Screen
                 if (JFXUtil.isObjectEqualTo(inputText, null, "", "01/01/1900")) {
                     return;
                 }
-
+                if (!datePicker.isShowing() && !datePicker.getEditor().isFocused()) {
+                    return; // ignore programmatic sets
+                }
+                if (JFXUtil.isObjectEqualTo(poController.POQuotation().Master().getSourceNo(), null, "")) {
+                    ShowMessageFX.Warning(null, pxeModuleName, "Source No cannot be empty");
+                    loadRecordMaster();
+                    return;
+                }
                 String lsServerDate = sdfFormat.format(oApp.getServerDate());
                 String lsTransDate = sdfFormat.format(poController.POQuotation().Master().getTransactionDate());
+                String lsPOQuotationRequestTransDate = sdfFormat.format(poController.POQuotation().Master().POQuotationRequest().getTransactionDate());
                 String lsSelectedDate = sdfFormat.format(SQLUtil.toDate(JFXUtil.convertToIsoFormat(inputText), SQLUtil.FORMAT_SHORT_DATE));
                 LocalDate currentDate = LocalDate.parse(lsServerDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
                 LocalDate selectedDate = LocalDate.parse(lsSelectedDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
                 LocalDate transactionDate = LocalDate.parse(lsTransDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
+                LocalDate POQuotationRequestTransactionDate = LocalDate.parse(lsPOQuotationRequestTransDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
 
                 switch (datePicker.getId()) {
                     case "dpTransactionDate":
                         if (poController.POQuotation().getEditMode() == EditMode.ADDNEW
                                 || poController.POQuotation().getEditMode() == EditMode.UPDATE) {
-
-                            if (selectedDate.isAfter(currentDate)) {
-                                poJSON.put("result", "error");
-                                poJSON.put("message", "Future dates are not allowed.");
+                            if (selectedDate.isBefore(POQuotationRequestTransactionDate)) {
+                                JFXUtil.setJSONError(poJSON, "Transaction date cannot be before the Quotation Request Date");
+                                pbSuccess = false;
+                            } else if (selectedDate.isAfter(currentDate)) {
+                                JFXUtil.setJSONError(poJSON, "Future dates are not allowed.");
                                 pbSuccess = false;
                             }
 
@@ -1002,7 +1012,6 @@ public class POQuotation_ConfirmationController implements Initializable, Screen
                                     }
                                 }
                             }
-
                             if (pbSuccess) {
                                 poController.POQuotation().Master().setTransactionDate((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
                             } else {
@@ -1011,16 +1020,18 @@ public class POQuotation_ConfirmationController implements Initializable, Screen
 
                                 }
                             }
-
                             pbSuccess = false; //Set to false to prevent multiple message box: Conflict with server date vs transaction date validation
                             loadRecordMaster();
                             pbSuccess = true; //Set to original value
                         }
                         break;
                     case "dpReferenceDate":
-                        if (poController.POQuotation().getEditMode() == EditMode.UPDATE) {
-
-                            if (selectedDate.isBefore(transactionDate)) {
+                        if (poController.POQuotation().getEditMode() == EditMode.ADDNEW
+                                || poController.POQuotation().getEditMode() == EditMode.UPDATE) {
+                            if (selectedDate.isBefore(POQuotationRequestTransactionDate)) {
+                                JFXUtil.setJSONError(poJSON, "Reference date cannot be before the Quotation Request Date");
+                                pbSuccess = false;
+                            } else if (selectedDate.isBefore(transactionDate)) {
                                 JFXUtil.setJSONError(poJSON, "Reference Date cannot be before the transaction date.");
                                 pbSuccess = false;
                             } else {
@@ -1038,9 +1049,12 @@ public class POQuotation_ConfirmationController implements Initializable, Screen
                         }
                         break;
                     case "dpValidityDate":
-                        if (poController.POQuotation().getEditMode() == EditMode.UPDATE) {
-
-                            if (selectedDate.isBefore(transactionDate)) {
+                        if (poController.POQuotation().getEditMode() == EditMode.ADDNEW
+                                || poController.POQuotation().getEditMode() == EditMode.UPDATE) {
+                            if (selectedDate.isBefore(POQuotationRequestTransactionDate)) {
+                                JFXUtil.setJSONError(poJSON, "Validity date cannot be before the Quotation Request Date");
+                                pbSuccess = false;
+                            } else if (selectedDate.isBefore(transactionDate)) {
                                 JFXUtil.setJSONError(poJSON, "Validity Date cannot be before the transaction date.");
                                 pbSuccess = false;
                             } else {
@@ -1061,7 +1075,7 @@ public class POQuotation_ConfirmationController implements Initializable, Screen
                         break;
                 }
             }
-        } catch (SQLException ex) {
+        } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
