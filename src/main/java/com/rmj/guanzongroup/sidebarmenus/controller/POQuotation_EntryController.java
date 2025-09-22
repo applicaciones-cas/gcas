@@ -732,10 +732,12 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
                 switch (lsID) {
                     case "tfDescription":
                         if (lsValue.isEmpty()) {
-                            poController.POQuotation().Detail(pnDetail).setStockId("");
-                            poController.POQuotation().Detail(pnDetail).setDescription("");
-                            poController.POQuotation().Detail(pnDetail).setReplaceId("");
-                            poController.POQuotation().Detail(pnDetail).setReplaceDescription("");
+                            if(poController.POQuotation().Detail(pnDetail).getEditMode() == EditMode.ADDNEW){
+                                poController.POQuotation().Detail(pnDetail).setStockId("");
+                                poController.POQuotation().Detail(pnDetail).setDescription("");
+                                poController.POQuotation().Detail(pnDetail).setReplaceId("");
+                                poController.POQuotation().Detail(pnDetail).setReplaceDescription("");
+                            }
                         }
                         break;
                     case "tfReplaceId":
@@ -747,7 +749,6 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 break;
                             }
-
                             poController.POQuotation().Detail(pnDetail).setReplaceId("");
                             poController.POQuotation().Detail(pnDetail).setReplaceDescription("");
                         }
@@ -1223,19 +1224,19 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
 //                boolean lbShow = (lbIsUpdate && (lbReqItem && lbRepItem));
 //                JFXUtil.setDisabled(lbShow, tfReplaceId, tfReplaceDescription);
 
-                if (lbIsUpdate) {
-                    JFXUtil.setDisabled(true, tfDescription);
-                } else {
-                    if (lbRepItem) {
+//                if(lbIsUpdate){
+//                    JFXUtil.setDisabled(true, tfDescription);
+//                } else {
+                    if(lbRepItem){
                         JFXUtil.setDisabled(true, tfDescription);
                     } else {
-                        if ((!lbIsReqMoreThanOne && lbReqItem)) {
+                        if((!lbIsReqMoreThanOne && lbReqItem)){
                             JFXUtil.setDisabled(true, tfDescription);
                         } else {
                             JFXUtil.setDisabled(false, tfDescription);
                         }
                     }
-                }
+//                }
 
                 JFXUtil.setDisabled(false, tfReplaceId, tfReplaceDescription, tfUnitPrice, tfQuantity, tfDiscRateDetail, tfAddlDiscAmtDetail);
             }
