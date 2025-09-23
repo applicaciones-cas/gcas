@@ -691,33 +691,27 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
         poJSON = new JSONObject();
         JFXUtil.setJSONSuccess(poJSON, "success");
 
-        try {
-            Object source = event.getSource();
-            if (source instanceof DatePicker) {
-                DatePicker datePicker = (DatePicker) source;
-                String inputText = datePicker.getEditor().getText();
-                SimpleDateFormat sdfFormat = new SimpleDateFormat(SQLUtil.FORMAT_SHORT_DATE);
+//        try {
+        Object source = event.getSource();
+        if (source instanceof DatePicker) {
+            DatePicker datePicker = (DatePicker) source;
+            String inputText = datePicker.getEditor().getText();
+            SimpleDateFormat sdfFormat = new SimpleDateFormat(SQLUtil.FORMAT_SHORT_DATE);
 
-                if (JFXUtil.isObjectEqualTo(inputText, null, "", "01/01/1900")) {
-                    return;
-                }
-                String lsServerDate = sdfFormat.format(oApp.getServerDate());
-                String lsTransDate = sdfFormat.format(poController.POQuotationRequest().Master().getTransactionDate());
-                String lsSelectedDate = sdfFormat.format(SQLUtil.toDate(JFXUtil.convertToIsoFormat(inputText), SQLUtil.FORMAT_SHORT_DATE));
-                LocalDate currentDate = LocalDate.parse(lsTransDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
-                LocalDate selectedDate = LocalDate.parse(lsSelectedDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
-
-                switch (datePicker.getId()) {
-                    case "dpSearchTransactionDate":
-                        retrievePOQuotationRequest();
-                        break;
-                    default:
-                        break;
-                }
+            if (JFXUtil.isObjectEqualTo(inputText, null, "", "01/01/1900")) {
+                return;
             }
-        } catch (SQLException ex) {
-            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            switch (datePicker.getId()) {
+                case "dpSearchTransactionDate":
+                    retrievePOQuotationRequest();
+                    break;
+                default:
+                    break;
+            }
         }
+//        } catch (SQLException ex) {
+//            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+//        }
     }
 
     public void initTabPane() {
