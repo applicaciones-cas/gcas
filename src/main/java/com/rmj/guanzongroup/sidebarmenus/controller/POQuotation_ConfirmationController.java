@@ -131,7 +131,7 @@ public class POQuotation_ConfirmationController implements Initializable, Screen
     @FXML
     private HBox hbButtons, hboxid;
     @FXML
-    private Button btnUpdate, btnSearch, btnSave, btnCancel, btnApprove, btnVoid, btnHistory, btnRetrieve, btnClose, btnAddAttachment, btnRemoveAttachment, btnArrowLeft, btnArrowRight;
+    private Button btnUpdate, btnSearch, btnSave, btnCancel, btnConfirm, btnVoid, btnHistory, btnRetrieve, btnClose, btnAddAttachment, btnRemoveAttachment, btnArrowLeft, btnArrowRight;
     @FXML
     private TabPane tabPane;
     @FXML
@@ -396,7 +396,7 @@ public class POQuotation_ConfirmationController implements Initializable, Screen
                             return;
                         }
                         break;
-                    case "btnApprove":
+                    case "btnConfirm":
                         poJSON = new JSONObject();
                         if (ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure you want to confirm transaction?") == true) {
                             poJSON = poController.POQuotation().ConfirmTransaction("");
@@ -494,7 +494,7 @@ public class POQuotation_ConfirmationController implements Initializable, Screen
                         ShowMessageFX.Warning(null, pxeModuleName, "Button with name " + lsButton + " not registered.");
                         break;
                 }
-                if (JFXUtil.isObjectEqualTo(lsButton, "btnSave", "btnApprove", "btnDisapprove", "btnVoid", "btnCancel")) {
+                if (JFXUtil.isObjectEqualTo(lsButton, "btnSave", "btnConfirm", "btnDisapprove", "btnVoid", "btnCancel")) {
                     poController.POQuotation().resetMaster();
                     poController.POQuotation().resetOthers();
                     poController.POQuotation().Detail().clear();
@@ -1530,7 +1530,7 @@ public class POQuotation_ConfirmationController implements Initializable, Screen
         JFXUtil.setButtonsVisibility(lbShow1, btnSearch, btnSave, btnCancel);
 
         //Ready
-        JFXUtil.setButtonsVisibility(lbShow3, btnUpdate, btnHistory, btnVoid, btnApprove);
+        JFXUtil.setButtonsVisibility(lbShow3, btnUpdate, btnHistory, btnVoid, btnConfirm);
 
         //Unkown || Ready
         JFXUtil.setDisabled(!lbShow1, apMaster, apDetail, apAttachments, apAttachmentButtons);
@@ -1538,11 +1538,12 @@ public class POQuotation_ConfirmationController implements Initializable, Screen
 
         switch (poController.POQuotation().Master().getTransactionStatus()) {
             case POQuotationStatus.CONFIRMED:
-                JFXUtil.setButtonsVisibility(false, btnApprove);
+                JFXUtil.setButtonsVisibility(false, btnConfirm);
                 break;
+            case POQuotationStatus.APPROVED:
             case POQuotationStatus.VOID:
             case POQuotationStatus.CANCELLED:
-                JFXUtil.setButtonsVisibility(false, btnApprove, btnUpdate, btnVoid);
+                JFXUtil.setButtonsVisibility(false, btnConfirm, btnUpdate, btnVoid);
                 break;
         }
     }
