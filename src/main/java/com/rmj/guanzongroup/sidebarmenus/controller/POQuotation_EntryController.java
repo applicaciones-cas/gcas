@@ -586,6 +586,7 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
         }
     }
 
+    private boolean pbKeyPressed = false;
     private boolean resetTransaction() {
         try {
             if (poController.POQuotation().Master().getSourceNo() != null && !"".equals(poController.POQuotation().Master().getSourceNo())) {
@@ -631,40 +632,76 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
                         break;
                     case "tfCompany":
                         if (lsValue.isEmpty()) {
-                            if (!resetTransaction()) {
-                                break;
+                            if (poController.POQuotation().Master().getSourceNo() != null && !"".equals(poController.POQuotation().Master().getSourceNo())) {
+                                if(!pbKeyPressed){
+                                    if (!resetTransaction()) {
+                                        break;
+                                    }
+                                } else {
+                                    loadRecordMaster();
+                                    return;
+                                }
                             }
+                            
                             poJSON = poController.POQuotation().Master().setCompanyId("");
                         }
                         break;
                     case "tfBranch":
                         if (lsValue.isEmpty()) {
-                            if (!resetTransaction()) {
-                                break;
+                            if (poController.POQuotation().Master().getSourceNo() != null && !"".equals(poController.POQuotation().Master().getSourceNo())) {
+                                if(!pbKeyPressed){
+                                    if (!resetTransaction()) {
+                                        break;
+                                    }
+                                } else {
+                                    loadRecordMaster();
+                                    return;
+                                }
                             }
                             poJSON = poController.POQuotation().Master().setBranchCode("");
                         }
                         break;
                     case "tfDepartment":
                         if (lsValue.isEmpty()) {
-                            if (!resetTransaction()) {
-                                break;
+                            if (poController.POQuotation().Master().getSourceNo() != null && !"".equals(poController.POQuotation().Master().getSourceNo())) {
+                                if(!pbKeyPressed){
+                                    if (!resetTransaction()) {
+                                        break;
+                                    }
+                                } else {
+                                    loadRecordMaster();
+                                    return;
+                                }
                             }
                             poController.POQuotation().setSearchDepartment("");
                         }
                         break;
                     case "tfSupplier":
                         if (lsValue.isEmpty()) {
-                            if (!resetTransaction()) {
-                                break;
+                            if (poController.POQuotation().Master().getSourceNo() != null && !"".equals(poController.POQuotation().Master().getSourceNo())) {
+                                if(!pbKeyPressed){
+                                    if (!resetTransaction()) {
+                                        break;
+                                    }
+                                } else {
+                                    loadRecordMaster();
+                                    return;
+                                }
                             }
                             poJSON = poController.POQuotation().Master().setSupplierId("");
                         }
                         break;
                     case "tfCategory":
                         if (lsValue.isEmpty()) {
-                            if (!resetTransaction()) {
-                                break;
+                            if (poController.POQuotation().Master().getSourceNo() != null && !"".equals(poController.POQuotation().Master().getSourceNo())) {
+                                if(!pbKeyPressed){
+                                    if (!resetTransaction()) {
+                                        break;
+                                    }
+                                } else {
+                                    loadRecordMaster();
+                                    return;
+                                }
                             }
                             poController.POQuotation().setSearchCategory("");
                         }
@@ -871,6 +908,11 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
                 case F3:
                     switch (lsID) {
                         case "tfCompany":
+                            pbKeyPressed = true;
+                            if (!resetTransaction()) {
+                                return;
+                            }
+                            pbKeyPressed = false;
                             poJSON = poController.POQuotation().SearchCompany(lsValue, false);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -883,6 +925,11 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
                             retrievePOQuotationRequest();
                             return;
                         case "tfBranch":
+                            pbKeyPressed = true;
+                            if (!resetTransaction()) {
+                                return;
+                            }
+                            pbKeyPressed = false;
                             poJSON = poController.POQuotation().SearchBranch(lsValue, false, false);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -895,6 +942,11 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
                             retrievePOQuotationRequest();
                             return;
                         case "tfDepartment":
+                            pbKeyPressed = true;
+                            if (!resetTransaction()) {
+                                return;
+                            }
+                            pbKeyPressed = false;
                             poJSON = poController.POQuotation().SearchDepartment(lsValue, false);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -907,6 +959,11 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
                             retrievePOQuotationRequest();
                             return;
                         case "tfSupplier":
+                            pbKeyPressed = true;
+                            if (!resetTransaction()) {
+                                return;
+                            }
+                            pbKeyPressed = false;
                             poJSON = poController.POQuotation().SearchSupplier(lsValue, false, false);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -919,6 +976,11 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
                             retrievePOQuotationRequest();
                             return;
                         case "tfCategory":
+                            pbKeyPressed = true;
+                            if (!resetTransaction()) {
+                                return;
+                            }
+                            pbKeyPressed = false;
                             poJSON = poController.POQuotation().SearchCategory(lsValue, false);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
