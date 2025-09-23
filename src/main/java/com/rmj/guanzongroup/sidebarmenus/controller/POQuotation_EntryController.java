@@ -530,7 +530,7 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
                     clearTextFields();
                 }
 
-                if (JFXUtil.isObjectEqualTo(lsButton, "btnArrowRight", "btnArrowLeft", "btnRetrieve", "btnAddAttachment", "btnRemoveAttachment", "btnSearch" )) {
+                if (JFXUtil.isObjectEqualTo(lsButton, "btnArrowRight", "btnArrowLeft", "btnRetrieve", "btnAddAttachment", "btnRemoveAttachment", "btnSearch")) {
                 } else {
                     loadRecordMaster();
                     loadTableDetail.reload();
@@ -904,13 +904,13 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
                     event.consume();
                     break;
                 case UP:
-                    if (JFXUtil.isObjectEqualTo(lsID, "tfDescription", "tfReplaceId", "tfReplaceDescription", "tfCost", "tfQuantity", "tfDiscRateDetail", "tfUnitPrice","tfAddlDiscAmtDetail")) {
+                    if (JFXUtil.isObjectEqualTo(lsID, "tfDescription", "tfReplaceId", "tfReplaceDescription", "tfCost", "tfQuantity", "tfDiscRateDetail", "tfUnitPrice", "tfAddlDiscAmtDetail")) {
                         moveNext(true, true);
                         event.consume();
                     }
                     break;
                 case DOWN:
-                    if (JFXUtil.isObjectEqualTo(lsID, "tfDescription", "tfReplaceId", "tfReplaceDescription", "tfCost", "tfQuantity", "tfDiscRateDetail", "tfUnitPrice","tfAddlDiscAmtDetail")) {
+                    if (JFXUtil.isObjectEqualTo(lsID, "tfDescription", "tfReplaceId", "tfReplaceDescription", "tfCost", "tfQuantity", "tfDiscRateDetail", "tfUnitPrice", "tfAddlDiscAmtDetail")) {
                         moveNext(false, true);
                         event.consume();
                     }
@@ -1416,6 +1416,7 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
     public void loadTableDetailFromMain() {
         try {
             if (pnEditMode != EditMode.ADDNEW) {
+                ShowMessageFX.Warning(null, pxeModuleName, "Data can only be viewed when in ADD mode.");
                 return;
             }
 
