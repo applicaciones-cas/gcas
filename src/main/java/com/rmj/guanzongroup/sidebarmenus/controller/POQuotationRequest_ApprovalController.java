@@ -1176,7 +1176,7 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
 
         if (moveDown || moveUp) {
             switch (currentTable.getId()) {
-                case "tblViewTransDetailList":
+                case "tblViewTransDetails":
                     if (details_data.isEmpty()) {
                         return;
                     }

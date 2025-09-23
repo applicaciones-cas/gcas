@@ -738,7 +738,7 @@ public class POQuotationRequest_ApprovalHistoryController implements Initializab
 
         if (moveDown || moveUp) {
             switch (currentTable.getId()) {
-                case "tblViewTransDetailList":
+                case "tblViewTransDetails":
                     if (details_data.isEmpty()) {
                         return;
                     }
