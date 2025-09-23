@@ -93,7 +93,7 @@ public class InventoryStockIssuanceNeoControllerMonarch_Food implements Initiali
             tfVariant, tfMeasure, tfInvType, tfCost, tfIssuedQty;
 
     @FXML
-    Button btnNew, btnUpdate, btnSearch, btnSave, btnCancel, btnHistory, btnRetrieve, btnClose;
+    Button btnNew, btnUpdate, btnSearch, btnBrowse, btnSave, btnCancel, btnHistory, btnRetrieve, btnClose;
 
     @FXML
     TableView<Model_Inventory_Transfer_Master> tblViewMaster;
@@ -191,7 +191,7 @@ public class InventoryStockIssuanceNeoControllerMonarch_Food implements Initiali
 
                 getLoadedTransaction();
             } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
-                Logger.getLogger(DeliverySchedule_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+                
                 poLogWrapper.severe(psFormName + " :" + ex.getMessage());
 
             }
@@ -287,6 +287,47 @@ public class InventoryStockIssuanceNeoControllerMonarch_Food implements Initiali
                     }
                     break;
 
+                case "btnBrowse":
+                    if (lastFocusedControl == null) {
+                        ShowMessageFX.Information(null, psFormName,
+                                "Search unavailable. Please ensure a searchable field is selected or focused before proceeding..");
+                        return;
+                    }
+
+                    switch (lastFocusedControl.getId()) {
+                        case "tfSearchSourceno":
+                            if (!tfTransNo.getText().isEmpty()) {
+                                if (ShowMessageFX.OkayCancel(null, "Search Transaction! by Trasaction", "Are you sure you want replace loaded Transaction?") == false) {
+                                    return;
+                                }
+                            }
+                            if (!isJSONSuccess(poAppController.searchTransaction(tfSearchSourceno.getText(), true, true),
+                                    "Initialize Search Source No! ")) {
+                                return;
+                            }
+
+//                                tfSearchSourceno.setText(poAppController.getMaster().Branch().getBranchName());
+                            getLoadedTransaction();
+                            initButtonDisplay(poAppController.getEditMode());
+                            break;
+                        case "tfSearchTransNo":
+                            if (!tfTransNo.getText().isEmpty()) {
+                                if (ShowMessageFX.OkayCancel(null, "Search Transaction! by Trasaction", "Are you sure you want replace loaded Transaction?") == false) {
+                                    return;
+                                }
+                            }
+                            if (!isJSONSuccess(poAppController.searchTransaction(tfSearchTransNo.getText(), true, true),
+                                    "Initialize Search Transaction! ")) {
+                                return;
+                            }
+
+//                                tfSearchTransNo.setText(poAppController.getMaster().getTransactionNo());
+                            getLoadedTransaction();
+                            initButtonDisplay(poAppController.getEditMode());
+                            break;
+                    }
+                    break;
+
                 case "btnNew":
                     if (!isJSONSuccess(poAppController.NewTransaction(), "Initialize New Transaction")) {
                         return;
@@ -319,7 +360,7 @@ public class InventoryStockIssuanceNeoControllerMonarch_Food implements Initiali
                         return;
                     }
                     reloadTableDetail();
-                    clearAllInputs();
+//                    clearAllInputs();
                     pnEditMode = poAppController.getEditMode();
 
                     break;
@@ -327,7 +368,7 @@ public class InventoryStockIssuanceNeoControllerMonarch_Food implements Initiali
                 case "btnCancel":
                     if (ShowMessageFX.OkayCancel(null, psFormName, "Do you want to disregard changes?") == true) {
                         poAppController = new DeliveryIssuanceControllers(poApp, poLogWrapper).InventoryStockIssuanceNeo();
-                        poAppController.setTransactionStatus(null);
+                        poAppController.setTransactionStatus("0");
 
                         if (!isJSONSuccess(poAppController.initTransaction(), "Initialize Transaction")) {
                             unloadForm appUnload = new unloadForm();
@@ -368,12 +409,7 @@ public class InventoryStockIssuanceNeoControllerMonarch_Food implements Initiali
                                     return;
                                 }
                             }
-                            if (!isJSONSuccess(poAppController.searchTransaction(tfSearchSourceno.getText(), true, true),
-                                    "Initialize Search Source No! ")) {
-                                return;
-                            }
 
-                            tfSearchSourceno.setText(poAppController.getMaster().Branch().getBranchName());
                             loadTransactionMasterList(tfSearchSourceno.getText(), "e.sBranchNm");
                             getLoadedTransaction();
                             initButtonDisplay(poAppController.getEditMode());
@@ -384,12 +420,6 @@ public class InventoryStockIssuanceNeoControllerMonarch_Food implements Initiali
                                     return;
                                 }
                             }
-                            if (!isJSONSuccess(poAppController.searchTransaction(tfSearchTransNo.getText(), true, true),
-                                    "Initialize Search Transaction! ")) {
-                                return;
-                            }
-
-                            tfSearchTransNo.setText(poAppController.getMaster().getTransactionNo());
 
                             loadTransactionMasterList(tfSearchTransNo.getText(), "a.sTransNox");
                             getLoadedTransaction();
@@ -427,7 +457,7 @@ public class InventoryStockIssuanceNeoControllerMonarch_Food implements Initiali
                 switch (lsTextFieldID) {
                     case "tfDiscountRate":
                         if (lsValue.isEmpty()) {
-                            ShowMessageFX.Information("Imvalid freight amount", psFormName, null);
+                            ShowMessageFX.Information("Invalid freight amount", psFormName, null);
                             loTextField.requestFocus();
                             return;
                         }
@@ -440,7 +470,7 @@ public class InventoryStockIssuanceNeoControllerMonarch_Food implements Initiali
 
                     case "tfDiscountAmount":
                         if (lsValue.isEmpty()) {
-                            ShowMessageFX.Information("Imvalid discount amount", psFormName, null);
+                            ShowMessageFX.Information("Invalid discount amount", psFormName, null);
                             loTextField.requestFocus();
                             return;
                         }
@@ -450,13 +480,56 @@ public class InventoryStockIssuanceNeoControllerMonarch_Food implements Initiali
                                 poAppController.getMaster().getFreight(), poAppController.getMaster().getDiscount()));
                         loadTransactionMaster();
                         break;
-                    case "tfIssuedQty":
-                        if (lsValue.isEmpty()) {
-                            ShowMessageFX.Information("Imvalid quantity", psFormName, null);
-                            loTextField.requestFocus();
+                     case "tfIssuedQty":
+                        if (poAppController.getDetail(pnTransactionDetail).getStockId() == null
+                                || poAppController.getDetail(pnTransactionDetail).getStockId().isEmpty()) {
+                            if (Double.parseDouble(tfIssuedQty.getText()) > 0.0) {
+                                tfIssuedQty.setText("0.00");
+                                loTextField.requestFocus();
+                                ShowMessageFX.Information("Unable to set quantity! No Stock Invetory Detected", psFormName, null);
+                            }
                             return;
                         }
-                        poAppController.getDetail(pnTransactionDetail).setQuantity(Double.parseDouble(lsValue));
+                        double lnIssuedQty;
+                        try {
+                            lnIssuedQty = Double.parseDouble(lsValue);
+                        } catch (NumberFormatException e) {
+                            lnIssuedQty = 0.0; // default if parsing fails
+                            poAppController.getDetail(pnTransactionDetail).setQuantity(lnIssuedQty);
+                            reloadTableDetail();
+                            loadSelectedTransactionDetail(pnTransactionDetail);
+                            loTextField.requestFocus();
+                        }
+                        if (lnIssuedQty < 0.00) {
+                            return;
+                        }
+                        // check if serialized
+                        if (poAppController.getDetail(pnTransactionDetail).Inventory().isSerialized()) {
+                            // must be whole number AND exactly 1
+                            if (lnIssuedQty != 1 || lnIssuedQty % 1 != 0) {
+                                ShowMessageFX.Information("Invalid quantity for serialized item", psFormName, null);
+                                lnIssuedQty = 1; // force to 1
+                                loTextField.setText("1");
+                            }
+                            if (poAppController.getDetail(pnTransactionDetail).getSerialID() == null
+                                    || poAppController.getDetail(pnTransactionDetail).getSerialID().isEmpty()) {
+                                //Search record and sepate the row
+                                if (!isJSONSuccess(poAppController.searchDetailByIssuance(pnTransactionDetail, tfSearchSerial.getText(), true, true),
+                                        "Initialize Search Serial")) {
+                                    lnIssuedQty = 0;
+                                    return;
+                                }
+
+                            }
+                        }
+                        if (lnIssuedQty > poAppController.getDetail(pnTransactionDetail).InventoryStockRequest().getApproved()) {
+                            lnIssuedQty = poAppController.getDetail(pnTransactionDetail).InventoryStockRequest().getApproved();
+                            ShowMessageFX.Information("Issued Quantity exceed Approved Detected", psFormName, null);
+                            loTextField.setText(String.valueOf(lnIssuedQty));
+                        }
+
+                        poAppController.getDetail(pnTransactionDetail).setQuantity(lnIssuedQty);
+
                         reloadTableDetail();
                         loadSelectedTransactionDetail(pnTransactionDetail);
                         break;
@@ -487,7 +560,7 @@ public class InventoryStockIssuanceNeoControllerMonarch_Food implements Initiali
                         switch (txtFieldID) {
                             case "tfDiscountRate":
                                 if (lsValue.isEmpty()) {
-                                    ShowMessageFX.Information("Imvalid freight amount", psFormName, null);
+                                    ShowMessageFX.Information("Invalid freight amount", psFormName, null);
                                     loTxtField.requestFocus();
                                     return;
                                 }
@@ -500,7 +573,7 @@ public class InventoryStockIssuanceNeoControllerMonarch_Food implements Initiali
                                 break;
                             case "tfDiscountAmount":
                                 if (lsValue.isEmpty()) {
-                                    ShowMessageFX.Information("Imvalid discount amount", psFormName, null);
+                                    ShowMessageFX.Information("Invalid discount amount", psFormName, null);
                                     loTxtField.requestFocus();
                                     return;
                                 }
@@ -513,7 +586,7 @@ public class InventoryStockIssuanceNeoControllerMonarch_Food implements Initiali
                                 break;
                             case "tfIssuedQty":
                                 if (lsValue.isEmpty()) {
-                                    ShowMessageFX.Information("Imvalid quantity", psFormName, null);
+                                    ShowMessageFX.Information("Invalid quantity", psFormName, null);
                                     loTxtField.requestFocus();
                                     return;
                                 }
@@ -858,11 +931,11 @@ public class InventoryStockIssuanceNeoControllerMonarch_Food implements Initiali
         boolean lbShow = (fnEditMode == EditMode.ADDNEW || fnEditMode == EditMode.UPDATE);
 
         // Always show these buttons
-        initButtonControls(true, "btnSearch", "btnRetrieve", "btnHistory", "btnClose");
+        initButtonControls(true, "btnRetrieve", "btnHistory", "btnClose");
 
         // Show-only based on mode
-        initButtonControls(lbShow, "btnSave", "btnCancel");
-        initButtonControls(!lbShow, "btnNew", "btnUpdate");
+        initButtonControls(lbShow, "btnSearch", "btnSave", "btnCancel");
+        initButtonControls(!lbShow, "btnBrowse", "btnNew", "btnUpdate");
 
         apMaster.setDisable(!lbShow);
         apDetail.setDisable(!lbShow);
