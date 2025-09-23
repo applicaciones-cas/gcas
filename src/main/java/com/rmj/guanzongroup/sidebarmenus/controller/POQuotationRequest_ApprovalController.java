@@ -709,6 +709,7 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
 
                 switch (datePicker.getId()) {
                     case "dpSearchTransactionDate":
+                        retrievePOQuotationRequest();
                         break;
                     default:
                         break;
