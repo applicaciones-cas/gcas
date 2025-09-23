@@ -120,7 +120,7 @@ public class POQuotation_HistoryController implements Initializable, ScreenInter
     @FXML
     private DatePicker dpTransactionDate, dpReferenceDate, dpValidityDate;
     @FXML
-    private CheckBox cbVatable;
+    private CheckBox cbVatable, cbReverse;
     @FXML
     private TextArea taRemarks;
     @FXML
@@ -546,6 +546,7 @@ public class POQuotation_HistoryController implements Initializable, ScreenInter
             tfDiscRateDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.POQuotation().Detail(pnDetail).getDiscountRate(), false));
             tfAddlDiscAmtDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.POQuotation().Detail(pnDetail).getDiscountAmount(), false));
             tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.POQuotation().getCost(pnDetail), true));
+            cbReverse.setSelected(poController.POQuotation().Detail(pnDetail).isReverse());
             JFXUtil.updateCaretPositions(apDetail);
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
