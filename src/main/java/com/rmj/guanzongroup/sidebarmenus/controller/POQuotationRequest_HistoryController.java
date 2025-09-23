@@ -573,7 +573,7 @@ public class POQuotationRequest_HistoryController implements Initializable, Scre
 
             tfSearchDepartment.setText(poController.POQuotationRequest().getSearchDepartment());
             tfSearchCategory.setText(poController.POQuotationRequest().getSearchCategory());
-
+            JFXUtil.updateCaretPositions(apBrowse);
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }

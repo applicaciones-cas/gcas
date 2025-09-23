@@ -744,7 +744,7 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
             tfSearchBranch.setText(poController.POQuotationRequest().getSearchBranch());
             tfSearchDepartment.setText(poController.POQuotationRequest().getSearchDepartment());
             tfSearchCategory.setText(poController.POQuotationRequest().getSearchCategory());
-
+            JFXUtil.updateCaretPositions(apBrowse);
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
@@ -1092,7 +1092,7 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
             }
         });
 
-        JFXUtil.setKeyEventFilter( this::tableKeyEvents, tblViewTransDetails, tblViewSupplier);
+        JFXUtil.setKeyEventFilter(this::tableKeyEvents, tblViewTransDetails, tblViewSupplier);
         JFXUtil.adjustColumnForScrollbar(tblViewTransDetails, tblViewMainList, tblViewSupplier); // need to use computed-size in min-width of the column to work
         JFXUtil.applyRowHighlighting(tblViewMainList, item -> ((ModelPOQuotationRequest_Main) item).getIndex01(), highlightedRowsMain);
     }

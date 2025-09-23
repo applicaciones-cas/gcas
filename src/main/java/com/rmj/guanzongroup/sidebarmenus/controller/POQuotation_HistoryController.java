@@ -473,7 +473,7 @@ public class POQuotation_HistoryController implements Initializable, ScreenInter
             tfSearchDepartment.setText(poController.POQuotation().getSearchDepartment());
             tfSearchSupplier.setText(poController.POQuotation().getSearchSupplier());
             tfSearchCategory.setText(poController.POQuotation().getSearchCategory());
-
+            JFXUtil.updateCaretPositions(apBrowse);
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }

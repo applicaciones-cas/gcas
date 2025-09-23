@@ -463,7 +463,7 @@ public class POQuotationRequest_ApprovalHistoryController implements Initializab
             tfSearchBranch.setText(poController.POQuotationRequest().getSearchBranch());
             tfSearchDepartment.setText(poController.POQuotationRequest().getSearchDepartment());
             tfSearchCategory.setText(poController.POQuotationRequest().getSearchCategory());
-
+            JFXUtil.updateCaretPositions(apBrowse);
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
