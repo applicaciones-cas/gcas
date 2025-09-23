@@ -1510,7 +1510,7 @@ public class POQuotation_ApprovalController implements Initializable, ScreenInte
 
         if (moveDown || moveUp) {
             switch (currentTable.getId()) {
-                case "tblViewTransDetailList":
+                case "tblViewTransDetails":
                     if (details_data.isEmpty()) {
                         return;
                     }
