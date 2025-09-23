@@ -313,6 +313,9 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
                         poController.POQuotation().Detail(pnDetail).isReverse(checkedBox.isSelected());
                     }
                     loadTableDetail.reload();
+                    if (checkedBox.isSelected()) {
+                        moveNext(false, false);
+                    }
                     break;
             }
         }
@@ -527,7 +530,7 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
                     clearTextFields();
                 }
 
-                if (JFXUtil.isObjectEqualTo(lsButton, "btnArrowRight", "btnArrowLeft", "btnRetrieve", "btnAddAttachment", "btnRemoveAttachment")) {
+                if (JFXUtil.isObjectEqualTo(lsButton, "btnArrowRight", "btnArrowLeft", "btnRetrieve", "btnAddAttachment", "btnRemoveAttachment", "btnSearch" )) {
                 } else {
                     loadRecordMaster();
                     loadTableDetail.reload();
@@ -587,6 +590,7 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
     }
 
     private boolean pbKeyPressed = false;
+
     private boolean resetTransaction() {
         try {
             if (poController.POQuotation().Master().getSourceNo() != null && !"".equals(poController.POQuotation().Master().getSourceNo())) {
@@ -633,7 +637,7 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
                     case "tfCompany":
                         if (lsValue.isEmpty()) {
                             if (poController.POQuotation().Master().getSourceNo() != null && !"".equals(poController.POQuotation().Master().getSourceNo())) {
-                                if(!pbKeyPressed){
+                                if (!pbKeyPressed) {
                                     if (!resetTransaction()) {
                                         break;
                                     }
@@ -642,14 +646,14 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
                                     return;
                                 }
                             }
-                            
+
                             poJSON = poController.POQuotation().Master().setCompanyId("");
                         }
                         break;
                     case "tfBranch":
                         if (lsValue.isEmpty()) {
                             if (poController.POQuotation().Master().getSourceNo() != null && !"".equals(poController.POQuotation().Master().getSourceNo())) {
-                                if(!pbKeyPressed){
+                                if (!pbKeyPressed) {
                                     if (!resetTransaction()) {
                                         break;
                                     }
@@ -664,7 +668,7 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
                     case "tfDepartment":
                         if (lsValue.isEmpty()) {
                             if (poController.POQuotation().Master().getSourceNo() != null && !"".equals(poController.POQuotation().Master().getSourceNo())) {
-                                if(!pbKeyPressed){
+                                if (!pbKeyPressed) {
                                     if (!resetTransaction()) {
                                         break;
                                     }
@@ -679,7 +683,7 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
                     case "tfSupplier":
                         if (lsValue.isEmpty()) {
                             if (poController.POQuotation().Master().getSourceNo() != null && !"".equals(poController.POQuotation().Master().getSourceNo())) {
-                                if(!pbKeyPressed){
+                                if (!pbKeyPressed) {
                                     if (!resetTransaction()) {
                                         break;
                                     }
@@ -694,7 +698,7 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
                     case "tfCategory":
                         if (lsValue.isEmpty()) {
                             if (poController.POQuotation().Master().getSourceNo() != null && !"".equals(poController.POQuotation().Master().getSourceNo())) {
-                                if(!pbKeyPressed){
+                                if (!pbKeyPressed) {
                                     if (!resetTransaction()) {
                                         break;
                                     }
@@ -864,8 +868,14 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
     public void moveNext(boolean isUp, boolean continueNext) {
         if (continueNext) {
             apDetail.requestFocus();
-            pnDetail = isUp ? Integer.parseInt(details_data.get(JFXUtil.moveToPreviousRow(tblViewTransDetails)).getIndex08())
-                    : Integer.parseInt(details_data.get(JFXUtil.moveToNextRow(tblViewTransDetails)).getIndex08());
+            boolean lbContinue = true;
+            while (lbContinue) {
+                pnDetail = isUp ? Integer.parseInt(details_data.get(JFXUtil.moveToPreviousRow(tblViewTransDetails)).getIndex08())
+                        : Integer.parseInt(details_data.get(JFXUtil.moveToNextRow(tblViewTransDetails)).getIndex08());
+                if (poController.POQuotation().Detail(pnDetail).isReverse()) {
+                    lbContinue = false;
+                }
+            }
         }
         loadRecordDetail();
         JFXUtil.requestFocusNullField(new Object[][]{ // alternative to if , else if
@@ -919,7 +929,7 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
                                 txtField.setText("");
                                 break;
                             } else {
-                                JFXUtil.textFieldMoveNext(tfDepartment);
+                                JFXUtil.textFieldMoveNext(tfBranch);
                             }
                             loadRecordMaster();
                             retrievePOQuotationRequest();
@@ -1089,6 +1099,7 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
     }
 
     boolean pbSuccess = true;
+
     private void datepicker_Action(ActionEvent event) {
         poJSON = new JSONObject();
         JFXUtil.setJSONSuccess(poJSON, "success");
@@ -1109,7 +1120,7 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
                     return;
                 }
                 if (!datePicker.isShowing() && !datePicker.getEditor().isFocused()) {
-                    return; 
+                    return;
                 }
                 String lsServerDate = sdfFormat.format(oApp.getServerDate());
                 String lsTransDate = sdfFormat.format(poController.POQuotation().Master().getTransactionDate());
@@ -1607,9 +1618,9 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
         JFXUtil.setKeyPressedListener(this::txtField_KeyPressed, apMaster, apDetail, apBrowse);
 
         JFXUtil.setCommaFormatter(tfGrossAmount, tfAddlDiscAmt, tfFreight, tfVATAmount, tfTransactionTotal,
-                tfUnitPrice, tfQuantity, tfDiscRateDetail, tfAddlDiscAmtDetail);
+                tfUnitPrice, tfQuantity, tfAddlDiscAmtDetail);
 
-        CustomCommonUtil.inputDecimalOnly(tfDiscRate);
+        CustomCommonUtil.inputDecimalOnly(tfDiscRate, tfDiscRateDetail);
 
         // Combobox
         cmbAttachmentType.setItems(documentType);
@@ -1705,8 +1716,6 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
         int newIndex = currentIndex + direction;
 
         if (newIndex != -1 && (newIndex <= attachment_data.size() - 1)) {
-            ModelDeliveryAcceptance_Attachment image = attachment_data.get(newIndex);
-            String filePath2 = System.getProperty("sys.default.path.config") + "/temp//attachments//" + image.getIndex02();
             TranslateTransition slideOut = new TranslateTransition(Duration.millis(300), imageView);
             slideOut.setByX(direction * -400); // Move left or right
 

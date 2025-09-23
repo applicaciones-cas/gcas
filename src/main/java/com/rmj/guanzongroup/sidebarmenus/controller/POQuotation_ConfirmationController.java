@@ -310,6 +310,9 @@ public class POQuotation_ConfirmationController implements Initializable, Screen
                         poController.POQuotation().Detail(pnDetail).isReverse(checkedBox.isSelected());
                     }
                     loadTableDetail.reload();
+                    if (checkedBox.isSelected()) {
+                        moveNext(false, false);
+                    }
                     break;
             }
         }
@@ -522,7 +525,7 @@ public class POQuotation_ConfirmationController implements Initializable, Screen
                 }
 
                 if (JFXUtil.isObjectEqualTo(lsButton, "btnPrint", "btnAddAttachment", "btnRemoveAttachment",
-                        "btnArrowRight", "btnArrowLeft", "btnRetrieve")) {
+                        "btnArrowRight", "btnArrowLeft", "btnRetrieve", "btnSearch")) {
                 } else {
                     loadRecordMaster();
                     loadTableDetail.reload();
@@ -756,8 +759,14 @@ public class POQuotation_ConfirmationController implements Initializable, Screen
     public void moveNext(boolean isUp, boolean continueNext) {
         if (continueNext) {
             apDetail.requestFocus();
-            pnDetail = isUp ? Integer.parseInt(details_data.get(JFXUtil.moveToPreviousRow(tblViewTransDetails)).getIndex08())
-                    : Integer.parseInt(details_data.get(JFXUtil.moveToNextRow(tblViewTransDetails)).getIndex08());
+            boolean lbContinue = true;
+            while (lbContinue) {
+                pnDetail = isUp ? Integer.parseInt(details_data.get(JFXUtil.moveToPreviousRow(tblViewTransDetails)).getIndex08())
+                        : Integer.parseInt(details_data.get(JFXUtil.moveToNextRow(tblViewTransDetails)).getIndex08());
+                if (poController.POQuotation().Detail(pnDetail).isReverse()) {
+                    lbContinue = false;
+                }
+            }
         }
         loadRecordDetail();
         JFXUtil.requestFocusNullField(new Object[][]{ // alternative to if , else if
@@ -939,6 +948,7 @@ public class POQuotation_ConfirmationController implements Initializable, Screen
     }
 
     boolean pbSuccess = true;
+
     private void datepicker_Action(ActionEvent event) {
         poJSON = new JSONObject();
         JFXUtil.setJSONSuccess(poJSON, "success");
@@ -959,7 +969,7 @@ public class POQuotation_ConfirmationController implements Initializable, Screen
                     return;
                 }
                 if (!datePicker.isShowing() && !datePicker.getEditor().isFocused()) {
-                    return; 
+                    return;
                 }
                 String lsServerDate = sdfFormat.format(oApp.getServerDate());
                 String lsTransDate = sdfFormat.format(poController.POQuotation().Master().getTransactionDate());
@@ -1088,7 +1098,6 @@ public class POQuotation_ConfirmationController implements Initializable, Screen
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
-
 
     public void loadRecordSearch() {
         try {
@@ -1471,9 +1480,9 @@ public class POQuotation_ConfirmationController implements Initializable, Screen
         JFXUtil.setKeyPressedListener(this::txtField_KeyPressed, apMaster, apDetail, apBrowse);
 
         JFXUtil.setCommaFormatter(tfGrossAmount, tfAddlDiscAmt, tfFreight, tfVATAmount, tfTransactionTotal,
-                tfUnitPrice, tfQuantity, tfDiscRateDetail, tfAddlDiscAmtDetail);
+                tfUnitPrice, tfQuantity, tfAddlDiscAmtDetail);
 
-        CustomCommonUtil.inputDecimalOnly(tfDiscRate);
+        CustomCommonUtil.inputDecimalOnly(tfDiscRate, tfDiscRateDetail);
 
         // Combobox
         cmbAttachmentType.setItems(documentType);
@@ -1573,8 +1582,6 @@ public class POQuotation_ConfirmationController implements Initializable, Screen
         int newIndex = currentIndex + direction;
 
         if (newIndex != -1 && (newIndex <= attachment_data.size() - 1)) {
-            ModelDeliveryAcceptance_Attachment image = attachment_data.get(newIndex);
-            String filePath2 = System.getProperty("sys.default.path.config") + "/temp//attachments//" + image.getIndex02();
             TranslateTransition slideOut = new TranslateTransition(Duration.millis(300), imageView);
             slideOut.setByX(direction * -400); // Move left or right
 
