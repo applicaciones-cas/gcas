@@ -235,7 +235,7 @@
 }
 .button_process3:disabled
 {
-    -fx-opacity: 0.5;
+    -fx-opacity: 1;
 }
 
 
