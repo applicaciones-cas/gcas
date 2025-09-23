@@ -1092,7 +1092,7 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
             }
         });
 
-        tblViewTransDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
+        JFXUtil.setKeyEventFilter( this::tableKeyEvents, tblViewTransDetails, tblViewSupplier);
         JFXUtil.adjustColumnForScrollbar(tblViewTransDetails, tblViewMainList, tblViewSupplier); // need to use computed-size in min-width of the column to work
         JFXUtil.applyRowHighlighting(tblViewMainList, item -> ((ModelPOQuotationRequest_Main) item).getIndex01(), highlightedRowsMain);
     }
