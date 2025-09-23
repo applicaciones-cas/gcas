@@ -610,7 +610,7 @@
                                                                                 </AnchorPane>
                                                                                 <AnchorPane style="-fx-border-color: orange;" VBox.vgrow="ALWAYS">
                                                                                     <children>
-                                                                                        <TableView fx:id="tblVwDetails" layoutX="6.0" maxWidth="1.7976931348623157E308" AnchorPane.bottomAnchor="12.0" AnchorPane.leftAnchor="6.0" AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="0.0">
+                                                                                        <TableView fx:id="tblVwDetails" layoutX="6.0" maxWidth="1.7976931348623157E308" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
                                                                                             <columns>
                                                                                                 <TableColumn fx:id="tblDVRowNo" editable="false" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" text="No." />
                                                                                                 <TableColumn fx:id="tblReferenceNo" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Reference No." />

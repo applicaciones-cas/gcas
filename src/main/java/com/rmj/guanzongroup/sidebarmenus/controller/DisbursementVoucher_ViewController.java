@@ -58,7 +58,7 @@ import ph.com.guanzongroup.cas.cashflow.status.DisbursementStatic;
 public class DisbursementVoucher_ViewController implements Initializable {
 
     private GRiderCAS oApp;
-    private JSONObject poJSON;
+    private JSONObject poJSON,poJSONVAT;    
     private final String pxeModuleName = "Disbursement Voucher View";
     private Disbursement poDisbursementController;
     private String psTransactionNo = "";
@@ -144,7 +144,9 @@ public class DisbursementVoucher_ViewController implements Initializable {
     @FXML
     private AnchorPane apDVDetail;
     @FXML
-    private TextField tfRefNoDetail, tfParticularsDetail, tfAccountCodeDetail, tfPurchasedAmountDetail, tfTaxCodeDetail, tfTaxRateDetail, tfTaxAmountDetail, tfNetAmountDetail;
+    private TextField tfRefNoDetail, tfParticularsDetail, tfPurchasedAmountDetail, tfTaxCodeDetail, tfTaxRateDetail, tfTaxAmountDetail, tfNetAmountDetail,
+            tfVatableSalesDetail, tfPartialPayment, tfVatAmountDetail, tfVatRateDetail, tfVatZeroRatedSalesDetail, tfVatExemptDetail;
+    
     @FXML
     private CheckBox chbkVatClassification;
     @FXML
@@ -152,8 +154,8 @@ public class DisbursementVoucher_ViewController implements Initializable {
     @FXML
     private Label txtAccountCode;
     @FXML
-    private TableColumn tblDVRowNo, tblReferenceNo, tblAccountCode, tblTransactionTypeDetail, tblParticulars, tblPurchasedAmount, tblTaxCode, tblTaxAmount, tblNetAmount;
-
+     private TableColumn tblDVRowNo, tblReferenceNo, tblAccountCode, tblTransactionTypeDetail, tblParticulars, tblPurchasedAmount, tblTaxCode, tblTaxAmount, tblNetAmount,
+            tblVatableSales, tblVatAmt, tblVatRate, tblVatZeroRatedSales, tblVatExemptSales;
     public void setTransaction(String fsValue) {
         psTransactionNo = fsValue;
     }
@@ -172,7 +174,7 @@ public class DisbursementVoucher_ViewController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         txtAccountCode.setVisible(false);
-            tfAccountCodeDetail.setVisible(false);
+//            tfAccountCodeDetail.setVisible(false);
         CustomCommonUtil.setDropShadow(AnchorMain, StackPane);
         if (!psTransactionNo.isEmpty()) {
             try {
@@ -345,17 +347,26 @@ public class DisbursementVoucher_ViewController implements Initializable {
             try {
                 tfRefNoDetail.setText(poDisbursementController.Detail(pnDetailDV).getSourceNo());
                 tfParticularsDetail.setText(poDisbursementController.Detail(pnDetailDV).Particular().getDescription());
-                tfAccountCodeDetail.setText(poDisbursementController.Detail(pnDetailDV).Particular().getAccountCode());
-                tfPurchasedAmountDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(pnDetailDV).getAmount(), true));
+//                tfAccountCodeDetail.setText(poDisbursementController.Detail(pnDetailDV).Particular().getAccountCode());
+                tfPurchasedAmountDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(pnDetailDV).getAmountApplied(), true));
                 tfTaxCodeDetail.setText(poDisbursementController.Detail(pnDetailDV).TaxCode().getTaxCode());
                 tfTaxRateDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(pnDetailDV).getTaxRates(), false));
                 tfTaxAmountDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(pnDetailDV).getTaxAmount(), true));
                 tfNetAmountDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(pnDetailDV).getAmount()
                         - poDisbursementController.Detail(pnDetailDV).getTaxAmount(), true));
-                chbkVatClassification.setSelected(poDisbursementController.Detail(pnDetailDV).isWithVat());
+                
+                tfVatRateDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(pnDetailDV).getDetailVatRates(), false));
+                tfPartialPayment.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poJSONVAT.get("totalApplied"), true));
+                tfVatAmountDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(pnDetailDV).getDetailVatAmount(), true));
+                tfVatableSalesDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(pnDetailDV).getDetailVatSales(), true));
+                tfVatZeroRatedSalesDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(pnDetailDV).getDetailZeroVat(), true));
+                tfVatExemptDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(pnDetailDV).getDetailVatExempt(), true));
+                
+                    chbkVatClassification.setSelected(poDisbursementController.Detail(pnDetailDV).isWithVat());
+                
 
             } catch (SQLException | GuanzonException ex) {
-                Logger.getLogger(DisbursementVoucher_ViewController.class
+                Logger.getLogger(DisbursementVoucher_EntryController.class
                         .getName()).log(Level.SEVERE, null, ex);
             }
         }
@@ -406,9 +417,14 @@ public class DisbursementVoucher_ViewController implements Initializable {
                                     new ModelDisbursementVoucher_Detail(String.valueOf(lnCtr + 1),
                                             poDisbursementController.Detail(lnCtr).getSourceNo(),
                                             poDisbursementController.Detail(lnCtr).Particular().getAccountCode(),
-                                            lsTransactionType,
+                                            poDisbursementController.Detail(lnCtr).getSourceCode(),
                                             poDisbursementController.Detail(lnCtr).Particular().getDescription(),
-                                            CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(lnCtr).getAmount(), true),
+                                            CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(lnCtr).getAmountApplied(), true),
+                                            CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(lnCtr).getDetailVatSales(), true),
+                                            CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(lnCtr).getDetailVatAmount(), true),
+                                            CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(lnCtr).getDetailVatRates(), false),
+                                            CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(lnCtr).getDetailZeroVat(), true),
+                                            CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(lnCtr).getDetailVatExempt(), true),
                                             poDisbursementController.Detail(lnCtr).TaxCode().getTaxCode(),
                                             CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(lnCtr).getTaxAmount(), true),
                                             CustomCommonUtil.setIntegerValueToDecimalFormat(lnNetTotal, true)
@@ -425,10 +441,25 @@ public class DisbursementVoucher_ViewController implements Initializable {
                             JFXUtil.selectAndFocusRow(tblVwDetails, 0);
                             pnDetailDV = tblVwDetails.getSelectionModel().getSelectedIndex();
                             loadRecordDetailDV();
+                            
                         }
                     } else {
-                        JFXUtil.selectAndFocusRow(tblVwDetails, pnDetailDV);
-                        loadRecordDetailDV();
+                        try {
+                            JFXUtil.selectAndFocusRow(tblVwDetails, pnDetailDV);
+                            poJSONVAT = poDisbursementController.validateDetailVATAndTAX(poDisbursementController.Detail(pnDetailDV).getSourceCode(),
+                                    poDisbursementController.Detail(pnDetailDV).getSourceNo());
+                            poDisbursementController.computeVat(pnDetailDV,
+                                    poDisbursementController.Detail(pnDetailDV).getAmountApplied(),
+                                    poDisbursementController.Detail(pnDetailDV).getDetailVatRates(),
+                               Double.parseDouble(JFXUtil.removeComma(tfPartialPayment.getText())),
+                                    true);
+                            
+                            loadRecordDetailDV();
+                            tblVwDetails.refresh();
+                        } catch (SQLException ex) {
+                            Logger.getLogger(DisbursementVoucher_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        
                     }
                     loadRecordMasterDV();
                 });
@@ -460,7 +491,8 @@ public class DisbursementVoucher_ViewController implements Initializable {
 
     private void initTableDetailDV() {
         tblAccountCode.setVisible(false);
-        JFXUtil.setColumnCenter(tblDVRowNo, tblReferenceNo, tblTransactionTypeDetail, tblAccountCode, tblParticulars, tblTaxCode);
+        JFXUtil.setColumnCenter(tblDVRowNo, tblReferenceNo, tblTransactionTypeDetail, tblAccountCode, tblParticulars, tblTaxCode,
+                tblVatAmt, tblVatExemptSales, tblVatRate, tblVatZeroRatedSales, tblVatableSales);
         JFXUtil.setColumnRight(tblTaxAmount, tblPurchasedAmount, tblNetAmount);
         JFXUtil.setColumnsIndexAndDisableReordering(tblVwDetails);
         filteredDataDetailDV = new FilteredList<>(detailsdv_data, b -> true);
