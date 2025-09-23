@@ -815,7 +815,7 @@ public class POQuotation_HistoryController implements Initializable, ScreenInter
 
         if (moveDown || moveUp) {
             switch (currentTable.getId()) {
-                case "tblViewTransDetailList":
+                case "tblViewTransDetails":
                     if (details_data.isEmpty()) {
                         return;
                     }

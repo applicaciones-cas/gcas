@@ -131,7 +131,7 @@ public class POQuotation_ConfirmationController implements Initializable, Screen
     @FXML
     private HBox hbButtons, hboxid;
     @FXML
-    private Button btnUpdate, btnSearch, btnSave, btnCancel, btnApprove, btnDisapprove, btnVoid, btnHistory, btnRetrieve, btnClose, btnAddAttachment, btnRemoveAttachment, btnArrowLeft, btnArrowRight;
+    private Button btnUpdate, btnSearch, btnSave, btnCancel, btnApprove, btnVoid, btnHistory, btnRetrieve, btnClose, btnAddAttachment, btnRemoveAttachment, btnArrowLeft, btnArrowRight;
     @FXML
     private TabPane tabPane;
     @FXML
@@ -407,22 +407,6 @@ public class POQuotation_ConfirmationController implements Initializable, Screen
                                 ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
                                 JFXUtil.disableAllHighlightByColor(tblViewMainList, "#A7C7E7", highlightedRowsMain);
                                 JFXUtil.highlightByKey(tblViewMainList, String.valueOf(pnMain + 1), "#C1E1C1", highlightedRowsMain);
-                            }
-                        } else {
-                            return;
-                        }
-                        break;
-                    case "btnDisapprove":
-                        poJSON = new JSONObject();
-                        if (ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure you want to disapprove transaction?") == true) {
-                            poJSON = poController.POQuotation().CancelTransaction("");
-                            if ("error".equals((String) poJSON.get("result"))) {
-                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                return;
-                            } else {
-                                ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
-                                JFXUtil.disableAllHighlightByColor(tblViewMainList, "#A7C7E7", highlightedRowsMain);
-                                JFXUtil.highlightByKey(tblViewMainList, String.valueOf(pnMain + 1), "#FAA0A0", highlightedRowsMain);
                             }
                         } else {
                             return;
@@ -795,13 +779,13 @@ public class POQuotation_ConfirmationController implements Initializable, Screen
                     event.consume();
                     break;
                 case UP:
-                    if (JFXUtil.isObjectEqualTo(lsID, "tfDescription", "tfReplaceId", "tfReplaceDescription", "tfCost", "tfQuantity", "tfDiscRateDetail", "tfAddlDiscAmt")) {
+                    if (JFXUtil.isObjectEqualTo(lsID, "tfDescription", "tfReplaceId", "tfReplaceDescription", "tfCost", "tfQuantity", "tfDiscRateDetail", "tfUnitPrice","tfAddlDiscAmtDetail")) {
                         moveNext(true, true);
                         event.consume();
                     }
                     break;
                 case DOWN:
-                    if (JFXUtil.isObjectEqualTo(lsID, "tfDescription", "tfReplaceId", "tfReplaceDescription", "tfCost", "tfQuantity", "tfDiscRateDetail", "tfAddlDiscAmt")) {
+                    if (JFXUtil.isObjectEqualTo(lsID, "tfDescription", "tfReplaceId", "tfReplaceDescription", "tfCost", "tfQuantity", "tfDiscRateDetail", "tfUnitPrice","tfAddlDiscAmtDetail")) {
                         moveNext(false, true);
                         event.consume();
                     }
@@ -1546,7 +1530,7 @@ public class POQuotation_ConfirmationController implements Initializable, Screen
         JFXUtil.setButtonsVisibility(lbShow1, btnSearch, btnSave, btnCancel);
 
         //Ready
-        JFXUtil.setButtonsVisibility(lbShow3, btnUpdate, btnHistory, btnVoid, btnApprove, btnDisapprove);
+        JFXUtil.setButtonsVisibility(lbShow3, btnUpdate, btnHistory, btnVoid, btnApprove);
 
         //Unkown || Ready
         JFXUtil.setDisabled(!lbShow1, apMaster, apDetail, apAttachments, apAttachmentButtons);
@@ -1554,11 +1538,11 @@ public class POQuotation_ConfirmationController implements Initializable, Screen
 
         switch (poController.POQuotation().Master().getTransactionStatus()) {
             case POQuotationStatus.CONFIRMED:
-                JFXUtil.setButtonsVisibility(false, btnApprove, btnDisapprove);
+                JFXUtil.setButtonsVisibility(false, btnApprove);
                 break;
             case POQuotationStatus.VOID:
             case POQuotationStatus.CANCELLED:
-                JFXUtil.setButtonsVisibility(false, btnApprove, btnDisapprove, btnUpdate, btnVoid);
+                JFXUtil.setButtonsVisibility(false, btnApprove, btnUpdate, btnVoid);
                 break;
         }
     }
@@ -1646,7 +1630,7 @@ public class POQuotation_ConfirmationController implements Initializable, Screen
 
         if (moveDown || moveUp) {
             switch (currentTable.getId()) {
-                case "tblViewTransDetailList":
+                case "tblViewTransDetails":
                     if (details_data.isEmpty()) {
                         return;
                     }

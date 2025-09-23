@@ -904,13 +904,13 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
                     event.consume();
                     break;
                 case UP:
-                    if (JFXUtil.isObjectEqualTo(lsID, "tfDescription", "tfReplaceId", "tfReplaceDescription", "tfCost", "tfQuantity", "tfDiscRateDetail", "tfAddlDiscAmt")) {
+                    if (JFXUtil.isObjectEqualTo(lsID, "tfDescription", "tfReplaceId", "tfReplaceDescription", "tfCost", "tfQuantity", "tfDiscRateDetail", "tfUnitPrice","tfAddlDiscAmtDetail")) {
                         moveNext(true, true);
                         event.consume();
                     }
                     break;
                 case DOWN:
-                    if (JFXUtil.isObjectEqualTo(lsID, "tfDescription", "tfReplaceId", "tfReplaceDescription", "tfCost", "tfQuantity", "tfDiscRateDetail", "tfAddlDiscAmt")) {
+                    if (JFXUtil.isObjectEqualTo(lsID, "tfDescription", "tfReplaceId", "tfReplaceDescription", "tfCost", "tfQuantity", "tfDiscRateDetail", "tfUnitPrice","tfAddlDiscAmtDetail")) {
                         moveNext(false, true);
                         event.consume();
                     }
@@ -1780,7 +1780,7 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
 
         if (moveDown || moveUp) {
             switch (currentTable.getId()) {
-                case "tblViewTransDetailList":
+                case "tblViewTransDetails":
                     if (details_data.isEmpty()) {
                         return;
                     }
