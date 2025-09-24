@@ -172,7 +172,7 @@ public class POQuotationRequest_ApprovalHistoryController implements Initializab
                         String lsSelectedDate = sdfFormat.format(SQLUtil.toDate(JFXUtil.convertToIsoFormat(inputText), SQLUtil.FORMAT_SHORT_DATE));
                         LocalDate selectedDate = LocalDate.parse(lsSelectedDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
                         poJSON = poController.POQuotationRequest().searchTransaction(tfSearchBranch.getText(),
-                                tfSearchDepartment.getText(),  tfSearchCategory.getText(),
+                                tfSearchDepartment.getText(), tfSearchCategory.getText(),
                                 lsSelectedDate, tfSearchReferenceNo.getText());
                         if ("error".equalsIgnoreCase((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -463,7 +463,7 @@ public class POQuotationRequest_ApprovalHistoryController implements Initializab
             tfSearchBranch.setText(poController.POQuotationRequest().getSearchBranch());
             tfSearchDepartment.setText(poController.POQuotationRequest().getSearchDepartment());
             tfSearchCategory.setText(poController.POQuotationRequest().getSearchCategory());
-
+            JFXUtil.updateCaretPositions(apBrowse);
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
@@ -529,7 +529,7 @@ public class POQuotationRequest_ApprovalHistoryController implements Initializab
             String lsTransactionDate = CustomCommonUtil.formatDateToShortString(poController.POQuotationRequest().Master().getTransactionDate());
             dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsTransactionDate, "yyyy-MM-dd"));
 
-            String lsExpectedDate = CustomCommonUtil.formatDateToShortString(poController.POQuotationRequest().Master().getTransactionDate());
+            String lsExpectedDate = CustomCommonUtil.formatDateToShortString(poController.POQuotationRequest().Master().getExpectedPurchaseDate());
             dpExpectedDate.setValue(JFXUtil.isObjectEqualTo(lsExpectedDate, "1900-01-01") ? null : CustomCommonUtil.parseDateStringToLocalDate(lsExpectedDate, "yyyy-MM-dd"));
 
             tfBranch.setText(poController.POQuotationRequest().Master().Branch().getBranchName());
@@ -693,7 +693,7 @@ public class POQuotationRequest_ApprovalHistoryController implements Initializab
                 }
             }
         });
-        tblViewTransDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
+        JFXUtil.setKeyEventFilter(this::tableKeyEvents, tblViewTransDetails, tblViewSupplier);
     }
 
     private void initButton(int fnValue) {
@@ -738,7 +738,7 @@ public class POQuotationRequest_ApprovalHistoryController implements Initializab
 
         if (moveDown || moveUp) {
             switch (currentTable.getId()) {
-                case "tblViewTransDetailList":
+                case "tblViewTransDetails":
                     if (details_data.isEmpty()) {
                         return;
                     }

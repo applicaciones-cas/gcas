@@ -4,6 +4,7 @@
  */
 package com.rmj.guanzongroup.sidebarmenus.utility;
 
+import com.rmj.guanzongroup.sidebarmenus.controller.ScreenInterface;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import com.sun.javafx.scene.control.skin.TableViewSkin;
 import com.sun.javafx.scene.control.skin.VirtualFlow;
@@ -21,6 +22,7 @@ import java.time.Month;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -2446,27 +2448,9 @@ public class JFXUtil {
                 .requestFocus();
     }
 
-    public static class BindingData {
-
-        private final String tabName;
-        private final Class<?> controllerClass;
-
-        public BindingData(String tabName, Class<?> controllerClass) {
-            this.tabName = tabName;
-            this.controllerClass = controllerClass;
-        }
-
-        public String getTabName() {
-            return tabName;
-        }
-
-        public Class<?> getControllerClass() {
-            return controllerClass;
-        }
-    }
-
-    public static BindingData returnData(Class<?> clazz) {
-        return new BindingData(getFormattedClassTitle(clazz), clazz);
+    public static AbstractMap.SimpleEntry<String, Class<? extends ScreenInterface>> returnData(
+            Class<? extends ScreenInterface> clazz) {
+        return new AbstractMap.SimpleEntry<>(getFormattedClassTitle(clazz), clazz);
     }
 
     static class BreakLoopException extends RuntimeException {

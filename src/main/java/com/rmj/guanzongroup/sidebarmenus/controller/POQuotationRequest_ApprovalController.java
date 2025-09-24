@@ -320,7 +320,7 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
                             } else {
                                 ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
                                 JFXUtil.disableAllHighlightByColor(tblViewMainList, "#A7C7E7", highlightedRowsMain);
-                                JFXUtil.highlightByKey(tblViewMainList, String.valueOf(pnMain + 1), "#C1E1C1", highlightedRowsMain);
+                                JFXUtil.highlightByKey(tblViewMainList, String.valueOf(pnMain + 1), "#FAA0A0", highlightedRowsMain);
                             }
                         } else {
                             return;
@@ -691,54 +691,27 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
         poJSON = new JSONObject();
         JFXUtil.setJSONSuccess(poJSON, "success");
 
-        try {
-            Object source = event.getSource();
-            if (source instanceof DatePicker) {
-                DatePicker datePicker = (DatePicker) source;
-                String inputText = datePicker.getEditor().getText();
-                SimpleDateFormat sdfFormat = new SimpleDateFormat(SQLUtil.FORMAT_SHORT_DATE);
+//        try {
+        Object source = event.getSource();
+        if (source instanceof DatePicker) {
+            DatePicker datePicker = (DatePicker) source;
+            String inputText = datePicker.getEditor().getText();
+            SimpleDateFormat sdfFormat = new SimpleDateFormat(SQLUtil.FORMAT_SHORT_DATE);
 
-                if (JFXUtil.isObjectEqualTo(inputText, null, "", "01/01/1900")) {
-                    return;
-                }
-
-                switch (datePicker.getId()) {
-                    case "dpExpectedDate":
-                        String lsServerDate = sdfFormat.format(oApp.getServerDate());
-                        String lsTransDate = sdfFormat.format(poController.POQuotationRequest().Master().getTransactionDate());
-                        String lsSelectedDate = sdfFormat.format(SQLUtil.toDate(JFXUtil.convertToIsoFormat(inputText), SQLUtil.FORMAT_SHORT_DATE));
-                        LocalDate currentDate = LocalDate.parse(lsTransDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
-                        LocalDate selectedDate = LocalDate.parse(lsSelectedDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
-                        if (poController.POQuotationRequest().getEditMode() == EditMode.ADDNEW
-                                || poController.POQuotationRequest().getEditMode() == EditMode.UPDATE) {
-                            if (selectedDate.isBefore(currentDate)) {
-                                JFXUtil.setJSONError(poJSON, "Target date cannot be before the transaction date.");
-                                pbSuccess = false;
-                            } else {
-                                poController.POQuotationRequest().Master().setExpectedPurchaseDate((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
-                            }
-                            if (pbSuccess) {
-                            } else {
-                                if ("error".equals((String) poJSON.get("result"))) {
-                                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                }
-                            }
-                            pbSuccess = false; //Set to false to prevent multiple message box: Conflict with server date vs transaction date validation
-                            loadRecordMaster();
-                            pbSuccess = true; //Set to original value
-                        }
-                        break;
-                    case "dpSearchTransactionDate":
-                        loadRecordSearch();
-                        retrievePOQuotationRequest();
-                        break;
-                    default:
-                        break;
-                }
+            if (JFXUtil.isObjectEqualTo(inputText, null, "", "01/01/1900")) {
+                return;
             }
-        } catch (SQLException ex) {
-            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            switch (datePicker.getId()) {
+                case "dpSearchTransactionDate":
+                    retrievePOQuotationRequest();
+                    break;
+                default:
+                    break;
+            }
         }
+//        } catch (SQLException ex) {
+//            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+//        }
     }
 
     public void initTabPane() {
@@ -771,7 +744,7 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
             tfSearchBranch.setText(poController.POQuotationRequest().getSearchBranch());
             tfSearchDepartment.setText(poController.POQuotationRequest().getSearchDepartment());
             tfSearchCategory.setText(poController.POQuotationRequest().getSearchCategory());
-
+            JFXUtil.updateCaretPositions(apBrowse);
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
@@ -842,7 +815,7 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
             String lsTransactionDate = CustomCommonUtil.formatDateToShortString(poController.POQuotationRequest().Master().getTransactionDate());
             dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsTransactionDate, "yyyy-MM-dd"));
 
-            String lsExpectedDate = CustomCommonUtil.formatDateToShortString(poController.POQuotationRequest().Master().getTransactionDate());
+            String lsExpectedDate = CustomCommonUtil.formatDateToShortString(poController.POQuotationRequest().Master().getExpectedPurchaseDate());
             dpExpectedDate.setValue(JFXUtil.isObjectEqualTo(lsExpectedDate, "1900-01-01") ? null : CustomCommonUtil.parseDateStringToLocalDate(lsExpectedDate, "yyyy-MM-dd"));
 
             tfBranch.setText(poController.POQuotationRequest().Master().Branch().getBranchName());
@@ -1119,7 +1092,7 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
             }
         });
 
-        tblViewTransDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
+        JFXUtil.setKeyEventFilter(this::tableKeyEvents, tblViewTransDetails, tblViewSupplier);
         JFXUtil.adjustColumnForScrollbar(tblViewTransDetails, tblViewMainList, tblViewSupplier); // need to use computed-size in min-width of the column to work
         JFXUtil.applyRowHighlighting(tblViewMainList, item -> ((ModelPOQuotationRequest_Main) item).getIndex01(), highlightedRowsMain);
     }
@@ -1203,7 +1176,7 @@ public class POQuotationRequest_ApprovalController implements Initializable, Scr
 
         if (moveDown || moveUp) {
             switch (currentTable.getId()) {
-                case "tblViewTransDetailList":
+                case "tblViewTransDetails":
                     if (details_data.isEmpty()) {
                         return;
                     }
