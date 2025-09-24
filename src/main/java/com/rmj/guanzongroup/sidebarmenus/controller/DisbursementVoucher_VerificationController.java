@@ -33,6 +33,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
@@ -82,7 +83,7 @@ import ph.com.guanzongroup.cas.cashflow.status.JournalStatus;
 public class DisbursementVoucher_VerificationController implements Initializable, ScreenInterface {
 
     private GRiderCAS oApp;
-    private JSONObject poJSON;
+    private JSONObject poJSON,poJSONVAT;
     private static final int ROWS_PER_PAGE = 50;
     private int pnMain = 0;
     private int pnDetailDV = 0;
@@ -221,14 +222,15 @@ public class DisbursementVoucher_VerificationController implements Initializable
     @FXML
     private AnchorPane apDVDetail;
     @FXML
-    private TextField tfRefNoDetail, tfParticularsDetail, tfAccountCodeDetail, tfPurchasedAmountDetail, tfTaxCodeDetail, tfTaxRateDetail, tfTaxAmountDetail, tfNetAmountDetail;
+    private TextField tfRefNoDetail, tfParticularsDetail, tfPurchasedAmountDetail, tfTaxCodeDetail, tfTaxRateDetail, tfTaxAmountDetail, tfNetAmountDetail,
+            tfVatableSalesDetail, tfPartialPayment, tfVatAmountDetail, tfVatRateDetail, tfVatZeroRatedSalesDetail, tfVatExemptDetail;
     @FXML
     private CheckBox chbkVatClassification;
     @FXML
     private TableView tblVwDetails;
     @FXML
-    private TableColumn tblDVRowNo, tblReferenceNo, tblAccountCode, tblTransactionTypeDetail, tblParticulars, tblPurchasedAmount, tblTaxCode, tblTaxAmount, tblNetAmount;
-
+    private TableColumn tblDVRowNo, tblReferenceNo, tblAccountCode, tblTransactionTypeDetail, tblParticulars, tblPurchasedAmount, tblTaxCode, tblTaxAmount, tblNetAmount,
+            tblVatableSales, tblVatAmt, tblVatRate, tblVatZeroRatedSales, tblVatExemptSales;
     /*Journal Master */
     @FXML
     private AnchorPane apJournalMaster, apJournalDetails;
@@ -242,6 +244,8 @@ public class DisbursementVoucher_VerificationController implements Initializable
     private Label lblJournalTransactionStatus;
     @FXML
     private TableView tblVwJournalDetails;
+    @FXML
+    private Label txtAccountCode;
     @FXML
     private TableColumn tblJournalRowNo, tblJournalAccountCode, tblJournalAccountDescription, tblJournalDebitAmount, tblJournalCreditAmount, tblJournalReportMonthYear;
 
@@ -271,6 +275,8 @@ public class DisbursementVoucher_VerificationController implements Initializable
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         try {
+            txtAccountCode.setVisible(false);
+//            tfAccountCodeDetail.setVisible(false);
             poDisbursementController = new CashflowControllers(oApp, null).Disbursement();
             poDisbursementController.setTransactionStatus(DisbursementStatic.OPEN + DisbursementStatic.VERIFIED + DisbursementStatic.RETURNED);
             poJSON = new JSONObject();
@@ -394,6 +400,16 @@ public class DisbursementVoucher_VerificationController implements Initializable
                     if (!isSavingValid()) {
                         return;
                     }
+                    poJSON = poDisbursementController.validateTAXandVat();
+                    if("error".equals((String)poJSON.get("result"))){
+                        ShowMessageFX.Information((String)poJSON.get("message"), pxeModuleName, null);
+                        pnDetailDV = (int) poJSON.get("pnDetailDV");
+                        JFXUtil.selectAndFocusRow(tblVwDetails, pnDetailDV);
+                        loadRecordDetailDV();
+                        return;
+                        
+                    }
+               
                     if (pnEditMode == EditMode.UPDATE) {
                         if (!pbIsCheckedJournalTab) {
                             ShowMessageFX.Warning("Please see the Journal Entry, before save", pxeModuleName, null);
@@ -778,7 +794,7 @@ public class DisbursementVoucher_VerificationController implements Initializable
             }
             taDVRemarks.setText(poDisbursementController.Master().getRemarks());
             tfVatableSales.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Master().getVATSale(), true));
-            tfVatRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Master().getVATRates(), false));
+//            tfVatRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Master().getVATRates(), false));
             tfVatAmountMaster.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Master().getVATAmount(), true));
             tfVatZeroRatedSales.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Master().getZeroVATSales(), true));
             tfVatExemptSales.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Master().getVATExmpt(), true));
@@ -876,17 +892,26 @@ public class DisbursementVoucher_VerificationController implements Initializable
             try {
                 tfRefNoDetail.setText(poDisbursementController.Detail(pnDetailDV).getSourceNo());
                 tfParticularsDetail.setText(poDisbursementController.Detail(pnDetailDV).Particular().getDescription());
-                tfAccountCodeDetail.setText(poDisbursementController.Detail(pnDetailDV).Particular().getAccountCode());
-                tfPurchasedAmountDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(pnDetailDV).getAmount(), true));
+//                tfAccountCodeDetail.setText(poDisbursementController.Detail(pnDetailDV).Particular().getAccountCode());
+                tfPurchasedAmountDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(pnDetailDV).getAmountApplied(), true));
                 tfTaxCodeDetail.setText(poDisbursementController.Detail(pnDetailDV).TaxCode().getTaxCode());
                 tfTaxRateDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(pnDetailDV).getTaxRates(), false));
                 tfTaxAmountDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(pnDetailDV).getTaxAmount(), true));
                 tfNetAmountDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(pnDetailDV).getAmount()
                         - poDisbursementController.Detail(pnDetailDV).getTaxAmount(), true));
-                chbkVatClassification.setSelected(poDisbursementController.Detail(pnDetailDV).isWithVat());
+                
+                tfVatRateDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(pnDetailDV).getDetailVatRates(), false));
+                tfPartialPayment.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poJSONVAT.get("totalApplied"), true));
+                tfVatAmountDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(pnDetailDV).getDetailVatAmount(), true));
+                tfVatableSalesDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(pnDetailDV).getDetailVatSales(), true));
+                tfVatZeroRatedSalesDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(pnDetailDV).getDetailZeroVat(), true));
+                tfVatExemptDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(pnDetailDV).getDetailVatExempt(), true));
+                
+                    chbkVatClassification.setSelected(poDisbursementController.Detail(pnDetailDV).isWithVat());
+                
 
             } catch (SQLException | GuanzonException ex) {
-                Logger.getLogger(DisbursementVoucher_VerificationController.class
+                Logger.getLogger(DisbursementVoucher_EntryController.class
                         .getName()).log(Level.SEVERE, null, ex);
             }
         }
@@ -959,9 +984,14 @@ public class DisbursementVoucher_VerificationController implements Initializable
                                     new ModelDisbursementVoucher_Detail(String.valueOf(lnCtr + 1),
                                             poDisbursementController.Detail(lnCtr).getSourceNo(),
                                             poDisbursementController.Detail(lnCtr).Particular().getAccountCode(),
-                                            lsTransactionType,
+                                            poDisbursementController.Detail(lnCtr).getSourceCode(),
                                             poDisbursementController.Detail(lnCtr).Particular().getDescription(),
-                                            CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(lnCtr).getAmount(), true),
+                                            CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(lnCtr).getAmountApplied(), true),
+                                            CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(lnCtr).getDetailVatSales(), true),
+                                            CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(lnCtr).getDetailVatAmount(), true),
+                                            CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(lnCtr).getDetailVatRates(), false),
+                                            CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(lnCtr).getDetailZeroVat(), true),
+                                            CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(lnCtr).getDetailVatExempt(), true),
                                             poDisbursementController.Detail(lnCtr).TaxCode().getTaxCode(),
                                             CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(lnCtr).getTaxAmount(), true),
                                             CustomCommonUtil.setIntegerValueToDecimalFormat(lnNetTotal, true)
@@ -978,10 +1008,25 @@ public class DisbursementVoucher_VerificationController implements Initializable
                             JFXUtil.selectAndFocusRow(tblVwDetails, 0);
                             pnDetailDV = tblVwDetails.getSelectionModel().getSelectedIndex();
                             loadRecordDetailDV();
+                            
                         }
                     } else {
-                        JFXUtil.selectAndFocusRow(tblVwDetails, pnDetailDV);
-                        loadRecordDetailDV();
+                        try {
+                            JFXUtil.selectAndFocusRow(tblVwDetails, pnDetailDV);
+                            poJSONVAT = poDisbursementController.validateDetailVATAndTAX(poDisbursementController.Detail(pnDetailDV).getSourceCode(),
+                                    poDisbursementController.Detail(pnDetailDV).getSourceNo());
+                            poDisbursementController.computeVat(pnDetailDV,
+                                    poDisbursementController.Detail(pnDetailDV).getAmountApplied(),
+                                    poDisbursementController.Detail(pnDetailDV).getDetailVatRates(),
+                               Double.parseDouble(JFXUtil.removeComma(tfPartialPayment.getText())),
+                                    true);
+                            
+                            loadRecordDetailDV();
+                            tblVwDetails.refresh();
+                        } catch (SQLException ex) {
+                            Logger.getLogger(DisbursementVoucher_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        
                     }
                     poJSON = poDisbursementController.computeFields();
                     if ("error".equals((String) poJSON.get("result"))) {
@@ -1017,7 +1062,10 @@ public class DisbursementVoucher_VerificationController implements Initializable
     }
 
     private void initTableDetailDV() {
-        JFXUtil.setColumnCenter(tblDVRowNo, tblReferenceNo, tblTransactionTypeDetail, tblAccountCode, tblParticulars, tblTaxCode);
+        
+        tblAccountCode.setVisible(false);
+        JFXUtil.setColumnCenter(tblDVRowNo, tblReferenceNo, tblTransactionTypeDetail, tblAccountCode, tblParticulars, tblTaxCode,
+                tblVatAmt, tblVatExemptSales, tblVatRate, tblVatZeroRatedSales, tblVatableSales);
         JFXUtil.setColumnRight(tblTaxAmount, tblPurchasedAmount, tblNetAmount);
         JFXUtil.setColumnsIndexAndDisableReordering(tblVwDetails);
         filteredDataDetailDV = new FilteredList<>(detailsdv_data, b -> true);
@@ -1176,8 +1224,59 @@ public class DisbursementVoucher_VerificationController implements Initializable
         List<TextField> loTxtFieldKeyPressed = Arrays.asList(tfSearchTransaction, tfSearchSupplier, tfPayeeName, tfBankNameCheck, tfBankAccountCheck, tfPurchasedAmountDetail, tfTaxCodeDetail, tfParticularsDetail, tfAuthorizedPerson,
                 tfAccountCode, tfAccountDescription, tfDebitAmount, tfCreditAmount);
         loTxtFieldKeyPressed.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
+         Node[] txtField_Focusx = {
+            tfTaxCodeDetail
+            
+        };
+        for (Node txtInput : txtField_Focusx) {
+            txtInput.focusedProperty().addListener(txtField_Focus);
+        }
 
     }
+    final ChangeListener<Boolean> txtField_Focus = (obs, oldVal, newVal) -> {
+        TextField loTextField = (TextField) ((ReadOnlyBooleanPropertyBase) obs).getBean();
+        String lsTextFieldID = loTextField.getId();
+        String lsValue = loTextField.getText();
+        
+//        if (lsValue == null) {
+//            return;
+//        }
+
+        if (!newVal) {
+            try {
+                switch (lsTextFieldID) {
+                    case "tfTaxCodeDetail":
+//                        if(poDisbursementController.Detail(pnDetailDV).getTaxCode().isEmpty() && poDisbursementController.Detail(pnDetailDV).isWithVat() ){
+//                            if(ShowMessageFX.YesNo("No Tax Code has been assigned. \n "
+//                                    + " VAT will not be applied, and this transaction requires user approval before proceeding.\n "
+//                                    + " Do you want to proceed?", pxeModuleName, null)){
+//                                poJSON = poDisbursementController.callapproval();
+//                                if("error".equals(poJSON.get("result"))){
+//                                    ShowMessageFX.Information((String)poJSON.get("message"), pxeModuleName, lsValue);
+//                                    return;
+//                                }
+//                                
+//                                poDisbursementController.Detail(pnDetailDV).isWithVat(false);
+//                                poDisbursementController.Detail(pnDetailDV).setDetailVatRates(DisbursementStatic.DefaultValues.default_value_double);
+//                                poDisbursementController.computeVat(pnDetailDV, 
+//                                        poDisbursementController.Detail(pnDetailDV).getAmount(), 
+//                                        poDisbursementController.Detail(pnDetailDV).getDetailVatRates(), 
+//                                        (double) poJSONVAT.get("totalApplied"), 
+//                                        true);
+//                                
+//                                loadTableDetailDV();
+//                            }
+//                        }
+                        break;
+                    default:
+                        break;
+                }
+                
+            } catch (Exception e) {
+                System.err.println("Error processing input [" + lsTextFieldID + "]: " + e.getMessage());
+            }
+        } 
+    };
 
     final ChangeListener<? super Boolean> txtMasterCheck_Focus = (o, ov, nv) -> {
         poJSON = new JSONObject();
@@ -1339,6 +1438,27 @@ public class DisbursementVoucher_VerificationController implements Initializable
                             case "tfPurchasedAmountDetail":
                             case "tfTaxCodeDetail":
                             case "tfParticularsDetail":
+                                if(poDisbursementController.Detail(pnDetailDV).getTaxCode().isEmpty() && poDisbursementController.Detail(pnDetailDV).isWithVat() ){
+                                if (ShowMessageFX.YesNo("No Tax Code has been assigned. \n "
+                                            + " VAT will not be applied, and this transaction requires user approval before proceeding.\n "
+                                            + " Do you want to proceed?", pxeModuleName, null)) {
+                                        poJSON = poDisbursementController.callapproval();
+                                        if ("error".equals(poJSON.get("result"))) {
+                                            ShowMessageFX.Information((String) poJSON.get("message"), pxeModuleName, lsValue);
+                                            return;
+                                        }
+
+                                        poDisbursementController.Detail(pnDetailDV).isWithVat(false);
+                                        poDisbursementController.Detail(pnDetailDV).setDetailVatRates(DisbursementStatic.DefaultValues.default_value_double);
+                                        poDisbursementController.computeVat(pnDetailDV,
+                                                poDisbursementController.Detail(pnDetailDV).getAmount(),
+                                                poDisbursementController.Detail(pnDetailDV).getDetailVatRates(),
+                                                (double) poJSONVAT.get("totalApplied"),
+                                                true);
+
+                                        loadTableDetailDV();
+                                    }
+                                }
                                 poDisbursementController.Detail(pnDetailDV).setAmount(Double.parseDouble(JFXUtil.removeComma(tfPurchasedAmountDetail.getText())));
                                 Platform.runLater(() -> {
                                     PauseTransition delay = new PauseTransition(Duration.seconds(0.50));

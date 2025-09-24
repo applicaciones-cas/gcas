@@ -11,7 +11,7 @@ import javafx.beans.property.StringProperty;
  *
  * @author User
  */
-public class ModelSalesReservationDetail {
+public class ModelSalesReservationDetailx {
 
     public StringProperty index01;
     public StringProperty index02;
@@ -24,7 +24,7 @@ public class ModelSalesReservationDetail {
     public StringProperty index09;
     public StringProperty index10;
 
-    public ModelSalesReservationDetail(String index01,
+    public ModelSalesReservationDetailx(String index01,
             String index02,
             String index03,
             String index04,
@@ -47,7 +47,7 @@ public class ModelSalesReservationDetail {
         this.index10 = new SimpleStringProperty(index10);
         
     }
-     public ModelSalesReservationDetail(String index01,
+     public ModelSalesReservationDetailx(String index01,
             String index02,
             String index03,
             String index04,
