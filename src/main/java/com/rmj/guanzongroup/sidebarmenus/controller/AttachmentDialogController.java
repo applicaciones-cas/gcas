@@ -89,6 +89,7 @@ public class AttachmentDialogController implements Initializable, ScreenInterfac
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
+        JFXUtil.checkIfFolderExists(poJSON, System.getProperty("sys.default.path.temp") + "/Attachments//");
         initAttachmentPreviewPane();
         Platform.runLater(() -> {
             loadTableAttachment();

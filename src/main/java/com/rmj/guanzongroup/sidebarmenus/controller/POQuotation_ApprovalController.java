@@ -168,6 +168,8 @@ public class POQuotation_ApprovalController implements Initializable, ScreenInte
             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
         }
 
+        JFXUtil.checkIfFolderExists(poJSON, System.getProperty("sys.default.path.temp") + "/Attachments//");
+        
         initTextFields();
         initDatePickers();
         initMainGrid();

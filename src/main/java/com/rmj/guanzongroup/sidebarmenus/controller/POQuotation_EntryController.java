@@ -168,7 +168,7 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
             System.err.println((String) poJSON.get("message"));
             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
         }
-
+        JFXUtil.checkIfFolderExists(poJSON, System.getProperty("sys.default.path.temp") + "/Attachments//");
         initTextFields();
         initDatePickers();
         initMainGrid();
