@@ -4,7 +4,7 @@
  */
 package com.rmj.guanzongroup.sidebarmenus.controller;
 
-import com.rmj.guanzongroup.sidebarmenus.table.model.ModelSalesReservationDetail;
+import com.rmj.guanzongroup.sidebarmenus.table.model.ModelSalesReservationDetailx;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelSalesReservationSource;
 import com.rmj.guanzongroup.sidebarmenus.utility.CustomCommonUtil;
 import com.rmj.guanzongroup.sidebarmenus.utility.JFXUtil;
@@ -93,7 +93,7 @@ public class SalesReservation_ConfirmationSPMCController implements Initializabl
     private static final int ROWS_PER_PAGE = 50;
     
     private ObservableList<ModelSalesReservationSource> source_data = FXCollections.observableArrayList();
-    private ObservableList<ModelSalesReservationDetail> detail_data = FXCollections.observableArrayList();
+    private ObservableList<ModelSalesReservationDetailx> detail_data = FXCollections.observableArrayList();
     
     @Override
     public void setGRider(GRiderCAS foValue) {
@@ -1124,8 +1124,7 @@ public class SalesReservation_ConfirmationSPMCController implements Initializabl
 
                                 double unitprice = Double.parseDouble(poSalesReservationControllers.SalesReservation().Detail(lnCtr).Inventory().getCost().toString());
                                 lnNetTotal = poSalesReservationControllers.SalesReservation().Detail(lnCtr).getQuantity() * unitprice;
-                                detail_data.add(
-                                        new ModelSalesReservationDetail(String.valueOf(lnCtr + 1),
+                                detail_data.add(new ModelSalesReservationDetailx(String.valueOf(lnCtr + 1),
                                                 poSalesReservationControllers.SalesReservation().Detail(lnCtr).Inventory().getDescription(),
                                                 "F",
                                                 CustomCommonUtil.setIntegerValueToDecimalFormat(poSalesReservationControllers.SalesReservation().Detail(lnCtr).getQuantity(),false),
@@ -1188,7 +1187,7 @@ public class SalesReservation_ConfirmationSPMCController implements Initializabl
      private void tblDetail_Clicked(MouseEvent event) {
         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE || pnEditMode == EditMode.READY) {
             pnDetailRow = tblDetailList.getSelectionModel().getSelectedIndex();
-            ModelSalesReservationDetail selectedItem = (ModelSalesReservationDetail) tblDetailList.getSelectionModel().getSelectedItem();
+            ModelSalesReservationDetailx selectedItem = (ModelSalesReservationDetailx) tblDetailList.getSelectionModel().getSelectedItem();
                 clearDetail();
                 if (selectedItem != null) {
                     if (pnDetailRow >= 0) {

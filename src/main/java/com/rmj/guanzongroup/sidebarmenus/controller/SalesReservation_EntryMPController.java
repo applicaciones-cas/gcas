@@ -4,7 +4,7 @@
  */
 package com.rmj.guanzongroup.sidebarmenus.controller;
 
-import com.rmj.guanzongroup.sidebarmenus.table.model.ModelSalesReservationDetail;
+import com.rmj.guanzongroup.sidebarmenus.table.model.ModelSalesReservationDetailx;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelSalesReservationSource;
 import com.rmj.guanzongroup.sidebarmenus.utility.CustomCommonUtil;
 import com.rmj.guanzongroup.sidebarmenus.utility.JFXUtil;
@@ -13,6 +13,7 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -66,6 +67,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import ph.com.guanzongroup.cas.sales.services.SalesReservationControllers;
 import ph.com.guanzongroup.cas.sales.constant.Sales_Reservation_Static;
+import ph.com.guanzongroup.cas.sales.t2.SalesReservation.StockSummary;
+import ph.com.guanzongroup.cas.sales.utility.ModelSalesReservationDetail;
 
 /**
  * FXML Controller class
@@ -83,17 +86,17 @@ public class SalesReservation_EntryMPController implements Initializable, Screen
     private String psIndustryID = "";
     private String psCompanyID = "";
     private String psCategoryID = "";
-    
     private int pnEditMode;
     private int pnSourceRow = -1;
     private int pnDetailRow = -1;
     private String prevCustomer ="";
     private String psOldDate = "";
     private static final int ROWS_PER_PAGE = 50;
-    
+    private double selectedNetQty = 0.00;
     private ObservableList<ModelSalesReservationSource> source_data = FXCollections.observableArrayList();
     private ObservableList<ModelSalesReservationDetail> detail_data = FXCollections.observableArrayList();
     
+    private double totalQty = 0.0;
     @Override
     public void setGRider(GRiderCAS foValue) {
         poApp = foValue;
@@ -375,7 +378,17 @@ public class SalesReservation_EntryMPController implements Initializable, Screen
                         loadTableDetailList();
                         break;
                     case "tfQuantity":
-                        poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).setQuantity(Double.parseDouble(lsValue));
+                        
+                        String trimmed = lsValue.trim();
+                        try {
+                            double qty = Double.parseDouble(trimmed);
+                            poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).setQuantity(qty);
+                            poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).isReversed(false);
+                        } catch (NumberFormatException e) {
+                            // handle bad numeric input if needed
+                            System.err.println("Invalid quantity: " + trimmed);
+                        }
+                        
                         tfQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(lsValue, false));
 //                        detail_data.get(pnDetailRow).setIndex04(CustomCommonUtil.setIntegerValueToDecimalFormat(lsValue, false));
                         loadTableDetailList();
@@ -451,7 +464,6 @@ public class SalesReservation_EntryMPController implements Initializable, Screen
 //                                    tfTerm.requestFocus();
 //                                }
                                 prevCustomer = tfCustomerName.getText();
-                                loadTableSourceList();
                                 break;
                             case "tfDestination":
                             case "tfTerm":
@@ -924,7 +936,7 @@ public class SalesReservation_EntryMPController implements Initializable, Screen
             tfDownPayment.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(
                     poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).getMinimumDown(), true));
             tfQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(
-                    poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).getQuantity(), false));
+                    totalQty, false));
            
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(SalesReservation_EntryMPController.class.getName()).log(Level.SEVERE, null, ex);
@@ -1111,90 +1123,89 @@ public class SalesReservation_EntryMPController implements Initializable, Screen
     
     
     private void loadTableDetailList() {
-//        pbEnteredDV = false;
-        JFXUtil.LoadScreenComponents loading = JFXUtil.createLoadingComponents();
-        tblDetailList.setPlaceholder(loading.loadingPane);
-        loading.progressIndicator.setVisible(true);
+    JFXUtil.LoadScreenComponents loading = JFXUtil.createLoadingComponents();
+    tblDetailList.setPlaceholder(loading.loadingPane);
+    loading.progressIndicator.setVisible(true);
 
-        Task<Void> task = new Task<Void>() {
-            @Override
-            protected Void call() throws Exception {
-                Platform.runLater(() -> {
-                    try {
-                        detail_data.clear();
-                        int lnCtr;
-                        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                            lnCtr = poSalesReservationControllers.SalesReservation().getDetailCount();
-                            if (lnCtr > 0) {
-                                String lsSourceNo = poSalesReservationControllers.SalesReservation().Master().getSourceNo();
-                                poSalesReservationControllers.SalesReservation().AddDetail();
-                            }
+    Task<Void> task = new Task<Void>() {
+        @Override
+        protected Void call() {
+            Platform.runLater(() -> {
+                try {
+                    detail_data.clear();
+
+                    if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                        if (poSalesReservationControllers.SalesReservation().getDetailCount() > 0) {
+                            String lsSourceNo = poSalesReservationControllers.SalesReservation().Master().getSourceNo();
+                            poSalesReservationControllers.SalesReservation().AddDetail();
+                            
                         }
-                        double lnNetTotal = 0.0000;
-                        for (lnCtr = 0; lnCtr < poSalesReservationControllers.SalesReservation().getDetailCount(); lnCtr++) {
+                    }
 
-                                double unitprice = Double.parseDouble(poSalesReservationControllers.SalesReservation().Detail(lnCtr).Inventory().getCost().toString());
-                                lnNetTotal = poSalesReservationControllers.SalesReservation().Detail(lnCtr).getQuantity() * unitprice;
-                                detail_data.add(
-                                        new ModelSalesReservationDetail(String.valueOf(lnCtr + 1),
-                                                poSalesReservationControllers.SalesReservation().Detail(lnCtr).Inventory().getDescription(),
-                                                "F",
-                                                CustomCommonUtil.setIntegerValueToDecimalFormat(poSalesReservationControllers.SalesReservation().Detail(lnCtr).getQuantity(),false),
-                                                CustomCommonUtil.setIntegerValueToDecimalFormat(poSalesReservationControllers.SalesReservation().Detail(lnCtr).Inventory().getCost(), true),
-                                                "0.0000",
-                                                CustomCommonUtil.setIntegerValueToDecimalFormat(lnNetTotal, true)
-                                        ));
+                    // ✅ Fetch all pre-computed details
+                    List<StockSummary> summaries = poSalesReservationControllers.SalesReservation().computeStockSummaries();
+                    
+                    detail_data.clear();
+                    for (int i = 0; i < summaries.size(); i++) {
+                        StockSummary s = summaries.get(i);
 
-                        }
-                        if (pnDetailRow < 0 || pnDetailRow
-                                >= detail_data.size()) {
-                            if (!detail_data.isEmpty()) {
-                                JFXUtil.selectAndFocusRow(tblDetailList, 0);
-                                pnDetailRow = tblDetailList.getSelectionModel().getSelectedIndex();
-                                loadRecordDetail();
-                            }
-                        } else {
-                            JFXUtil.selectAndFocusRow(tblDetailList, pnDetailRow);
+                        double netTotal = s.getNetQty() * s.getUnitPrice();
+
+                        detail_data.add(new ModelSalesReservationDetail(
+                                String.valueOf(i + 1),
+                                s.getDescription(),
+                                "F",
+                                CustomCommonUtil.setIntegerValueToDecimalFormat(s.getNetQty(), false),
+                                CustomCommonUtil.setIntegerValueToDecimalFormat(s.getUnitPrice(), true),
+                                "0.0000",
+                                CustomCommonUtil.setIntegerValueToDecimalFormat(netTotal, true)
+                        ));
+                    }
+                    if (pnDetailRow < 0 || pnDetailRow >= detail_data.size()) {
+                        if (!detail_data.isEmpty()) {
+                            JFXUtil.selectAndFocusRow(tblDetailList, 0);
+                            pnDetailRow = tblDetailList.getSelectionModel().getSelectedIndex();
+                            ModelSalesReservationDetail detail = detail_data.get(pnDetailRow);
+                            totalQty = Double.parseDouble(detail.getIndex04());
+                            System.out.println("Description: " + detail.getIndex02());
+                            System.out.println("Quantity: " + detail.getIndex04());
                             loadRecordDetail();
                         }
-//                        poJSON = poSalesReservationControllers.SalesReservation().computeFields();
-//                        if ("error".equals((String) poJSON.get("result"))) {
-//                            ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
-//                            return;
-//                        }
+                    } else {
+                        JFXUtil.selectAndFocusRow(tblDetailList, pnDetailRow);
+                        pnDetailRow = tblDetailList.getSelectionModel().getSelectedIndex();
+                        ModelSalesReservationDetail detail = detail_data.get(pnDetailRow);
+                        totalQty = Double.parseDouble(detail.getIndex04());
+                            System.out.println("Description: " + detail.getIndex02());
+                            System.out.println("Quantity: " + detail.getIndex04());
                         loadRecordDetail();
-                    } catch (SQLException ex) {
-                        Logger.getLogger(SalesReservation_EntryMPController.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (GuanzonException ex) {
-                        Logger.getLogger(SalesReservation_EntryMPController.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (CloneNotSupportedException ex) {
-                        Logger.getLogger(SalesReservation_EntryMPController.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                });
-                return null;
-            }
 
-            @Override
-            protected void succeeded() {
-                if (detail_data == null || detail_data.isEmpty()) {
-                    tblDetailList.setPlaceholder(loading.placeholderLabel);
-                } else {
-                    tblDetailList.toFront();
+                } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
+                    Logger.getLogger(SalesReservation_EntryMPController.class.getName())
+                          .log(Level.SEVERE, null, ex);
                 }
-                loading.progressIndicator.setVisible(false);
-            }
+            });
+            return null;
+        }
 
-            @Override
-            protected void failed() {
-                if (detail_data == null || detail_data.isEmpty()) {
-                    tblDetailList.setPlaceholder(loading.placeholderLabel);
-                }
-                loading.progressIndicator.setVisible(false);
-            }
-        };
-        new Thread(task).start();
+        @Override
+        protected void succeeded() {
+            tblDetailList.setPlaceholder(
+                detail_data.isEmpty() ? loading.placeholderLabel : null
+            );
+            loading.progressIndicator.setVisible(false);
+        }
 
-    }
+        @Override
+        protected void failed() {
+            tblDetailList.setPlaceholder(loading.placeholderLabel);
+            loading.progressIndicator.setVisible(false);
+        }
+    };
+    new Thread(task).start();
+}
+
     
     private void tblDetail_Clicked(MouseEvent event) {
         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE || pnEditMode == EditMode.READY) {
@@ -1203,8 +1214,12 @@ public class SalesReservation_EntryMPController implements Initializable, Screen
                 clearDetail();
                 if (selectedItem != null) {
                     if (pnDetailRow >= 0) {
+                        ModelSalesReservationDetail detail = detail_data.get(pnDetailRow);
+                        totalQty = Double.parseDouble(detail.getIndex04());
+                            System.out.println("Description: " + detail.getIndex02());
+                            System.out.println("Quantity: " + detail.getIndex04());
                         loadRecordDetail();
-                        if (event.getClickCount() == 2) {
+                        if (event.getClickCount() == 2  && pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                             tfQuantity.requestFocus();
                         }
                     }

@@ -447,10 +447,10 @@
                                                                                             <children>
                                                                                                 <TextField fx:id="tfRefNoDetail" disable="true" editable="false" maxWidth="1.7976931348623157E308" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                                                                                                 <Label text="Reference No" GridPane.rowIndex="2" />
-                                                                                                <TextField fx:id="tfParticularsDetail" disable="true" editable="false" GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.rowIndex="4" />
-                                                                                                <Label text="Particulars" GridPane.rowIndex="4" />
-                                                                                                <Label text="Account Code" GridPane.rowIndex="3" />
-                                                                                                <TextField fx:id="tfAccountCodeDetail" disable="true" editable="false" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                                                                                <TextField fx:id="tfParticularsDetail" disable="true" editable="false" GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.rowIndex="3" />
+                                                                                                <Label text="Particulars" GridPane.rowIndex="3" />
+                                                                                                <Label fx:id="txtAccountCode" text="Account Code" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                                                                                                <TextField fx:id="tfAccountCodeDetail" disable="true" editable="false" GridPane.columnIndex="4" GridPane.rowIndex="2" />
                                                                                                 <Label text="Amount" GridPane.columnIndex="6" GridPane.rowIndex="2" />
                                                                                                 <Label text="Vat Classification" GridPane.columnIndex="6" GridPane.rowIndex="3" />
                                                                                                 <Label text="Tax Code" GridPane.columnIndex="6" GridPane.rowIndex="4" />
