@@ -196,7 +196,7 @@
                                                                               <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
                                                                               <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
                                                                               <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
-                                                                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
                                                                       </rowConstraints>
                                                                       <children>
                                                       <AnchorPane maxWidth="-Infinity" minWidth="-Infinity" prefHeight="27.0" prefWidth="140.0" style="-fx-background-color: FF8201;" GridPane.columnIndex="11" />
@@ -246,7 +246,7 @@
                                                                                  <font>
                                                                                     <Font size="12.0" />
                                                                                  </font></Label>
-                                                                              <Label layoutX="31.0" layoutY="14.0" text="Net Total" GridPane.columnIndex="9" GridPane.rowIndex="13">
+                                                                              <Label layoutX="31.0" layoutY="14.0" text="Net Total" GridPane.columnIndex="9" GridPane.rowIndex="12">
                                                                                  <font>
                                                                                     <Font name="System Bold" size="15.0" />
                                                                                  </font>
@@ -263,8 +263,8 @@
                                                                                  <font>
                                                                                     <Font name="System Bold" size="12.0" />
                                                                                  </font></Label>
-                                                                              <Label layoutX="753.0" layoutY="166.0" text="Tax Amount" GridPane.columnIndex="9" GridPane.rowIndex="12" />
                                                                               <Label layoutX="753.0" layoutY="166.0" text="VAT Rate (%)" GridPane.columnIndex="9" GridPane.rowIndex="7" />
+                                                                              <Label text="Advance Payment" GridPane.columnIndex="9" GridPane.rowIndex="13" />
                                                                           <TextField fx:id="tfTransactionNo" disable="true" editable="false" maxHeight="25.0" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="139.0" style="-fx-font-weight: bold;" styleClass="DisabledTextField" GridPane.columnIndex="2" GridPane.columnSpan="2" />
                                                                               <DatePicker fx:id="dpTransactionDate" disable="true" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                                                                           <TextField fx:id="tfSupplier" disable="true" editable="false" maxHeight="25.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="3" />
@@ -284,9 +284,9 @@
                                                                               <TextField fx:id="tfVatAmount" alignment="CENTER_RIGHT" disable="true" editable="false" promptText="0.0000" GridPane.columnIndex="11" GridPane.rowIndex="9" />
                                                                               <TextField fx:id="tfZeroVatSales" alignment="CENTER_RIGHT" disable="true" editable="false" promptText="0.0000" GridPane.columnIndex="11" GridPane.rowIndex="10" />
                                                                               <TextField fx:id="tfVatExemptSales" alignment="CENTER_RIGHT" disable="true" editable="false" promptText="0.0000" GridPane.columnIndex="11" GridPane.rowIndex="11" />
-                                                                              <TextField fx:id="tfTaxAmount" alignment="CENTER_RIGHT" layoutX="833.0" layoutY="274.0" promptText="0.0000" GridPane.columnIndex="11" GridPane.rowIndex="12" />
-                                                                              <TextField fx:id="tfNetTotal" alignment="CENTER_RIGHT" disable="true" editable="false" promptText="0.0000" styleClass="DisabledTextField" GridPane.columnIndex="11" GridPane.rowIndex="13" />
-                                                      <TextArea fx:id="taRemarks" minHeight="-Infinity" minWidth="-Infinity" prefHeight="224.0" prefWidth="577.0" wrapText="true" GridPane.columnIndex="2" GridPane.columnSpan="4" GridPane.rowIndex="6" GridPane.rowSpan="8">
+                                                                              <TextField fx:id="tfNetTotal" alignment="CENTER_RIGHT" disable="true" editable="false" promptText="0.0000" styleClass="DisabledTextField" GridPane.columnIndex="11" GridPane.rowIndex="12" />
+                                                                              <TextField fx:id="tfAdvancePayment" alignment="CENTER_RIGHT" promptText="0.0000" GridPane.columnIndex="11" GridPane.rowIndex="13" />
+                                                      <TextArea fx:id="taRemarks" maxHeight="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="224.0" prefWidth="577.0" wrapText="true" GridPane.columnIndex="2" GridPane.columnSpan="4" GridPane.rowIndex="6" GridPane.rowSpan="8">
                                                          <GridPane.margin>
                                                             <Insets top="1.0" />
                                                          </GridPane.margin>

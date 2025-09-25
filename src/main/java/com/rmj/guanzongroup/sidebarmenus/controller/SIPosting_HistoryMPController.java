@@ -136,7 +136,7 @@ public class SIPosting_HistoryMPController implements Initializable, ScreenInter
     private TextField tfSearchSupplier, tfSearchReceiveBranch, tfSearchReferenceNo, tfTransactionNo, tfSupplier, tfBranch, tfTrucking, tfReferenceNo,
             tfSINo, tfTerm, tfTransactionTotal, tfDiscountRate, tfDiscountAmount, tfFreightAmt, tfVatRate, tfVatSales, tfVatAmount, tfZeroVatSales, tfVatExemptSales,
             tfTaxAmount, tfNetTotal, tfOrderNo, tfBarcode, tfBrand, tfDescription, tfOrderQuantity, tfReceiveQuantity, tfSRPAmount, tfDiscRateDetail, tfAddlDiscAmtDetail, tfCost,
-            tfJETransactionNo, tfJEAcctCode, tfJEAcctDescription, tfCreditAmt, tfDebitAmt, tfTotalCreditAmt, tfTotalDebitAmt, tfAttachmentNo;
+            tfJETransactionNo, tfJEAcctCode, tfJEAcctDescription, tfCreditAmt, tfDebitAmt, tfTotalCreditAmt, tfTotalDebitAmt, tfAttachmentNo, tfAdvancePayment;
     @FXML
     private DatePicker dpTransactionDate, dpReferenceDate, dpReportMonthYear, dpJETransactionDate;
     @FXML
@@ -823,13 +823,14 @@ public class SIPosting_HistoryMPController implements Initializable, ScreenInter
             });
             tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getDiscount().doubleValue(), true));
             tfFreightAmt.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getFreight().doubleValue()));
-            tfTaxAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getWithHoldingTax().doubleValue(), true));
+            
             cbVatInclusive.setSelected(poPurchaseReceivingController.PurchaseOrderReceiving().Master().isVatTaxable());
             tfVatSales.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getVatSales().doubleValue(), true));
             tfVatAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getVatAmount().doubleValue(), true));
             tfZeroVatSales.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getZeroVatSales().doubleValue(), true));
             tfVatExemptSales.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getVatExemptSales().doubleValue(), true));
             tfNetTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.PurchaseOrderReceiving().getNetTotal(), true));
+            tfAdvancePayment.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.PurchaseOrderReceiving().getAdvancePayment(), true));
 
             JFXUtil.updateCaretPositions(apMaster);
         } catch (SQLException | GuanzonException ex) {
@@ -1144,7 +1145,7 @@ dpTransactionDate, dpReferenceDate, dpJETransactionDate, dpReportMonthYear);
         JFXUtil.setFocusListener(txtField_Focus, tfSearchReceiveBranch, tfSearchSupplier, tfSearchReferenceNo);
         JFXUtil.setKeyPressedListener(this::txtField_KeyPressed, apMaster, apDetail, apJEDetail, apBrowse);
 
-        JFXUtil.setCommaFormatter(tfDiscountAmount, tfFreightAmt, tfVatSales, tfTaxAmount, tfVatAmount,
+        JFXUtil.setCommaFormatter(tfDiscountAmount, tfFreightAmt, tfVatSales, tfVatAmount,
                 tfZeroVatSales, tfVatExemptSales, tfCost, tfCreditAmt,
                 tfDebitAmt, tfAddlDiscAmtDetail, tfSRPAmount);
 
