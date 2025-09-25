@@ -394,7 +394,7 @@ public class DeliverySchedule_ConfirmationControllerMC implements Initializable,
                             break;
                         }
                         reloadTableDetail();
-                        clearAllInputs();
+//                        clearAllInputs();
                         pnEditMode = poAppController.getEditMode();
                         break;
                     }
@@ -418,7 +418,7 @@ public class DeliverySchedule_ConfirmationControllerMC implements Initializable,
 
                         }
                         reloadTableDetail();
-                        clearAllInputs();
+//                        clearAllInputs();
                         pnEditMode = poAppController.getEditMode();
                         break;
                     }
