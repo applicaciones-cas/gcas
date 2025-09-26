@@ -913,10 +913,10 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                                     lsTransType = "PRF";
                                     break;
                                 case SOATaggingStatic.APPaymentAdjustment:
-                                    lsPayeeName = poSOATaggingController.SOATagging().APPaymentMasterList(lnCtr).Payee().getPayeeName();
-                                    lsTransNo = poSOATaggingController.SOATagging().APPaymentMasterList(lnCtr).getSOANumber();
-                                    lsTransDate = String.valueOf(poSOATaggingController.SOATagging().APPaymentMasterList(lnCtr).getTransactionDate());
-                                    lsTransNoBasis = poSOATaggingController.SOATagging().APPaymentMasterList(lnCtr).getTransactionNo();
+                                    lsPayeeName = poSOATaggingController.SOATagging().APPaymentAdjustmentList(lnCtr).Payee().getPayeeName();
+                                    lsTransNo = poSOATaggingController.SOATagging().APPaymentAdjustmentList(lnCtr).getReferenceNo();
+                                    lsTransDate = String.valueOf(poSOATaggingController.SOATagging().APPaymentAdjustmentList(lnCtr).getTransactionDate());
+                                    lsTransNoBasis = poSOATaggingController.SOATagging().APPaymentAdjustmentList(lnCtr).getTransactionNo();
                                     lsTransType = "AP Payment Adjustment";
                                     break;
                                 case SOATaggingStatic.POReceiving:
