@@ -344,12 +344,13 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                         lsTransType = "PRF";
                         break;
                     case SOATaggingStatic.APPaymentAdjustment:
-                        lsTransNoBasis = poSOATaggingController.SOATagging().Detail(lnCtr).getSourceNo();
+                        lsTransNoBasis = poSOATaggingController.SOATagging().Detail(lnCtr).getSourceNo()
+                                 + poSOATaggingController.SOATagging().Detail(lnCtr).APPaymentAdjustmentMaster().Supplier().getCompanyName();
                         lsTransType = "AP Payment Adjustment";
                         break;
                     case SOATaggingStatic.POReceiving:
                         lsTransNoBasis = poSOATaggingController.SOATagging().Detail(lnCtr).getSourceNo()
-                                + poSOATaggingController.SOATagging().Master().Supplier().getCompanyName();
+                                + poSOATaggingController.SOATagging().Detail(lnCtr).PurchasOrderReceivingMaster().Supplier().getCompanyName();
                         lsTransType = "PO Receiving";
                         break;
                 }
