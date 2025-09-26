@@ -336,7 +336,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
 
     public void loadHighlightFromDetail() {
         try {
-            String lsTransNoBasis = "", lsTransType = "";
+            String lsTransNoBasis = "", lsTransType = "", lsPayee = "";
             for (int lnCtr = 0; lnCtr < poSOATaggingController.SOATagging().getDetailCount(); lnCtr++) {
                 switch (poSOATaggingController.SOATagging().Detail(lnCtr).getSourceCode()) {
                     case SOATaggingStatic.PaymentRequest:
@@ -901,6 +901,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                     String lsTransDate = "";
                     String lsTransNoBasis = "";
                     String lsTransType = "";
+                    String lsTransNo2 = "";
                     //retreiving using column index
                     for (int lnCtr = 0; lnCtr <= poSOATaggingController.SOATagging().getPayablesCount() - 1; lnCtr++) {
                         try {
@@ -913,19 +914,18 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                                     lsTransType = "PRF";
                                     break;
                                 case SOATaggingStatic.APPaymentAdjustment:
-                                    lsPayeeName = poSOATaggingController.SOATagging().APPaymentAdjustmentList(lnCtr).Payee().getPayeeName();
-                                    lsTransNo = poSOATaggingController.SOATagging().APPaymentAdjustmentList(lnCtr).getReferenceNo();
-                                    lsTransDate = String.valueOf(poSOATaggingController.SOATagging().APPaymentAdjustmentList(lnCtr).getTransactionDate());
-                                    lsTransNoBasis = poSOATaggingController.SOATagging().APPaymentAdjustmentList(lnCtr).getTransactionNo();
+                                    lsPayeeName = poSOATaggingController.SOATagging().CachePayableList(lnCtr).Client().getCompanyName();
+                                    lsTransNo = poSOATaggingController.SOATagging().CachePayableList(lnCtr).getReferNo();
+                                    lsTransDate = String.valueOf(poSOATaggingController.SOATagging().CachePayableList(lnCtr).getTransactionDate());
+                                    lsTransNoBasis = poSOATaggingController.SOATagging().CachePayableList(lnCtr).getSourceNo();
                                     lsTransType = "AP Payment Adjustment";
                                     break;
                                 case SOATaggingStatic.POReceiving:
-                                    lsPayeeName = poSOATaggingController.SOATagging().POReceivingList(lnCtr).Supplier().getCompanyName();
-                                    lsTransNo = poSOATaggingController.SOATagging().POReceivingList(lnCtr).getReferenceNo();
-                                    lsTransDate = String.valueOf(poSOATaggingController.SOATagging().POReceivingList(lnCtr).getTransactionDate());
-                                    lsTransNoBasis = poSOATaggingController.SOATagging().POReceivingList(lnCtr).getTransactionNo();
+                                    lsPayeeName = poSOATaggingController.SOATagging().CachePayableList(lnCtr).Client().getCompanyName();
+                                    lsTransNo = poSOATaggingController.SOATagging().CachePayableList(lnCtr).getReferNo();
+                                    lsTransDate = String.valueOf(poSOATaggingController.SOATagging().CachePayableList(lnCtr).getTransactionDate());
+                                    lsTransNoBasis = poSOATaggingController.SOATagging().CachePayableList(lnCtr).getSourceNo();
                                     lsTransType = "PO Receiving";
-                                    break;
                             }
                             String lsHighlightbasis = lsTransNoBasis + lsTransType;
                             main_data.add(new ModelSOATagging_Main(String.valueOf(lnCtr + 1),
@@ -1080,14 +1080,10 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                                     poSOATaggingController.SOATagging().PaymentRequestList(pnMain).getTransactionNo(),
                                     poSOATaggingController.SOATagging().PayableType(pnMain));
                             break;
+                        case SOATaggingStatic.POReceiving:
                         case SOATaggingStatic.APPaymentAdjustment:
                             poJSON = poSOATaggingController.SOATagging().addPayablesToSOADetail(
-                                    poSOATaggingController.SOATagging().APPaymentMasterList(pnMain).getTransactionNo(),
-                                    poSOATaggingController.SOATagging().PayableType(pnMain));
-                            break;
-                        case SOATaggingStatic.POReceiving:
-                            poJSON = poSOATaggingController.SOATagging().addPayablesToSOADetail(
-                                    poSOATaggingController.SOATagging().POReceivingList(pnMain).getTransactionNo(),
+                                    poSOATaggingController.SOATagging().CachePayableList(pnMain).getTransactionNo(),
                                     poSOATaggingController.SOATagging().PayableType(pnMain));
                             break;
                     }
@@ -1318,8 +1314,8 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
     }
 
     public void initMainGrid() {
-        JFXUtil.setColumnCenter(tblRowNo, tblTransType, tblDate, tblReferenceNo);
-        JFXUtil.setColumnLeft(tblSupplier);
+        JFXUtil.setColumnCenter(tblRowNo, tblDate, tblReferenceNo);
+        JFXUtil.setColumnLeft(tblTransType, tblSupplier);
         JFXUtil.setColumnsIndexAndDisableReordering(tblViewMainList);
 
         filteredData = new FilteredList<>(main_data, b -> true);
