@@ -423,7 +423,7 @@ public class DeliveryAcceptance_HistorySPMCController implements Initializable, 
                 if (lbloadImage) {
                     try {
                         String filePath = (String) attachment_data.get(pnAttachment).getIndex02();
-                        String filePath2 = "D:\\GGC_Maven_Systems\\temp\\attachments\\" + (String) attachment_data.get(pnAttachment).getIndex02();
+                        String filePath2 = System.getProperty("sys.default.path.temp") + "/Attachments//" + (String) attachment_data.get(pnAttachment).getIndex02();
                         if (filePath != null && !filePath.isEmpty()) {
                             Path imgPath = Paths.get(filePath2);
                             String convertedPath = imgPath.toUri().toString();
@@ -1071,7 +1071,7 @@ public class DeliveryAcceptance_HistorySPMCController implements Initializable, 
 
         if (newIndex != -1 && (newIndex <= attachment_data.size() - 1)) {
             ModelDeliveryAcceptance_Attachment image = attachment_data.get(newIndex);
-            String filePath2 = "D:\\GGC_Maven_Systems\\temp\\attachments\\" + image.getIndex02();
+            String filePath2 = System.getProperty("sys.default.path.temp") + "/Attachments//" + image.getIndex02();
             TranslateTransition slideOut = new TranslateTransition(Duration.millis(300), imageView);
             slideOut.setByX(direction * -400); // Move left or right
 
