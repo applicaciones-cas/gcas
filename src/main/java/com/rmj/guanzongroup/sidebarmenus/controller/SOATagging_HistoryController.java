@@ -344,9 +344,13 @@ public class SOATagging_HistoryController implements Initializable, ScreenInterf
                     lsReferenceNo = poSOATaggingController.SOATagging().Detail(pnDetail).PaymentRequestMaster().getSeriesNo();
                     lsReferenceDate = CustomCommonUtil.formatDateToShortString(poSOATaggingController.SOATagging().Detail(pnDetail).PaymentRequestMaster().getTransactionDate());
                     break;
-                case SOATaggingStatic.CachePayable:
-                    lsReferenceNo = poSOATaggingController.SOATagging().Detail(pnDetail).CachePayableMaster().getReferNo();
-                    lsReferenceDate = CustomCommonUtil.formatDateToShortString(poSOATaggingController.SOATagging().Detail(pnDetail).CachePayableMaster().getTransactionDate());
+                case SOATaggingStatic.APPaymentAdjustment:
+                    lsReferenceNo = poSOATaggingController.SOATagging().Detail(pnDetail).APPaymentAdjustmentMaster().getReferenceNo();
+                    lsReferenceDate = CustomCommonUtil.formatDateToShortString(poSOATaggingController.SOATagging().Detail(pnDetail).APPaymentAdjustmentMaster().getTransactionDate());
+                    break;
+                case SOATaggingStatic.POReceiving:
+                    lsReferenceNo = poSOATaggingController.SOATagging().Detail(pnDetail).PurchasOrderReceivingMaster().getReferenceNo();
+                    lsReferenceDate = CustomCommonUtil.formatDateToShortString(poSOATaggingController.SOATagging().Detail(pnDetail).PurchasOrderReceivingMaster().getTransactionDate());
                     break;
             }
             tfReferenceNo.setText(lsReferenceNo);
@@ -423,12 +427,15 @@ public class SOATagging_HistoryController implements Initializable, ScreenInterf
                     String lsReferenceNo = "";
                     for (lnCtr = 0; lnCtr < poSOATaggingController.SOATagging().getDetailCount(); lnCtr++) {
                         try {
-                            switch (poSOATaggingController.SOATagging().Detail(pnDetail).getSourceCode()) {
+                            switch (poSOATaggingController.SOATagging().Detail(lnCtr).getSourceCode()) {
                                 case SOATaggingStatic.PaymentRequest:
                                     lsReferenceNo = poSOATaggingController.SOATagging().Detail(lnCtr).PaymentRequestMaster().getSeriesNo();
                                     break;
-                                case SOATaggingStatic.CachePayable:
-                                    lsReferenceNo = poSOATaggingController.SOATagging().Detail(lnCtr).CachePayableMaster().getReferNo();
+                                case SOATaggingStatic.APPaymentAdjustment:
+                                    lsReferenceNo = poSOATaggingController.SOATagging().Detail(lnCtr).APPaymentAdjustmentMaster().getReferenceNo();
+                                    break;
+                                case SOATaggingStatic.POReceiving:
+                                    lsReferenceNo = poSOATaggingController.SOATagging().Detail(lnCtr).PurchasOrderReceivingMaster().getReferenceNo();
                                     break;
                             }
 

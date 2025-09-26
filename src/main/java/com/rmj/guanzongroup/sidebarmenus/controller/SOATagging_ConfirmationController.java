@@ -37,7 +37,6 @@ import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
 import static javafx.scene.input.KeyCode.DOWN;
 import static javafx.scene.input.KeyCode.ENTER;
 import static javafx.scene.input.KeyCode.F3;
@@ -47,7 +46,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import ph.com.guanzongroup.cas.cashflow.status.SOATaggingStatus;
-import javafx.util.Duration;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRiderCAS;
@@ -57,7 +55,6 @@ import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
-import javafx.animation.PauseTransition;
 import ph.com.guanzongroup.cas.cashflow.SOATagging;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
@@ -216,27 +213,7 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                         psCompanyId = poSOATaggingController.SOATagging().Master().getCompanyId();
                         break;
                     case "btnSearch":
-                        String lsMessage = "Focus a searchable textfield to search";
-                        if ((lastFocusedTextField.get() != null)) {
-                            if (lastFocusedTextField.get() instanceof TextField) {
-                                TextField tf = (TextField) lastFocusedTextField.get();
-                                if (JFXUtil.getTextFieldsIDWithPrompt("Press F3: Search", apBrowse, apMaster, apDetail).contains(tf.getId())) {
-
-                                    if (lastFocusedTextField.get() == previousSearchedTextField.get()) {
-                                        break;
-                                    }
-                                    previousSearchedTextField.set(lastFocusedTextField.get());
-                                    // Create a simulated KeyEvent for F3 key press
-                                    JFXUtil.makeKeyPressed(tf, KeyCode.F3);
-                                } else {
-                                    ShowMessageFX.Information(null, pxeModuleName, lsMessage);
-                                }
-                            } else {
-                                ShowMessageFX.Information(null, pxeModuleName, lsMessage);
-                            }
-                        } else {
-                            ShowMessageFX.Information(null, pxeModuleName, lsMessage);
-                        }
+                        JFXUtil.initiateBtnSearch(pxeModuleName, lastFocusedTextField, previousSearchedTextField, apBrowse, apMaster, apDetail);
                         break;
                     case "btnCancel":
                         if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to disregard changes?") == true) {
@@ -453,15 +430,10 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                     }
                     break;
             }
-            Platform.runLater(() -> {
-                PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
-                delay.setOnFinished(event -> {
-                    loadTableDetail();
-                });
-                delay.play();
+            JFXUtil.runWithDelay(0.50, () -> {
+                loadTableDetail();
             });
         }
-
     };
 
     final ChangeListener<? super Boolean> txtMaster_Focus = (o, ov, nv) -> {
@@ -592,11 +564,9 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
             String lsID = (((TextField) event.getSource()).getId());
             String lsValue = (txtField.getText() == null ? "" : txtField.getText());
             poJSON = new JSONObject();
-            int lnRow = pnDetail;
 
             TableView<?> currentTable = tblViewTransDetailList;
             TablePosition<?, ?> focusedCell = currentTable.getFocusModel().getFocusedCell();
-
             switch (event.getCode()) {
                 case TAB:
                 case ENTER:
@@ -700,9 +670,7 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                 default:
                     break;
             }
-        } catch (GuanzonException ex) {
-            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } catch (SQLException ex) {
+        } catch (GuanzonException | SQLException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
@@ -719,13 +687,8 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                 DatePicker datePicker = (DatePicker) source;
                 String inputText = datePicker.getEditor().getText();
                 SimpleDateFormat sdfFormat = new SimpleDateFormat(SQLUtil.FORMAT_SHORT_DATE);
-                LocalDate currentDate = null;
-                LocalDate selectedDate = null;
-                LocalDate receivingDate = null;
-                String lsServerDate = "";
-                String lsTransDate = "";
-                String lsSelectedDate = "";
-                String lsReceivingDate = "";
+                LocalDate currentDate = null, selectedDate = null, receivingDate = null;
+                String lsServerDate = "", lsTransDate = "", lsSelectedDate = "", lsReceivingDate = "";
 
                 JFXUtil.JFXUtilDateResult ldtResult = JFXUtil.processDate(inputText, datePicker);
                 poJSON = ldtResult.poJSON;
@@ -745,7 +708,7 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                                 || poSOATaggingController.SOATagging().getEditMode() == EditMode.UPDATE) {
                             lsServerDate = sdfFormat.format(oApp.getServerDate());
                             lsTransDate = sdfFormat.format(poSOATaggingController.SOATagging().Master().getTransactionDate());
-                            lsSelectedDate = sdfFormat.format(SQLUtil.toDate(JFXUtil.convertToIsoFormat(inputText),  SQLUtil.FORMAT_SHORT_DATE));
+                            lsSelectedDate = sdfFormat.format(SQLUtil.toDate(JFXUtil.convertToIsoFormat(inputText), SQLUtil.FORMAT_SHORT_DATE));
                             currentDate = LocalDate.parse(lsServerDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
                             selectedDate = LocalDate.parse(lsSelectedDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
 
@@ -766,8 +729,8 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                                         if (!"success".equals((String) poJSON.get("result"))) {
                                             pbSuccess = false;
                                         } else {
-                                            
-                                            if(Integer.parseInt(poJSON.get("nUserLevl").toString())<= UserRight.ENCODER){
+
+                                            if (Integer.parseInt(poJSON.get("nUserLevl").toString()) <= UserRight.ENCODER) {
                                                 poJSON.put("result", "error");
                                                 poJSON.put("message", "User is not an authorized approving officer.");
                                                 pbSuccess = false;
@@ -832,9 +795,7 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                                     String.valueOf(poSOATaggingController.SOATagging().APPaymentMasterList(lnCtr).getTransactionDate()),
                                     String.valueOf(poSOATaggingController.SOATagging().APPaymentMasterList(lnCtr).getTransactionNo())
                             ));
-                        } catch (SQLException ex) {
-                            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-                        } catch (GuanzonException ex) {
+                        } catch (SQLException | GuanzonException ex) {
                             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                         }
                         if (poSOATaggingController.SOATagging().APPaymentMasterList(lnCtr).getTransactionStatus().equals(SOATaggingStatus.CONFIRMED)) {
@@ -887,8 +848,8 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
     public void loadRecordSearch() {
         try {
             poSOATaggingController.SOATagging().Master().setIndustryId(psIndustryId);
-            
-            if(poSOATaggingController.SOATagging().Master().Industry().getDescription() != null && !"".equals(poSOATaggingController.SOATagging().Master().Industry().getDescription())){
+
+            if (poSOATaggingController.SOATagging().Master().Industry().getDescription() != null && !"".equals(poSOATaggingController.SOATagging().Master().Industry().getDescription())) {
                 lblSource.setText(poSOATaggingController.SOATagging().Master().Industry().getDescription());
             } else {
                 lblSource.setText("General");
@@ -919,9 +880,13 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                     lsReferenceNo = poSOATaggingController.SOATagging().Detail(pnDetail).PaymentRequestMaster().getSeriesNo();
                     lsReferenceDate = CustomCommonUtil.formatDateToShortString(poSOATaggingController.SOATagging().Detail(pnDetail).PaymentRequestMaster().getTransactionDate());
                     break;
-                case SOATaggingStatic.CachePayable:
-                    lsReferenceNo = poSOATaggingController.SOATagging().Detail(pnDetail).CachePayableMaster().getReferNo();
-                    lsReferenceDate = CustomCommonUtil.formatDateToShortString(poSOATaggingController.SOATagging().Detail(pnDetail).CachePayableMaster().getTransactionDate());
+                case SOATaggingStatic.APPaymentAdjustment:
+                    lsReferenceNo = poSOATaggingController.SOATagging().Detail(pnDetail).APPaymentAdjustmentMaster().getReferenceNo();
+                    lsReferenceDate = CustomCommonUtil.formatDateToShortString(poSOATaggingController.SOATagging().Detail(pnDetail).APPaymentAdjustmentMaster().getTransactionDate());
+                    break;
+                case SOATaggingStatic.POReceiving:
+                    lsReferenceNo = poSOATaggingController.SOATagging().Detail(pnDetail).PurchasOrderReceivingMaster().getReferenceNo();
+                    lsReferenceDate = CustomCommonUtil.formatDateToShortString(poSOATaggingController.SOATagging().Detail(pnDetail).PurchasOrderReceivingMaster().getTransactionDate());
                     break;
             }
 
@@ -933,9 +898,7 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
             tfDebitAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.SOATagging().Detail(pnDetail).getDebitAmount(), true));
             tfAppliedAmtDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.SOATagging().Detail(pnDetail).getAppliedAmount(), true));
             JFXUtil.updateCaretPositions(apDetail);
-        } catch (SQLException ex) {
-            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
-        } catch (GuanzonException ex) {
+        } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
         }
 
@@ -943,19 +906,7 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
 
     public void loadRecordMaster() {
         try {
-            Platform.runLater(() -> {
-                String lsActive = pnEditMode == EditMode.UNKNOWN ? "-1" : poSOATaggingController.SOATagging().Master().getTransactionStatus();
-                Map<String, String> statusMap = new HashMap<>();
-                statusMap.put(SOATaggingStatus.OPEN, "OPEN");
-                statusMap.put(SOATaggingStatus.PAID, "PAID");
-                statusMap.put(SOATaggingStatus.CONFIRMED, "CONFIRMED");
-                statusMap.put(SOATaggingStatus.RETURNED, "RETURNED");
-                statusMap.put(SOATaggingStatus.VOID, "VOIDED");
-                statusMap.put(SOATaggingStatus.CANCELLED, "CANCELLED");
-                String lsStat = statusMap.getOrDefault(lsActive, "UNKNOWN");
-                lblStatus.setText(lsStat);
-            });
-
+            JFXUtil.setStatusValue(lblStatus, SOATaggingStatus.class, pnEditMode == EditMode.UNKNOWN ? "-1" : poSOATaggingController.SOATagging().Master().getTransactionStatus());
             poSOATaggingController.SOATagging().computeFields();
 
             tfTransactionNo.setText(poSOATaggingController.SOATagging().Master().getTransactionNo());
@@ -971,23 +922,19 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
             tfVatAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.SOATagging().Master().getVatAmount(), true));
             tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.SOATagging().Master().getDiscountAmount(), true));
             tfFreight.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.SOATagging().Master().getFreightAmount(), false));
-            tfNonVatSales.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.SOATagging().Master().getZeroRatedVat(),true)); //As per ma'am she
+            tfNonVatSales.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.SOATagging().Master().getZeroRatedVat(), true)); //As per ma'am she
             tfZeroVatSales.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.SOATagging().Master().getZeroRatedVat(), true));
             tfVatExemptSales.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.SOATagging().Master().getVatExempt(), true));
             tfNetTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.SOATagging().Master().getNetTotal(), true));
             JFXUtil.updateCaretPositions(apMaster);
-        } catch (SQLException ex) {
-            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } catch (GuanzonException ex) {
+        } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
-
     }
 
     public void loadTableDetailFromMain() {
         try {
             poJSON = new JSONObject();
-
             ModelSOATagging_Main selected = (ModelSOATagging_Main) tblViewMainList.getSelectionModel().getSelectedItem();
             if (selected != null) {
                 int pnRowMain = Integer.parseInt(selected.getIndex01()) - 1;
@@ -1011,7 +958,6 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
     public void loadTableDetail() {
         pbEntered = false;
         // Setting data to table detail
-
         JFXUtil.LoadScreenComponents loading = JFXUtil.createLoadingComponents();
         tblViewTransDetailList.setPlaceholder(loading.loadingPane);
         loading.progressIndicator.setVisible(true);
@@ -1051,8 +997,11 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                                 case SOATaggingStatic.PaymentRequest:
                                     lsReferenceNo = poSOATaggingController.SOATagging().Detail(lnCtr).PaymentRequestMaster().getSeriesNo();
                                     break;
-                                case SOATaggingStatic.CachePayable:
-                                    lsReferenceNo = poSOATaggingController.SOATagging().Detail(lnCtr).CachePayableMaster().getReferNo();
+                                case SOATaggingStatic.APPaymentAdjustment:
+                                    lsReferenceNo = poSOATaggingController.SOATagging().Detail(lnCtr).APPaymentAdjustmentMaster().getReferenceNo();
+                                    break;
+                                case SOATaggingStatic.POReceiving:
+                                    lsReferenceNo = poSOATaggingController.SOATagging().Detail(lnCtr).PurchasOrderReceivingMaster().getReferenceNo();
                                     break;
                             }
 
@@ -1098,7 +1047,6 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                     tblViewTransDetailList.toFront();
                 }
                 loading.progressIndicator.setVisible(false);
-
             }
 
             @Override
@@ -1108,15 +1056,13 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                 }
                 loading.progressIndicator.setVisible(false);
             }
-
         };
         new Thread(task).start(); // Run task in background
-
     }
 
     public void initDatePickers() {
         JFXUtil.setDatePickerFormat("MM/dd/yyyy",
-dpTransactionDate, dpReferenceDate);
+                dpTransactionDate, dpReferenceDate);
         JFXUtil.setActionListener(this::datepicker_Action, dpTransactionDate, dpReferenceDate);
     }
 
@@ -1129,7 +1075,7 @@ dpTransactionDate, dpReferenceDate);
         JFXUtil.setFocusListener(txtDetail_Focus, tfSourceNo, tfSourceCode, tfReferenceNo, tfAppliedAmtDetail);
 
         JFXUtil.setKeyPressedListener(this::txtField_KeyPressed, apBrowse, apMaster, apDetail);
-        JFXUtil.setCommaFormatter(tfVatAmount, tfDiscountAmount, tfZeroVatSales,tfNonVatSales , tfVatExemptSales, tfAppliedAmtDetail);
+        JFXUtil.setCommaFormatter(tfVatAmount, tfDiscountAmount, tfZeroVatSales, tfNonVatSales, tfVatExemptSales, tfAppliedAmtDetail);
     }
 
     public void initTableOnClick() {
@@ -1165,7 +1111,6 @@ dpTransactionDate, dpReferenceDate);
 
     private void initButton(int fnValue) {
         boolean lbShow1 = (fnValue == EditMode.UPDATE);
-//        boolean lbShow2 = (fnValue == EditMode.READY || fnValue == EditMode.UPDATE);
         boolean lbShow3 = (fnValue == EditMode.READY);
         boolean lbShow4 = (fnValue == EditMode.UNKNOWN || fnValue == EditMode.READY);
         // Manage visibility and managed state of other buttons
@@ -1190,7 +1135,7 @@ dpTransactionDate, dpReferenceDate);
 //            case SOATaggingStatus.POSTED:
             case SOATaggingStatus.PAID:
             case SOATaggingStatus.RETURNED:
-                JFXUtil.setButtonsVisibility(false, btnConfirm, btnUpdate , btnVoid); // btnReturn
+                JFXUtil.setButtonsVisibility(false, btnConfirm, btnUpdate, btnVoid); // btnReturn
                 break;
             case SOATaggingStatus.VOID:
             case SOATaggingStatus.CANCELLED:
