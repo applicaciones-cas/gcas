@@ -21,12 +21,12 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Control;
 import javafx.scene.control.DatePicker;
@@ -49,7 +49,6 @@ import org.guanzon.appdriver.base.LogWrapper;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.appdriver.base.GuanzonException;
 import org.json.simple.JSONObject;
-import ph.com.guanzongroup.cas.cashflow.model.Model_Check_Payments;
 import ph.com.guanzongroup.cas.check.module.mnv.CheckTransfer;
 import ph.com.guanzongroup.cas.check.module.mnv.constant.CheckTransferStatus;
 import ph.com.guanzongroup.cas.check.module.mnv.models.Model_Check_Transfer_Detail;
@@ -60,7 +59,7 @@ import ph.com.guanzongroup.cas.check.module.mnv.services.CheckController;
  *
  * @author User
  */
-public class CheckTransfer_EntryController implements Initializable, ScreenInterface {
+public class CheckTransfer_HistoryController implements Initializable, ScreenInterface {
 
     private GRiderCAS poApp;
     private LogWrapper poLogWrapper;
@@ -78,20 +77,22 @@ public class CheckTransfer_EntryController implements Initializable, ScreenInter
     private TextField tfSearchDestination, tfSearchTransNo, tfTransactionNo,
             tfDestination, tfDepartment, tfTotal, tfPayee,
             tfBank, tfCheckAmount, tfCheckTransNo,
-            tfCheckNo, tfNote, tfFilterBank;
+            tfCheckNo, tfNote;
 
     @FXML
-    private DatePicker dpSearchTransactionDate, dpTransactionDate, dpCheckDate, dpFilterFrom, dpFilterThru;
+    private DatePicker dpSearchTransactionDate, dpTransactionDate, dpCheckDate;
 
     @FXML
     private Label lblSource, lblStatus;
 
     @FXML
-    private Button btnSearch, btnBrowse, btnNew, btnUpdate, btnSave,
-            btnRetrieve, btnClose;
+    private Button btnBrowse, btnPrint, btnClose;
 
     @FXML
     private TextArea taRemarks;
+
+    @FXML
+    private CheckBox cbIsReceived;
 
     @FXML
     private TableView<Model_Check_Transfer_Detail> tblViewDetails;
@@ -99,13 +100,6 @@ public class CheckTransfer_EntryController implements Initializable, ScreenInter
     @FXML
     private TableColumn<Model_Check_Transfer_Detail, String> tblColDetailNo, tblColDetailReference, tblColDetailPayee, tblColDetailBank,
             tblColDetailDate, tblColDetailCheckNo, tblColDetailCheckAmount;
-
-    @FXML
-    private TableView<Model_Check_Payments> tblViewMaster;
-
-    @FXML
-    private TableColumn<Model_Check_Payments, String> tblColNo, tblColTransNo,
-            tblColTransDate, tblColCheckNo, tblColCheckAmount;
 
     @Override
     public void setGRider(GRiderCAS foValue) {
@@ -136,7 +130,6 @@ public class CheckTransfer_EntryController implements Initializable, ScreenInter
         try {
             poLogWrapper = new LogWrapper(psFormName, psFormName);
             poAppController = new CheckController(poApp, poLogWrapper).CheckTransfer();
-            poAppController.setTransactionStatus(CheckTransferStatus.OPEN);
 
             //initlalize and validate transaction objects from class controller
             if (!isJSONSuccess(poAppController.initTransaction(), psFormName)) {
@@ -146,46 +139,18 @@ public class CheckTransfer_EntryController implements Initializable, ScreenInter
 
             //background thread
             Platform.runLater(() -> {
-                poAppController.setTransactionStatus("0");
+                poAppController.setTransactionStatus("12340");
                 //initialize logged in category
                 poAppController.setIndustryID(psIndustryID);
                 System.err.println("Initialize value : Industry >" + psIndustryID);
 
-                btnNew.fire();
             });
             initializeTableDetail();
             initControlEvents();
         } catch (SQLException | GuanzonException e) {
-            Logger.getLogger(CheckTransfer_EntryController.class.getName()).log(Level.SEVERE, null, e);
+            Logger.getLogger(CheckTransfer_HistoryController.class.getName()).log(Level.SEVERE, null, e);
             poLogWrapper.severe(psFormName + " :" + e.getMessage());
         }
-    }
-
-    @FXML
-    void ontblMasterClicked(MouseEvent e) {
-        pnSelectMaster = tblViewMaster.getSelectionModel().getSelectedIndex();
-        if (pnSelectMaster < 0) {
-            return;
-        }
-
-        if (e.getClickCount() == 2 && !e.isConsumed()) {
-            try {
-                e.consume();
-                if (!isJSONSuccess(poAppController.searchDetailByCheck(poAppController.getDetailCount(), tblColTransNo.getCellData(pnSelectMaster), true), psFormName)) {
-//                    ShowMessageFX.Information("Failed to add detail", psFormName, null);
-                    return;
-                }
-
-                reloadTableDetail();
-                loadSelectedTransactionDetail(pnTransactionDetail);
-            } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
-
-                poLogWrapper.severe(psFormName + " :" + ex.getMessage());
-
-            }
-
-        }
-        return;
     }
 
     @FXML
@@ -209,55 +174,6 @@ public class CheckTransfer_EntryController implements Initializable, ScreenInter
             //get button id
             String btnID = ((Button) event.getSource()).getId();
             switch (btnID) {
-                case "btnSearch":
-                    if (lastFocusedControl == null) {
-                        ShowMessageFX.Information(null, psFormName,
-                                "Search unavailable. Please ensure a searchable field is selected or focused before proceeding..");
-                        return;
-                    }
-
-                    switch (lastFocusedControl.getId()) {
-                        case "tfDestination":
-                            if (!isJSONSuccess(poAppController.searchTransactionDestination(tfDestination.getText().trim(), false),
-                                    "Initialize Search Destination! ")) {
-                                return;
-                            }
-                            loadTransactionMaster();
-                            break;
-                        case "tfDepartment":
-                            if (!isJSONSuccess(poAppController.searchTransactionDepartment(tfDepartment.getText().trim(), false),
-                                    "Initialize Search Department! ")) {
-                                return;
-                            }
-                            loadTransactionMaster();
-                            break;
-                        case "tfCheckTransNo":
-                            if (!isJSONSuccess(poAppController.searchDetailByCheck(pnTransactionDetail, tfCheckTransNo.getText(), true),
-                                    "Initialize Search Check! ")) {
-                                return;
-                            }
-                            reloadTableDetail();
-                            loadSelectedTransactionDetail(pnTransactionDetail);
-                            break;
-                        case "tfCheckNo":
-                            if (!isJSONSuccess(poAppController.searchDetailByCheck(pnTransactionDetail, tfCheckNo.getText(), false),
-                                    "Initialize Search Check! ")) {
-                                return;
-                            }
-                            reloadTableDetail();
-                            loadSelectedTransactionDetail(pnTransactionDetail);
-                            break;
-                        case "tfFilterBank":
-                            if (!isJSONSuccess(poAppController.searchTransactionBankFilter(tfFilterBank.getText(), false),
-                                    "Initialize Search Check! ")) {
-                                return;
-                            }
-                            loadRetrieveFilter();
-                            break;
-
-                    }
-                    break;
-
                 case "btnBrowse":
                     if (lastFocusedControl == null) {
                         ShowMessageFX.Information(null, psFormName,
@@ -286,7 +202,7 @@ public class CheckTransfer_EntryController implements Initializable, ScreenInter
                                     return;
                                 }
                             }
-                            if (!isJSONSuccess(poAppController.searchTransaction(tfSearchDestination.getText(), false),
+                            if (!isJSONSuccess(poAppController.searchTransactionDestination(tfSearchDestination.getText(), false),
                                     "Initialize Search Transaction! ")) {
                                 return;
                             }
@@ -311,75 +227,22 @@ public class CheckTransfer_EntryController implements Initializable, ScreenInter
                     }
                     break;
 
-                case "btnNew":
-                    if (!isJSONSuccess(poAppController.NewTransaction(), "Initialize New Transaction")) {
-                        return;
-                    }
-                    clearAllInputs();
-                    getLoadedTransaction();
-                    pnEditMode = poAppController.getEditMode();
-                    break;
-
-                case "btnUpdate":
+                case "btnPrint":
                     if (poAppController.getMaster().getTransactionNo() == null || poAppController.getMaster().getTransactionNo().isEmpty()) {
-                        ShowMessageFX.Information("Please load transaction before proceeding..", "Stock Request Issuance", "");
+                        ShowMessageFX.Information("Please load transaction before proceeding..", "Stock Request Approval", "");
                         return;
                     }
-                    poAppController.OpenTransaction(poAppController.getMaster().getTransactionNo());
-                    if (!isJSONSuccess(poAppController.UpdateTransaction(), "Initialize UPdate Transaction")) {
-                        return;
-                    }
-                    getLoadedTransaction();
-                    pnEditMode = poAppController.getEditMode();
-                    break;
-
-                case "btnSave":
-                    if (tfTransactionNo.getText().isEmpty()) {
-                        ShowMessageFX.Information("Please load transaction before proceeding..", "Stock Request Issuance", "");
-                        return;
-                    }
-
-                    if (!isJSONSuccess(poAppController.SaveTransaction(), "Initialize Save Transaction")) {
-                        return;
-                    }
-                    getLoadedTransaction();
-                    pnEditMode = poAppController.getEditMode();
-
-                    break;
-
-                case "btnCancel":
-                    if (ShowMessageFX.OkayCancel(null, psFormName, "Do you want to disregard changes?") == true) {
-                        poAppController = new CheckController(poApp, poLogWrapper).CheckTransfer();
-                        poAppController.setTransactionStatus("0");
-
-                        if (!isJSONSuccess(poAppController.initTransaction(), "Initialize Transaction")) {
-                            unloadForm appUnload = new unloadForm();
-                            appUnload.unloadForm(apMainAnchor, poApp, psFormName);
+                    if (ShowMessageFX.OkayCancel(null, psFormName, "Do you want to print the transaction ?") == true) {
+                        if (!isJSONSuccess(poAppController.printRecord(),
+                                "Initialize Print Transaction")) {
+                            return;
                         }
-
-                        Platform.runLater(() -> {
-
-                            poAppController.setTransactionStatus("0");
-                            poAppController.getMaster().setIndustryId(psIndustryID);
-                            poAppController.setIndustryID(psIndustryID);
-
-                            clearAllInputs();
-                        });
-                        pnEditMode = poAppController.getEditMode();
-                        break;
                     }
+                    getLoadedTransaction();
+
+                    pnEditMode = poAppController.getEditMode();
                     break;
 
-                case "btnHistory":
-                    ShowMessageFX.Information(null, psFormName,
-                            "This feature is under development and will be available soon.\nThank you for your patience!");
-                    break;
-
-                case "btnRetrieve":
-                    loadRetrieveFilter();
-                    loadTransactionCheckList(String.valueOf(dpFilterFrom.getValue()), String.valueOf(dpFilterThru.getValue()));
-
-                    break;
                 case "btnClose":
                     unloadForm appUnload = new unloadForm();
                     if (ShowMessageFX.OkayCancel(null, "Close Tab", "Are you sure you want to close this Tab?")) {
@@ -400,34 +263,22 @@ public class CheckTransfer_EntryController implements Initializable, ScreenInter
         TextField loTextField = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
         String lsTextFieldID = loTextField.getId();
         String lsValue = loTextField.getText();
-        try {
-            if (lsValue == null) {
-                return;
-            }
-
-            if (!nv) {
-                /*Lost Focus*/
-                switch (lsTextFieldID) {
-
-                    case "tfFilterBank":
-                        if (lsValue.trim().isEmpty()) {
-                            poAppController.ClearFilterBanks();
-
-                        }
-                        loadRetrieveFilter();
-                    case "taRemarks":
-                        poAppController.getMaster().setRemarks(lsValue);
-                        loadTransactionMaster();
-
-                        break;
-
-                }
-            } else {
-                loTextField.selectAll();
-            }
-        } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
-            poLogWrapper.severe(psFormName + " :" + ex.getMessage());
+//        try {
+        if (lsValue == null) {
+            return;
         }
+
+        if (!nv) {
+            /*Lost Focus*/
+            switch (lsTextFieldID) {
+
+            }
+        } else {
+            loTextField.selectAll();
+        }
+//        } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
+//            poLogWrapper.severe(psFormName + " :" + ex.getMessage());
+//        }
     };
 
     private void txtField_KeyPressed(KeyEvent event) {
@@ -486,44 +337,6 @@ public class CheckTransfer_EntryController implements Initializable, ScreenInter
                                 getLoadedTransaction();
                                 initButtonDisplay(poAppController.getEditMode());
                                 break;
-                            case "tfDestination":
-                                if (!isJSONSuccess(poAppController.searchTransactionDestination(tfDestination.getText(), false),
-                                        "Initialize Search Destination! ")) {
-                                    return;
-                                }
-                                loadTransactionMaster();
-                                break;
-                            case "tfDepartment":
-                                if (!isJSONSuccess(poAppController.searchTransactionDepartment(tfDepartment.getText(), false),
-                                        "Initialize Search Department! ")) {
-                                    return;
-                                }
-                                loadTransactionMaster();
-                                break;
-                            case "tfCheckTransNo":
-                                if (!isJSONSuccess(poAppController.searchDetailByCheck(pnTransactionDetail, tfCheckTransNo.getText(), true),
-                                        "Initialize Search Check! ")) {
-                                    return;
-                                }
-                                reloadTableDetail();
-                                loadSelectedTransactionDetail(pnTransactionDetail);
-                                break;
-                            case "tfCheckNo":
-                                if (!isJSONSuccess(poAppController.searchDetailByCheck(pnTransactionDetail, tfCheckNo.getText(), false),
-                                        "Initialize Search Check! ")) {
-                                    return;
-                                }
-                                reloadTableDetail();
-                                loadSelectedTransactionDetail(pnTransactionDetail);
-                                break;
-
-                            case "tfFilterBank":
-                                if (!isJSONSuccess(poAppController.searchTransactionBankFilter(tfFilterBank.getText(), false),
-                                        "Initialize Search Check! ")) {
-                                    return;
-                                }
-                                loadRetrieveFilter();
-                                break;
                         }
                         break;
                 }
@@ -533,73 +346,6 @@ public class CheckTransfer_EntryController implements Initializable, ScreenInter
                     .getName()).log(Level.SEVERE, null, ex);
             poLogWrapper.severe(psFormName + " :" + ex.getMessage());
         }
-    }
-
-    private void loadTransactionCheckList(String datefrom, String datethru) {
-        StackPane overlay = getOverlayProgress(apTransaction);
-        ProgressIndicator pi = (ProgressIndicator) overlay.getChildren().get(0);
-        overlay.setVisible(true);
-        pi.setVisible(true);
-
-        Task<ObservableList<Model_Check_Payments>> loadCheckPayment = new Task<ObservableList<Model_Check_Payments>>() {
-            @Override
-            protected ObservableList<Model_Check_Payments> call() throws Exception {
-                if (!isJSONSuccess(poAppController.loadCheckList(datefrom, datethru),
-                        "Initialize : Load of Transaction List")) {
-                    return null;
-                }
-
-                List<Model_Check_Payments> rawList = poAppController.getCheckPaymentList();
-                System.out.print("The size of list is " + rawList.size());
-                return FXCollections.observableArrayList(new ArrayList<>(rawList));
-            }
-
-            @Override
-            protected void succeeded() {
-                ObservableList<Model_Check_Payments> laMasterList = getValue();
-                tblViewMaster.setItems(laMasterList);
-
-                tblColNo.setCellValueFactory(loModel -> {
-                    int index = tblViewMaster.getItems().indexOf(loModel.getValue()) + 1;
-                    return new SimpleStringProperty(String.valueOf(index));
-                });
-                tblColTransNo.setCellValueFactory(loModel -> {
-                    return new SimpleStringProperty(String.valueOf(loModel.getValue().getTransactionNo()));
-                });
-                tblColTransDate.setCellValueFactory(loModel -> {
-                    return new SimpleStringProperty(String.valueOf(loModel.getValue().getTransactionDate()));
-                });
-                tblColCheckNo.setCellValueFactory(loModel -> {
-                    return new SimpleStringProperty(String.valueOf(loModel.getValue().getCheckNo()));
-                });
-                tblColCheckAmount.setCellValueFactory(loModel -> {
-                    return new SimpleStringProperty(String.valueOf(loModel.getValue().getAmount()));
-                });
-
-                overlay.setVisible(false);
-                pi.setVisible(false);
-            }
-
-            @Override
-            protected void failed() {
-                overlay.setVisible(false);
-                pi.setVisible(false);
-                Throwable ex = getException();
-                Logger
-                        .getLogger(DeliverySchedule_EntryController.class
-                                .getName()).log(Level.SEVERE, null, ex);
-                poLogWrapper.severe(psFormName + " : " + ex.getMessage());
-            }
-
-            @Override
-            protected void cancelled() {
-                overlay.setVisible(false);
-                pi.setVisible(false);
-            }
-        };
-        Thread thread = new Thread(loadCheckPayment);
-        thread.setDaemon(true);
-        thread.start();
     }
 
     private void loadTransactionMaster() {
@@ -614,6 +360,7 @@ public class CheckTransfer_EntryController implements Initializable, ScreenInter
             tfDepartment.setText(poAppController.getMaster().Department().getDescription());
             taRemarks.setText(String.valueOf(poAppController.getMaster().getRemarks()));
             tfTotal.setText(String.valueOf(poAppController.getMaster().getTransactionTotal()));
+
         } catch (SQLException | GuanzonException e) {
             poLogWrapper.severe(psFormName, e.getMessage());
         }
@@ -629,12 +376,9 @@ public class CheckTransfer_EntryController implements Initializable, ScreenInter
         tfCheckAmount.setText(tblColDetailCheckAmount.getCellData(tblIndex));
 
         tfNote.setText(poAppController.getDetail(fnRow).CheckPayment().getRemarks());
+        cbIsReceived.setSelected(poAppController.getDetail(fnRow).isReceived());
         dpCheckDate.setValue(ParseDate(poAppController.getDetail(fnRow).CheckPayment().getTransactionDate()));
 
-    }
-
-    private void loadRetrieveFilter() throws SQLException, GuanzonException, CloneNotSupportedException {
-        tfFilterBank.setText(poAppController.getBanks().getBankName());
     }
 
     private void initControlEvents() {
@@ -690,23 +434,14 @@ public class CheckTransfer_EntryController implements Initializable, ScreenInter
         }
         pnEditMode = poAppController.getEditMode();
         initButtonDisplay(poAppController.getEditMode());
-        try {
-            dpFilterFrom.setValue(ParseDate((Date) poApp.getServerDate()));
-            dpFilterThru.setValue(ParseDate((Date) poApp.getServerDate()));
-        } catch (SQLException ex) {
-            Logger.getLogger(CheckTransfer_EntryController.class.getName()).log(Level.SEVERE, null, ex);
-        }
+
     }
 
     private void initButtonDisplay(int fnEditMode) {
         boolean lbShow = (fnEditMode == EditMode.ADDNEW || fnEditMode == EditMode.UPDATE);
 
         // Always show these buttons
-        initButtonControls(true, "btnRetrieve", "btnHistory", "btnClose");
-
-        // Show-only based on mode
-        initButtonControls(lbShow, "btnSearch", "btnSave", "btnCancel");
-        initButtonControls(!lbShow, "btnBrowse", "btnNew", "btnUpdate");
+        initButtonControls(true, "btnBrowse", "btnBrowse", "btnClose");
 
         apMaster.setDisable(!lbShow);
         apDetail.setDisable(!lbShow);
