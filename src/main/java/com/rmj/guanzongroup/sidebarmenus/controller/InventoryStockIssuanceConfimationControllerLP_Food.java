@@ -444,7 +444,7 @@ public class InventoryStockIssuanceConfimationControllerLP_Food implements Initi
                         }
 
                         reloadTableDetail();
-                        clearAllInputs();
+//                        clearAllInputs();
                         pnEditMode = poAppController.getEditMode();
                         break;
                     }
