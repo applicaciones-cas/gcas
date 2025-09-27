@@ -362,6 +362,9 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
         try {
             String lsTransNoBasis = "", lsTransType = "";
             for (int lnCtr = 0; lnCtr < poSOATaggingController.SOATagging().getDetailCount(); lnCtr++) {
+                if (!poSOATaggingController.SOATagging().Detail(lnCtr).isReverse()) {
+                    continue;
+                }
                 switch (poSOATaggingController.SOATagging().Detail(lnCtr).getSourceCode()) {
                     case SOATaggingStatic.PaymentRequest:
                         lsTransNoBasis = poSOATaggingController.SOATagging().Detail(lnCtr).getSourceNo();
