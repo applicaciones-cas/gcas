@@ -381,13 +381,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                         break;
                 }
                 String lsHighlightbasis = lsTransNoBasis + lsTransType;
-                if (!JFXUtil.isObjectEqualTo(poSOATaggingController.SOATagging().Detail(lnCtr).getAppliedAmount(), null, "")) {
-                    if (poSOATaggingController.SOATagging().Detail(lnCtr).getAppliedAmount().doubleValue() > 0.0000) {
-                        plOrderNoPartial.add(new Pair<>(lsHighlightbasis, "1"));
-                    } else {
-                        plOrderNoPartial.add(new Pair<>(lsHighlightbasis, "0"));
-                    }
-                }
+                plOrderNoPartial.add(new Pair<>(lsHighlightbasis, "1"));
             }
             for (Pair<String, String> pair : plOrderNoPartial) {
                 if (!"".equals(pair.getKey()) && pair.getKey() != null) {
@@ -430,220 +424,184 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
             });
         }
     }
-
-    final ChangeListener<? super Boolean> txtArea_Focus = (o, ov, nv) -> {
-        TextArea txtField = (TextArea) ((ReadOnlyBooleanPropertyBase) o).getBean();
-        String lsID = (txtField.getId());
-        String lsValue = txtField.getText();
-
-        if (lsValue == null) {
-            return;
-        }
-        poJSON = new JSONObject();
-        if (!nv) {
-            /*Lost Focus*/
-            lsValue = lsValue.trim();
-            switch (lsID) {
-                case "taRemarks"://Remarks
-                    poJSON = poSOATaggingController.SOATagging().Master().setRemarks(lsValue);
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        System.err.println((String) poJSON.get("message"));
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                        return;
-                    }
-                    break;
-            }
-        } else {
-            txtField.selectAll();
-        }
-    };
-
-    final ChangeListener<? super Boolean> txtDetail_Focus = (o, ov, nv) -> {
-        poJSON = new JSONObject();
-        TextField txtPersonalInfo = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
-        String lsTxtFieldID = (txtPersonalInfo.getId());
-        String lsValue = (txtPersonalInfo.getText() == null ? "" : txtPersonalInfo.getText());
-
-        if (lsValue == null) {
-            return;
-        }
-        if (!nv) {
-            /*Lost Focus*/
-            switch (lsTxtFieldID) {
-                case "tfAppliedAmtDetail":
-                    if (lsValue.isEmpty()) {
-                        lsValue = "0";
-                    }
-                    lsValue = JFXUtil.removeComma(lsValue);
-                    if (poSOATaggingController.SOATagging().Detail(pnDetail).getAppliedAmount() != null
-                            && !"".equals(poSOATaggingController.SOATagging().Detail(pnDetail).getAppliedAmount())) {
-                        if (poSOATaggingController.SOATagging().Detail(pnDetail).getTransactionTotal().doubleValue() < Double.valueOf(lsValue)) {
-                            ShowMessageFX.Warning(null, pxeModuleName, "Applied Amount cannot be greater than the transaction total");
-                            poSOATaggingController.SOATagging().Detail(pnDetail).setAppliedAmount(0.0000);
-                            tfAppliedAmtDetail.requestFocus();
-                            break;
+    ChangeListener<Boolean> txtArea_Focus = JFXUtil.FocusListener(TextArea.class,
+            (lsID, lsValue) -> {
+                /*Lost Focus*/
+                lsValue = lsValue.trim();
+                switch (lsID) {
+                    case "taRemarks"://Remarks
+                        poJSON = poSOATaggingController.SOATagging().Master().setRemarks(lsValue);
+                        if ("error".equals((String) poJSON.get("result"))) {
+                            System.err.println((String) poJSON.get("message"));
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                            return;
                         }
-                    }
-
-                    poJSON = poSOATaggingController.SOATagging().Detail(pnDetail).setAppliedAmount((Double.valueOf(lsValue)));
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        System.err.println((String) poJSON.get("message"));
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                    }
-                    if (pbEntered) {
-                        moveNext();
-                        pbEntered = false;
-                    }
-                    break;
-            }
-            JFXUtil.runWithDelay(0.50, () -> {
-                loadTableDetail();
-            });
-        }
-
-    };
-
-    final ChangeListener<? super Boolean> txtMaster_Focus = (o, ov, nv) -> {
-        poJSON = new JSONObject();
-        TextField txtPersonalInfo = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
-        String lsTxtFieldID = (txtPersonalInfo.getId());
-        String lsValue = (txtPersonalInfo.getText() == null ? "" : txtPersonalInfo.getText());
-
-        if (lsValue == null) {
-            return;
-        }
-        if (!nv) {
-            /*Lost Focus*/
-            switch (lsTxtFieldID) {
-                case "tfSOANo":
-                    if (!lsValue.isEmpty()) {
-                        poJSON = poSOATaggingController.SOATagging().Master().setSOANumber(lsValue);
-                    } else {
-                        poJSON = poSOATaggingController.SOATagging().Master().setSOANumber("");
-                    }
-                    if ("error".equals(poJSON.get("result"))) {
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                        tfSOANo.setText("");
                         break;
-                    }
-                    break;
-                case "tfCompany":
-                    if (lsValue.isEmpty()) {
-                        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                            if (poSOATaggingController.SOATagging().Master().getCompanyId() != null && !"".equals(poSOATaggingController.SOATagging().Master().getCompanyId())) {
-                                if (poSOATaggingController.SOATagging().getDetailCount() > 1) {
-                                    if (!pbKeyPressed) {
-                                        if (ShowMessageFX.YesNo(null, pxeModuleName,
-                                                "Are you sure you want to change the company name?\nPlease note that doing so will delete all SOA details.\n\nDo you wish to proceed?") == true) {
-                                            poSOATaggingController.SOATagging().removeDetails();
-                                            JFXUtil.showRetainedHighlight(false, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, true);
-                                            loadTableDetail();
-                                        } else {
-                                            loadRecordMaster();
-                                            return;
-                                        }
-                                    } else {
-                                        loadRecordMaster();
-                                        return;
-                                    }
-                                }
+                }
+            });
+    ChangeListener<Boolean> txtDetail_Focus = JFXUtil.FocusListener(TextField.class,
+            (lsID, lsValue) -> {
+                /*Lost Focus*/
+                switch (lsID) {
+                    case "tfAppliedAmtDetail":
+                        lsValue = JFXUtil.removeComma(lsValue);
+                        if (poSOATaggingController.SOATagging().Detail(pnDetail).getAppliedAmount() != null
+                        && !"".equals(poSOATaggingController.SOATagging().Detail(pnDetail).getAppliedAmount())) {
+                            if (poSOATaggingController.SOATagging().Detail(pnDetail).getTransactionTotal().doubleValue() < Double.valueOf(lsValue)) {
+                                ShowMessageFX.Warning(null, pxeModuleName, "Applied Amount cannot be greater than the transaction total");
+                                poSOATaggingController.SOATagging().Detail(pnDetail).setAppliedAmount(0.0000);
+                                tfAppliedAmtDetail.requestFocus();
+                                break;
                             }
                         }
-                        poJSON = poSOATaggingController.SOATagging().Master().setCompanyId("");
-                    }
-                    break;
-                case "tfClient":
-                    if (lsValue.isEmpty()) {
-                        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                            if (poSOATaggingController.SOATagging().Master().getClientId() != null && !"".equals(poSOATaggingController.SOATagging().Master().getClientId())) {
-                                if (poSOATaggingController.SOATagging().getDetailCount() > 1) {
-                                    if (!pbKeyPressed) {
-                                        if (ShowMessageFX.YesNo(null, pxeModuleName,
-                                                "Are you sure you want to change the supplier name?\nPlease note that doing so will delete all SOA details.\n\nDo you wish to proceed?") == true) {
-                                            poSOATaggingController.SOATagging().removeDetails();
-                                            JFXUtil.showRetainedHighlight(false, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, true);
-                                            loadTableDetail();
-                                        } else {
-                                            loadRecordMaster();
-                                            return;
-                                        }
-                                    } else {
-                                        loadRecordMaster();
-                                        return;
-                                    }
-                                }
-                            }
+
+                        poJSON = poSOATaggingController.SOATagging().Detail(pnDetail).setAppliedAmount((Double.valueOf(lsValue)));
+                        if ("error".equals((String) poJSON.get("result"))) {
+                            System.err.println((String) poJSON.get("message"));
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         }
-                        poJSON = poSOATaggingController.SOATagging().Master().setClientId("");
-                    }
-                    break;
-                case "tfIssuedTo":
-                    if (lsValue.isEmpty()) {
-                        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                            if (poSOATaggingController.SOATagging().Master().getIssuedTo() != null && !"".equals(poSOATaggingController.SOATagging().Master().getIssuedTo())) {
-                                if (poSOATaggingController.SOATagging().getDetailCount() > 1) {
-                                    if (!pbKeyPressed) {
-                                        if (ShowMessageFX.YesNo(null, pxeModuleName,
-                                                "Are you sure you want to change the payee name?\nPlease note that doing so will delete all SOA details.\n\nDo you wish to proceed?") == true) {
-                                            poSOATaggingController.SOATagging().removeDetails();
-                                            JFXUtil.showRetainedHighlight(false, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, true);
-                                            loadTableDetail();
-                                        } else {
-                                            loadRecordMaster();
-                                            return;
-                                        }
-                                    } else {
-                                        loadRecordMaster();
-                                        return;
-                                    }
-                                }
-                            }
+                        if (pbEntered) {
+                            moveNext();
+                            pbEntered = false;
                         }
-                        poJSON = poSOATaggingController.SOATagging().Master().setIssuedTo("");
-                    }
-                    break;
-                case "tfDiscountAmount":
-                    lsValue = JFXUtil.removeComma(lsValue);
-                    if (Double.valueOf(lsValue) > 0.00) {
-                        if (poSOATaggingController.SOATagging().Master().getTransactionTotal().doubleValue() < Double.valueOf(lsValue)) {
-                            ShowMessageFX.Warning(null, pxeModuleName, "Discount amount cannot be greater than the transaction total.");
-                            poSOATaggingController.SOATagging().Master().setDiscountAmount(0.0000);
-                            tfDiscountAmount.setText("0.0000");
-                            tfDiscountAmount.requestFocus();
+                        break;
+                }
+                JFXUtil.runWithDelay(0.50, () -> {
+                    loadTableDetail();
+                });
+            });
+    ChangeListener<Boolean> txtMaster_Focus = JFXUtil.FocusListener(TextField.class,
+            (lsID, lsValue) -> {
+                /*Lost Focus*/
+                switch (lsID) {
+                    case "tfSOANo":
+                        if (!lsValue.isEmpty()) {
+                            poJSON = poSOATaggingController.SOATagging().Master().setSOANumber(lsValue);
+                        } else {
+                            poJSON = poSOATaggingController.SOATagging().Master().setSOANumber("");
+                        }
+                        if ("error".equals(poJSON.get("result"))) {
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                            tfSOANo.setText("");
                             break;
                         }
-                    }
-
-                    poJSON = poSOATaggingController.SOATagging().Master().setDiscountAmount((Double.valueOf(lsValue)));
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                    }
-                    break;
-                case "tfFreight":
-                    lsValue = JFXUtil.removeComma(lsValue);
-                    if (Double.valueOf(lsValue) > 0.00) {
-                        if (poSOATaggingController.SOATagging().Master().getTransactionTotal().doubleValue() < Double.valueOf(lsValue)) {
-                            ShowMessageFX.Warning(null, pxeModuleName, "Freight amount cannot be greater than the transaction total.");
-                            poSOATaggingController.SOATagging().Master().setFreightAmount(0.0000);
-                            tfFreight.setText("0.0000");
-                            tfFreight.requestFocus();
-                            break;
+                        break;
+                    case "tfCompany":
+                        if (lsValue.isEmpty()) {
+                            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                                if (poSOATaggingController.SOATagging().Master().getCompanyId() != null && !"".equals(poSOATaggingController.SOATagging().Master().getCompanyId())) {
+                                    if (poSOATaggingController.SOATagging().getDetailCount() > 1) {
+                                        if (!pbKeyPressed) {
+                                            if (ShowMessageFX.YesNo(null, pxeModuleName,
+                                                    "Are you sure you want to change the company name?\nPlease note that doing so will delete all SOA details.\n\nDo you wish to proceed?") == true) {
+                                                poSOATaggingController.SOATagging().removeDetails();
+                                                JFXUtil.showRetainedHighlight(false, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, true);
+                                                loadTableDetail();
+                                            } else {
+                                                loadRecordMaster();
+                                                return;
+                                            }
+                                        } else {
+                                            loadRecordMaster();
+                                            return;
+                                        }
+                                    }
+                                }
+                            }
+                            poJSON = poSOATaggingController.SOATagging().Master().setCompanyId("");
                         }
-                    }
+                        break;
+                    case "tfClient":
+                        if (lsValue.isEmpty()) {
+                            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                                if (poSOATaggingController.SOATagging().Master().getClientId() != null && !"".equals(poSOATaggingController.SOATagging().Master().getClientId())) {
+                                    if (poSOATaggingController.SOATagging().getDetailCount() > 1) {
+                                        if (!pbKeyPressed) {
+                                            if (ShowMessageFX.YesNo(null, pxeModuleName,
+                                                    "Are you sure you want to change the supplier name?\nPlease note that doing so will delete all SOA details.\n\nDo you wish to proceed?") == true) {
+                                                poSOATaggingController.SOATagging().removeDetails();
+                                                JFXUtil.showRetainedHighlight(false, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, true);
+                                                loadTableDetail();
+                                            } else {
+                                                loadRecordMaster();
+                                                return;
+                                            }
+                                        } else {
+                                            loadRecordMaster();
+                                            return;
+                                        }
+                                    }
+                                }
+                            }
+                            poJSON = poSOATaggingController.SOATagging().Master().setClientId("");
+                        }
+                        break;
+                    case "tfIssuedTo":
+                        if (lsValue.isEmpty()) {
+                            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                                if (poSOATaggingController.SOATagging().Master().getIssuedTo() != null && !"".equals(poSOATaggingController.SOATagging().Master().getIssuedTo())) {
+                                    if (poSOATaggingController.SOATagging().getDetailCount() > 1) {
+                                        if (!pbKeyPressed) {
+                                            if (ShowMessageFX.YesNo(null, pxeModuleName,
+                                                    "Are you sure you want to change the payee name?\nPlease note that doing so will delete all SOA details.\n\nDo you wish to proceed?") == true) {
+                                                poSOATaggingController.SOATagging().removeDetails();
+                                                JFXUtil.showRetainedHighlight(false, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, true);
+                                                loadTableDetail();
+                                            } else {
+                                                loadRecordMaster();
+                                                return;
+                                            }
+                                        } else {
+                                            loadRecordMaster();
+                                            return;
+                                        }
+                                    }
+                                }
+                            }
+                            poJSON = poSOATaggingController.SOATagging().Master().setIssuedTo("");
+                        }
+                        break;
+                    case "tfDiscountAmount":
+                        lsValue = JFXUtil.removeComma(lsValue);
+                        if (Double.valueOf(lsValue) > 0.00) {
+                            if (poSOATaggingController.SOATagging().Master().getTransactionTotal().doubleValue() < Double.valueOf(lsValue)) {
+                                ShowMessageFX.Warning(null, pxeModuleName, "Discount amount cannot be greater than the transaction total.");
+                                poSOATaggingController.SOATagging().Master().setDiscountAmount(0.0000);
+                                tfDiscountAmount.setText("0.0000");
+                                tfDiscountAmount.requestFocus();
+                                break;
+                            }
+                        }
 
-                    poJSON = poSOATaggingController.SOATagging().Master().setDiscountAmount((Double.valueOf(lsValue)));
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                    }
-                    break;
-            }
+                        poJSON = poSOATaggingController.SOATagging().Master().setDiscountAmount((Double.valueOf(lsValue)));
+                        if ("error".equals((String) poJSON.get("result"))) {
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                        }
+                        break;
+                    case "tfFreight":
+                        lsValue = JFXUtil.removeComma(lsValue);
+                        if (Double.valueOf(lsValue) > 0.00) {
+                            if (poSOATaggingController.SOATagging().Master().getTransactionTotal().doubleValue() < Double.valueOf(lsValue)) {
+                                ShowMessageFX.Warning(null, pxeModuleName, "Freight amount cannot be greater than the transaction total.");
+                                poSOATaggingController.SOATagging().Master().setFreightAmount(0.0000);
+                                tfFreight.setText("0.0000");
+                                tfFreight.requestFocus();
+                                break;
+                            }
+                        }
 
-            System.out.println("Company : " + poSOATaggingController.SOATagging().Master().getCompanyId());
-            System.out.println("Supplier : " + poSOATaggingController.SOATagging().Master().getClientId());
-            System.out.println("Payee : " + poSOATaggingController.SOATagging().Master().getIssuedTo());
-            loadRecordMaster();
-        }
-    };
+                        poJSON = poSOATaggingController.SOATagging().Master().setDiscountAmount((Double.valueOf(lsValue)));
+                        if ("error".equals((String) poJSON.get("result"))) {
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                        }
+                        break;
+                }
+
+                System.out.println("Company : " + poSOATaggingController.SOATagging().Master().getCompanyId());
+                System.out.println("Supplier : " + poSOATaggingController.SOATagging().Master().getClientId());
+                System.out.println("Payee : " + poSOATaggingController.SOATagging().Master().getIssuedTo());
+                loadRecordMaster();
+            });
 
     public void moveNext() {
         double ldblAppliedAmt = poSOATaggingController.SOATagging().Detail(pnDetail).getAppliedAmount().doubleValue();
@@ -1027,7 +985,6 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
             if (pnDetail < 0 || pnDetail > poSOATaggingController.SOATagging().getDetailCount() - 1) {
                 return;
             }
-
             String lsReferenceDate = "01/01/1900";
             String lsReferenceNo = "";
             switch (poSOATaggingController.SOATagging().Detail(pnDetail).getSourceCode()) {
