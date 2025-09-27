@@ -962,6 +962,11 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
             poJSON = new JSONObject();
             ModelSOATagging_Main selected = (ModelSOATagging_Main) tblViewMainList.getSelectionModel().getSelectedItem();
             if (selected != null) {
+                if (pnEditMode == EditMode.UPDATE && !JFXUtil.isObjectEqualTo(poSOATaggingController.SOATagging().Master().getTransactionNo(), null, "")) {
+                    if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure you want to change the transaction?\nPlease note that doing so will discard all transaction details.\n\nDo you wish to proceed?") == false) {
+                        return;
+                    }
+                }
                 int pnRowMain = Integer.parseInt(selected.getIndex01()) - 1;
                 pnMain = pnRowMain;
                 JFXUtil.disableAllHighlightByColor(tblViewMainList, "#A7C7E7", highlightedRowsMain);
