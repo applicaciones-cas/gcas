@@ -271,13 +271,9 @@ public class SOATagging_HistoryController implements Initializable, ScreenInterf
                 case UP:
                     CommonUtils.SetPreviousFocus(txtField);
             }
-        } catch (GuanzonException ex) {
+        } catch (GuanzonException | SQLException | CloneNotSupportedException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } catch (SQLException ex) {
-            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
-        }
+        } 
     }
 
     final ChangeListener<? super Boolean> txtMaster_Focus = (o, ov, nv) -> {
@@ -313,8 +309,7 @@ public class SOATagging_HistoryController implements Initializable, ScreenInterf
 
     public void loadRecordSearch() {
         try {
-            
-            if(poSOATaggingController.SOATagging().Master().Industry().getDescription() != null && !"".equals(poSOATaggingController.SOATagging().Master().Industry().getDescription())){
+            if (poSOATaggingController.SOATagging().Master().Industry().getDescription() != null && !"".equals(poSOATaggingController.SOATagging().Master().Industry().getDescription())) {
                 lblSource.setText(poSOATaggingController.SOATagging().Master().Industry().getDescription());
             } else {
                 lblSource.setText("General");
@@ -398,17 +393,14 @@ public class SOATagging_HistoryController implements Initializable, ScreenInterf
             tfVatAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.SOATagging().Master().getVatAmount(), true));
             tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.SOATagging().Master().getDiscountAmount(), true));
             tfFreight.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.SOATagging().Master().getFreightAmount(), false));
-            tfNonVatSales.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.SOATagging().Master().getZeroRatedVat(),true)); //As per ma'am she
+            tfNonVatSales.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.SOATagging().Master().getZeroRatedVat(), true)); //As per ma'am she
             tfZeroVatSales.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.SOATagging().Master().getZeroRatedVat(), true));
             tfVatExemptSales.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.SOATagging().Master().getVatExempt(), true));
             tfNetTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.SOATagging().Master().getNetTotal(), true));
             JFXUtil.updateCaretPositions(apMaster);
-        } catch (SQLException ex) {
-            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } catch (GuanzonException ex) {
+        } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
-
     }
 
     public void loadTableDetail() {
@@ -427,6 +419,9 @@ public class SOATagging_HistoryController implements Initializable, ScreenInterf
                     String lsReferenceNo = "";
                     for (lnCtr = 0; lnCtr < poSOATaggingController.SOATagging().getDetailCount(); lnCtr++) {
                         try {
+                            if (!poSOATaggingController.SOATagging().Detail(lnCtr).isReverse()) {
+                                continue;
+                            }
                             switch (poSOATaggingController.SOATagging().Detail(lnCtr).getSourceCode()) {
                                 case SOATaggingStatic.PaymentRequest:
                                     lsReferenceNo = poSOATaggingController.SOATagging().Detail(lnCtr).PaymentRequestMaster().getSeriesNo();
@@ -446,7 +441,8 @@ public class SOATagging_HistoryController implements Initializable, ScreenInterf
                                             String.valueOf(lsReferenceNo),
                                             String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.SOATagging().Detail(lnCtr).getCreditAmount(), true)),
                                             String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.SOATagging().Detail(lnCtr).getDebitAmount(), true)),
-                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.SOATagging().Detail(lnCtr).getTransactionTotal(), true))
+                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.SOATagging().Detail(lnCtr).getTransactionTotal(), true)),
+                                            String.valueOf(lnCtr)
                                     ));
                             lsReferenceNo = "";
                         } catch (SQLException ex) {
@@ -455,17 +451,21 @@ public class SOATagging_HistoryController implements Initializable, ScreenInterf
                             Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
                         }
                     }
-                    if (pnDetail < 0 || pnDetail
+                    int lnTempRow = JFXUtil.getDetailRow(details_data, pnDetail, 8); //this method is used only when Reverse is applied
+                    if (lnTempRow < 0 || lnTempRow
                             >= details_data.size()) {
                         if (!details_data.isEmpty()) {
                             /* FOCUS ON FIRST ROW */
                             JFXUtil.selectAndFocusRow(tblViewTransDetailList, 0);
-                            pnDetail = tblViewTransDetailList.getSelectionModel().getSelectedIndex();
+                            int lnRow = Integer.parseInt(details_data.get(0).getIndex08());
+                            pnDetail = lnRow;
                             loadRecordDetail();
                         }
                     } else {
                         /* FOCUS ON THE ROW THAT pnRowDetail POINTS TO */
-                        JFXUtil.selectAndFocusRow(tblViewTransDetailList, pnDetail);
+                        JFXUtil.selectAndFocusRow(tblViewTransDetailList, lnTempRow);
+                        int lnRow = Integer.parseInt(details_data.get(tblViewTransDetailList.getSelectionModel().getSelectedIndex()).getIndex08());
+                        pnDetail = lnRow;
                         loadRecordDetail();
                     }
                     loadRecordMaster();
@@ -500,7 +500,7 @@ public class SOATagging_HistoryController implements Initializable, ScreenInterf
 
     public void initDatePickers() {
         JFXUtil.setDatePickerFormat("MM/dd/yyyy",
-dpTransactionDate, dpReferenceDate);
+                dpTransactionDate, dpReferenceDate);
     }
 
     public void initTextFields() {
@@ -562,10 +562,10 @@ dpTransactionDate, dpReferenceDate);
                         switch (event.getCode()) {
                             case TAB:
                             case DOWN:
-                                pnDetail = JFXUtil.moveToNextRow(currentTable);
+                                pnDetail = Integer.parseInt(details_data.get(JFXUtil.moveToNextRow(currentTable)).getIndex08());
                                 break;
                             case UP:
-                                pnDetail = JFXUtil.moveToPreviousRow(currentTable);
+                                pnDetail = Integer.parseInt(details_data.get(JFXUtil.moveToPreviousRow(currentTable)).getIndex08());
                                 break;
                             default:
                                 break;
@@ -581,9 +581,7 @@ dpTransactionDate, dpReferenceDate);
     public void clearTextFields() {
         psTransactionNo = "";
         dpTransactionDate.setValue(null);
-
         JFXUtil.clearTextFields(apMaster, apDetail, apBrowse);
-
     }
 
 }
