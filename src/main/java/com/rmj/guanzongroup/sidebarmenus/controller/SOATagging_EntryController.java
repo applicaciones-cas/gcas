@@ -366,13 +366,12 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                         lsTransType = "PRF";
                         break;
                     case SOATaggingStatic.APPaymentAdjustment:
-                        lsTransNoBasis = poSOATaggingController.SOATagging().Detail(lnCtr).getSourceNo()
-                                + poSOATaggingController.SOATagging().Detail(lnCtr).APPaymentAdjustmentMaster().Supplier().getCompanyName();
+                        lsTransNoBasis = poSOATaggingController.SOATagging().Detail(lnCtr).getSourceNo();
                         lsTransType = "AP Payment Adjustment";
                         break;
                     case SOATaggingStatic.POReceiving:
                         lsTransNoBasis = poSOATaggingController.SOATagging().Detail(lnCtr).getSourceNo()
-                                + poSOATaggingController.SOATagging().Detail(lnCtr).PurchasOrderReceivingMaster().Supplier().getCompanyName();
+                                + poSOATaggingController.SOATagging().Master().Supplier().getCompanyName();
                         lsTransType = "PO Receiving";
                         break;
                 }
@@ -940,8 +939,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                                     lsPayeeName = poSOATaggingController.SOATagging().CachePayableList(lnCtr).Client().getCompanyName();
                                     lsTransNo = poSOATaggingController.SOATagging().CachePayableList(lnCtr).getReferNo();
                                     lsTransDate = String.valueOf(poSOATaggingController.SOATagging().CachePayableList(lnCtr).getTransactionDate());
-                                    lsTransNoBasis = poSOATaggingController.SOATagging().CachePayableList(lnCtr).getSourceNo()
-                                            + poSOATaggingController.SOATagging().CachePayableList(lnCtr).Client().getCompanyName();
+                                    lsTransNoBasis = poSOATaggingController.SOATagging().CachePayableList(lnCtr).getSourceNo();
                                     lsTransType = "AP Payment Adjustment";
                                     break;
                                 case SOATaggingStatic.POReceiving:
