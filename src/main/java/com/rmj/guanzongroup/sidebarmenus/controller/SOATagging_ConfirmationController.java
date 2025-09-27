@@ -126,7 +126,6 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
     private CheckBox cbReverse;
     private ComboBox cmbSourceCode;
     ObservableList<String> TransactionType = FXCollections.observableArrayList(
-            "ALL",
             "PRF",
             "AP Payment Adjustment",
             "PO Receiving"
