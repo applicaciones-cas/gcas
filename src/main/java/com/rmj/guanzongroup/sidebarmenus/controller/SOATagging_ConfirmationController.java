@@ -103,28 +103,28 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
     @FXML
     private AnchorPane apMainAnchor, apBrowse, apButton, apMaster, apDetail, apMainList;
     @FXML
-    private HBox hbButtons, hboxid;
-    @FXML
     private Label lblSource, lblStatus;
     @FXML
-    private Button btnUpdate, btnSearch, btnSave, btnCancel, btnConfirm, btnVoid, btnReturn, btnHistory, btnRetrieve, btnClose;
+    private TextField tfSearchCompany, tfSearchSupplier, tfSearchReferenceNo, tfTransactionNo, tfSOANo, tfCompany, tfClient, tfIssuedTo, tfTransactionTotal, tfDiscountAmount, tfFreight, tfVatAmount, tfNonVatSales, tfZeroVatSales, tfVatExemptSales, tfNetTotal, tfSourceNo, tfReferenceNo, tfCreditAmount, tfDebitAmount, tfAppliedAmtDetail;
     @FXML
-    private TextField tfSearchCompany, tfSearchReferenceNo, tfSearchSupplier, tfTransactionNo, tfSOANo, tfClient, tfIssuedTo, tfTransactionTotal,
-            tfVatAmount, tfNonVatSales, tfZeroVatSales, tfVatExemptSales, tfNetTotal, tfCompany, tfDiscountAmount, tfFreight, tfSourceNo, tfReferenceNo, tfCreditAmount, tfDebitAmount, tfAppliedAmtDetail;
+    private HBox hbButtons, hboxid;
+    @FXML
+    private Button btnUpdate, btnSearch, btnSave, btnCancel, btnConfirm, btnVoid, btnReturn, btnHistory, btnRetrieve, btnClose;
     @FXML
     private DatePicker dpTransactionDate, dpReferenceDate;
     @FXML
     private TextArea taRemarks;
     @FXML
+    private CheckBox cbReverse;
+    @FXML
+    private ComboBox cmbSourceCode;
+    @FXML
     private TableView tblViewTransDetailList, tblViewMainList;
     @FXML
-    private TableColumn tblRowNoDetail, tblSourceNoDetail, tblSourceCodeDetail, tblReferenceNoDetail, tblCreditAmtDetail, tblDebitAmtDetail,
-            tblAppliedAmtDetail, tblRowNo, tblSupplier, tblDate, tblReferenceNo;
+    private TableColumn tblRowNoDetail, tblSourceNoDetail, tblSourceCodeDetail, tblReferenceNoDetail, tblCreditAmtDetail, tblDebitAmtDetail, tblAppliedAmtDetail, tblRowNo, tblSupplier, tblDate, tblReferenceNo;
     @FXML
     private Pagination pgPagination;
-    @FXML
-    private CheckBox cbReverse;
-    private ComboBox cmbSourceCode;
+
     ObservableList<String> TransactionType = FXCollections.observableArrayList(
             "PRF",
             "AP Payment Adjustment",
@@ -652,7 +652,19 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                             loadRecordMaster();
                             return;
                         case "tfReferenceNo":
-                            poJSON = poSOATaggingController.SOATagging().searchPayables(lsValue);
+                            String lsSourceCode = "";
+                            switch (String.valueOf(cmbSourceCode.getSelectionModel().getSelectedItem())) {
+                                case "PRF":
+                                    lsSourceCode = "CcPy";
+                                    break;
+                                case "PO Receiving":
+                                    lsSourceCode = "PORc";
+                                    break;
+                                case "AP Payment Adjustment":
+                                    lsSourceCode = "APAd";
+                                    break;
+                            }
+                            poJSON = poSOATaggingController.SOATagging().searchPayables(lsValue, lsSourceCode);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 break;
@@ -887,7 +899,19 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
             }
 
             tfSourceNo.setText(poSOATaggingController.SOATagging().Detail(pnDetail).getSourceNo());
-            cmbSourceCode.getSelectionModel().select(poSOATaggingController.SOATagging().Detail(pnDetail).getSourceCode());
+            String lsSourceCode = "";
+            switch (poSOATaggingController.SOATagging().Detail(pnDetail).getSourceCode()) {
+                case "CcPy":
+                    lsSourceCode = "PRF";
+                    break;
+                case "PORc":
+                    lsSourceCode = "PO Receiving";
+                    break;
+                case "APAd":
+                    lsSourceCode = "AP Payment Adjustment";
+                    break;
+            }
+            cmbSourceCode.getSelectionModel().select(lsSourceCode);
             tfReferenceNo.setText(lsReferenceNo);
             dpReferenceDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(JFXUtil.convertToIsoFormat(lsReferenceDate), "yyyy-MM-dd"));
             tfCreditAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.SOATagging().Detail(pnDetail).getCreditAmount(), true));
@@ -1072,22 +1096,25 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
         };
         new Thread(task).start(); // Run task in background
     }
-
-    EventHandler<ActionEvent> comboboxlistener = JFXUtil.CmbActionListener(
-            (cmbId, selectedIndex, selectedValue) -> {
-                switch (cmbId) {
-                    case "cmbSourceCode":
-                        cmbSourceCode.getSelectionModel().select(selectedValue);
-                        break;
-                }
-            }
-    );
+    final EventHandler<ActionEvent> comboBoxActionListener = event -> {
+        Object source = event.getSource();
+        @SuppressWarnings("unchecked")
+        ComboBox<?> cb = (ComboBox<?>) source;
+        String cbId = cb.getId();
+        String selectedValue = String.valueOf(cb.getSelectionModel().getSelectedItem());
+        switch (cbId) {
+            case "cmbSourceCode":
+                cmbSourceCode.getSelectionModel().select(selectedValue);
+                break;
+        }
+    };
 
     private void initComboBoxes() {
         // Set the items of the ComboBox to the list of genders
-        cmbSourceCode.setItems(TransactionType);
+        JFXUtil.setComboBoxItems(new JFXUtil.Pairs<>(TransactionType, cmbSourceCode)
+        );
         cmbSourceCode.getSelectionModel().select(0);
-        JFXUtil.setComboBoxActionListener(comboboxlistener, cmbSourceCode);
+        JFXUtil.setComboBoxActionListener(comboBoxActionListener, cmbSourceCode);
         JFXUtil.initComboBoxCellDesignColor("#FF8201", cmbSourceCode);
     }
 
