@@ -997,6 +997,9 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                     try {
 
                         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                                poSOATaggingController.SOATagging().ReloadDetail();
+                            }
                             lnCtr = poSOATaggingController.SOATagging().getDetailCount() - 1;
                             while (lnCtr >= 0) {
                                 if (poSOATaggingController.SOATagging().Detail(lnCtr).getSourceNo() == null || "".equals(poSOATaggingController.SOATagging().Detail(lnCtr).getSourceNo())) {
@@ -1016,9 +1019,7 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                                 //poSOATaggingController.SOATagging().AddDetail();
                             }
                         }
-                        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                            poSOATaggingController.SOATagging().ReloadDetail();
-                        }
+
                         String lsReferenceNo = "";
                         for (lnCtr = 0; lnCtr < poSOATaggingController.SOATagging().getDetailCount(); lnCtr++) {
                             if (!poSOATaggingController.SOATagging().Detail(lnCtr).isReverse()) {
