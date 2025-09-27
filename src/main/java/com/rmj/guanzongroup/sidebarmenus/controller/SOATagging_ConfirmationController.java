@@ -158,7 +158,6 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
         });
 
         pgPagination.setPageCount(1);
-
         pnEditMode = EditMode.UNKNOWN;
         initButton(pnEditMode);
 
@@ -209,8 +208,6 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
     @FXML
     private void cmdButton_Click(ActionEvent event) {
         poJSON = new JSONObject();
-        String tabText = "";
-
         try {
             Object source = event.getSource();
             if (source instanceof Button) {
@@ -264,7 +261,6 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                                 return;
                             } else {
                                 ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
-
                                 // Confirmation Prompt
                                 JSONObject loJSON = poSOATaggingController.SOATagging().OpenTransaction(poSOATaggingController.SOATagging().Master().getTransactionNo());
                                 if ("success".equals(loJSON.get("result"))) {
@@ -388,180 +384,138 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
         }
 
     }
-
-    final ChangeListener<? super Boolean> txtArea_Focus = (o, ov, nv) -> {
-        TextArea txtField = (TextArea) ((ReadOnlyBooleanPropertyBase) o).getBean();
-        String lsID = (txtField.getId());
-        String lsValue = txtField.getText();
-
-        if (lsValue == null) {
-            return;
-        }
-        poJSON = new JSONObject();
-        if (!nv) {
-            /*Lost Focus*/
-            lsValue = lsValue.trim();
-            switch (lsID) {
-                case "taRemarks"://Remarks
-                    poJSON = poSOATaggingController.SOATagging().Master().setRemarks(lsValue);
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        System.err.println((String) poJSON.get("message"));
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                        return;
-                    }
-                    break;
-            }
-        } else {
-            txtField.selectAll();
-        }
-    };
-
-    // Method to handle focus change and track the last focused TextField
-    final ChangeListener<? super Boolean> txtDetail_Focus = (o, ov, nv) -> {
-        poJSON = new JSONObject();
-        TextField txtPersonalInfo = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
-        String lsTxtFieldID = (txtPersonalInfo.getId());
-        String lsValue = (txtPersonalInfo.getText() == null ? "" : txtPersonalInfo.getText());
-        if (lsValue == null) {
-            return;
-        }
-        if (!nv) {
-            /*Lost Focus*/
-            switch (lsTxtFieldID) {
-                case "tfAppliedAmtDetail":
-                    if (lsValue.isEmpty()) {
-                        lsValue = "0";
-                    }
-                    lsValue = JFXUtil.removeComma(lsValue);
-                    if (poSOATaggingController.SOATagging().Detail(pnDetail).getAppliedAmount() != null
-                            && !"".equals(poSOATaggingController.SOATagging().Detail(pnDetail).getAppliedAmount())) {
-                        if (poSOATaggingController.SOATagging().Detail(pnDetail).getTransactionTotal().doubleValue() < Double.valueOf(lsValue)) {
-                            ShowMessageFX.Warning(null, pxeModuleName, "Applied Amount cannot be greater than the transaction total");
-                            poSOATaggingController.SOATagging().Detail(pnDetail).setAppliedAmount(0.0000);
-                            tfAppliedAmtDetail.requestFocus();
-                            break;
+    ChangeListener<Boolean> txtArea_Focus = JFXUtil.FocusListener(TextArea.class,
+            (lsID, lsValue) -> {
+                /*Lost Focus*/
+                lsValue = lsValue.trim();
+                switch (lsID) {
+                    case "taRemarks"://Remarks
+                        poJSON = poSOATaggingController.SOATagging().Master().setRemarks(lsValue);
+                        if ("error".equals((String) poJSON.get("result"))) {
+                            System.err.println((String) poJSON.get("message"));
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                            return;
                         }
-                    }
-
-                    poJSON = poSOATaggingController.SOATagging().Detail(pnDetail).setAppliedAmount((Double.valueOf(lsValue)));
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        System.err.println((String) poJSON.get("message"));
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                    }
-                    if (pbEntered) {
-                        moveNext();
-                        pbEntered = false;
-                    }
-                    break;
-            }
-            JFXUtil.runWithDelay(0.50, () -> {
-                loadTableDetail();
-            });
-        }
-    };
-
-    final ChangeListener<? super Boolean> txtMaster_Focus = (o, ov, nv) -> {
-        poJSON = new JSONObject();
-        TextField txtPersonalInfo = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
-        String lsTxtFieldID = (txtPersonalInfo.getId());
-        String lsValue = (txtPersonalInfo.getText() == null ? "" : txtPersonalInfo.getText());
-        if (lsValue == null) {
-            return;
-        }
-        if (!nv) {
-            /*Lost Focus*/
-            switch (lsTxtFieldID) {
-                case "tfSearchSupplier":
-                    if (lsValue.equals("")) {
-                        psSearchSupplierId = "";
-                    }
-                    loadRecordSearch();
-                    break;
-                case "tfSearchCompany":
-                    if (lsValue.equals("")) {
-                        psSearchCompanyId = "";
-                    }
-                    loadRecordSearch();
-                    break;
-                case "tfSearchReferenceNo":
-                    break;
-                case "tfSOANo":
-                    if (!lsValue.isEmpty()) {
-                        poJSON = poSOATaggingController.SOATagging().Master().setSOANumber(lsValue);
-                    } else {
-                        poJSON = poSOATaggingController.SOATagging().Master().setSOANumber("");
-                    }
-                    if ("error".equals(poJSON.get("result"))) {
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                        tfReferenceNo.setText("");
                         break;
-                    }
-                    break;
-                case "tfCompany":
-                    if (lsValue.isEmpty()) {
-                        poJSON = poSOATaggingController.SOATagging().Master().setCompanyId("");
-                        psCompanyId = "";
-                    }
-                    break;
-                case "tfClient":
-                    if (lsValue.isEmpty()) {
-                        poJSON = poSOATaggingController.SOATagging().Master().setClientId("");
-                        psSupplierId = "";
-                    }
-
-                    break;
-                case "tfIssuedTo":
-                    if (lsValue.isEmpty()) {
-                        poJSON = poSOATaggingController.SOATagging().Master().setIssuedTo("");
-                    }
-                    break;
-                case "tfDiscountAmount":
-                    if (lsValue.isEmpty()) {
-                        lsValue = "0";
-                    }
-                    lsValue = JFXUtil.removeComma(lsValue);
-                    if (Double.valueOf(lsValue) > 0.00) {
-                        if (poSOATaggingController.SOATagging().Master().getTransactionTotal().doubleValue() < Double.valueOf(lsValue)) {
-                            ShowMessageFX.Warning(null, pxeModuleName, "Discount amount cannot be greater than the transaction total.");
-                            poSOATaggingController.SOATagging().Master().setDiscountAmount(0.0000);
-                            tfDiscountAmount.setText("0.0000");
-                            tfDiscountAmount.requestFocus();
+                }
+            });
+    ChangeListener<Boolean> txtDetail_Focus = JFXUtil.FocusListener(TextField.class,
+            (lsID, lsValue) -> {
+                /*Lost Focus*/
+                switch (lsID) {
+                    case "tfAppliedAmtDetail":
+                        lsValue = JFXUtil.removeComma(lsValue);
+                        if (poSOATaggingController.SOATagging().Detail(pnDetail).getAppliedAmount() != null
+                        && !"".equals(poSOATaggingController.SOATagging().Detail(pnDetail).getAppliedAmount())) {
+                            if (poSOATaggingController.SOATagging().Detail(pnDetail).getTransactionTotal().doubleValue() < Double.valueOf(lsValue)) {
+                                ShowMessageFX.Warning(null, pxeModuleName, "Applied Amount cannot be greater than the transaction total");
+                                poSOATaggingController.SOATagging().Detail(pnDetail).setAppliedAmount(0.0000);
+                                tfAppliedAmtDetail.requestFocus();
+                                break;
+                            }
+                        }
+                        poJSON = poSOATaggingController.SOATagging().Detail(pnDetail).setAppliedAmount((Double.valueOf(lsValue)));
+                        if ("error".equals((String) poJSON.get("result"))) {
+                            System.err.println((String) poJSON.get("message"));
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                        }
+                        if (pbEntered) {
+                            moveNext();
+                            pbEntered = false;
+                        }
+                        break;
+                }
+                JFXUtil.runWithDelay(0.50, () -> {
+                    loadTableDetail();
+                });
+            });
+    ChangeListener<Boolean> txtMaster_Focus = JFXUtil.FocusListener(TextField.class,
+            (lsID, lsValue) -> {
+                /*Lost Focus*/
+                switch (lsID) {
+                    case "tfSearchSupplier":
+                        if (lsValue.equals("")) {
+                            psSearchSupplierId = "";
+                        }
+                        loadRecordSearch();
+                        break;
+                    case "tfSearchCompany":
+                        if (lsValue.equals("")) {
+                            psSearchCompanyId = "";
+                        }
+                        loadRecordSearch();
+                        break;
+                    case "tfSearchReferenceNo":
+                        break;
+                    case "tfSOANo":
+                        if (!lsValue.isEmpty()) {
+                            poJSON = poSOATaggingController.SOATagging().Master().setSOANumber(lsValue);
+                        } else {
+                            poJSON = poSOATaggingController.SOATagging().Master().setSOANumber("");
+                        }
+                        if ("error".equals(poJSON.get("result"))) {
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                            tfReferenceNo.setText("");
                             break;
                         }
-                    }
-
-                    poJSON = poSOATaggingController.SOATagging().Master().setDiscountAmount((Double.valueOf(lsValue)));
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                    }
-                    break;
-                case "tfFreight":
-                    if (lsValue.isEmpty()) {
-                        lsValue = "0";
-                    }
-                    lsValue = JFXUtil.removeComma(lsValue);
-                    JFXUtil.removeComma(lsValue);
-                    if (Double.valueOf(lsValue) > 0.00) {
-                        if (poSOATaggingController.SOATagging().Master().getTransactionTotal().doubleValue() < Double.valueOf(lsValue)) {
-                            ShowMessageFX.Warning(null, pxeModuleName, "Freight amount cannot be greater than the transaction total.");
-                            poSOATaggingController.SOATagging().Master().setFreightAmount(0.0000);
-                            tfFreight.setText("0.0000");
-                            tfFreight.requestFocus();
-                            break;
+                        break;
+                    case "tfCompany":
+                        if (lsValue.isEmpty()) {
+                            poJSON = poSOATaggingController.SOATagging().Master().setCompanyId("");
+                            psCompanyId = "";
                         }
-                    }
+                        break;
+                    case "tfClient":
+                        if (lsValue.isEmpty()) {
+                            poJSON = poSOATaggingController.SOATagging().Master().setClientId("");
+                            psSupplierId = "";
+                        }
 
-                    poJSON = poSOATaggingController.SOATagging().Master().setDiscountAmount((Double.valueOf(lsValue)));
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                    }
-                    break;
-            }
-            if (!JFXUtil.isObjectEqualTo(lsTxtFieldID, "tfSearchSupplier", "tfSearchCompany", "tfSearchReferenceNo")) {
-                loadRecordMaster();
-            }
-        }
-    };
+                        break;
+                    case "tfIssuedTo":
+                        if (lsValue.isEmpty()) {
+                            poJSON = poSOATaggingController.SOATagging().Master().setIssuedTo("");
+                        }
+                        break;
+                    case "tfDiscountAmount":
+                        lsValue = JFXUtil.removeComma(lsValue);
+                        if (Double.valueOf(lsValue) > 0.00) {
+                            if (poSOATaggingController.SOATagging().Master().getTransactionTotal().doubleValue() < Double.valueOf(lsValue)) {
+                                ShowMessageFX.Warning(null, pxeModuleName, "Discount amount cannot be greater than the transaction total.");
+                                poSOATaggingController.SOATagging().Master().setDiscountAmount(0.0000);
+                                tfDiscountAmount.setText("0.0000");
+                                tfDiscountAmount.requestFocus();
+                                break;
+                            }
+                        }
+
+                        poJSON = poSOATaggingController.SOATagging().Master().setDiscountAmount((Double.valueOf(lsValue)));
+                        if ("error".equals((String) poJSON.get("result"))) {
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                        }
+                        break;
+                    case "tfFreight":
+                        lsValue = JFXUtil.removeComma(lsValue);
+                        if (Double.valueOf(lsValue) > 0.00) {
+                            if (poSOATaggingController.SOATagging().Master().getTransactionTotal().doubleValue() < Double.valueOf(lsValue)) {
+                                ShowMessageFX.Warning(null, pxeModuleName, "Freight amount cannot be greater than the transaction total.");
+                                poSOATaggingController.SOATagging().Master().setFreightAmount(0.0000);
+                                tfFreight.setText("0.0000");
+                                tfFreight.requestFocus();
+                                break;
+                            }
+                        }
+
+                        poJSON = poSOATaggingController.SOATagging().Master().setDiscountAmount((Double.valueOf(lsValue)));
+                        if ("error".equals((String) poJSON.get("result"))) {
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                        }
+                        break;
+                }
+                if (!JFXUtil.isObjectEqualTo(lsID, "tfSearchSupplier", "tfSearchCompany", "tfSearchReferenceNo")) {
+                    loadRecordMaster();
+                }
+            });
 
     public void moveNext() {
         double ldblAppliedAmt = poSOATaggingController.SOATagging().Detail(pnDetail).getAppliedAmount().doubleValue();
@@ -1102,8 +1056,7 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
     }
 
     public void initDatePickers() {
-        JFXUtil.setDatePickerFormat("MM/dd/yyyy",
-                dpTransactionDate, dpReferenceDate);
+        JFXUtil.setDatePickerFormat("MM/dd/yyyy", dpTransactionDate, dpReferenceDate);
         JFXUtil.setActionListener(this::datepicker_Action, dpTransactionDate, dpReferenceDate);
     }
 

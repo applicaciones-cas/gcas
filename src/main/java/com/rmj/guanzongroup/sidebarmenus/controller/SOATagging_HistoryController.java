@@ -273,39 +273,28 @@ public class SOATagging_HistoryController implements Initializable, ScreenInterf
             }
         } catch (GuanzonException | SQLException | CloneNotSupportedException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } 
+        }
     }
-
-    final ChangeListener<? super Boolean> txtMaster_Focus = (o, ov, nv) -> {
-        poJSON = new JSONObject();
-        TextField txtPersonalInfo = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
-        String lsTxtFieldID = txtPersonalInfo.getId();
-        String lsValue = (txtPersonalInfo.getText() == null ? "" : txtPersonalInfo.getText());
-
-        if (lsValue == null) {
-            return;
-        }
-
-        if (!nv) {
-            /* Lost Focus */
-            switch (lsTxtFieldID) {
-                case "tfSearchSupplier":
-                    if (lsValue.equals("")) {
-                        psSupplierId = "";
-                    }
-                    loadRecordSearch();
-                    break;
-                case "tfSearchCompany":
-                    if (lsValue.equals("")) {
-                        psCompanyId = "";
-                    }
-                    loadRecordSearch();
-                    break;
-                case "tfSearchReferenceNo":
-                    break;
-            }
-        }
-    };
+    ChangeListener<Boolean> txtMaster_Focus = JFXUtil.FocusListener(TextField.class,
+            (lsID, lsValue) -> {
+                /* Lost Focus */
+                switch (lsID) {
+                    case "tfSearchSupplier":
+                        if (lsValue.equals("")) {
+                            psSupplierId = "";
+                        }
+                        loadRecordSearch();
+                        break;
+                    case "tfSearchCompany":
+                        if (lsValue.equals("")) {
+                            psCompanyId = "";
+                        }
+                        loadRecordSearch();
+                        break;
+                    case "tfSearchReferenceNo":
+                        break;
+                }
+            });
 
     public void loadRecordSearch() {
         try {
@@ -354,30 +343,14 @@ public class SOATagging_HistoryController implements Initializable, ScreenInterf
             tfDebitAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.SOATagging().Detail(pnDetail).getDebitAmount(), true));
             tfAppliedAmtDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.SOATagging().Detail(pnDetail).getAppliedAmount(), true));
             JFXUtil.updateCaretPositions(apDetail);
-        } catch (SQLException ex) {
-            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
-        } catch (GuanzonException ex) {
+        } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
         }
-
     }
 
     public void loadRecordMaster() {
         try {
-            Platform.runLater(() -> {
-                String lsActive = pnEditMode == EditMode.UNKNOWN ? "-1" : poSOATaggingController.SOATagging().Master().getTransactionStatus();
-                Map<String, String> statusMap = new HashMap<>();
-                statusMap.put(SOATaggingStatus.OPEN, "OPEN");
-                statusMap.put(SOATaggingStatus.PAID, "PAID");
-                statusMap.put(SOATaggingStatus.CONFIRMED, "CONFIRMED");
-                statusMap.put(SOATaggingStatus.RETURNED, "RETURNED");
-                statusMap.put(SOATaggingStatus.VOID, "VOIDED");
-                statusMap.put(SOATaggingStatus.CANCELLED, "CANCELLED");
-
-                String lsStat = statusMap.getOrDefault(lsActive, "UNKNOWN");
-                lblStatus.setText(lsStat);
-            });
-
+            JFXUtil.setStatusValue(lblStatus, SOATaggingStatus.class, pnEditMode == EditMode.UNKNOWN ? "-1" : poSOATaggingController.SOATagging().Master().getTransactionStatus());
             poSOATaggingController.SOATagging().computeFields();
 
             tfTransactionNo.setText(poSOATaggingController.SOATagging().Master().getTransactionNo());
@@ -507,13 +480,11 @@ public class SOATagging_HistoryController implements Initializable, ScreenInterf
         Platform.runLater(() -> {
             JFXUtil.setVerticalScroll(taRemarks);
         });
-
         JFXUtil.setFocusListener(txtMaster_Focus, tfSearchCompany, tfSearchSupplier);
         JFXUtil.setKeyPressedListener(this::txtField_KeyPressed, apBrowse, apMaster, apDetail);
     }
 
     public void initTableOnClick() {
-
         tblViewTransDetailList.setOnMouseClicked(event -> {
             if (details_data.size() > 0) {
                 if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
@@ -522,7 +493,6 @@ public class SOATagging_HistoryController implements Initializable, ScreenInterf
                 }
             }
         });
-
         tblViewTransDetailList.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
         JFXUtil.adjustColumnForScrollbar(tblViewTransDetailList); // need to use computed-size in min-width of the column to work
     }
