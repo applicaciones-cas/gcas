@@ -643,6 +643,26 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                             }
                             loadRecordMaster();
                             return;
+                        case "tfSourceNo":
+//                            poJSON = poSOATaggingController.SOATagging().SearchPayee(lsValue, false);
+//                            if ("error".equals(poJSON.get("result"))) {
+//                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+//                                break;
+//                            }
+                            JFXUtil.runWithDelay(0.50, () -> {
+                                loadTableDetail();
+                            });
+                            break;
+                        case "tfSourceCode":
+//                            poJSON = poSOATaggingController.SOATagging().SearchPayee(lsValue, false);
+//                            if ("error".equals(poJSON.get("result"))) {
+//                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+//                                break;
+//                            }
+                            JFXUtil.runWithDelay(0.50, () -> {
+                                loadTableDetail();
+                            });
+                            break;
                     }
                     break;
                 default:
@@ -847,7 +867,7 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
             if (pnDetail < 0 || pnDetail > poSOATaggingController.SOATagging().getDetailCount() - 1) {
                 return;
             }
-
+            
             boolean lbDisable = poSOATaggingController.SOATagging().Detail(pnDetail).getEditMode() == EditMode.ADDNEW;
             JFXUtil.setDisabled(!lbDisable, tfSourceNo, tfReferenceNo);
 
