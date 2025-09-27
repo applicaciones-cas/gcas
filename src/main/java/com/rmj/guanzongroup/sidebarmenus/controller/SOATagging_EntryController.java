@@ -1175,9 +1175,9 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
 
                         String lsReferenceNo = "";
                         for (lnCtr = 0; lnCtr < poSOATaggingController.SOATagging().getDetailCount(); lnCtr++) {
-//                            if (!poSOATaggingController.SOATagging().Detail(lnCtr).isReverse()) {
-//                                continue;
-//                            }
+                            if (!poSOATaggingController.SOATagging().Detail(lnCtr).isReverse()) {
+                                continue;
+                            }
                             switch (poSOATaggingController.SOATagging().Detail(lnCtr).getSourceCode()) {
                                 case SOATaggingStatic.PaymentRequest:
                                     lsReferenceNo = poSOATaggingController.SOATagging().Detail(lnCtr).PaymentRequestMaster().getSeriesNo();
