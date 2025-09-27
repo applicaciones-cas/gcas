@@ -60,7 +60,7 @@ import ph.com.guanzongroup.cas.check.module.mnv.services.CheckController;
  *
  * @author User
  */
-public class CheckTransfer_ConfimationController implements Initializable, ScreenInterface {
+public class CheckTransfer_ConfirmationController implements Initializable, ScreenInterface {
 
     private GRiderCAS poApp;
     private LogWrapper poLogWrapper;
@@ -154,7 +154,7 @@ public class CheckTransfer_ConfimationController implements Initializable, Scree
             initializeTableDetail();
             initControlEvents();
         } catch (SQLException | GuanzonException e) {
-            Logger.getLogger(CheckTransfer_ConfimationController.class.getName()).log(Level.SEVERE, null, e);
+            Logger.getLogger(CheckTransfer_ConfirmationController.class.getName()).log(Level.SEVERE, null, e);
             poLogWrapper.severe(psFormName + " :" + e.getMessage());
         }
     }
@@ -748,7 +748,7 @@ public class CheckTransfer_ConfimationController implements Initializable, Scree
             dpFilterFrom.setValue(ParseDate((Date) poApp.getServerDate()));
             dpFilterThru.setValue(ParseDate((Date) poApp.getServerDate()));
         } catch (SQLException ex) {
-            Logger.getLogger(CheckTransfer_ConfimationController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CheckTransfer_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
