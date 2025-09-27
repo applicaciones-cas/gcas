@@ -2029,6 +2029,13 @@ public class DashboardController implements Initializable {
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CheckTransfer_Posting.fxml":
                     return "Check Transfer Posting";
 
+                case "/com/rmj/guanzongroup/sidebarmenus/views/CheckDeposit_Entry.fxml":
+                    return "Check Transfer Entry";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/CheckDeposit_Confirmation.fxml":
+                    return "Check Transfer Confirmation";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/CheckDeposit_History.fxml":
+                    return "Check Transfer History";
+
                 //Update
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CheckStatusUpdate.fxml":
                     return "Check Status Update";
@@ -3738,10 +3745,20 @@ public class DashboardController implements Initializable {
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CheckTransfer_Entry.fxml":
                     return new CheckTransfer_EntryController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CheckTransfer_Confirmation.fxml":
-                    return new CheckTransfer_ConfimationController();
+                    return new CheckTransfer_ConfirmationController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CheckTransfer_History.fxml":
                     return new CheckTransfer_HistoryController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CheckTransfer_Posting.fxml":
+                    return new CheckTransfer_PostingController();
+
+                //Check Deposit
+                case "/com/rmj/guanzongroup/sidebarmenus/views/CheckDeposit_Entry.fxml":
+                    return new CheckDeposit_EntryController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/CheckDeposit_Confirmation.fxml":
+                    return new CheckTransfer_ConfirmationController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/CheckDeposit_History.fxml":
+                    return new CheckTransfer_HistoryController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/CheckDeposit_Posting.fxml":
                     return new CheckTransfer_PostingController();
 
 //                UPDATE
@@ -5715,6 +5732,14 @@ public class DashboardController implements Initializable {
                 + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Check Transfer History\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/CheckTransfer_History.fxml\",\"controller_path\":\"CheckTransfer_HistoryController\",\"menu_id\":\"114\",\"menu_parent\":\"111\"},"
                 //Posting
                 + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Check Transfer Posting\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/CheckTransfer_Posting.fxml\",\"controller_path\":\"CheckTransfer_PostingController\",\"menu_id\":\"115\",\"menu_parent\":\"111\"},"
+                //CheckDeposit
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Check Deposit\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"116\",\"menu_parent\":\"001\"},"
+                //Entry
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Check Deposit Entry\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/CheckDeposit_Entry.fxml\",\"controller_path\":\"CheckDeposit_EntryController\",\"menu_id\":\"117\",\"menu_parent\":\"116\"},"
+                //Confirmation
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Check Deposit Confirmation\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/CheckDeposit_Confirmation.fxml\",\"controller_path\":\"CheckDeposit_ConfimationController\",\"menu_id\":\"118\",\"menu_parent\":\"116\"},"
+                //History
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Check Deposit History\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/CheckDeposit_History.fxml\",\"controller_path\":\"CheckDeposit_HistoryController\",\"menu_id\":\"119\",\"menu_parent\":\"116\"},"
                 + "]";
         JSONParser parser = new JSONParser();
         try {
