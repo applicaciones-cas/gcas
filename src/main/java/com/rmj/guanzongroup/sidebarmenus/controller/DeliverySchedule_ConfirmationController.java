@@ -418,7 +418,7 @@ public class DeliverySchedule_ConfirmationController implements Initializable, S
 
                         }
                         reloadTableDetail();
-                        clearAllInputs();
+//                        clearAllInputs();
                         pnEditMode = poAppController.getEditMode();
                         break;
                     }
