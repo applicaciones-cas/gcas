@@ -120,6 +120,8 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
             tblAppliedAmtDetail, tblRowNo, tblSupplier, tblDate, tblReferenceNo;
     @FXML
     private Pagination pgPagination;
+    @FXML
+    private CheckBox cbReverse;
 
     public void setTabTitle(String lsTabTitle, boolean isGeneral) {
         this.pxeModuleName = lsTabTitle;
@@ -919,6 +921,7 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
             tfCreditAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.SOATagging().Detail(pnDetail).getCreditAmount(), true));
             tfDebitAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.SOATagging().Detail(pnDetail).getDebitAmount(), true));
             tfAppliedAmtDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.SOATagging().Detail(pnDetail).getAppliedAmount(), true));
+            cbReverse.setSelected(poSOATaggingController.SOATagging().Detail(pnDetail).isReverse());
             JFXUtil.updateCaretPositions(apDetail);
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
@@ -992,9 +995,7 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                     details_data.clear();
                     int lnCtr;
                     try {
-                        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-//                            poSOATaggingController.SOATagging().ReloadDetail();
-                        }
+
                         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                             lnCtr = poSOATaggingController.SOATagging().getDetailCount() - 1;
                             while (lnCtr >= 0) {
@@ -1015,7 +1016,9 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                                 //poSOATaggingController.SOATagging().AddDetail();
                             }
                         }
-
+                        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                            poSOATaggingController.SOATagging().ReloadDetail();
+                        }
                         String lsReferenceNo = "";
                         for (lnCtr = 0; lnCtr < poSOATaggingController.SOATagging().getDetailCount(); lnCtr++) {
                             if (!poSOATaggingController.SOATagging().Detail(lnCtr).isReverse()) {
@@ -1063,7 +1066,7 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                             loadRecordDetail();
                         }
                         loadRecordMaster();
-                    } catch (SQLException | GuanzonException ex) {
+                    } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
                         Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
                     }
                 });
@@ -1108,6 +1111,7 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
 
         JFXUtil.setKeyPressedListener(this::txtField_KeyPressed, apBrowse, apMaster, apDetail);
         JFXUtil.setCommaFormatter(tfVatAmount, tfDiscountAmount, tfZeroVatSales, tfNonVatSales, tfVatExemptSales, tfAppliedAmtDetail);
+        JFXUtil.setCheckboxHoverCursor(apDetail);
     }
 
     public void initTableOnClick() {
