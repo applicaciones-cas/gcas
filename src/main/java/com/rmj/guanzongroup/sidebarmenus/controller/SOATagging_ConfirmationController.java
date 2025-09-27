@@ -59,7 +59,9 @@ import ph.com.guanzongroup.cas.cashflow.SOATagging;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.concurrent.atomic.AtomicReference;
+import javafx.event.EventHandler;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
 import org.guanzon.appdriver.agent.ShowDialogFX;
 import org.guanzon.appdriver.constant.UserRight;
 import ph.com.guanzongroup.cas.cashflow.services.CashflowControllers;
@@ -108,7 +110,7 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
     private Button btnUpdate, btnSearch, btnSave, btnCancel, btnConfirm, btnVoid, btnReturn, btnHistory, btnRetrieve, btnClose;
     @FXML
     private TextField tfSearchCompany, tfSearchReferenceNo, tfSearchSupplier, tfTransactionNo, tfSOANo, tfClient, tfIssuedTo, tfTransactionTotal,
-            tfVatAmount, tfNonVatSales, tfZeroVatSales, tfVatExemptSales, tfNetTotal, tfCompany, tfDiscountAmount, tfFreight, tfSourceNo, tfSourceCode, tfReferenceNo, tfCreditAmount, tfDebitAmount, tfAppliedAmtDetail;
+            tfVatAmount, tfNonVatSales, tfZeroVatSales, tfVatExemptSales, tfNetTotal, tfCompany, tfDiscountAmount, tfFreight, tfSourceNo, tfReferenceNo, tfCreditAmount, tfDebitAmount, tfAppliedAmtDetail;
     @FXML
     private DatePicker dpTransactionDate, dpReferenceDate;
     @FXML
@@ -122,6 +124,13 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
     private Pagination pgPagination;
     @FXML
     private CheckBox cbReverse;
+    private ComboBox cmbSourceCode;
+    ObservableList<String> TransactionType = FXCollections.observableArrayList(
+            "ALL",
+            "PRF",
+            "AP Payment Adjustment",
+            "PO Receiving"
+    );
 
     public void setTabTitle(String lsTabTitle, boolean isGeneral) {
         this.pxeModuleName = lsTabTitle;
@@ -139,7 +148,7 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
             System.err.println((String) poJSON.get("message"));
             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
         }
-
+        initComboBoxes();
         initTextFields();
         initDatePickers();
         initMainGrid();
@@ -643,22 +652,12 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                             }
                             loadRecordMaster();
                             return;
-                        case "tfSourceNo":
-//                            poJSON = poSOATaggingController.SOATagging().SearchPayee(lsValue, false);
-//                            if ("error".equals(poJSON.get("result"))) {
-//                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-//                                break;
-//                            }
-                            JFXUtil.runWithDelay(0.50, () -> {
-                                loadTableDetail();
-                            });
-                            break;
-                        case "tfSourceCode":
-//                            poJSON = poSOATaggingController.SOATagging().SearchPayee(lsValue, false);
-//                            if ("error".equals(poJSON.get("result"))) {
-//                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-//                                break;
-//                            }
+                        case "tfReferenceNo":
+                            poJSON = poSOATaggingController.SOATagging().searchPayables(lsValue);
+                            if ("error".equals(poJSON.get("result"))) {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                break;
+                            }
                             JFXUtil.runWithDelay(0.50, () -> {
                                 loadTableDetail();
                             });
@@ -867,9 +866,9 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
             if (pnDetail < 0 || pnDetail > poSOATaggingController.SOATagging().getDetailCount() - 1) {
                 return;
             }
-            
+
             boolean lbDisable = poSOATaggingController.SOATagging().Detail(pnDetail).getEditMode() == EditMode.ADDNEW;
-            JFXUtil.setDisabled(!lbDisable, tfSourceNo, tfReferenceNo);
+            JFXUtil.setDisabled(!lbDisable, tfReferenceNo);
 
             String lsReferenceDate = "01/01/1900";
             String lsReferenceNo = "";
@@ -889,7 +888,7 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
             }
 
             tfSourceNo.setText(poSOATaggingController.SOATagging().Detail(pnDetail).getSourceNo());
-            tfSourceCode.setText(poSOATaggingController.SOATagging().Detail(pnDetail).getSourceCode());
+            cmbSourceCode.getSelectionModel().select(poSOATaggingController.SOATagging().Detail(pnDetail).getSourceCode());
             tfReferenceNo.setText(lsReferenceNo);
             dpReferenceDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(JFXUtil.convertToIsoFormat(lsReferenceDate), "yyyy-MM-dd"));
             tfCreditAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.SOATagging().Detail(pnDetail).getCreditAmount(), true));
@@ -990,12 +989,12 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                             if ((poSOATaggingController.SOATagging().getDetailCount() - 1) >= 0) {
                                 if (poSOATaggingController.SOATagging().Detail(poSOATaggingController.SOATagging().getDetailCount() - 1).getSourceNo() != null
                                         && !"".equals(poSOATaggingController.SOATagging().Detail(poSOATaggingController.SOATagging().getDetailCount() - 1).getSourceNo())) {
-                                    //poSOATaggingController.SOATagging().AddDetail();
+                                    poSOATaggingController.SOATagging().AddDetail();
                                 }
                             }
 
                             if ((poSOATaggingController.SOATagging().getDetailCount() - 1) < 0) {
-                                //poSOATaggingController.SOATagging().AddDetail();
+                                poSOATaggingController.SOATagging().AddDetail();
                             }
                         }
 
@@ -1075,6 +1074,24 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
         new Thread(task).start(); // Run task in background
     }
 
+    EventHandler<ActionEvent> comboboxlistener = JFXUtil.CmbActionListener(
+            (cmbId, selectedIndex, selectedValue) -> {
+                switch (cmbId) {
+                    case "cmbSourceCode":
+                        cmbSourceCode.getSelectionModel().select(selectedValue);
+                        break;
+                }
+            }
+    );
+
+    private void initComboBoxes() {
+        // Set the items of the ComboBox to the list of genders
+        cmbSourceCode.setItems(TransactionType);
+        cmbSourceCode.getSelectionModel().select(0);
+        JFXUtil.setComboBoxActionListener(comboboxlistener, cmbSourceCode);
+        JFXUtil.initComboBoxCellDesignColor("#FF8201", cmbSourceCode);
+    }
+
     public void initDatePickers() {
         JFXUtil.setDatePickerFormat("MM/dd/yyyy", dpTransactionDate, dpReferenceDate);
         JFXUtil.setActionListener(this::datepicker_Action, dpTransactionDate, dpReferenceDate);
@@ -1086,7 +1103,7 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
         });
         JFXUtil.setFocusListener(txtArea_Focus, taRemarks);
         JFXUtil.setFocusListener(txtMaster_Focus, tfCompany, tfClient, tfIssuedTo, tfSOANo, tfDiscountAmount, tfSearchCompany, tfSearchSupplier);
-        JFXUtil.setFocusListener(txtDetail_Focus, tfSourceNo, tfSourceCode, tfReferenceNo, tfAppliedAmtDetail);
+        JFXUtil.setFocusListener(txtDetail_Focus, tfSourceNo, tfReferenceNo, tfAppliedAmtDetail);
 
         JFXUtil.setKeyPressedListener(this::txtField_KeyPressed, apBrowse, apMaster, apDetail);
         JFXUtil.setCommaFormatter(tfVatAmount, tfDiscountAmount, tfZeroVatSales, tfNonVatSales, tfVatExemptSales, tfAppliedAmtDetail);
