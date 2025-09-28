@@ -1132,7 +1132,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                                 poSOATaggingController.SOATagging().AddDetail();
                             }
                         }
-
+                        int lnRowCount = 0;
                         String lsReferenceNo = "";
                         for (lnCtr = 0; lnCtr < poSOATaggingController.SOATagging().getDetailCount(); lnCtr++) {
                             if (!poSOATaggingController.SOATagging().Detail(lnCtr).isReverse()) {
@@ -1149,9 +1149,9 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                                     lsReferenceNo = poSOATaggingController.SOATagging().Detail(lnCtr).PurchasOrderReceivingMaster().getReferenceNo();
                                     break;
                             }
-
+                            lnRowCount += 1;
                             details_data.add(
-                                    new ModelSOATagging_Detail(String.valueOf(lnCtr + 1),
+                                    new ModelSOATagging_Detail(String.valueOf(lnRowCount),
                                             String.valueOf(poSOATaggingController.SOATagging().Detail(lnCtr).getSourceNo()),
                                             String.valueOf(poSOATaggingController.SOATagging().Detail(lnCtr).getSourceCode()),
                                             String.valueOf(lsReferenceNo),

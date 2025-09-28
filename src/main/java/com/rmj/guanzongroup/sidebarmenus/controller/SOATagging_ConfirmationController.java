@@ -126,6 +126,7 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
     private Pagination pgPagination;
 
     ObservableList<String> TransactionType = FXCollections.observableArrayList(
+            "",
             "PRF",
             "AP Payment Adjustment",
             "PO Receiving"
@@ -666,12 +667,22 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                             }
                             poJSON = poSOATaggingController.SOATagging().searchPayables(lsValue, lsSourceCode);
                             if ("error".equals(poJSON.get("result"))) {
+                                int lnReturned = Integer.parseInt(String.valueOf(poJSON.get("row"))) + 1;
+                                JFXUtil.runWithDelay(0.70, () -> {
+                                    int lnTempRow = JFXUtil.getDetailTempRow(details_data, lnReturned, 7);
+                                    pnDetail = lnTempRow;
+                                    loadTableDetail();
+                                });
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 break;
-                            }
-                            JFXUtil.runWithDelay(0.50, () -> {
+                            } else {
+                                int lnReturned = Integer.parseInt(String.valueOf(poJSON.get("row")));
+                                JFXUtil.runWithDelay(0.80, () -> {
+                                    pnDetail = lnReturned;
+                                    loadTableDetail();
+                                });
                                 loadTableDetail();
-                            });
+                            }
                             break;
                     }
                     break;
@@ -1022,6 +1033,7 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                         }
 
                         String lsReferenceNo = "";
+                        int lnRowCount = 0;
                         for (lnCtr = 0; lnCtr < poSOATaggingController.SOATagging().getDetailCount(); lnCtr++) {
                             if (!poSOATaggingController.SOATagging().Detail(lnCtr).isReverse()) {
                                 continue;
@@ -1037,9 +1049,9 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                                     lsReferenceNo = poSOATaggingController.SOATagging().Detail(lnCtr).PurchasOrderReceivingMaster().getReferenceNo();
                                     break;
                             }
-
+                            lnRowCount += 1;
                             details_data.add(
-                                    new ModelSOATagging_Detail(String.valueOf(lnCtr + 1),
+                                    new ModelSOATagging_Detail(String.valueOf(lnRowCount),
                                             String.valueOf(poSOATaggingController.SOATagging().Detail(lnCtr).getSourceNo()),
                                             String.valueOf(poSOATaggingController.SOATagging().Detail(lnCtr).getSourceCode()),
                                             String.valueOf(lsReferenceNo),
