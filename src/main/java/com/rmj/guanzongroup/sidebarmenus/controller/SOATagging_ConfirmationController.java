@@ -655,13 +655,14 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                             String lsSourceCode = getSourceCodeDescription(false, String.valueOf(cmbSourceCode.getSelectionModel().getSelectedItem()));
                             poJSON = poSOATaggingController.SOATagging().searchPayables(lsValue, lsSourceCode, pnDetail);
                             if ("error".equals(poJSON.get("result"))) {
-                                int lnReturned = Integer.parseInt(String.valueOf(poJSON.get("row"))) + 1;
+                                int lnReturned = Integer.parseInt(String.valueOf(poJSON.get("row")));
                                 JFXUtil.runWithDelay(0.70, () -> {
                                     int lnTempRow = JFXUtil.getDetailTempRow(details_data, lnReturned, 8);
                                     pnDetail = lnTempRow;
                                     loadTableDetail();
                                 });
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                tfReferenceNo.requestFocus();
                                 break;
                             } else {
                                 int lnReturned = Integer.parseInt(String.valueOf(poJSON.get("row")));
