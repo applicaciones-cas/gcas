@@ -5,12 +5,14 @@
 package com.rmj.guanzongroup.sidebarmenus.controller;
 
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelCheckImporting;
+import com.rmj.guanzongroup.sidebarmenus.utility.CustomCommonUtil;
 import com.rmj.guanzongroup.sidebarmenus.utility.JFXUtil;
 import java.io.File;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +23,7 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -171,64 +174,7 @@ public class CheckImportingController implements Initializable, ScreenInterface 
 
             switch (lsButton) {
                 case "btnImportFile":
-                    FileChooser fileChooser = new FileChooser();
-                    fileChooser.setTitle("Import File");
-                    FileChooser.ExtensionFilter csvFilter = new FileChooser.ExtensionFilter("CSV Files (*.csv)", "*.csv");
-                    FileChooser.ExtensionFilter excelFilter = new FileChooser.ExtensionFilter("Excel Files (*.xlsx, *.xls)", "*.xlsx", "*.xls");
-
-                    fileChooser.getExtensionFilters().addAll(csvFilter, excelFilter);
-                    Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-
-                    File selectedFile = fileChooser.showOpenDialog(currentStage);
-                    
-                    try {
-                    List<CheckImporting.CheckRequest> data = poCheckImporting.importToList(selectedFile.toPath());
-                    ObservableList<CheckImporting.CheckRequest> items = FXCollections.observableArrayList(data);
-//                        items.forEach(System.out::println);     // relies on CheckRequest.toString()
-                
-                        /* 2.  Custom formatting -------------------------------------------- */
-                        items.forEach(cr -> System.out.printf(
-                                "Voucher: %-10s  Date: %-10s  Amount: %10s  Payee: %s%n",
-                                cr.getVoucherNo(),
-                                cr.getCheckDate(),
-                                cr.getAmount(),
-                                cr.getPayeeName()));    
-
-                        /* 3.  If you just want a single dump --------------------------------
- * (.toString() on ObservableList calls Collection.toString()) */
-                        System.out.println(items.get(1).getVoucherNo());
-                        List<String> voucherNos = new ArrayList<>();
-                        for (CheckImporting.CheckRequest cr : items) {
-                            voucherNos.add(cr.getVoucherNo());
-                        }
-                        System.out.println(voucherNos);
-                        poJSON = poCheckImporting.getDVwithAuthorizeCheckPayment(voucherNos);
-                         
-                        if ("error".equals((String) poJSON.get("result"))) {
-                            ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
-                            return;
-                        }
-                        
-
-                } catch (Exception ex) {
-        //            showAlert("Import failed", ex.getMessage());
-                    ex.printStackTrace();
-                }
-
-                    if (selectedFile != null) {
-                        psImportingFilePath = selectedFile.getAbsolutePath();
-                        System.out.println("Imported File: " + psImportingFilePath);
-                        poJSON = poCheckImporting.UpdateTransaction();
-                        if ("error".equals((String) poJSON.get("result"))) {
-                            ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
-                            return;
-                        }
-                        pnEditMode = poCheckImporting.getEditMode();
-                    } else {
-                        ShowMessageFX.Warning("No file selected.", pxeModuleName, null);
-                        psImportingFilePath = "";
-                    }
-
+                    handleImportFile(event);
                     break;
                 case "btnSave":
                     if (!ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure you want to save the transaction?")) {
@@ -237,6 +183,7 @@ public class CheckImportingController implements Initializable, ScreenInterface 
                     if (pnEditMode == EditMode.UPDATE) {
                         poCheckImporting.Master().setModifiedDate(oApp.getServerDate());
                         poCheckImporting.Master().setModifyingId(oApp.getUserID());
+                        poCheckImporting.Master().setBranchCode(oApp.getBranchCode());
                     }
                     poJSON = poCheckImporting.SaveTransaction();
                     if (!"success".equals((String) poJSON.get("result"))) {
@@ -482,4 +429,100 @@ public class CheckImportingController implements Initializable, ScreenInterface 
         }
         return true;
     }
+    
+    private void handleImportFile(ActionEvent event) {
+    FileChooser fileChooser = new FileChooser();
+    fileChooser.setTitle("Import File");
+    fileChooser.getExtensionFilters().addAll(
+        new FileChooser.ExtensionFilter("CSV Files (*.csv)", "*.csv"),
+        new FileChooser.ExtensionFilter("Excel Files (*.xlsx, *.xls)", "*.xlsx", "*.xls")
+    );
+
+    Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+    File selectedFile = fileChooser.showOpenDialog(currentStage);
+    if (selectedFile == null) {
+        ShowMessageFX.Warning("No file selected.", pxeModuleName, null);
+        psImportingFilePath = "";
+        return;
+    }
+
+    psImportingFilePath = selectedFile.getAbsolutePath();
+    System.out.println("Imported File: " + psImportingFilePath);
+
+    // run heavy import in a background thread
+    Task<ObservableList<CheckImporting.CheckRequest>> task =
+        new Task<ObservableList<CheckImporting.CheckRequest>>() {
+
+        @Override
+        protected ObservableList<CheckImporting.CheckRequest> call() throws Exception {
+            List<CheckImporting.CheckRequest> merged = new ArrayList<>();
+
+            // Step 1: read Excel/CSV rows into CheckRequest list
+            List<CheckImporting.CheckRequest> rawRows =
+                poCheckImporting.importToList(selectedFile.toPath());
+
+            // Step 2: process each row individually
+            for (int lnCtr = 0; lnCtr < rawRows.size(); lnCtr++) {
+                CheckImporting.CheckRequest row = rawRows.get(lnCtr);
+                String voucherNo = row.getVoucherNo();
+
+                if (voucherNo == null || voucherNo.trim().isEmpty()) {
+                    continue;
+                }
+
+                // Call DB/service for this voucher
+                JSONObject result = poCheckImporting.getDVwithAuthorizeCheckPayment(voucherNo);
+                if ("error".equals(result.get("result"))) {
+                    throw new RuntimeException((String) result.get("message"));
+                }
+
+                // Optionally merge DB data into the row
+                // row.setAmount(result.optDouble("amount"));
+                // Build and add the model object
+                main_data.add(new ModelCheckImporting(
+                        String.valueOf(lnCtr + 1),
+                        poCheckImporting.CheckPayments(lnCtr).getSourceNo(),
+                        CustomCommonUtil.formatDateToShortString(poCheckImporting.CheckPayments(lnCtr).getTransactionDate()),
+                        poCheckImporting.CheckPayments(lnCtr).Banks().getBankName(),
+                        row.getVoucherNo(),
+                        CustomCommonUtil.formatDateToShortString(poCheckImporting.CheckPayments(lnCtr).getTransactionDate()),
+                        row.getCheckNo(),
+                        row.getCheckDate(),
+                        ""
+                ));
+            }
+
+            return FXCollections.observableArrayList(merged);
+        }
+    };
+
+        task.setOnSucceeded(e -> {
+            ObservableList<CheckImporting.CheckRequest> items = task.getValue();
+            tblVwMain.setItems(main_data);  // display once all rows processed
+            tblVwMain.refresh();
+            // update transaction after successful import
+            JSONObject update = poCheckImporting.UpdateTransaction();
+            if ("error".equals(update.get("result"))) {
+                ShowMessageFX.Warning((String) update.get("message"), pxeModuleName, null);
+                return;
+            }
+
+            pnEditMode = poCheckImporting.getEditMode();
+            initButtons(pnEditMode);
+            for(int lnctr = 0;lnctr < main_data.size(); lnctr++){
+                poCheckImporting.CheckPayments(lnctr).setCheckNo(main_data.get(lnctr).getIndex07());
+                
+            }
+
+        });
+
+    task.setOnFailed(e -> {
+        Throwable ex = task.getException();
+        ex.printStackTrace();
+        ShowMessageFX.Warning("Import failed: " + ex.getMessage(), pxeModuleName, null);
+    });
+
+    new Thread(task).start();
+}
+
 }
