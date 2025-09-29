@@ -431,11 +431,12 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                             moveNext();
                             pbEntered = false;
                         }
+                        JFXUtil.runWithDelay(0.50, () -> {
+                            loadTableDetail();
+                        });
                         break;
                 }
-                JFXUtil.runWithDelay(0.50, () -> {
-                    loadTableDetail();
-                });
+
             });
     ChangeListener<Boolean> txtMaster_Focus = JFXUtil.FocusListener(TextField.class,
             (lsID, lsValue) -> {
@@ -652,7 +653,8 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                             loadRecordMaster();
                             return;
                         case "tfReferenceNo":
-                            String lsSourceCode = getSourceCodeDescription(false, String.valueOf(cmbSourceCode.getSelectionModel().getSelectedItem()));
+                            String lsSelected = String.valueOf(cmbSourceCode.getSelectionModel().getSelectedItem());
+                            String lsSourceCode = getSourceCodeDescription(false, lsSelected);
                             poJSON = poSOATaggingController.SOATagging().searchPayables(lsValue, lsSourceCode, pnDetail);
                             if ("error".equals(poJSON.get("result"))) {
                                 int lnReturned = Integer.parseInt(String.valueOf(poJSON.get("row")));
@@ -660,6 +662,7 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
 //                                    int lnTempRow = JFXUtil.getDetailRow(details_data, lnReturned, 8);
                                     pnDetail = lnReturned;
                                     loadTableDetail();
+                                    cmbSourceCode.getSelectionModel().select(lsSelected);
                                 });
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfReferenceNo.requestFocus();
@@ -896,7 +899,8 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
             }
 
             boolean lbDisable = poSOATaggingController.SOATagging().Detail(pnDetail).getEditMode() == EditMode.ADDNEW;
-            JFXUtil.setDisabled(!lbDisable, tfReferenceNo, cmbSourceCode);
+            JFXUtil.setDisabled(!lbDisable, tfReferenceNo);
+            JFXUtil.setDisabled(!JFXUtil.isObjectEqualTo(poSOATaggingController.SOATagging().Detail(pnDetail).getSourceNo(), null, ""), cmbSourceCode);
 
             String lsReferenceDate = "01/01/1900";
             String lsReferenceNo = "";
@@ -1048,7 +1052,7 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                             details_data.add(
                                     new ModelSOATagging_Detail(String.valueOf(lnRowCount),
                                             String.valueOf(poSOATaggingController.SOATagging().Detail(lnCtr).getSourceNo()),
-                                            String.valueOf(poSOATaggingController.SOATagging().Detail(lnCtr).getSourceCode()),
+                                            String.valueOf(getSourceCodeDescription(true, poSOATaggingController.SOATagging().Detail(lnCtr).getSourceCode())),
                                             String.valueOf(lsReferenceNo),
                                             String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.SOATagging().Detail(lnCtr).getCreditAmount(), true)),
                                             String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.SOATagging().Detail(lnCtr).getDebitAmount(), true)),
