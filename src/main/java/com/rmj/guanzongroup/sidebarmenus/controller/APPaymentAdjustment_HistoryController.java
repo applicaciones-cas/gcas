@@ -80,6 +80,13 @@ public class APPaymentAdjustment_HistoryController implements Initializable, Scr
         clearTextFields();
         pnEditMode = EditMode.UNKNOWN;
         initButton(pnEditMode);
+
+        Platform.runLater(() -> {
+            poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().setIndustryId(psIndustryId);
+            poAPPaymentAdjustmentController.APPaymentAdjustment().setIndustryId(psIndustryId);
+            poAPPaymentAdjustmentController.APPaymentAdjustment().setWithUI(true);
+            loadRecordSearch();
+        });
     }
 
     @Override
@@ -181,7 +188,7 @@ public class APPaymentAdjustment_HistoryController implements Initializable, Scr
 
     public void loadRecordSearch() {
         try {
-            if(poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().Industry().getDescription() != null && !"".equals(poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().Industry().getDescription())){
+            if (poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().Industry().getDescription() != null && !"".equals(poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().Industry().getDescription())) {
                 lblSource.setText(poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().Industry().getDescription());
             } else {
                 lblSource.setText("General");
@@ -232,7 +239,7 @@ public class APPaymentAdjustment_HistoryController implements Initializable, Scr
     }
 
     public void initDatePickers() {
-        JFXUtil.setDatePickerFormat("MM/dd/yyyy",dpTransactionDate);
+        JFXUtil.setDatePickerFormat("MM/dd/yyyy", dpTransactionDate);
     }
 
     public void clearTextFields() {
