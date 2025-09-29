@@ -778,7 +778,7 @@ public class JFXUtil {
         });
     }
 
-    /* Clears textFields, textAreas, checkboxes & datepickers by calling its parent anchorpane */
+    /* Clears textFields, textAreas, checkboxes,combobxes, & datepickers by calling its parent anchorpane */
  /* For datepicker it auto set value to null before clearing text input*/
     public static void clearTextFields(AnchorPane... anchorPanes) {
         for (AnchorPane pane : anchorPanes) {
@@ -798,6 +798,9 @@ public class JFXUtil {
                 }
             } else if (node instanceof CheckBox) {
                 ((CheckBox) node).setSelected(false); // uncheck
+            } else if (node instanceof ComboBox) {
+                ComboBox<?> combo = (ComboBox<?>) node;
+                combo.getSelectionModel().select(0);
             } else if (node instanceof Parent) {
                 clearTextInputsRecursive((Parent) node);
             }
