@@ -1048,7 +1048,7 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                             details_data.add(
                                     new ModelSOATagging_Detail(String.valueOf(lnRowCount),
                                             String.valueOf(poSOATaggingController.SOATagging().Detail(lnCtr).getSourceNo()),
-                                            String.valueOf(poSOATaggingController.SOATagging().Detail(lnCtr).getSourceCode()),
+                                            String.valueOf(getSourceCodeDescription(true, poSOATaggingController.SOATagging().Detail(lnCtr).getSourceCode())),
                                             String.valueOf(lsReferenceNo),
                                             String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.SOATagging().Detail(lnCtr).getCreditAmount(), true)),
                                             String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.SOATagging().Detail(lnCtr).getDebitAmount(), true)),

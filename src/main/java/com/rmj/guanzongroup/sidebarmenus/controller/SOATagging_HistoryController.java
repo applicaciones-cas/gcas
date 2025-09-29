@@ -329,7 +329,6 @@ public class SOATagging_HistoryController implements Initializable, ScreenInterf
         }
     }
 
-
     public void loadRecordDetail() {
 
         try {
@@ -428,7 +427,7 @@ public class SOATagging_HistoryController implements Initializable, ScreenInterf
                             details_data.add(
                                     new ModelSOATagging_Detail(String.valueOf(lnRowCount),
                                             String.valueOf(poSOATaggingController.SOATagging().Detail(lnCtr).getSourceNo()),
-                                            String.valueOf(poSOATaggingController.SOATagging().Detail(lnCtr).getSourceCode()),
+                                            String.valueOf(getSourceCodeDescription(true, poSOATaggingController.SOATagging().Detail(lnCtr).getSourceCode())),
                                             String.valueOf(lsReferenceNo),
                                             String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.SOATagging().Detail(lnCtr).getCreditAmount(), true)),
                                             String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.SOATagging().Detail(lnCtr).getDebitAmount(), true)),

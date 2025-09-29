@@ -996,7 +996,6 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
         }
     }
 
-
     public void loadRecordDetail() {
         try {
             if (pnDetail < 0 || pnDetail > poSOATaggingController.SOATagging().getDetailCount() - 1) {
@@ -1170,7 +1169,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                             details_data.add(
                                     new ModelSOATagging_Detail(String.valueOf(lnRowCount),
                                             String.valueOf(poSOATaggingController.SOATagging().Detail(lnCtr).getSourceNo()),
-                                            String.valueOf(poSOATaggingController.SOATagging().Detail(lnCtr).getSourceCode()),
+                                            String.valueOf(getSourceCodeDescription(true, poSOATaggingController.SOATagging().Detail(lnCtr).getSourceCode())),
                                             String.valueOf(lsReferenceNo),
                                             String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.SOATagging().Detail(lnCtr).getCreditAmount(), true)),
                                             String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.SOATagging().Detail(lnCtr).getDebitAmount(), true)),
