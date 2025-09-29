@@ -980,6 +980,23 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
         }
     }
 
+    public String getSourceCodeDescription(boolean isCode, String lsSource) {
+        final Map<String, String> sourceCodes = new HashMap<>();
+        sourceCodes.put(SOATaggingStatic.PaymentRequest, "PRF");
+        sourceCodes.put(SOATaggingStatic.APPaymentAdjustment, "AP Payment Adjustment");
+        sourceCodes.put(SOATaggingStatic.POReceiving, "PO Receiving");
+        if (isCode) {
+            return sourceCodes.getOrDefault(lsSource, "");
+        } else {
+            return sourceCodes.entrySet().stream()
+                    .filter(e -> e.getValue().equals(lsSource))
+                    .map(Map.Entry::getKey)
+                    .findFirst()
+                    .orElse("");
+        }
+    }
+
+
     public void loadRecordDetail() {
         try {
             if (pnDetail < 0 || pnDetail > poSOATaggingController.SOATagging().getDetailCount() - 1) {
@@ -1005,7 +1022,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
             JFXUtil.setDisabled(!lbDisable, tfReferenceNo);
 
             tfSourceNo.setText(poSOATaggingController.SOATagging().Detail(pnDetail).getSourceNo());
-            tfSourceCode.setText(poSOATaggingController.SOATagging().Detail(pnDetail).getSourceCode());
+            tfSourceCode.setText(getSourceCodeDescription(true, poSOATaggingController.SOATagging().Detail(pnDetail).getSourceCode()));
             tfReferenceNo.setText(lsReferenceNo);
             dpReferenceDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(JFXUtil.convertToIsoFormat(lsReferenceDate), "yyyy-MM-dd"));
             tfCreditAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.SOATagging().Detail(pnDetail).getCreditAmount(), true));

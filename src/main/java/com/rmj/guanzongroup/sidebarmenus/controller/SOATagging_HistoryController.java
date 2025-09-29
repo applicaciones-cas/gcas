@@ -313,6 +313,23 @@ public class SOATagging_HistoryController implements Initializable, ScreenInterf
         }
     }
 
+    public String getSourceCodeDescription(boolean isCode, String lsSource) {
+        final Map<String, String> sourceCodes = new HashMap<>();
+        sourceCodes.put(SOATaggingStatic.PaymentRequest, "PRF");
+        sourceCodes.put(SOATaggingStatic.APPaymentAdjustment, "AP Payment Adjustment");
+        sourceCodes.put(SOATaggingStatic.POReceiving, "PO Receiving");
+        if (isCode) {
+            return sourceCodes.getOrDefault(lsSource, "");
+        } else {
+            return sourceCodes.entrySet().stream()
+                    .filter(e -> e.getValue().equals(lsSource))
+                    .map(Map.Entry::getKey)
+                    .findFirst()
+                    .orElse("");
+        }
+    }
+
+
     public void loadRecordDetail() {
 
         try {
@@ -320,7 +337,7 @@ public class SOATagging_HistoryController implements Initializable, ScreenInterf
                 return;
             }
             tfSourceNo.setText(poSOATaggingController.SOATagging().Detail(pnDetail).getSourceNo());
-            tfSourceCode.setText(poSOATaggingController.SOATagging().Detail(pnDetail).getSourceCode());
+            tfSourceCode.setText(getSourceCodeDescription(true, poSOATaggingController.SOATagging().Detail(pnDetail).getSourceCode()));
             String lsReferenceDate = "";
             String lsReferenceNo = "";
             switch (poSOATaggingController.SOATagging().Detail(pnDetail).getSourceCode()) {
