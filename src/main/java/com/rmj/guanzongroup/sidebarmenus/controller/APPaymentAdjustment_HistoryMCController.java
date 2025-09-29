@@ -41,7 +41,7 @@ public class APPaymentAdjustment_HistoryMCController implements Initializable, S
     static CashflowControllers poAPPaymentAdjustmentController;
     private JSONObject poJSON;
     public int pnEditMode;
-    private String pxeModuleName = "";
+    private String pxeModuleName = JFXUtil.getFormattedClassTitle(this.getClass());
     private boolean isGeneral = false;
     private String psIndustryId = "";
     private String psCompanyId = "";
@@ -64,14 +64,9 @@ public class APPaymentAdjustment_HistoryMCController implements Initializable, S
     @FXML
     private TextArea taRemarks;
 
-    public void setTabTitle(String lsTabTitle, boolean isGeneral) {
-        this.pxeModuleName = lsTabTitle;
-        this.isGeneral = isGeneral;
-    }
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        psIndustryId = isGeneral ? "" : psIndustryId;
+        
         poJSON = new JSONObject();
         poAPPaymentAdjustmentController = new CashflowControllers(oApp, null);
         poAPPaymentAdjustmentController.APPaymentAdjustment().initialize(); // Initialize transaction

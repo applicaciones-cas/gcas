@@ -61,7 +61,7 @@ public class APPaymentAdjustment_ConfirmationLPController implements Initializab
     private JSONObject poJSON;
     public int pnEditMode;
 
-    private String pxeModuleName = "";
+    private String pxeModuleName = JFXUtil.getFormattedClassTitle(this.getClass());
     private boolean isGeneral = false;
     private String psIndustryId = "";
     private String psCompanyId = "";
@@ -99,14 +99,9 @@ public class APPaymentAdjustment_ConfirmationLPController implements Initializab
     @FXML
     private Pagination pgPagination;
 
-    public void setTabTitle(String lsTabTitle, boolean isGeneral) {
-        this.pxeModuleName = lsTabTitle;
-        this.isGeneral = isGeneral;
-    }
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        psIndustryId = isGeneral ? "" : psIndustryId;
+        
 
         poJSON = new JSONObject();
         poAPPaymentAdjustmentController = new CashflowControllers(oApp, null);

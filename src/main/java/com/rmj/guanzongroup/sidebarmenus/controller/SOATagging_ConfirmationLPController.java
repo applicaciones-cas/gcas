@@ -81,7 +81,7 @@ public class SOATagging_ConfirmationLPController implements Initializable, Scree
     private static final int ROWS_PER_PAGE = 50;
     int pnDetail = 0;
     int pnMain = 0;
-    private String pxeModuleName = "";
+    private String pxeModuleName = JFXUtil.getFormattedClassTitle(this.getClass());
     private String psIndustryId = "";
     private boolean isGeneral = false;
     private String psCompanyId = "";
@@ -131,14 +131,9 @@ public class SOATagging_ConfirmationLPController implements Initializable, Scree
             "PO Receiving"
     );
 
-    public void setTabTitle(String lsTabTitle, boolean isGeneral) {
-        this.pxeModuleName = lsTabTitle;
-        this.isGeneral = isGeneral;
-    }
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        psIndustryId = isGeneral ? "" : psIndustryId;
+        
 
         poSOATaggingController = new CashflowControllers(oApp, null);
         poJSON = new JSONObject();

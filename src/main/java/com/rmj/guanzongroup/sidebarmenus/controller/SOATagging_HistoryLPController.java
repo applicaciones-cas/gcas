@@ -64,7 +64,7 @@ public class SOATagging_HistoryLPController implements Initializable, ScreenInte
     private JSONObject poJSON;
     static CashflowControllers poSOATaggingController;
     public int pnEditMode;
-    private String pxeModuleName = "";
+    private String pxeModuleName = JFXUtil.getFormattedClassTitle(this.getClass());
     public int pnDetail = 0;
     private String psIndustryId = "";
     private boolean isGeneral = false;
@@ -97,14 +97,9 @@ public class SOATagging_HistoryLPController implements Initializable, ScreenInte
     @FXML
     private TableColumn tblRowNoDetail, tblSourceNoDetail, tblSourceCodeDetail, tblReferenceNoDetail, tblCreditAmtDetail, tblDebitAmtDetail, tblAppliedAmtDetail;
 
-    public void setTabTitle(String lsTabTitle, boolean isGeneral) {
-        this.pxeModuleName = lsTabTitle;
-        this.isGeneral = isGeneral;
-    }
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        psIndustryId = isGeneral ? "" : psIndustryId;
+        
 
         poSOATaggingController = new CashflowControllers(oApp, null);
         poJSON = poSOATaggingController.SOATagging().InitTransaction(); // Initialize transaction
