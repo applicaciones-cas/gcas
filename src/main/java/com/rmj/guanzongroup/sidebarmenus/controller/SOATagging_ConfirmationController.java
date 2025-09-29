@@ -657,8 +657,8 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                             if ("error".equals(poJSON.get("result"))) {
                                 int lnReturned = Integer.parseInt(String.valueOf(poJSON.get("row")));
                                 JFXUtil.runWithDelay(0.70, () -> {
-                                    int lnTempRow = JFXUtil.getDetailTempRow(details_data, lnReturned, 8);
-                                    pnDetail = lnTempRow;
+//                                    int lnTempRow = JFXUtil.getDetailRow(details_data, lnReturned, 8);
+                                    pnDetail = lnReturned;
                                     loadTableDetail();
                                 });
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -1048,7 +1048,7 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                             details_data.add(
                                     new ModelSOATagging_Detail(String.valueOf(lnRowCount),
                                             String.valueOf(poSOATaggingController.SOATagging().Detail(lnCtr).getSourceNo()),
-                                            String.valueOf(getSourceCodeDescription(true, poSOATaggingController.SOATagging().Detail(lnCtr).getSourceCode())),
+                                            String.valueOf(poSOATaggingController.SOATagging().Detail(lnCtr).getSourceCode()),
                                             String.valueOf(lsReferenceNo),
                                             String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.SOATagging().Detail(lnCtr).getCreditAmount(), true)),
                                             String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.SOATagging().Detail(lnCtr).getDebitAmount(), true)),
