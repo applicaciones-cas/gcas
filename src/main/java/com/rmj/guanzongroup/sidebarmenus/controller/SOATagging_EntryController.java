@@ -1085,9 +1085,14 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                                     poSOATaggingController.SOATagging().PayableType(pnMain));
                             break;
                     }
-
                     if ("error".equals((String) poJSON.get("result"))) {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                    } else {
+                        if (poSOATaggingController.SOATagging().getDetailCount() <= 2) {
+                            JFXUtil.runWithDelay(0.50, () -> {
+                                retrievePayables(false);
+                            });
+                        }
                     }
                 }
                 Platform.runLater(() -> {
