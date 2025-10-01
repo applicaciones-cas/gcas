@@ -56,7 +56,7 @@ public class AttachmentDialogController implements Initializable, ScreenInterfac
     private double yOffset = 0;
     private final ObservableList<ModelDeliveryAcceptance_Attachment> attachment_data = FXCollections.observableArrayList();
     ObservableList<String> documentType = ModelDeliveryAcceptance_Attachment.documentType;
-    private int pnAttachment;
+    private int pnAttachment = 0;
     Map<String, Pair<String, String>> cloned;
     private final JFXUtil.ImageViewer imageviewerutil = new JFXUtil.ImageViewer();
 
@@ -89,11 +89,11 @@ public class AttachmentDialogController implements Initializable, ScreenInterfac
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
+        JFXUtil.checkIfFolderExists(poJSON, System.getProperty("sys.default.path.temp") + "/Attachments//");
         initAttachmentPreviewPane();
         Platform.runLater(() -> {
             loadTableAttachment();
             JFXUtil.stackPaneClip(stackPane1);
-            pnAttachment = 0;
             loadRecordAttachment(true);
         });
     }
@@ -138,7 +138,7 @@ public class AttachmentDialogController implements Initializable, ScreenInterfac
 
         if (newIndex != -1 && (newIndex <= attachment_data.size() - 1)) {
             ModelDeliveryAcceptance_Attachment image = attachment_data.get(newIndex);
-            String filePath2 = "D:\\GGC_Maven_Systems\\temp\\attachments\\" + image.getIndex02();
+            String filePath2 = System.getProperty("sys.default.path.temp") + "/Attachments//" + image.getIndex02();
             TranslateTransition slideOut = new TranslateTransition(Duration.millis(300), imageView);
             slideOut.setByX(direction * -400); // Move left or right
 
@@ -185,7 +185,7 @@ public class AttachmentDialogController implements Initializable, ScreenInterfac
 //                            filePath2 = imageinfo_temp.get((String) attachment_data.get(pnAttachment).getIndex02());
 //                        } else {
                         // in server
-                        filePath2 = "D:\\GGC_Maven_Systems\\temp\\attachments\\" + (String) attachment_data.get(pnAttachment).getIndex02();
+                        filePath2 = System.getProperty("sys.default.path.temp") + "/Attachments//" + (String) attachment_data.get(pnAttachment).getIndex02();
 //                        }
                         if (filePath != null && !filePath.isEmpty()) {
                             Path imgPath = Paths.get(filePath2);
@@ -246,6 +246,10 @@ public class AttachmentDialogController implements Initializable, ScreenInterfac
     public void addData(Map<String, Pair<String, String>> dataMap) {
         cloned = new HashMap<>(dataMap);
         loadTableAttachment();
+    }
+
+    public void setOpenedImage(int lsAttachmentNo) {
+        pnAttachment = lsAttachmentNo;
     }
 
     public void loadTableAttachment() {

@@ -37,7 +37,6 @@ import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
 import static javafx.scene.input.KeyCode.DOWN;
 import static javafx.scene.input.KeyCode.ENTER;
 import static javafx.scene.input.KeyCode.F3;
@@ -47,7 +46,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import ph.com.guanzongroup.cas.cashflow.status.SOATaggingStatus;
-import javafx.util.Duration;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRiderCAS;
@@ -57,7 +55,6 @@ import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
-import javafx.animation.PauseTransition;
 import javafx.util.Pair;
 import java.util.ArrayList;
 import ph.com.guanzongroup.cas.cashflow.SOATagging;
@@ -65,6 +62,7 @@ import ph.com.guanzongroup.cas.cashflow.status.SOATaggingStatic;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.concurrent.atomic.AtomicReference;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import org.guanzon.appdriver.agent.ShowDialogFX;
 import org.guanzon.appdriver.constant.UserRight;
@@ -84,7 +82,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
     private static final int ROWS_PER_PAGE = 50;
     int pnDetail = 0;
     int pnMain = 0;
-    private String pxeModuleName = "";
+    private String pxeModuleName = JFXUtil.getFormattedClassTitle(this.getClass());
     private boolean isGeneral = false;
     private String psIndustryId = "";
     private String psCompanyId = "";
@@ -125,21 +123,19 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
     @FXML
     private Pagination pgPagination;
     @FXML
+    private CheckBox cbReverse;
+    @FXML
     private ComboBox cmbTransType;
     ObservableList<String> TransactionType = FXCollections.observableArrayList(
             "ALL",
-            "Cache Payable",
-            "PRF"
+            "PRF",
+            "AP Payment Adjustment",
+            "PO Receiving"
     );
-
-    public void setTabTitle(String lsTabTitle, boolean isGeneral) {
-        this.pxeModuleName = lsTabTitle;
-        this.isGeneral = isGeneral;
-    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        psIndustryId = isGeneral ? "" : psIndustryId;
+        psIndustryId = ""; // general
 
         poSOATaggingController = new CashflowControllers(oApp, null);
         poJSON = new JSONObject();
@@ -198,6 +194,27 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
     }
 
     @FXML
+    private void cmdCheckBox_Click(ActionEvent event) {
+        poJSON = new JSONObject();
+        Object source = event.getSource();
+        if (source instanceof CheckBox) {
+            CheckBox checkedBox = (CheckBox) source;
+            switch (checkedBox.getId()) {
+                case "cbReverse": // this is the id
+                    if (poSOATaggingController.SOATagging().Detail(pnDetail).getEditMode() == EditMode.ADDNEW) {
+                        if (!checkedBox.isSelected()) {
+                            poSOATaggingController.SOATagging().Detail().remove(pnDetail);
+                        }
+                    } else {
+                        poSOATaggingController.SOATagging().Detail(pnDetail).isReverse(checkedBox.isSelected());
+                    }
+                    loadTableDetail();
+                    break;
+            }
+        }
+    }
+
+    @FXML
     private void cmdButton_Click(ActionEvent event) {
         poJSON = new JSONObject();
         String tabText = "";
@@ -237,27 +254,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                         pnEditMode = poSOATaggingController.SOATagging().getEditMode();
                         break;
                     case "btnSearch":
-                        String lsMessage = "Focus a searchable textfield to search";
-                        if ((lastFocusedTextField.get() != null)) {
-                            if (lastFocusedTextField.get() instanceof TextField) {
-                                TextField tf = (TextField) lastFocusedTextField.get();
-                                if (JFXUtil.getTextFieldsIDWithPrompt("Press F3: Search", apBrowse, apMaster, apDetail).contains(tf.getId())) {
-
-                                    if (lastFocusedTextField.get() == previousSearchedTextField.get()) {
-                                        break;
-                                    }
-                                    previousSearchedTextField.set(lastFocusedTextField.get());
-                                    // Create a simulated KeyEvent for F3 key press
-                                    JFXUtil.makeKeyPressed(tf, KeyCode.F3);
-                                } else {
-                                    ShowMessageFX.Information(null, pxeModuleName, lsMessage);
-                                }
-                            } else {
-                                ShowMessageFX.Information(null, pxeModuleName, lsMessage);
-                            }
-                        } else {
-                            ShowMessageFX.Information(null, pxeModuleName, lsMessage);
-                        }
+                        JFXUtil.initiateBtnSearch(pxeModuleName, lastFocusedTextField, previousSearchedTextField, apBrowse, apMaster, apDetail);
                         break;
                     case "btnCancel":
                         if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to disregard changes?") == true) {
@@ -350,7 +347,6 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                         tfSourceNo.requestFocus();
                     }
                 }
-
             }
         } catch (CloneNotSupportedException | SQLException | GuanzonException | ParseException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
@@ -361,27 +357,26 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
         try {
             String lsTransNoBasis = "", lsTransType = "";
             for (int lnCtr = 0; lnCtr < poSOATaggingController.SOATagging().getDetailCount(); lnCtr++) {
+                if (!poSOATaggingController.SOATagging().Detail(lnCtr).isReverse()) {
+                    continue;
+                }
                 switch (poSOATaggingController.SOATagging().Detail(lnCtr).getSourceCode()) {
                     case SOATaggingStatic.PaymentRequest:
-                        lsTransNoBasis = poSOATaggingController.SOATagging().Detail(lnCtr).PaymentRequestMaster().getTransactionNo();
+                        lsTransNoBasis = poSOATaggingController.SOATagging().Detail(lnCtr).getSourceNo();
                         lsTransType = "PRF";
                         break;
-                    case SOATaggingStatic.CachePayable: {
-                        lsTransNoBasis = poSOATaggingController.SOATagging().Detail(lnCtr).CachePayableMaster().getTransactionNo();
-                        lsTransType = "Cache Payable";
-                    }
-
-                    break;
-
+                    case SOATaggingStatic.APPaymentAdjustment:
+                        lsTransNoBasis = poSOATaggingController.SOATagging().Detail(lnCtr).getSourceNo();
+                        lsTransType = "AP Payment Adjustment";
+                        break;
+                    case SOATaggingStatic.POReceiving:
+                        lsTransNoBasis = poSOATaggingController.SOATagging().Detail(lnCtr).getSourceNo()
+                                + poSOATaggingController.SOATagging().Master().Supplier().getCompanyName();
+                        lsTransType = "PO Receiving";
+                        break;
                 }
                 String lsHighlightbasis = lsTransNoBasis + lsTransType;
-                if (!JFXUtil.isObjectEqualTo(poSOATaggingController.SOATagging().Detail(lnCtr).getAppliedAmount(), null, "")) {
-                    if (poSOATaggingController.SOATagging().Detail(lnCtr).getAppliedAmount().doubleValue() > 0.0000) {
-                        plOrderNoPartial.add(new Pair<>(lsHighlightbasis, "1"));
-                    } else {
-                        plOrderNoPartial.add(new Pair<>(lsHighlightbasis, "0"));
-                    }
-                }
+                plOrderNoPartial.add(new Pair<>(lsHighlightbasis, "1"));
             }
             for (Pair<String, String> pair : plOrderNoPartial) {
                 if (!"".equals(pair.getKey()) && pair.getKey() != null) {
@@ -389,9 +384,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                 }
             }
             JFXUtil.showRetainedHighlight(false, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, false);
-        } catch (SQLException ex) {
-            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
-        } catch (GuanzonException ex) {
+        } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -401,10 +394,13 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
         String lsTransType = "ALL";
         switch (cmbTransType.getSelectionModel().getSelectedIndex()) {
             case 1:
-                lsTransType = SOATaggingStatic.CachePayable;
+                lsTransType = SOATaggingStatic.PaymentRequest;
                 break;
             case 2:
-                lsTransType = SOATaggingStatic.PaymentRequest;
+                lsTransType = SOATaggingStatic.APPaymentAdjustment;
+                break;
+            case 3:
+                lsTransType = SOATaggingStatic.POReceiving;
                 break;
         }
 
@@ -423,224 +419,184 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
             });
         }
     }
-
-    final ChangeListener<? super Boolean> txtArea_Focus = (o, ov, nv) -> {
-        TextArea txtField = (TextArea) ((ReadOnlyBooleanPropertyBase) o).getBean();
-        String lsID = (txtField.getId());
-        String lsValue = txtField.getText();
-
-        if (lsValue == null) {
-            return;
-        }
-        poJSON = new JSONObject();
-        if (!nv) {
-            /*Lost Focus*/
-            lsValue = lsValue.trim();
-            switch (lsID) {
-                case "taRemarks"://Remarks
-                    poJSON = poSOATaggingController.SOATagging().Master().setRemarks(lsValue);
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        System.err.println((String) poJSON.get("message"));
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                        return;
-                    }
-                    break;
-            }
-        } else {
-            txtField.selectAll();
-        }
-    };
-
-    final ChangeListener<? super Boolean> txtDetail_Focus = (o, ov, nv) -> {
-        poJSON = new JSONObject();
-        TextField txtPersonalInfo = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
-        String lsTxtFieldID = (txtPersonalInfo.getId());
-        String lsValue = (txtPersonalInfo.getText() == null ? "" : txtPersonalInfo.getText());
-
-        if (lsValue == null) {
-            return;
-        }
-        if (!nv) {
-            /*Lost Focus*/
-            switch (lsTxtFieldID) {
-                case "tfAppliedAmtDetail":
-                    if (lsValue.isEmpty()) {
-                        lsValue = "0";
-                    }
-                    lsValue = JFXUtil.removeComma(lsValue);
-                    if (poSOATaggingController.SOATagging().Detail(pnDetail).getAppliedAmount() != null
-                            && !"".equals(poSOATaggingController.SOATagging().Detail(pnDetail).getAppliedAmount())) {
-                        if (poSOATaggingController.SOATagging().Detail(pnDetail).getTransactionTotal().doubleValue() < Double.valueOf(lsValue)) {
-                            ShowMessageFX.Warning(null, pxeModuleName, "Applied Amount cannot be greater than the transaction total");
-                            poSOATaggingController.SOATagging().Detail(pnDetail).setAppliedAmount(0.0000);
-                            tfAppliedAmtDetail.requestFocus();
-                            break;
+    ChangeListener<Boolean> txtArea_Focus = JFXUtil.FocusListener(TextArea.class,
+            (lsID, lsValue) -> {
+                /*Lost Focus*/
+                lsValue = lsValue.trim();
+                switch (lsID) {
+                    case "taRemarks"://Remarks
+                        poJSON = poSOATaggingController.SOATagging().Master().setRemarks(lsValue);
+                        if ("error".equals((String) poJSON.get("result"))) {
+                            System.err.println((String) poJSON.get("message"));
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                            return;
                         }
-                    }
+                        break;
+                }
+            });
+    ChangeListener<Boolean> txtDetail_Focus = JFXUtil.FocusListener(TextField.class,
+            (lsID, lsValue) -> {
+                /*Lost Focus*/
+                switch (lsID) {
+                    case "tfAppliedAmtDetail":
+                        lsValue = JFXUtil.removeComma(lsValue);
+                        if (poSOATaggingController.SOATagging().Detail(pnDetail).getAppliedAmount() != null
+                        && !"".equals(poSOATaggingController.SOATagging().Detail(pnDetail).getAppliedAmount())) {
+                            if (poSOATaggingController.SOATagging().Detail(pnDetail).getTransactionTotal().doubleValue() < Double.valueOf(lsValue)) {
+                                ShowMessageFX.Warning(null, pxeModuleName, "Applied Amount cannot be greater than the transaction total");
+                                poSOATaggingController.SOATagging().Detail(pnDetail).setAppliedAmount(0.0000);
+                                tfAppliedAmtDetail.requestFocus();
+                                break;
+                            }
+                        }
 
-                    poJSON = poSOATaggingController.SOATagging().Detail(pnDetail).setAppliedAmount((Double.valueOf(lsValue)));
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        System.err.println((String) poJSON.get("message"));
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                    }
-                    if (pbEntered) {
-                        moveNext();
-                        pbEntered = false;
-                    }
-                    break;
-            }
-            Platform.runLater(() -> {
-                PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
-                delay.setOnFinished(event -> {
+                        poJSON = poSOATaggingController.SOATagging().Detail(pnDetail).setAppliedAmount((Double.valueOf(lsValue)));
+                        if ("error".equals((String) poJSON.get("result"))) {
+                            System.err.println((String) poJSON.get("message"));
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                        }
+                        if (pbEntered) {
+                            moveNext();
+                            pbEntered = false;
+                        }
+                        break;
+                }
+                JFXUtil.runWithDelay(0.50, () -> {
                     loadTableDetail();
                 });
-                delay.play();
             });
-        }
-
-    };
-
-    final ChangeListener<? super Boolean> txtMaster_Focus = (o, ov, nv) -> {
-        poJSON = new JSONObject();
-        TextField txtPersonalInfo = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
-        String lsTxtFieldID = (txtPersonalInfo.getId());
-        String lsValue = (txtPersonalInfo.getText() == null ? "" : txtPersonalInfo.getText());
-
-        if (lsValue == null) {
-            return;
-        }
-        if (!nv) {
-            /*Lost Focus*/
-            switch (lsTxtFieldID) {
-                case "tfSOANo":
-                    if (!lsValue.isEmpty()) {
-                        poJSON = poSOATaggingController.SOATagging().Master().setSOANumber(lsValue);
-                    } else {
-                        poJSON = poSOATaggingController.SOATagging().Master().setSOANumber("");
-                    }
-                    if ("error".equals(poJSON.get("result"))) {
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                        tfSOANo.setText("");
+    ChangeListener<Boolean> txtMaster_Focus = JFXUtil.FocusListener(TextField.class,
+            (lsID, lsValue) -> {
+                /*Lost Focus*/
+                switch (lsID) {
+                    case "tfSOANo":
+                        if (!lsValue.isEmpty()) {
+                            poJSON = poSOATaggingController.SOATagging().Master().setSOANumber(lsValue);
+                        } else {
+                            poJSON = poSOATaggingController.SOATagging().Master().setSOANumber("");
+                        }
+                        if ("error".equals(poJSON.get("result"))) {
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                            tfSOANo.setText("");
+                            break;
+                        }
                         break;
-                    }
-                    break;
-                case "tfCompany":
-                    if (lsValue.isEmpty()) {
-                        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                            if (poSOATaggingController.SOATagging().Master().getCompanyId() != null && !"".equals(poSOATaggingController.SOATagging().Master().getCompanyId())) {
-                                if (poSOATaggingController.SOATagging().getDetailCount() > 1) {
-                                    if (!pbKeyPressed) {
-                                        if (ShowMessageFX.YesNo(null, pxeModuleName,
-                                                "Are you sure you want to change the company name?\nPlease note that doing so will delete all SOA details.\n\nDo you wish to proceed?") == true) {
-                                            poSOATaggingController.SOATagging().removeDetails();
-                                            JFXUtil.showRetainedHighlight(false, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, true);
-                                            loadTableDetail();
+                    case "tfCompany":
+                        if (lsValue.isEmpty()) {
+                            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                                if (poSOATaggingController.SOATagging().Master().getCompanyId() != null && !"".equals(poSOATaggingController.SOATagging().Master().getCompanyId())) {
+                                    if (poSOATaggingController.SOATagging().getDetailCount() > 1) {
+                                        if (!pbKeyPressed) {
+                                            if (ShowMessageFX.YesNo(null, pxeModuleName,
+                                                    "Are you sure you want to change the company name?\nPlease note that doing so will delete all SOA details.\n\nDo you wish to proceed?") == true) {
+                                                poSOATaggingController.SOATagging().removeDetails();
+                                                JFXUtil.showRetainedHighlight(false, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, true);
+                                                loadTableDetail();
+                                            } else {
+                                                loadRecordMaster();
+                                                return;
+                                            }
                                         } else {
                                             loadRecordMaster();
                                             return;
                                         }
-                                    } else {
-                                        loadRecordMaster();
-                                        return;
                                     }
                                 }
                             }
+                            poJSON = poSOATaggingController.SOATagging().Master().setCompanyId("");
                         }
-                        poJSON = poSOATaggingController.SOATagging().Master().setCompanyId("");
-                    }
-                    break;
-                case "tfClient":
-                    if (lsValue.isEmpty()) {
-                        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                            if (poSOATaggingController.SOATagging().Master().getClientId() != null && !"".equals(poSOATaggingController.SOATagging().Master().getClientId())) {
-                                if (poSOATaggingController.SOATagging().getDetailCount() > 1) {
-                                    if (!pbKeyPressed) {
-                                        if (ShowMessageFX.YesNo(null, pxeModuleName,
-                                                "Are you sure you want to change the supplier name?\nPlease note that doing so will delete all SOA details.\n\nDo you wish to proceed?") == true) {
-                                            poSOATaggingController.SOATagging().removeDetails();
-                                            JFXUtil.showRetainedHighlight(false, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, true);
-                                            loadTableDetail();
+                        break;
+                    case "tfClient":
+                        if (lsValue.isEmpty()) {
+                            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                                if (poSOATaggingController.SOATagging().Master().getClientId() != null && !"".equals(poSOATaggingController.SOATagging().Master().getClientId())) {
+                                    if (poSOATaggingController.SOATagging().getDetailCount() > 1) {
+                                        if (!pbKeyPressed) {
+                                            if (ShowMessageFX.YesNo(null, pxeModuleName,
+                                                    "Are you sure you want to change the supplier name?\nPlease note that doing so will delete all SOA details.\n\nDo you wish to proceed?") == true) {
+                                                poSOATaggingController.SOATagging().removeDetails();
+                                                JFXUtil.showRetainedHighlight(false, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, true);
+                                                loadTableDetail();
+                                            } else {
+                                                loadRecordMaster();
+                                                return;
+                                            }
                                         } else {
                                             loadRecordMaster();
                                             return;
                                         }
-                                    } else {
-                                        loadRecordMaster();
-                                        return;
                                     }
                                 }
                             }
+                            poJSON = poSOATaggingController.SOATagging().Master().setClientId("");
                         }
-                        poJSON = poSOATaggingController.SOATagging().Master().setClientId("");
-                    }
-                    break;
-                case "tfIssuedTo":
-                    if (lsValue.isEmpty()) {
-                        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                            if (poSOATaggingController.SOATagging().Master().getIssuedTo() != null && !"".equals(poSOATaggingController.SOATagging().Master().getIssuedTo())) {
-                                if (poSOATaggingController.SOATagging().getDetailCount() > 1) {
-                                    if (!pbKeyPressed) {
-                                        if (ShowMessageFX.YesNo(null, pxeModuleName,
-                                                "Are you sure you want to change the payee name?\nPlease note that doing so will delete all SOA details.\n\nDo you wish to proceed?") == true) {
-                                            poSOATaggingController.SOATagging().removeDetails();
-                                            JFXUtil.showRetainedHighlight(false, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, true);
-                                            loadTableDetail();
+                        break;
+                    case "tfIssuedTo":
+                        if (lsValue.isEmpty()) {
+                            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                                if (poSOATaggingController.SOATagging().Master().getIssuedTo() != null && !"".equals(poSOATaggingController.SOATagging().Master().getIssuedTo())) {
+                                    if (poSOATaggingController.SOATagging().getDetailCount() > 1) {
+                                        if (!pbKeyPressed) {
+                                            if (ShowMessageFX.YesNo(null, pxeModuleName,
+                                                    "Are you sure you want to change the payee name?\nPlease note that doing so will delete all SOA details.\n\nDo you wish to proceed?") == true) {
+                                                poSOATaggingController.SOATagging().removeDetails();
+                                                JFXUtil.showRetainedHighlight(false, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, true);
+                                                loadTableDetail();
+                                            } else {
+                                                loadRecordMaster();
+                                                return;
+                                            }
                                         } else {
                                             loadRecordMaster();
                                             return;
                                         }
-                                    } else {
-                                        loadRecordMaster();
-                                        return;
                                     }
                                 }
                             }
+                            poJSON = poSOATaggingController.SOATagging().Master().setIssuedTo("");
                         }
-                        poJSON = poSOATaggingController.SOATagging().Master().setIssuedTo("");
-                    }
-                    break;
-                case "tfDiscountAmount":
-                    lsValue = JFXUtil.removeComma(lsValue);
-                    if (Double.valueOf(lsValue) > 0.00) {
-                        if (poSOATaggingController.SOATagging().Master().getTransactionTotal().doubleValue() < Double.valueOf(lsValue)) {
-                            ShowMessageFX.Warning(null, pxeModuleName, "Discount amount cannot be greater than the transaction total.");
-                            poSOATaggingController.SOATagging().Master().setDiscountAmount(0.0000);
-                            tfDiscountAmount.setText("0.0000");
-                            tfDiscountAmount.requestFocus();
-                            break;
+                        break;
+                    case "tfDiscountAmount":
+                        lsValue = JFXUtil.removeComma(lsValue);
+                        if (Double.valueOf(lsValue) > 0.00) {
+                            if (poSOATaggingController.SOATagging().Master().getTransactionTotal().doubleValue() < Double.valueOf(lsValue)) {
+                                ShowMessageFX.Warning(null, pxeModuleName, "Discount amount cannot be greater than the transaction total.");
+                                poSOATaggingController.SOATagging().Master().setDiscountAmount(0.0000);
+                                tfDiscountAmount.setText("0.0000");
+                                tfDiscountAmount.requestFocus();
+                                break;
+                            }
                         }
-                    }
 
-                    poJSON = poSOATaggingController.SOATagging().Master().setDiscountAmount((Double.valueOf(lsValue)));
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                    }
-                    break;
-                case "tfFreight":
-                    lsValue = JFXUtil.removeComma(lsValue);
-                    if (Double.valueOf(lsValue) > 0.00) {
-                        if (poSOATaggingController.SOATagging().Master().getTransactionTotal().doubleValue() < Double.valueOf(lsValue)) {
-                            ShowMessageFX.Warning(null, pxeModuleName, "Freight amount cannot be greater than the transaction total.");
-                            poSOATaggingController.SOATagging().Master().setFreightAmount(0.0000);
-                            tfFreight.setText("0.0000");
-                            tfFreight.requestFocus();
-                            break;
+                        poJSON = poSOATaggingController.SOATagging().Master().setDiscountAmount((Double.valueOf(lsValue)));
+                        if ("error".equals((String) poJSON.get("result"))) {
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         }
-                    }
+                        break;
+                    case "tfFreight":
+                        lsValue = JFXUtil.removeComma(lsValue);
+                        if (Double.valueOf(lsValue) > 0.00) {
+                            if (poSOATaggingController.SOATagging().Master().getTransactionTotal().doubleValue() < Double.valueOf(lsValue)) {
+                                ShowMessageFX.Warning(null, pxeModuleName, "Freight amount cannot be greater than the transaction total.");
+                                poSOATaggingController.SOATagging().Master().setFreightAmount(0.0000);
+                                tfFreight.setText("0.0000");
+                                tfFreight.requestFocus();
+                                break;
+                            }
+                        }
 
-                    poJSON = poSOATaggingController.SOATagging().Master().setDiscountAmount((Double.valueOf(lsValue)));
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                    }
-                    break;
-            }
+                        poJSON = poSOATaggingController.SOATagging().Master().setDiscountAmount((Double.valueOf(lsValue)));
+                        if ("error".equals((String) poJSON.get("result"))) {
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                        }
+                        break;
+                }
 
-            System.out.println("Company : " + poSOATaggingController.SOATagging().Master().getCompanyId());
-            System.out.println("Supplier : " + poSOATaggingController.SOATagging().Master().getClientId());
-            System.out.println("Payee : " + poSOATaggingController.SOATagging().Master().getIssuedTo());
-            loadRecordMaster();
-        }
-    };
+                System.out.println("Company : " + poSOATaggingController.SOATagging().Master().getCompanyId());
+                System.out.println("Supplier : " + poSOATaggingController.SOATagging().Master().getClientId());
+                System.out.println("Payee : " + poSOATaggingController.SOATagging().Master().getIssuedTo());
+                loadRecordMaster();
+            });
 
     public void moveNext() {
         double ldblAppliedAmt = poSOATaggingController.SOATagging().Detail(pnDetail).getAppliedAmount().doubleValue();
@@ -651,7 +607,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                 && !"".equals(poSOATaggingController.SOATagging().Detail(pnDetail).getSourceNo()))) {
             tfAppliedAmtDetail.requestFocus();
         } else {
-            pnDetail = JFXUtil.moveToNextRow(tblViewTransDetailList);
+            pnDetail = Integer.parseInt(details_data.get(JFXUtil.moveToNextRow(tblViewTransDetailList)).getIndex08());
             loadRecordDetail();
             if (poSOATaggingController.SOATagging().Detail(pnDetail).getSourceNo() != null && !poSOATaggingController.SOATagging().Detail(pnDetail).getSourceNo().equals("")) {
                 tfAppliedAmtDetail.requestFocus();
@@ -667,7 +623,6 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
             String lsID = (((TextField) event.getSource()).getId());
             String lsValue = (txtField.getText() == null ? "" : txtField.getText());
             poJSON = new JSONObject();
-            int lnRow = pnDetail;
 
             TableView<?> currentTable = tblViewTransDetailList;
             TablePosition<?, ?> focusedCell = currentTable.getFocusModel().getFocusedCell();
@@ -691,7 +646,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                                     && !"".equals(poSOATaggingController.SOATagging().Detail(pnDetail).getSourceNo()))) {
                                 tfAppliedAmtDetail.requestFocus();
                             } else {
-                                pnDetail = JFXUtil.moveToPreviousRow(currentTable);
+                                pnDetail = Integer.parseInt(details_data.get(JFXUtil.moveToPreviousRow(tblViewTransDetailList)).getIndex08());
                                 loadRecordDetail();
                                 if (poSOATaggingController.SOATagging().Detail(pnDetail).getSourceNo() != null && !poSOATaggingController.SOATagging().Detail(pnDetail).getSourceNo().equals("")) {
                                     tfAppliedAmtDetail.requestFocus();
@@ -720,11 +675,6 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                             retrievePayables(true);
                             break;
                         case "tfClient":
-//                            if (poSOATaggingController.SOATagging().Master().getCompanyId() == null
-//                                    || "".equals(poSOATaggingController.SOATagging().Master().getCompanyId())) {
-//                                ShowMessageFX.Warning(null, pxeModuleName, "Company Name is not set.");
-//                                return;
-//                            }
                             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                                 if (poSOATaggingController.SOATagging().getDetailCount() > 1) {
                                     pbKeyPressed = true;
@@ -746,14 +696,10 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                                 tfClient.setText("");
                                 break;
                             }
-                            Platform.runLater(() -> {
-                                PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
-                                delay.setOnFinished(e -> {
-                                    if (!"".equals(poSOATaggingController.SOATagging().Master().getClientId())) {
-                                        retrievePayables(false);
-                                    }
-                                });
-                                delay.play();
+                            JFXUtil.runWithDelay(0.50, () -> {
+                                if (!"".equals(poSOATaggingController.SOATagging().Master().getClientId())) {
+                                    retrievePayables(false);
+                                }
                             });
                             loadRecordMaster();
                             return;
@@ -780,14 +726,10 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
 //                                psSupplierId = "";
                                 break;
                             }
-                            Platform.runLater(() -> {
-                                PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
-                                delay.setOnFinished(e -> {
-                                    if (!"".equals(poSOATaggingController.SOATagging().Master().getCompanyId())) {
-                                        retrievePayables(false);
-                                    }
-                                });
-                                delay.play();
+                            JFXUtil.runWithDelay(0.50, () -> {
+                                if (!"".equals(poSOATaggingController.SOATagging().Master().getCompanyId())) {
+                                    retrievePayables(false);
+                                }
                             });
                             loadRecordMaster();
                             return;
@@ -813,14 +755,10 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                                 tfIssuedTo.setText("");
                                 break;
                             }
-                            Platform.runLater(() -> {
-                                PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
-                                delay.setOnFinished(e -> {
-                                    if (!"".equals(poSOATaggingController.SOATagging().Master().getIssuedTo())) {
-                                        retrievePayables(false);
-                                    }
-                                });
-                                delay.play();
+                            JFXUtil.runWithDelay(0.50, () -> {
+                                if (!"".equals(poSOATaggingController.SOATagging().Master().getIssuedTo())) {
+                                    retrievePayables(false);
+                                }
                             });
                             loadRecordMaster();
                             return;
@@ -829,9 +767,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                 default:
                     break;
             }
-        } catch (GuanzonException ex) {
-            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } catch (SQLException ex) {
+        } catch (GuanzonException | SQLException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
@@ -848,13 +784,8 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                 DatePicker datePicker = (DatePicker) source;
                 String inputText = datePicker.getEditor().getText();
                 SimpleDateFormat sdfFormat = new SimpleDateFormat(SQLUtil.FORMAT_SHORT_DATE);
-                LocalDate currentDate = null;
-                LocalDate selectedDate = null;
-                LocalDate receivingDate = null;
-                String lsServerDate = "";
-                String lsTransDate = "";
-                String lsSelectedDate = "";
-                String lsReceivingDate = "";
+                LocalDate currentDate = null, selectedDate = null, receivingDate = null;
+                String lsServerDate = "", lsTransDate = "", lsSelectedDate = "", lsReceivingDate = "";
 
                 JFXUtil.JFXUtilDateResult ldtResult = JFXUtil.processDate(inputText, datePicker);
                 poJSON = ldtResult.poJSON;
@@ -883,19 +814,6 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                                 pbSuccess = false;
                             }
 
-//                            if (poSOATaggingController.SOATagging().Master().getSourceNo() != null && !"".equals(poSOATaggingController.SOATagging().Master().getSourceNo())) {
-//                                lsReceivingDate = sdfFormat.format(poSOATaggingController.SOATagging().Master().PurchaseOrderReceivingMaster().getTransactionDate());
-//                                receivingDate = LocalDate.parse(lsReceivingDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
-//                                if (selectedDate.isBefore(receivingDate)) {
-//                                    JFXUtil.setJSONError(poJSON, "Transaction date cannot be before the receiving date.");
-//                                    pbSuccess = false;
-//                                }
-//                            } else {
-//                                if (pbSuccess && !lsServerDate.equals(lsSelectedDate) && pnEditMode == EditMode.ADDNEW) {
-//                                    JFXUtil.setJSONError(poJSON, "Select PO Receiving before changing the transaction date.");
-//                                    pbSuccess = false;
-//                                }
-//                            }
                             if (pbSuccess && ((poSOATaggingController.SOATagging().getEditMode() == EditMode.UPDATE && !lsTransDate.equals(lsSelectedDate))
                                     || !lsServerDate.equals(lsSelectedDate))) {
                                 pbSuccess = false;
@@ -955,7 +873,6 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
             protected Void call() throws Exception {
                 Thread.sleep(100);
 //                Thread.sleep(1000);
-
                 // contains try catch, for loop of loading data to observable list until loadTab()
                 Platform.runLater(() -> {
                     main_data.clear();
@@ -973,15 +890,23 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                                     lsPayeeName = poSOATaggingController.SOATagging().PaymentRequestList(lnCtr).Payee().getPayeeName();
                                     lsTransNo = poSOATaggingController.SOATagging().PaymentRequestList(lnCtr).getSeriesNo();
                                     lsTransDate = String.valueOf(poSOATaggingController.SOATagging().PaymentRequestList(lnCtr).getTransactionDate());
-                                    lsTransNoBasis = poSOATaggingController.SOATagging().PaymentRequestList(lnCtr).getTransactionNo();
+                                    lsTransNoBasis = poSOATaggingController.SOATagging().PaymentRequestList(lnCtr).getSourceNo();
                                     lsTransType = "PRF";
                                     break;
-                                case SOATaggingStatic.CachePayable:
+                                case SOATaggingStatic.APPaymentAdjustment:
                                     lsPayeeName = poSOATaggingController.SOATagging().CachePayableList(lnCtr).Client().getCompanyName();
                                     lsTransNo = poSOATaggingController.SOATagging().CachePayableList(lnCtr).getReferNo();
                                     lsTransDate = String.valueOf(poSOATaggingController.SOATagging().CachePayableList(lnCtr).getTransactionDate());
-                                    lsTransNoBasis = poSOATaggingController.SOATagging().CachePayableList(lnCtr).getTransactionNo();
-                                    lsTransType = "Cache Payable";
+                                    lsTransNoBasis = poSOATaggingController.SOATagging().CachePayableList(lnCtr).getSourceNo();
+                                    lsTransType = "AP Payment Adjustment";
+                                    break;
+                                case SOATaggingStatic.POReceiving:
+                                    lsPayeeName = poSOATaggingController.SOATagging().CachePayableList(lnCtr).Client().getCompanyName();
+                                    lsTransNo = poSOATaggingController.SOATagging().CachePayableList(lnCtr).getReferNo();
+                                    lsTransDate = String.valueOf(poSOATaggingController.SOATagging().CachePayableList(lnCtr).getTransactionDate());
+                                    lsTransNoBasis = poSOATaggingController.SOATagging().CachePayableList(lnCtr).getSourceNo()
+                                            + poSOATaggingController.SOATagging().CachePayableList(lnCtr).Client().getCompanyName();
+                                    lsTransType = "PO Receiving";
                                     break;
                             }
                             String lsHighlightbasis = lsTransNoBasis + lsTransType;
@@ -1010,7 +935,6 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                         /* FOCUS ON THE ROW THAT pnRowDetail POINTS TO */
                         JFXUtil.selectAndFocusRow(tblViewMainList, pnMain);
                     }
-
                     JFXUtil.loadTab(pgPagination, main_data.size(), ROWS_PER_PAGE, tblViewMainList, filteredData);
                 });
 
@@ -1035,7 +959,6 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                 }
                 loading.progressIndicator.setVisible(false);
             }
-
         };
         new Thread(task).start(); // Run task in background
     }
@@ -1052,12 +975,27 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
         }
     }
 
+    public String getSourceCodeDescription(boolean isCode, String lsSource) {
+        final Map<String, String> sourceCodes = new HashMap<>();
+        sourceCodes.put(SOATaggingStatic.PaymentRequest, "PRF");
+        sourceCodes.put(SOATaggingStatic.APPaymentAdjustment, "AP Payment Adjustment");
+        sourceCodes.put(SOATaggingStatic.POReceiving, "PO Receiving");
+        if (isCode) {
+            return sourceCodes.getOrDefault(lsSource, "");
+        } else {
+            return sourceCodes.entrySet().stream()
+                    .filter(e -> e.getValue().equals(lsSource))
+                    .map(Map.Entry::getKey)
+                    .findFirst()
+                    .orElse("");
+        }
+    }
+
     public void loadRecordDetail() {
         try {
             if (pnDetail < 0 || pnDetail > poSOATaggingController.SOATagging().getDetailCount() - 1) {
                 return;
             }
-
             String lsReferenceDate = "01/01/1900";
             String lsReferenceNo = "";
             switch (poSOATaggingController.SOATagging().Detail(pnDetail).getSourceCode()) {
@@ -1065,25 +1003,28 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                     lsReferenceNo = poSOATaggingController.SOATagging().Detail(pnDetail).PaymentRequestMaster().getSeriesNo();
                     lsReferenceDate = CustomCommonUtil.formatDateToShortString(poSOATaggingController.SOATagging().Detail(pnDetail).PaymentRequestMaster().getTransactionDate());
                     break;
-                case SOATaggingStatic.CachePayable:
-                    lsReferenceNo = poSOATaggingController.SOATagging().Detail(pnDetail).CachePayableMaster().getReferNo();
-                    lsReferenceDate = CustomCommonUtil.formatDateToShortString(poSOATaggingController.SOATagging().Detail(pnDetail).CachePayableMaster().getTransactionDate());
+                case SOATaggingStatic.APPaymentAdjustment:
+                    lsReferenceNo = poSOATaggingController.SOATagging().Detail(pnDetail).APPaymentAdjustmentMaster().getReferenceNo();
+                    lsReferenceDate = CustomCommonUtil.formatDateToShortString(poSOATaggingController.SOATagging().Detail(pnDetail).APPaymentAdjustmentMaster().getTransactionDate());
+                    break;
+                case SOATaggingStatic.POReceiving:
+                    lsReferenceNo = poSOATaggingController.SOATagging().Detail(pnDetail).PurchasOrderReceivingMaster().getReferenceNo();
+                    lsReferenceDate = CustomCommonUtil.formatDateToShortString(poSOATaggingController.SOATagging().Detail(pnDetail).PurchasOrderReceivingMaster().getTransactionDate());
                     break;
             }
             boolean lbDisable = lsReferenceNo != null && "".equals(lsReferenceNo);
             JFXUtil.setDisabled(!lbDisable, tfReferenceNo);
 
             tfSourceNo.setText(poSOATaggingController.SOATagging().Detail(pnDetail).getSourceNo());
-            tfSourceCode.setText(poSOATaggingController.SOATagging().Detail(pnDetail).getSourceCode());
+            tfSourceCode.setText(getSourceCodeDescription(true, poSOATaggingController.SOATagging().Detail(pnDetail).getSourceCode()));
             tfReferenceNo.setText(lsReferenceNo);
             dpReferenceDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(JFXUtil.convertToIsoFormat(lsReferenceDate), "yyyy-MM-dd"));
             tfCreditAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.SOATagging().Detail(pnDetail).getCreditAmount(), true));
             tfDebitAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.SOATagging().Detail(pnDetail).getDebitAmount(), true));
             tfAppliedAmtDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.SOATagging().Detail(pnDetail).getAppliedAmount(), true));
+            cbReverse.setSelected(poSOATaggingController.SOATagging().Detail(pnDetail).isReverse());
             JFXUtil.updateCaretPositions(apDetail);
-        } catch (SQLException ex) {
-            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
-        } catch (GuanzonException ex) {
+        } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -1093,22 +1034,10 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
             boolean lbDisable = pnEditMode == EditMode.UPDATE;
             JFXUtil.setDisabled(lbDisable, tfCompany, tfClient, tfIssuedTo);
 
-            Platform.runLater(() -> {
-                String lsActive = pnEditMode == EditMode.UNKNOWN ? "-1" : poSOATaggingController.SOATagging().Master().getTransactionStatus();
-                boolean lbPrintStat = pnEditMode == EditMode.READY && !SOATaggingStatus.VOID.equals(lsActive);
-
-                Map<String, String> statusMap = new HashMap<>();
-                statusMap.put(SOATaggingStatus.OPEN, "OPEN");
-                statusMap.put(SOATaggingStatus.PAID, "PAID");
-                statusMap.put(SOATaggingStatus.CONFIRMED, "CONFIRMED");
-                statusMap.put(SOATaggingStatus.RETURNED, "RETURNED");
-                statusMap.put(SOATaggingStatus.VOID, "VOIDED");
-                statusMap.put(SOATaggingStatus.CANCELLED, "CANCELLED");
-
-                String lsStat = statusMap.getOrDefault(lsActive, "UNKNOWN");
-                lblStatus.setText(lsStat);
-                JFXUtil.setButtonsVisibility(lbPrintStat);
-            });
+            String lsActive = pnEditMode == EditMode.UNKNOWN ? "-1" : poSOATaggingController.SOATagging().Master().getTransactionStatus();
+            boolean lbPrintStat = pnEditMode == EditMode.READY && !SOATaggingStatus.VOID.equals(lsActive);
+            JFXUtil.setStatusValue(lblStatus, SOATaggingStatus.class, lsActive);
+            JFXUtil.setButtonsVisibility(lbPrintStat);
 
             poSOATaggingController.SOATagging().computeFields();
 
@@ -1130,12 +1059,9 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
             tfVatExemptSales.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.SOATagging().Master().getVatExempt(), true));
             tfNetTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.SOATagging().Master().getNetTotal(), true));
             JFXUtil.updateCaretPositions(apMaster);
-        } catch (SQLException ex) {
-            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } catch (GuanzonException ex) {
+        } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
-
     }
 
     public void loadTableDetailFromMain() {
@@ -1152,15 +1078,21 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                                     poSOATaggingController.SOATagging().PaymentRequestList(pnMain).getTransactionNo(),
                                     poSOATaggingController.SOATagging().PayableType(pnMain));
                             break;
-                        case SOATaggingStatic.CachePayable:
+                        case SOATaggingStatic.POReceiving:
+                        case SOATaggingStatic.APPaymentAdjustment:
                             poJSON = poSOATaggingController.SOATagging().addPayablesToSOADetail(
                                     poSOATaggingController.SOATagging().CachePayableList(pnMain).getTransactionNo(),
                                     poSOATaggingController.SOATagging().PayableType(pnMain));
                             break;
                     }
-
                     if ("error".equals((String) poJSON.get("result"))) {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                    } else {
+                        if (poSOATaggingController.SOATagging().getDetailCount() <= 2) {
+                            JFXUtil.runWithDelay(0.50, () -> {
+                                retrievePayables(false);
+                            });
+                        }
                     }
                 }
                 Platform.runLater(() -> {
@@ -1192,7 +1124,11 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
 
                     int lnCtr;
                     try {
+
                         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                                poSOATaggingController.SOATagging().ReloadDetail();
+                            }
                             lnCtr = poSOATaggingController.SOATagging().getDetailCount() - 1;
                             while (lnCtr >= 0) {
                                 if (poSOATaggingController.SOATagging().Detail(lnCtr).getSourceNo() == null || "".equals(poSOATaggingController.SOATagging().Detail(lnCtr).getSourceNo())) {
@@ -1212,43 +1148,54 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                                 poSOATaggingController.SOATagging().AddDetail();
                             }
                         }
-
+                        int lnRowCount = 0;
                         String lsReferenceNo = "";
                         for (lnCtr = 0; lnCtr < poSOATaggingController.SOATagging().getDetailCount(); lnCtr++) {
+                            if (!poSOATaggingController.SOATagging().Detail(lnCtr).isReverse()) {
+                                continue;
+                            }
                             switch (poSOATaggingController.SOATagging().Detail(lnCtr).getSourceCode()) {
                                 case SOATaggingStatic.PaymentRequest:
                                     lsReferenceNo = poSOATaggingController.SOATagging().Detail(lnCtr).PaymentRequestMaster().getSeriesNo();
                                     break;
-                                case SOATaggingStatic.CachePayable:
-                                    lsReferenceNo = poSOATaggingController.SOATagging().Detail(lnCtr).CachePayableMaster().getReferNo();
+                                case SOATaggingStatic.APPaymentAdjustment:
+                                    lsReferenceNo = poSOATaggingController.SOATagging().Detail(lnCtr).APPaymentAdjustmentMaster().getReferenceNo();
+                                    break;
+                                case SOATaggingStatic.POReceiving:
+                                    lsReferenceNo = poSOATaggingController.SOATagging().Detail(lnCtr).PurchasOrderReceivingMaster().getReferenceNo();
                                     break;
                             }
-
+                            lnRowCount += 1;
                             details_data.add(
-                                    new ModelSOATagging_Detail(String.valueOf(lnCtr + 1),
+                                    new ModelSOATagging_Detail(String.valueOf(lnRowCount),
                                             String.valueOf(poSOATaggingController.SOATagging().Detail(lnCtr).getSourceNo()),
-                                            String.valueOf(poSOATaggingController.SOATagging().Detail(lnCtr).getSourceCode()),
+                                            String.valueOf(getSourceCodeDescription(true, poSOATaggingController.SOATagging().Detail(lnCtr).getSourceCode())),
                                             String.valueOf(lsReferenceNo),
                                             String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.SOATagging().Detail(lnCtr).getCreditAmount(), true)),
                                             String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.SOATagging().Detail(lnCtr).getDebitAmount(), true)),
-                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.SOATagging().Detail(lnCtr).getAppliedAmount(), true))
+                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.SOATagging().Detail(lnCtr).getAppliedAmount(), true)),
+                                            String.valueOf(lnCtr)
                                     ));
                             lsReferenceNo = "";
                         }
                         JFXUtil.showRetainedHighlight(false, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, true);
                         loadHighlightFromDetail();
 
-                        if (pnDetail < 0 || pnDetail
+                        int lnTempRow = JFXUtil.getDetailRow(details_data, pnDetail, 8); //this method is used only when Reverse is applied
+                        if (lnTempRow < 0 || lnTempRow
                                 >= details_data.size()) {
                             if (!details_data.isEmpty()) {
                                 /* FOCUS ON FIRST ROW */
                                 JFXUtil.selectAndFocusRow(tblViewTransDetailList, 0);
-                                pnDetail = tblViewTransDetailList.getSelectionModel().getSelectedIndex();
+                                int lnRow = Integer.parseInt(details_data.get(0).getIndex08());
+                                pnDetail = lnRow;
                                 loadRecordDetail();
                             }
                         } else {
                             /* FOCUS ON THE ROW THAT pnRowDetail POINTS TO */
-                            JFXUtil.selectAndFocusRow(tblViewTransDetailList, pnDetail);
+                            JFXUtil.selectAndFocusRow(tblViewTransDetailList, lnTempRow);
+                            int lnRow = Integer.parseInt(details_data.get(tblViewTransDetailList.getSelectionModel().getSelectedIndex()).getIndex08());
+                            pnDetail = lnRow;
                             loadRecordDetail();
                         }
                         loadRecordMaster();
@@ -1272,7 +1219,6 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                     tblViewTransDetailList.toFront();
                 }
                 loading.progressIndicator.setVisible(false);
-
             }
 
             @Override
@@ -1299,8 +1245,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
     }
 
     public void initDatePickers() {
-        JFXUtil.setDatePickerFormat("MM/dd/yyyy",
-                dpTransactionDate, dpReferenceDate);
+        JFXUtil.setDatePickerFormat("MM/dd/yyyy", dpTransactionDate, dpReferenceDate);
         JFXUtil.setActionListener(this::datepicker_Action, dpTransactionDate, dpReferenceDate);
     }
 
@@ -1314,13 +1259,15 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
 
         JFXUtil.setKeyPressedListener(this::txtField_KeyPressed, apBrowse, apMaster, apDetail);
         JFXUtil.setCommaFormatter(tfVatAmount, tfDiscountAmount, tfZeroVatSales, tfNonVatSales, tfVatExemptSales, tfAppliedAmtDetail);
+        JFXUtil.setCheckboxHoverCursor(apDetail);
     }
 
     public void initTableOnClick() {
         tblViewTransDetailList.setOnMouseClicked(event -> {
             if (details_data.size() > 0) {
                 if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
-                    pnDetail = tblViewTransDetailList.getSelectionModel().getSelectedIndex();
+                    int lnRow = Integer.parseInt(details_data.get(tblViewTransDetailList.getSelectionModel().getSelectedIndex()).getIndex08());
+                    pnDetail = lnRow;
                     loadRecordDetail();
                     if (poSOATaggingController.SOATagging().Detail(pnDetail).getSourceNo() != null && !poSOATaggingController.SOATagging().Detail(pnDetail).getSourceNo().equals("")) {
                         tfAppliedAmtDetail.requestFocus();
@@ -1336,7 +1283,6 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
             if (pnMain >= 0) {
                 if (event.getClickCount() == 2) {
                     loadTableDetailFromMain();
-
                     initButton(pnEditMode);
                 }
             }
@@ -1385,8 +1331,8 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
     }
 
     public void initMainGrid() {
-        JFXUtil.setColumnCenter(tblRowNo, tblTransType, tblDate, tblReferenceNo);
-        JFXUtil.setColumnLeft(tblSupplier);
+        JFXUtil.setColumnCenter(tblRowNo, tblDate, tblReferenceNo);
+        JFXUtil.setColumnLeft(tblTransType, tblSupplier);
         JFXUtil.setColumnsIndexAndDisableReordering(tblViewMainList);
 
         filteredData = new FilteredList<>(main_data, b -> true);
@@ -1404,10 +1350,10 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                         switch (event.getCode()) {
                             case TAB:
                             case DOWN:
-                                pnDetail = JFXUtil.moveToNextRow(currentTable);
+                                pnDetail = Integer.parseInt(details_data.get(JFXUtil.moveToNextRow(currentTable)).getIndex08());
                                 break;
                             case UP:
-                                pnDetail = JFXUtil.moveToPreviousRow(currentTable);
+                                pnDetail = Integer.parseInt(details_data.get(JFXUtil.moveToPreviousRow(currentTable)).getIndex08());
                                 break;
                             default:
                                 break;

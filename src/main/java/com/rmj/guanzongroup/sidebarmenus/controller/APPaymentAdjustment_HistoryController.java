@@ -41,7 +41,7 @@ public class APPaymentAdjustment_HistoryController implements Initializable, Scr
     static CashflowControllers poAPPaymentAdjustmentController;
     private JSONObject poJSON;
     public int pnEditMode;
-    private String pxeModuleName = "";
+    private String pxeModuleName = JFXUtil.getFormattedClassTitle(this.getClass());
     private boolean isGeneral = false;
     private String psIndustryId = "";
     private String psCompanyId = "";
@@ -64,14 +64,9 @@ public class APPaymentAdjustment_HistoryController implements Initializable, Scr
     @FXML
     private TextArea taRemarks;
 
-    public void setTabTitle(String lsTabTitle, boolean isGeneral) {
-        this.pxeModuleName = lsTabTitle;
-        this.isGeneral = isGeneral;
-    }
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        psIndustryId = isGeneral ? "" : psIndustryId;
+        psIndustryId = ""; // general
         poJSON = new JSONObject();
         poAPPaymentAdjustmentController = new CashflowControllers(oApp, null);
         poAPPaymentAdjustmentController.APPaymentAdjustment().initialize(); // Initialize transaction
@@ -80,6 +75,13 @@ public class APPaymentAdjustment_HistoryController implements Initializable, Scr
         clearTextFields();
         pnEditMode = EditMode.UNKNOWN;
         initButton(pnEditMode);
+
+        Platform.runLater(() -> {
+            poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().setIndustryId(psIndustryId);
+            poAPPaymentAdjustmentController.APPaymentAdjustment().setIndustryId(psIndustryId);
+            poAPPaymentAdjustmentController.APPaymentAdjustment().setWithUI(true);
+            loadRecordSearch();
+        });
     }
 
     @Override
@@ -181,7 +183,7 @@ public class APPaymentAdjustment_HistoryController implements Initializable, Scr
 
     public void loadRecordSearch() {
         try {
-            if(poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().Industry().getDescription() != null && !"".equals(poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().Industry().getDescription())){
+            if (poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().Industry().getDescription() != null && !"".equals(poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().Industry().getDescription())) {
                 lblSource.setText(poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().Industry().getDescription());
             } else {
                 lblSource.setText("General");
@@ -232,7 +234,7 @@ public class APPaymentAdjustment_HistoryController implements Initializable, Scr
     }
 
     public void initDatePickers() {
-        JFXUtil.setDatePickerFormat("MM/dd/yyyy",dpTransactionDate);
+        JFXUtil.setDatePickerFormat("MM/dd/yyyy", dpTransactionDate);
     }
 
     public void clearTextFields() {

@@ -145,7 +145,7 @@ public class InventoryStockIssuance_PostingControllerMonarch_Food implements Ini
         try {
             poLogWrapper = new LogWrapper(psFormName, psFormName + "Log");
             poAppController = new DeliveryIssuanceControllers(poApp, poLogWrapper).InventoryStockIssuanceNeo();
-            poAppController.setTransactionStatus(InventoryStockIssuanceStatus.OPEN);
+
             if (!isJSONSuccess(poAppController.initTransaction(), "Initialize Transaction")) {
                 unloadForm appUnload = new unloadForm();
                 appUnload.unloadForm(apMainAnchor, poApp, psFormName);
@@ -164,7 +164,7 @@ public class InventoryStockIssuance_PostingControllerMonarch_Food implements Ini
             initializeTableDetail();
             initControlEvents();
         } catch (SQLException | GuanzonException ex) {
-            Logger.getLogger(InventoryStockIssuance_PostingControllerMonarch_Food.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(InventoryStockIssuance_PostingControllerMC_SP.class.getName()).log(Level.SEVERE, null, ex);
             poLogWrapper.severe(psFormName + " :" + ex.getMessage());
         }
     }
@@ -223,7 +223,7 @@ public class InventoryStockIssuance_PostingControllerMonarch_Food implements Ini
             initButtonDisplay(poAppController.getEditMode());
 
         } catch (GuanzonException | SQLException | CloneNotSupportedException ex) {
-            Logger.getLogger(InventoryStockIssuance_PostingControllerMonarch_Food.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(InventoryStockIssuance_PostingControllerMC_SP.class.getName()).log(Level.SEVERE, null, ex);
             poLogWrapper.severe(psFormName + " :" + ex.getMessage());
 
         }
@@ -250,7 +250,7 @@ public class InventoryStockIssuance_PostingControllerMonarch_Food implements Ini
                 }
                 getLoadedTransaction();
             } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
-                Logger.getLogger(InventoryStockIssuance_PostingControllerMonarch_Food.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(InventoryStockIssuance_PostingControllerMC_SP.class.getName()).log(Level.SEVERE, null, ex);
                 poLogWrapper.severe(psFormName + " :" + ex.getMessage());
 
             }
@@ -270,7 +270,7 @@ public class InventoryStockIssuance_PostingControllerMonarch_Food implements Ini
 
             loadSelectedTransactionDetail(pnDetailRow);
         } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
-            Logger.getLogger(InventoryStockIssuance_PostingControllerMonarch_Food.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(InventoryStockIssuance_PostingControllerMC_SP.class.getName()).log(Level.SEVERE, null, ex);
             poLogWrapper.severe(psFormName + " :" + ex.getMessage());
         }
     }
@@ -427,11 +427,12 @@ public class InventoryStockIssuance_PostingControllerMonarch_Food implements Ini
                         if (lnReceived < 0.00) {
                             return;
                         }
-                        //check if Serialize
-                        if (lnReceived > 1.00 && lnReceived < 1.00) {
-                            if (poAppController.getDetail(pnDetailRow).Inventory().isSerialized()) {
-                                ShowMessageFX.Information("Invalid quantity for serialize item", psFormName, null);
-                                lnReceived = 1;
+                        // check if serialized
+                        if (poAppController.getDetail(pnDetailRow).Inventory().isSerialized()) {
+                            // must be whole number AND exactly 1
+                            if (lnReceived != 1 || lnReceived % 1 != 0) {
+                                ShowMessageFX.Information("Invalid quantity for serialized item", psFormName, null);
+                                lnReceived = 1; // force to 1
                             }
                         }
 
@@ -446,7 +447,7 @@ public class InventoryStockIssuance_PostingControllerMonarch_Food implements Ini
                 loTextField.selectAll();
             }
         } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
-            Logger.getLogger(InventoryStockIssuance_PostingControllerMonarch_Food.class
+            Logger.getLogger(InventoryStockIssuance_PostingControllerMC_SP.class
                     .getName()).log(Level.SEVERE, null, ex);
             poLogWrapper.severe(psFormName + " :" + ex.getMessage());
         }
@@ -503,7 +504,7 @@ public class InventoryStockIssuance_PostingControllerMonarch_Food implements Ini
                 }
             }
         } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
-            Logger.getLogger(InventoryStockIssuance_PostingControllerMonarch_Food.class
+            Logger.getLogger(InventoryStockIssuance_PostingControllerMC_SP.class
                     .getName()).log(Level.SEVERE, null, ex);
             poLogWrapper.severe(psFormName + " :" + ex.getMessage());
         }
@@ -535,7 +536,7 @@ public class InventoryStockIssuance_PostingControllerMonarch_Food implements Ini
             }
 
         } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
-            Logger.getLogger(InventoryStockIssuance_PostingControllerMonarch_Food.class
+            Logger.getLogger(InventoryStockIssuance_PostingControllerMC_SP.class
                     .getName()).log(Level.SEVERE, null, ex);
             poLogWrapper.severe(psFormName + " :" + ex.getMessage());
         }
@@ -713,7 +714,7 @@ public class InventoryStockIssuance_PostingControllerMonarch_Food implements Ini
 
                     return new SimpleStringProperty(xserialname);
                 } catch (SQLException | GuanzonException ex) {
-                    Logger.getLogger(InventoryStockIssuance_PostingControllerMonarch_Food.class
+                    Logger.getLogger(InventoryStockIssuance_PostingControllerMC_SP.class
                             .getName()).log(Level.SEVERE, null, ex);
                     poLogWrapper.severe(psFormName + " :" + ex.getMessage());
                     return new SimpleStringProperty("");
@@ -726,7 +727,7 @@ public class InventoryStockIssuance_PostingControllerMonarch_Food implements Ini
                     return new SimpleStringProperty(barcode != null ? barcode : "");
 
                 } catch (SQLException | GuanzonException ex) {
-                    Logger.getLogger(InventoryStockIssuance_PostingControllerMonarch_Food.class
+                    Logger.getLogger(InventoryStockIssuance_PostingControllerMC_SP.class
                             .getName()).log(Level.SEVERE, null, ex);
                     poLogWrapper.severe(psFormName + " :" + ex.getMessage());
                     return new SimpleStringProperty("");
@@ -739,7 +740,7 @@ public class InventoryStockIssuance_PostingControllerMonarch_Food implements Ini
                     return new SimpleStringProperty(description != null ? description : "");
 
                 } catch (SQLException | GuanzonException ex) {
-                    Logger.getLogger(InventoryStockIssuance_PostingControllerMonarch_Food.class
+                    Logger.getLogger(InventoryStockIssuance_PostingControllerMC_SP.class
                             .getName()).log(Level.SEVERE, null, ex);
                     poLogWrapper.severe(psFormName + " :" + ex.getMessage());
                     return new SimpleStringProperty("");
@@ -752,7 +753,7 @@ public class InventoryStockIssuance_PostingControllerMonarch_Food implements Ini
                     return new SimpleStringProperty(lsObject != null ? lsObject : "");
 
                 } catch (SQLException | GuanzonException ex) {
-                    Logger.getLogger(InventoryStockIssuance_PostingControllerMonarch_Food.class
+                    Logger.getLogger(InventoryStockIssuance_PostingControllerMC_SP.class
                             .getName()).log(Level.SEVERE, null, ex);
                     poLogWrapper.severe(psFormName + " :" + ex.getMessage());
                     return new SimpleStringProperty("");
@@ -765,7 +766,7 @@ public class InventoryStockIssuance_PostingControllerMonarch_Food implements Ini
                     return new SimpleStringProperty(lsObject != null ? lsObject : "");
 
                 } catch (SQLException | GuanzonException ex) {
-                    Logger.getLogger(InventoryStockIssuance_PostingControllerMonarch_Food.class
+                    Logger.getLogger(InventoryStockIssuance_PostingControllerMC_SP.class
                             .getName()).log(Level.SEVERE, null, ex);
                     poLogWrapper.severe(psFormName + " :" + ex.getMessage());
                     return new SimpleStringProperty("");
@@ -778,7 +779,7 @@ public class InventoryStockIssuance_PostingControllerMonarch_Food implements Ini
                     return new SimpleStringProperty(lsObject != null ? lsObject : "");
 
                 } catch (SQLException | GuanzonException ex) {
-                    Logger.getLogger(InventoryStockIssuance_PostingControllerMonarch_Food.class
+                    Logger.getLogger(InventoryStockIssuance_PostingControllerMC_SP.class
                             .getName()).log(Level.SEVERE, null, ex);
                     poLogWrapper.severe(psFormName + " :" + ex.getMessage());
                     return new SimpleStringProperty("");
@@ -864,7 +865,7 @@ public class InventoryStockIssuance_PostingControllerMonarch_Food implements Ini
                         return new SimpleStringProperty(lsObject != null ? lsObject : "");
 
                     } catch (SQLException | GuanzonException ex) {
-                        Logger.getLogger(InventoryStockIssuance_PostingControllerMonarch_Food.class
+                        Logger.getLogger(InventoryStockIssuance_PostingControllerMC_SP.class
                                 .getName()).log(Level.SEVERE, null, ex);
                         poLogWrapper.severe(psFormName + " :" + ex.getMessage());
                         return new SimpleStringProperty("");
@@ -880,7 +881,7 @@ public class InventoryStockIssuance_PostingControllerMonarch_Food implements Ini
                 pi.setVisible(false);
                 Throwable ex = getException();
                 Logger
-                        .getLogger(InventoryStockIssuance_PostingControllerMonarch_Food.class
+                        .getLogger(InventoryStockIssuance_PostingControllerMC_SP.class
                                 .getName()).log(Level.SEVERE, null, ex);
                 poLogWrapper.severe(psFormName + " : " + ex.getMessage());
             }

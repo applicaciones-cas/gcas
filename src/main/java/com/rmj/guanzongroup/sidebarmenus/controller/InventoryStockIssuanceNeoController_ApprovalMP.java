@@ -96,7 +96,7 @@ public class InventoryStockIssuanceNeoController_ApprovalMP implements Initializ
             tfVariant, tfMeasure, tfInvType, tfCost, tfIssuedQty;
 
     @FXML
-    Button btnSearch, btnUpdate, btnPrint, btnApprove, btnVoid, btnSave, btnCancel, btnHistory, btnRetrieve, btnClose;
+    Button btnSearch, btnBrowse, btnUpdate, btnPrint, btnApprove, btnVoid, btnSave, btnCancel, btnHistory, btnRetrieve, btnClose;
 
     @FXML
     TableView<Model_Inventory_Transfer_Master> tblViewMaster;
@@ -143,7 +143,6 @@ public class InventoryStockIssuanceNeoController_ApprovalMP implements Initializ
         try {
             poLogWrapper = new LogWrapper(psFormName, psFormName);
             poAppController = new DeliveryIssuanceControllers(poApp, poLogWrapper).InventoryStockIssuanceNeo();
-            poAppController.setTransactionStatus(InventoryStockIssuanceStatus.OPEN);
 
             //initlalize and validate transaction objects from class controller
             if (!isJSONSuccess(poAppController.initTransaction(), psFormName)) {
@@ -168,7 +167,7 @@ public class InventoryStockIssuanceNeoController_ApprovalMP implements Initializ
             initializeTableDetail();
             initControlEvents();
         } catch (SQLException | GuanzonException e) {
-            Logger.getLogger(InventoryStockIssuanceNeo.class.getName()).log(Level.SEVERE, null, e);
+
             poLogWrapper.severe(psFormName + " :" + e.getMessage());
         }
     }
@@ -214,7 +213,7 @@ public class InventoryStockIssuanceNeoController_ApprovalMP implements Initializ
 
             loadSelectedTransactionDetail(pnTransactionDetail);
         } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
-            Logger.getLogger(InventoryStockIssuanceNeoController_ApprovalMP.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(InventoryStockIssuanceNeoController_Approval.class.getName()).log(Level.SEVERE, null, ex);
             poLogWrapper.severe(psFormName + " :" + ex.getMessage());
         }
     }
@@ -233,7 +232,6 @@ public class InventoryStockIssuanceNeoController_ApprovalMP implements Initializ
                     }
 
                     switch (lastFocusedControl.getId()) {
-                        
                         case "tfSearchSourceno":
                             if (!tfTransNo.getText().isEmpty()) {
                                 if (ShowMessageFX.OkayCancel(null, "Search Transaction! by Trasaction", "Are you sure you want replace loaded Transaction?") == false) {
@@ -322,13 +320,45 @@ public class InventoryStockIssuanceNeoController_ApprovalMP implements Initializ
                     }
                     break;
 
-                case "btnNew":
-                    if (!isJSONSuccess(poAppController.NewTransaction(), "Initialize New Transaction")) {
+                case "btnBrowse":
+                    if (lastFocusedControl == null) {
+                        ShowMessageFX.Information(null, psFormName,
+                                "Search unavailable. Please ensure a searchable field is selected or focused before proceeding..");
                         return;
                     }
-                    clearAllInputs();
-                    getLoadedTransaction();
-                    pnEditMode = poAppController.getEditMode();
+
+                    switch (lastFocusedControl.getId()) {
+                        case "tfSearchSourceno":
+                            if (!tfTransNo.getText().isEmpty()) {
+                                if (ShowMessageFX.OkayCancel(null, "Search Transaction! by Trasaction", "Are you sure you want replace loaded Transaction?") == false) {
+                                    return;
+                                }
+                            }
+                            if (!isJSONSuccess(poAppController.searchTransaction(tfSearchSourceno.getText(), true, true),
+                                    "Initialize Search Source No! ")) {
+                                return;
+                            }
+
+//                                tfSearchSourceno.setText(poAppController.getMaster().Branch().getBranchName());
+                            getLoadedTransaction();
+                            initButtonDisplay(poAppController.getEditMode());
+                            break;
+                        case "tfSearchTransNo":
+                            if (!tfTransNo.getText().isEmpty()) {
+                                if (ShowMessageFX.OkayCancel(null, "Search Transaction! by Trasaction", "Are you sure you want replace loaded Transaction?") == false) {
+                                    return;
+                                }
+                            }
+                            if (!isJSONSuccess(poAppController.searchTransaction(tfSearchTransNo.getText(), true, true),
+                                    "Initialize Search Transaction! ")) {
+                                return;
+                            }
+
+//                                tfSearchTransNo.setText(poAppController.getMaster().getTransactionNo());
+                            getLoadedTransaction();
+                            initButtonDisplay(poAppController.getEditMode());
+                            break;
+                    }
                     break;
 
                 case "btnUpdate":
@@ -359,7 +389,7 @@ public class InventoryStockIssuanceNeoController_ApprovalMP implements Initializ
                             return;
                         }
                         reloadTableDetail();
-                        clearAllInputs();
+//                        clearAllInputs();
                         pnEditMode = poAppController.getEditMode();
                         break;
                     }
@@ -382,7 +412,7 @@ public class InventoryStockIssuanceNeoController_ApprovalMP implements Initializ
 
                         }
                         reloadTableDetail();
-                        clearAllInputs();
+//                        clearAllInputs();
                         pnEditMode = poAppController.getEditMode();
                         break;
                     }
@@ -400,7 +430,7 @@ public class InventoryStockIssuanceNeoController_ApprovalMP implements Initializ
                         }
                     }
                     //refresh ui 
-                    clearAllInputs();
+//                    clearAllInputs();
                     reloadTableDetail();
 
                     pnEditMode = poAppController.getEditMode();
@@ -416,7 +446,7 @@ public class InventoryStockIssuanceNeoController_ApprovalMP implements Initializ
                         return;
                     }
                     reloadTableDetail();
-                    clearAllInputs();
+//                    clearAllInputs();
                     pnEditMode = poAppController.getEditMode();
 
                     break;
@@ -424,7 +454,7 @@ public class InventoryStockIssuanceNeoController_ApprovalMP implements Initializ
                 case "btnCancel":
                     if (ShowMessageFX.OkayCancel(null, psFormName, "Do you want to disregard changes?") == true) {
                         poAppController = new DeliveryIssuanceControllers(poApp, poLogWrapper).InventoryStockIssuanceNeo();
-                        poAppController.setTransactionStatus(null);
+                        poAppController.setTransactionStatus("10");
 
                         if (!isJSONSuccess(poAppController.initTransaction(), "Initialize Transaction")) {
                             unloadForm appUnload = new unloadForm();
@@ -475,7 +505,7 @@ public class InventoryStockIssuanceNeoController_ApprovalMP implements Initializ
                                     return;
                                 }
                             }
-                           
+
                             loadTransactionMasterList(tfSearchTransNo.getText(), "a.sTransNox");
                             getLoadedTransaction();
                             initButtonDisplay(poAppController.getEditMode());
@@ -536,12 +566,55 @@ public class InventoryStockIssuanceNeoController_ApprovalMP implements Initializ
                         loadTransactionMaster();
                         break;
                     case "tfIssuedQty":
-                        if (lsValue.isEmpty()) {
-                            ShowMessageFX.Information("Imvalid quantity", psFormName, null);
-                            loTextField.requestFocus();
+                        if (poAppController.getDetail(pnTransactionDetail).getStockId() == null
+                                || poAppController.getDetail(pnTransactionDetail).getStockId().isEmpty()) {
+                            if (Double.parseDouble(tfIssuedQty.getText()) > 0.0) {
+                                tfIssuedQty.setText("0.00");
+                                loTextField.requestFocus();
+                                ShowMessageFX.Information("Unable to set quantity! No Stock Invetory Detected", psFormName, null);
+                            }
                             return;
                         }
-                        poAppController.getDetail(pnTransactionDetail).setQuantity(Double.parseDouble(lsValue));
+                        double lnIssuedQty;
+                        try {
+                            lnIssuedQty = Double.parseDouble(lsValue);
+                        } catch (NumberFormatException e) {
+                            lnIssuedQty = 0.0; // default if parsing fails
+                            poAppController.getDetail(pnTransactionDetail).setQuantity(lnIssuedQty);
+                            reloadTableDetail();
+                            loadSelectedTransactionDetail(pnTransactionDetail);
+                            loTextField.requestFocus();
+                        }
+                        if (lnIssuedQty < 0.00) {
+                            return;
+                        }
+                        // check if serialized
+                        if (poAppController.getDetail(pnTransactionDetail).Inventory().isSerialized()) {
+                            // must be whole number AND exactly 1
+                            if (lnIssuedQty != 1 || lnIssuedQty % 1 != 0) {
+                                ShowMessageFX.Information("Invalid quantity for serialized item", psFormName, null);
+                                lnIssuedQty = 1; // force to 1
+                                loTextField.setText("1");
+                            }
+                            if (poAppController.getDetail(pnTransactionDetail).getSerialID() == null
+                                    || poAppController.getDetail(pnTransactionDetail).getSerialID().isEmpty()) {
+                                //Search record and sepate the row
+                                if (!isJSONSuccess(poAppController.searchDetailByIssuance(pnTransactionDetail, tfSearchSerial.getText(), true, true),
+                                        "Initialize Search Serial")) {
+                                    lnIssuedQty = 0;
+                                    return;
+                                }
+
+                            }
+                        }
+                        if (lnIssuedQty > poAppController.getDetail(pnTransactionDetail).InventoryStockRequest().getApproved()) {
+                            lnIssuedQty = poAppController.getDetail(pnTransactionDetail).InventoryStockRequest().getApproved();
+                            ShowMessageFX.Information("Issued Quantity exceed Approved Detected", psFormName, null);
+                            loTextField.setText(String.valueOf(lnIssuedQty));
+                        }
+
+                        poAppController.getDetail(pnTransactionDetail).setQuantity(lnIssuedQty);
+
                         reloadTableDetail();
                         loadSelectedTransactionDetail(pnTransactionDetail);
                         break;
@@ -550,7 +623,7 @@ public class InventoryStockIssuanceNeoController_ApprovalMP implements Initializ
                 loTextField.selectAll();
             }
         } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
-            Logger.getLogger(InventoryStockIssuanceNeoController_ApprovalMP.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(InventoryStockIssuanceNeoController_Approval.class.getName()).log(Level.SEVERE, null, ex);
             poLogWrapper.severe(psFormName + " :" + ex.getMessage());
         }
     };
@@ -771,7 +844,7 @@ public class InventoryStockIssuanceNeoController_ApprovalMP implements Initializ
                 pi.setVisible(false);
                 Throwable ex = getException();
                 Logger
-                        .getLogger(InventoryStockIssuanceNeoController_ApprovalMP.class
+                        .getLogger(InventoryStockIssuanceNeoController_Approval.class
                                 .getName()).log(Level.SEVERE, null, ex);
                 poLogWrapper.severe(psFormName + " : " + ex.getMessage());
             }
@@ -948,11 +1021,11 @@ public class InventoryStockIssuanceNeoController_ApprovalMP implements Initializ
         boolean lbShow = (fnEditMode == EditMode.ADDNEW || fnEditMode == EditMode.UPDATE);
 
         // Always show these buttons
-        initButtonControls(true, "btnSearch", "btnRetrieve", "btnHistory", "btnClose");
+        initButtonControls(true, "btnRetrieve", "btnHistory", "btnClose");
 
         // Show-only based on mode
-        initButtonControls(lbShow, "btnSave", "btnCancel");
-        initButtonControls(!lbShow, "btnNew", "btnUpdate", "btnPrint", "btnApprove", "btnVoid");
+        initButtonControls(lbShow, "btnSearch", "btnSave", "btnCancel");
+        initButtonControls(!lbShow, "btnBrowse", "btnUpdate", "btnPrint", "btnApprove", "btnVoid");
 
         apMaster.setDisable(!lbShow);
         apDetail.setDisable(!lbShow);
@@ -1010,7 +1083,7 @@ public class InventoryStockIssuanceNeoController_ApprovalMP implements Initializ
 
                     return new SimpleStringProperty(xserialname);
                 } catch (SQLException | GuanzonException ex) {
-                    Logger.getLogger(InventoryStockIssuanceNeoController_ApprovalMP.class
+                    Logger.getLogger(InventoryStockIssuanceNeoController_Approval.class
                             .getName()).log(Level.SEVERE, null, ex);
                     poLogWrapper.severe(psFormName + " :" + ex.getMessage());
                     return new SimpleStringProperty("");

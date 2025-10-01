@@ -93,7 +93,7 @@ public class InventoryStockIssuanceNeoController_History implements Initializabl
 
     @FXML
     TextField tfSearchSerial, tfSearchBarcode, tfSearchDescription, tfSupersede, tfBrand, tfModel, tfColor,
-            tfVariant, tfMeasure, tfInvType, tfCost, tfIssuedQty;
+            tfVariant, tfMeasure, tfInvType, tfCost, tfIssuedQty, tfReceiveQuantity, tfReceiverNote;
 
     @FXML
     Button btnSearch, btnPrint, btnHistory, btnRetrieve, btnClose;
@@ -109,7 +109,7 @@ public class InventoryStockIssuanceNeoController_History implements Initializabl
 
     @FXML
     TableColumn<Model_Inventory_Transfer_Detail, String> tblColDetailNo, tblColDetailOrderNo, tblColDetailSerial, tblColDetailBarcode, tblColDetailDescr,
-            tblColDetailBrand, tblColDetailVariant, tblColDetailCost, tblColDetailOrderQty;
+            tblColDetailBrand, tblColDetailVariant, tblColDetailCost, tblColDetailOrderQty, tblColDetailReceiveQty;
 
     @FXML
     Label lblSource, lblStatus;
@@ -143,7 +143,6 @@ public class InventoryStockIssuanceNeoController_History implements Initializabl
         try {
             poLogWrapper = new LogWrapper(psFormName, psFormName);
             poAppController = new DeliveryIssuanceControllers(poApp, poLogWrapper).InventoryStockIssuanceNeo();
-            poAppController.setTransactionStatus(InventoryStockIssuanceStatus.OPEN);
 
             //initlalize and validate transaction objects from class controller
             if (!isJSONSuccess(poAppController.initTransaction(), psFormName)) {
@@ -168,7 +167,7 @@ public class InventoryStockIssuanceNeoController_History implements Initializabl
             initializeTableDetail();
             initControlEvents();
         } catch (SQLException | GuanzonException e) {
-            Logger.getLogger(InventoryStockIssuanceNeo.class.getName()).log(Level.SEVERE, null, e);
+
             poLogWrapper.severe(psFormName + " :" + e.getMessage());
         }
     }
@@ -519,9 +518,9 @@ public class InventoryStockIssuanceNeoController_History implements Initializabl
         tfVariant.setText(tblColDetailVariant.getCellData(tblIndex));
         tfCost.setText(tblColDetailCost.getCellData(tblIndex));
         tfIssuedQty.setText(tblColDetailOrderQty.getCellData(tblIndex));
-//        tfReceiveQuantity.setText(tblColDetailRecQty.getCellData(tblIndex));
+        tfReceiveQuantity.setText(tblColDetailReceiveQty.getCellData(tblIndex));
 
-//        taNote.setText(poAppController.getDetail(fnRow).getNote());
+        tfReceiverNote.setText(poAppController.getDetail(fnRow).getNote());
         tfSupersede.setText(poAppController.getDetail(fnRow).InventorySupersede().getBarCode());
         tfModel.setText(poAppController.getDetail(fnRow).Inventory().Model().getDescription());
         tfColor.setText(poAppController.getDetail(fnRow).Inventory().Color().getDescription());
@@ -641,6 +640,7 @@ public class InventoryStockIssuanceNeoController_History implements Initializabl
 
             tblColDetailCost.setStyle("-fx-alignment: CENTER-RIGHT; -fx-padding: 0 5 0 0;");
             tblColDetailOrderQty.setStyle("-fx-alignment: CENTER; -fx-padding: 0 5 0 0;");
+            tblColDetailReceiveQty.setStyle("-fx-alignment: CENTER; -fx-padding: 0 5 0 0;");
 
             tblColDetailNo.setCellValueFactory((loModel) -> {
                 int index = tblViewDetails.getItems().indexOf(loModel.getValue()) + 1;
@@ -713,6 +713,7 @@ public class InventoryStockIssuanceNeoController_History implements Initializabl
             });
 
             tblColDetailOrderQty.setCellValueFactory((loModel) -> new SimpleStringProperty(String.valueOf(loModel.getValue().getQuantity())));
+            tblColDetailReceiveQty.setCellValueFactory((loModel) -> new SimpleStringProperty(String.valueOf(loModel.getValue().getReceivedQuantity())));
 
         }
     }

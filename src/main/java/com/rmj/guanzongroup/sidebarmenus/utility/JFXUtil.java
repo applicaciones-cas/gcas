@@ -4,16 +4,16 @@
  */
 package com.rmj.guanzongroup.sidebarmenus.utility;
 
+import com.rmj.guanzongroup.sidebarmenus.controller.ScreenInterface;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import com.sun.javafx.scene.control.skin.TableViewSkin;
 import com.sun.javafx.scene.control.skin.VirtualFlow;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.time.LocalDate;
@@ -22,7 +22,9 @@ import java.time.Month;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -34,6 +36,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
+import java.util.stream.Stream;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.PauseTransition;
@@ -121,6 +124,7 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.util.Callback;
+import java.io.File;
 
 /**
  * Date : 4/28/2025
@@ -129,6 +133,8 @@ import javafx.util.Callback;
  */
 public class JFXUtil {
 
+    /* To auto resize one column when v scrolllbar appear */
+ /* Required to set the min-width property of one column into USE_COMPUTED_SIZE to work*/
     public static void adjustColumnForScrollbar(TableView<?>... tableViews) {
         for (TableView<?> tableView : tableViews) {
             tableView.skinProperty().addListener((obs, oldSkin, newSkin) -> {
@@ -191,6 +197,8 @@ public class JFXUtil {
         }
     }
 
+    /* Dynamic Highlighter for TableView */
+ /* Requires TableView, string key (basis value), String Color in hex(e.g. #H1H1H1), Map list for local storage of highlights */
     public static <T> void highlightByKey(TableView<T> table, String key, String color, Map<String, List<String>> highlightMap) {
         List<String> colors = highlightMap.computeIfAbsent(key, k -> new ArrayList<>());
         if (!colors.contains(color)) {
@@ -199,23 +207,79 @@ public class JFXUtil {
         }
     }
 
+    /* To disable particular highlight*/
     public static <T> void disableHighlightByKey(TableView<T> table, String key, Map<String, List<String>> highlightMap) {
         highlightMap.remove(key);
         table.refresh();
-
     }
 
+    /* To conviniently disable all highlight*/
     public static <T> void disableAllHighlight(TableView<T> table, Map<String, List<String>> highlightMap) {
         highlightMap.clear();
         table.refresh();
     }
 
+    /* To disable highlight by defining color in hex*/
     public static <T> void disableAllHighlightByColor(TableView<T> table, String color, Map<String, List<String>> highlightMap) {
         highlightMap.forEach((key, colors) -> colors.removeIf(c -> c.equals(color)));
         highlightMap.entrySet().removeIf(entry -> entry.getValue().isEmpty());
         table.refresh();
     }
 
+    /* To make highlighting effective, apply in initialization, called once*/
+    public static <T> void applyRowHighlighting(
+            final TableView<T> tableView,
+            final Function<T, String> keyExtractor,
+            final Map<String, List<String>> highlightMap) {
+
+        tableView.setRowFactory(new javafx.util.Callback<TableView<T>, TableRow<T>>() {
+            @Override
+            public TableRow<T> call(final TableView<T> tv) {
+                return new TableRow<T>() {
+                    @Override
+                    protected void updateItem(T item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (item == null || empty) {
+                            setStyle(""); // Reset style
+                        } else {
+                            String key = keyExtractor.apply(item);
+                            if (highlightMap.containsKey(key)) {
+                                List<String> colors = highlightMap.get(key);
+                                if (!colors.isEmpty()) {
+                                    setStyle("-fx-background-color: " + colors.get(colors.size() - 1) + ";");
+                                }
+                            } else {
+                                setStyle(""); // Default
+                            }
+                        }
+                    }
+                };
+            }
+        });
+    }
+
+    /* To retain non temporary highlights and remove temporary highlights specifically used for ENTRY form*/
+    public static void showRetainedHighlight(boolean isRetained, TableView<?> tblView, String color, List<Pair<String, String>> plPartial, List<Pair<String, String>> plFinal,
+            Map<String, List<String>> highlightedRows, boolean resetpartial) {
+        if (isRetained) {
+            for (Pair<String, String> pair : plPartial) {
+                if (!"0".equals(pair.getValue())) {
+                    plFinal.add(new Pair<>(pair.getKey(), pair.getValue()));
+                }
+            }
+        }
+        if (resetpartial) {
+            disableAllHighlightByColor(tblView, color, highlightedRows);
+            plPartial.clear();
+        }
+        for (Pair<String, String> pair : plFinal) {
+            if (!"0".equals(pair.getValue())) {
+                highlightByKey(tblView, pair.getKey(), color, highlightedRows);
+            }
+        }
+    }
+
+    /* Experimental function unused*/
     public static void setDatePickerNextFocusByEnter(DatePicker... datePickers) {
         for (DatePicker datePicker : datePickers) {
             datePicker.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
@@ -237,12 +301,14 @@ public class JFXUtil {
         }
     }
 
+    /* SUGGESTED To modify combobox selection lists color*/
     public static void initComboBoxCellDesignColor(String hexColor, ComboBox<?>... comboBoxes) {
         for (ComboBox<?> comboBox : comboBoxes) {
             initComboBoxCellDesignColor(comboBox, hexColor);
         }
     }
 
+    /* To modify combobox lists color, includes hover and selected*/
     public static <T> void initComboBoxCellDesignColor(ComboBox<T> comboBox, String hexcolor) {
 //      #FF8201
         comboBox.setCellFactory(param -> new ListCell<T>() {
@@ -313,6 +379,7 @@ public class JFXUtil {
         });
     }
 
+    /* To format datepicker to multiple nodes; old usage*/
     public static void setDatePickerFormat(DatePicker... datePickers) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         for (DatePicker datePicker : datePickers) {
@@ -330,6 +397,7 @@ public class JFXUtil {
         }
     }
 
+    /* To format a datepicker; new usage*/
     public static void setDatePickerFormat(String pattern, DatePicker... datePickers) {
 //        "yyyy-MM-dd"
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
@@ -349,6 +417,8 @@ public class JFXUtil {
         }
     }
 
+    /* To put caret position of a textfield to last character index*/
+ /* Requires AnchorPane parent ID of textfields*/
     public static void updateCaretPositions(AnchorPane anchorPane) {
         List<TextField> textFields = getAllTextFields(anchorPane);
         for (TextField textField : textFields) {
@@ -369,6 +439,7 @@ public class JFXUtil {
         }
     }
 
+    /* JFXUtil private usage */
     private static List<TextField> getAllTextFields(Parent parent) {
         List<TextField> textFields = new ArrayList<>();
 
@@ -387,6 +458,8 @@ public class JFXUtil {
         return textFields;
     }
 
+    /*Move the current row of TableView to next row and returns next index value*/
+ /*Requires TableView*/
     public static int moveToNextRow(TableView table) {
         TableView<?> currentTable = table;
         TablePosition<?, ?> focusedCell = currentTable.getFocusModel().getFocusedCell();
@@ -399,6 +472,8 @@ public class JFXUtil {
         }
     }
 
+    /*Move the current row of TableView to previous row and returns next index value*/
+ /*Requires TableView*/
     public static int moveToPreviousRow(TableView table) {
         TableView<?> currentTable = table;
         TablePosition<?, ?> focusedCell = currentTable.getFocusModel().getFocusedCell();
@@ -412,6 +487,8 @@ public class JFXUtil {
 
     }
 
+    /* use when pagination is present in tableView */
+ /*Updates the pagination count dynamically*/
     public static void loadTab(Pagination pgPagination, int tbldata_list_size, int ROWS_PER_PAGE, TableView tbl, FilteredList filteredData) {
         int totalPage = (int) (Math.ceil(tbldata_list_size * 1.0 / ROWS_PER_PAGE));
         pgPagination.setPageCount(totalPage);
@@ -423,6 +500,7 @@ public class JFXUtil {
         });
     }
 
+    /* To calculate number of page of the TableView based on table data size*/
     public static void changeTableView(int index, int limit, TableView tbl, int tbldata_list_size, FilteredList filteredData) {
         tbl.getSelectionModel().clearSelection();
         int fromIndex = index * limit;
@@ -441,6 +519,7 @@ public class JFXUtil {
         }
     }
 
+    /* used to display pop-up dialog form*/
     public static class StageManager {
 
         private Stage dialog;
@@ -528,6 +607,8 @@ public class JFXUtil {
         double x, y;
     }
 
+    /* Used for displaying attachment */
+ /* Enabling crop in bounds*/
     public static void stackPaneClip(StackPane stackPane1) {
         javafx.scene.shape.Rectangle clip = new javafx.scene.shape.Rectangle(
                 stackPane1.getWidth() - 8,
@@ -540,6 +621,8 @@ public class JFXUtil {
         stackPane1.setClip(clip);
     }
 
+    /* Used for displaying attachment */
+ /* Detects if image is out of bounds in view*/
     public static boolean isImageViewOutOfBounds(ImageView imageView, StackPane stackPane) {
         Bounds clipBounds = stackPane.getClip().getBoundsInParent();
         Bounds imageBounds = imageView.getBoundsInParent();
@@ -550,6 +633,8 @@ public class JFXUtil {
                 || imageBounds.getMinY() > clipBounds.getMaxY();
     }
 
+    /* Used for displaying attachment */
+ /* Revert the position and size of the image to default*/
     public static void resetImageBounds(ImageView imageView, StackPane stackPane1) {
         imageView.setScaleX(1.0);
         imageView.setScaleY(1.0);
@@ -558,6 +643,8 @@ public class JFXUtil {
         stackPane1.setAlignment(imageView, javafx.geometry.Pos.CENTER);
     }
 
+    /* Called to display Image by calling its class ImageViewer*/
+ /* Allows multiple usage of ImageViewer*/
     public static class ImageViewer {
 
         public double ldstackPaneWidth = 0;
@@ -601,6 +688,7 @@ public class JFXUtil {
         }
     }
 
+    /* Used to adjsut image size */
     public static void adjustImageSize(Image image, ImageView imageView, double ldstackPaneWidth, double ldstackPaneHeight) {
         double imageRatio = image.getWidth() / image.getHeight();
         double containerRatio = ldstackPaneWidth / ldstackPaneHeight;
@@ -623,24 +711,29 @@ public class JFXUtil {
         imageView.setSmooth(true);
     }
 
+    /* Used for table column value alignment */
     public static void setColumnCenter(TableColumn... columns) {
         for (TableColumn column : columns) {
             column.setStyle("-fx-alignment: CENTER;");
         }
     }
 
+    /* Used for table column value alignment */
     public static void setColumnLeft(TableColumn... columns) {
         for (TableColumn column : columns) {
             column.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 5 0 5;");
         }
     }
 
+    /* Used for table column value alignment */
     public static void setColumnRight(TableColumn... columns) {
         for (TableColumn column : columns) {
             column.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 5;");
         }
     }
 
+    /* Auto link/set table values & auto disable column re-alignment */
+ /*Requires TableView*/
     public static void setColumnsIndexAndDisableReordering(final TableView<?> tableView) {
         int counter = 1;
         for (Object obj : tableView.getColumns()) {
@@ -685,6 +778,8 @@ public class JFXUtil {
         });
     }
 
+    /* Clears textFields, textAreas, checkboxes,combobxes, & datepickers by calling its parent anchorpane */
+ /* For datepicker it auto set value to null before clearing text input*/
     public static void clearTextFields(AnchorPane... anchorPanes) {
         for (AnchorPane pane : anchorPanes) {
             clearTextInputsRecursive(pane);
@@ -697,16 +792,22 @@ public class JFXUtil {
                 ((TextInputControl) node).clear();
             } else if (node instanceof DatePicker) {
                 DatePicker dp = (DatePicker) node;
-                dp.setValue(null); // Set the selected date to null
+                dp.setValue(null);
                 if (dp.getEditor() != null) {
-                    dp.getEditor().clear(); // Clear any text in the editor field
+                    dp.getEditor().clear();
                 }
+            } else if (node instanceof CheckBox) {
+                ((CheckBox) node).setSelected(false); // uncheck
+            } else if (node instanceof ComboBox) {
+                ComboBox<?> combo = (ComboBox<?>) node;
+                combo.getSelectionModel().select(0);
             } else if (node instanceof Parent) {
-                clearTextInputsRecursive((Parent) node); // Recursively check child nodes
+                clearTextInputsRecursive((Parent) node);
             }
         }
     }
 
+    /* Used to hide button visibility*/
     public static void setButtonsVisibility(boolean visible, Button... buttons) {
         for (Button btn : buttons) {
             btn.setVisible(visible);
@@ -1433,63 +1534,12 @@ public class JFXUtil {
         return null;
     }
 
-    public static <T> void applyRowHighlighting(
-            final TableView<T> tableView,
-            final Function<T, String> keyExtractor,
-            final Map<String, List<String>> highlightMap) {
-
-        tableView.setRowFactory(new javafx.util.Callback<TableView<T>, TableRow<T>>() {
-            @Override
-            public TableRow<T> call(final TableView<T> tv) {
-                return new TableRow<T>() {
-                    @Override
-                    protected void updateItem(T item, boolean empty) {
-                        super.updateItem(item, empty);
-                        if (item == null || empty) {
-                            setStyle(""); // Reset style
-                        } else {
-                            String key = keyExtractor.apply(item);
-                            if (highlightMap.containsKey(key)) {
-                                List<String> colors = highlightMap.get(key);
-                                if (!colors.isEmpty()) {
-                                    setStyle("-fx-background-color: " + colors.get(colors.size() - 1) + ";");
-                                }
-                            } else {
-                                setStyle(""); // Default
-                            }
-                        }
-                    }
-                };
-            }
-        });
-    }
-
     public static String removeComma(String numberStr) {
         if (numberStr == null || numberStr.equals("")) {
             return "0";
         }
         String result = numberStr.replace(",", "");
         return result.isEmpty() ? "0" : result;
-    }
-
-    public static void showRetainedHighlight(boolean isRetained, TableView<?> tblView, String color, List<Pair<String, String>> plOrderNoPartial, List<Pair<String, String>> plOrderNoFinal,
-            Map<String, List<String>> highlightedRows, boolean resetpartial) {
-        if (isRetained) {
-            for (Pair<String, String> pair : plOrderNoPartial) {
-                if (!"0".equals(pair.getValue())) {
-                    plOrderNoFinal.add(new Pair<>(pair.getKey(), pair.getValue()));
-                }
-            }
-        }
-        if (resetpartial) {
-            disableAllHighlightByColor(tblView, color, highlightedRows);
-            plOrderNoPartial.clear();
-        }
-        for (Pair<String, String> pair : plOrderNoFinal) {
-            if (!"0".equals(pair.getValue())) {
-                highlightByKey(tblView, pair.getKey(), color, highlightedRows);
-            }
-        }
     }
 
     public static void removeNoByKey(List<Pair<String, String>> plOrderNoPartial, List<Pair<String, String>> plOrderNoFinal, String lsNo) {
@@ -1568,7 +1618,7 @@ public class JFXUtil {
         String suffix = fileName.substring(underscoreIndex + 1);
 
         String[] generalSuffixes = {
-            "Entry", "Confirmation", "History"
+            "Entry", "Confirmation", "History", "Approval"
         };
         for (String general : generalSuffixes) {
             if (suffix.equals(general)) {
@@ -1764,6 +1814,7 @@ public class JFXUtil {
         }
     }
 
+    /*Returns new arranged indexes that should be set to dragged row*/
     public static <T> void enableRowDragAndDrop(
             TableView<T> tableView,
             Function<T, StringProperty> index01Getter,
@@ -2039,13 +2090,22 @@ public class JFXUtil {
         }
     }
 
-    public static void textFieldMoveNext(TextField fsId) {
-        Platform.runLater(() -> {
-            PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
-            delay.setOnFinished(e -> {
-                fsId.requestFocus();
-            });
-            delay.play();
+    public static void textFieldMoveNext(Node node) {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                PauseTransition delay = new PauseTransition(Duration.seconds(0.5));
+                delay.setOnFinished(event -> {
+                    if (node instanceof DatePicker) {
+                        ((DatePicker) node).getEditor().requestFocus();
+                    } else if (node instanceof TextInputControl) {
+                        ((TextInputControl) node).requestFocus();
+                    } else {
+                        node.requestFocus();
+                    }
+                });
+                delay.play();
+            }
         });
     }
 
@@ -2294,4 +2354,194 @@ public class JFXUtil {
             }
         }
     }
+
+    private static final Map<Class<?>, Map<String, String>> cache = new HashMap<>();
+
+    public static String setStatusValue(Node node, Class<?> clazz, String value) {
+        String text = getNameByValue(clazz, value);
+
+        Platform.runLater(() -> {
+            if (node instanceof Label) {
+                ((Label) node).setText(text);
+            } else if (node instanceof TextField) {
+                ((TextField) node).setText(text);
+            } else if (node instanceof TextArea) {
+                ((TextArea) node).setText(text);
+            } else if (node instanceof Button) {
+                ((Button) node).setText(text);
+            } else {
+                //if null
+            }
+        });
+        return text;
+    }
+
+    private static String getNameByValue(Class<?> clazz, String value) {
+        if ("-1".equals(value) || "".equals(value)) {
+            return "UNKNOWN";
+        }
+        return buildValueToNameMap(clazz).getOrDefault(value, "UNKNOWN");
+    }
+
+    private static Map<String, String> buildValueToNameMap(Class<?> clazz) {
+        if (cache.containsKey(clazz)) {
+            return cache.get(clazz);
+        }
+        Map<String, String> valueToNameMap = new HashMap<>();
+        for (Field field : clazz.getDeclaredFields()) {
+            if (Modifier.isStatic(field.getModifiers())) {
+                try {
+                    Object value = field.get(null);
+                    if (value instanceof String) {
+                        String fieldName = field.getName();
+                        // Special handling: if field name is VOID, change to VOIDED
+                        if ("VOID".equals(fieldName)) {
+                            fieldName = "VOIDED";
+                        }
+                        valueToNameMap.put((String) value, fieldName);
+                    }
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        cache.put(clazz, valueToNameMap);
+        return valueToNameMap;
+    }
+
+//    EventHandler<ActionEvent> comboBoxActionListener = JFXUtil.CmbActionListener(
+//            (cmbId, selectedIndex, selectedValue) -> {
+//            }
+//    );
+    public static <T> EventHandler<ActionEvent> CmbActionListener(ComboBoxListener<T> listener) {
+        return event -> {
+            @SuppressWarnings("unchecked")
+            ComboBox<T> comboBox = (ComboBox<T>) event.getSource();
+
+            // Ignore programmatic changes (like setValue/select in code)
+            if (!comboBox.isFocused()) {
+                return;
+            }
+
+            Platform.runLater(() -> {
+                String comboId = comboBox.getId() != null ? comboBox.getId() : "NO_ID";
+                int selectedIndex = comboBox.getSelectionModel().getSelectedIndex();
+                T selectedValue = comboBox.getSelectionModel().getSelectedItem();
+
+                listener.onChange(comboId, selectedIndex, selectedValue);
+            });
+        };
+    }
+
+    @FunctionalInterface
+    public interface ComboBoxListener<T> {
+
+        void onChange(String comboId, int selectedIndex, T selectedValue);
+    }
+
+    public static <T> void setComboBoxValue(EventHandler<ActionEvent> listener, int selection, ComboBox<T>... comboBoxes) {
+        for (ComboBox<T> comboBox : comboBoxes) {
+
+            comboBox.setOnAction(null);
+            if (!comboBox.getItems().isEmpty()) {
+                comboBox.getSelectionModel().select(selection);
+            }
+            comboBox.setOnAction(listener);
+        }
+    }
+
+    public static void requestFocusNullField(Object[][] checks, TextField fallback) {
+        Stream.of(checks)
+                .filter(c -> isObjectEqualTo(c[0], null, ""))
+                .map(c -> (TextField) c[1])
+                .findFirst()
+                .orElse(fallback)
+                .requestFocus();
+    }
+
+    public static AbstractMap.SimpleEntry<String, Class<? extends ScreenInterface>> returnData(
+            Class<? extends ScreenInterface> clazz) {
+        return new AbstractMap.SimpleEntry<>(getFormattedClassTitle(clazz), clazz);
+    }
+
+    static class BreakLoopException extends RuntimeException {
+    }
+
+    public static void ifError(boolean isError, TextField txtField, JSONObject poJSON, String pxeModuleName, Runnable orElse) {
+        if (isError) {
+            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+            txtField.setText("");
+            throw new BreakLoopException();
+        } else {
+            orElse.run();
+        }
+    }
+
+    /*Used when Reverse is applied*/
+ /*Requires Table's Observable list, pnDetail, and column index number that contains original index of the item from xml (e.g. 7 as index07-based on Model)*/
+    public static int getDetailRow(ObservableList<?> dataList, int lnpn, int columnIndex) {
+        int result = lnpn - 1;
+        try {
+            for (int lnCtr = 0; lnCtr < dataList.size(); lnCtr++) {
+                Object item = dataList.get(lnCtr);
+                // Build dynamic getter name like "getIndex07"
+                String getterName = String.format("getIndex%02d", columnIndex);
+                String value = (String) item.getClass().getMethod(getterName).invoke(item);
+
+                if (String.valueOf(lnpn).equals(value)) { // (compares pnDetail & value of column)
+                    // Always get index01
+                    String index01 = (String) item.getClass().getMethod("getIndex01").invoke(item);
+                    result = Integer.parseInt(index01) - 1;
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    /*Used when Reverse is applied*/
+ /*Requires Table's Observable list, Temporary Row No (RowNo visible in table), 
+    and column index number that contains original index of the item from xml (e.g. 7 as index07-based on Model)*/
+    public static int getDetailTempRow(ObservableList<?> dataList, int lnpn, int columnIndex) {
+        int result = 0;
+        try {
+            for (int lnCtr = 0; lnCtr < dataList.size(); lnCtr++) {
+                Object item = dataList.get(lnCtr);
+                // Always search using Index01
+                String index01 = (String) item.getClass().getMethod("getIndex01").invoke(item);
+
+                if (String.valueOf(lnpn).equals(index01)) { // (compares temp Row No & value of column 1 or row 1)
+                    // Build dynamic getter name for return field sample index07
+                    String getterName = String.format("getIndex%02d", columnIndex); // gets the original index from columnIndex (e.g. 7)
+                    String value = (String) item.getClass().getMethod(getterName).invoke(item);
+                    result = Integer.parseInt(value);
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    /*Checks if the folder exists from path, creates if not */
+ /*Requires JSONObject and folder path */
+    public static JSONObject checkIfFolderExists(JSONObject poJSON, String lsExportPath) {
+        File folder = new File(lsExportPath);
+        if (!folder.exists()) {
+            if (folder.mkdirs()) {
+                // Folder successfully created
+                System.out.println("Folder created at: " + folder.getAbsolutePath());
+            } else {
+                // Failed to create folder
+                poJSON.put("result", "error");
+                poJSON.put("message", "Failed to create folder. \n\nEnsure the application has write permissions \"");
+                return poJSON;
+            }
+        }
+        return poJSON;
+    }
+
 }
