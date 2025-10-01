@@ -105,7 +105,6 @@ public class POReplacement_EntryController implements Initializable, ScreenInter
     private ChangeListener<String> detailSearchListener;
     private ChangeListener<String> mainSearchListener;
     JFXUtil.ReloadableTableTask loadTableDetail, loadTableMain;
-
     @FXML
     private AnchorPane apMainAnchor, apBrowse, apButton, apMaster, apDetail;
     @FXML
@@ -1098,13 +1097,13 @@ public class POReplacement_EntryController implements Initializable, ScreenInter
                         } catch (Exception e) {
 
                         }
-                        if (poController.PurchaseOrderReceiving().getPurchaseOrderCount() > 0) {
-                            for (int lnCtr = 0; lnCtr <= poController.PurchaseOrderReceiving().getPurchaseOrderCount() - 1; lnCtr++) {
+                        if (poController.PurchaseOrderReceiving().getPurchaseOrderReturnCount() > 0) {
+                            for (int lnCtr = 0; lnCtr <= poController.PurchaseOrderReceiving().getPurchaseOrderReturnCount() - 1; lnCtr++) {
                                 try {
                                     main_data.add(new ModelDeliveryAcceptance_Main(String.valueOf(lnCtr + 1),
-                                            String.valueOf(poController.PurchaseOrderReceiving().PurchaseOrderList(lnCtr).Supplier().getCompanyName()),
-                                            String.valueOf(poController.PurchaseOrderReceiving().PurchaseOrderList(lnCtr).getTransactionDate()),
-                                            String.valueOf(poController.PurchaseOrderReceiving().PurchaseOrderList(lnCtr).getTransactionNo())
+                                            String.valueOf(poController.PurchaseOrderReceiving().PurchaseOrderReturnList(lnCtr).Supplier().getCompanyName()),
+                                            String.valueOf(poController.PurchaseOrderReceiving().PurchaseOrderReturnList(lnCtr).getTransactionDate()),
+                                            String.valueOf(poController.PurchaseOrderReceiving().PurchaseOrderReturnList(lnCtr).getTransactionNo())
                                     ));
 
                                 } catch (Exception e) {
@@ -1315,7 +1314,7 @@ public class POReplacement_EntryController implements Initializable, ScreenInter
             }
         });
         JFXUtil.applyRowHighlighting(tblViewMainList, item -> ((ModelDeliveryAcceptance_Main) item).getIndex04(), highlightedRowsMain);
-        JFXUtil.applyRowHighlighting(tblViewMainList, item -> ((ModelDeliveryAcceptance_Detail) item).getIndex01(), highlightedRowsDetail);
+        JFXUtil.applyRowHighlighting(tblViewTransDetails, item -> ((ModelDeliveryAcceptance_Detail) item).getIndex01(), highlightedRowsDetail);
         JFXUtil.setKeyEventFilter(this::tableKeyEvents, tblViewTransDetails);
         JFXUtil.adjustColumnForScrollbar(tblViewTransDetails, tblViewMainList);  // need to use computed-size as min-width on particular column to work
     }
@@ -1365,7 +1364,7 @@ public class POReplacement_EntryController implements Initializable, ScreenInter
                     int pnRowMain = Integer.parseInt(selected.getIndex01()) - 1;
                     pnMain = pnRowMain;
 
-                    poJSON = poController.PurchaseOrderReceiving().addPurchaseOrderReturnToPORDetail(tfTransactionNo.getText());
+                    poJSON = poController.PurchaseOrderReceiving().addPurchaseOrderReturnToPORDetail(selected.getIndex04());
                     if ("error".equals((String) poJSON.get("result"))) {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         return;
