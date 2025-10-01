@@ -73,7 +73,7 @@ import ph.com.guanzongroup.cas.cashflow.services.CashflowControllers;
  *
  * @author Aldrich & Arsiela Team 2 06102025
  */
-public class SOATagging_EntryController implements Initializable, ScreenInterface {
+public class SOATagging_EntryMonarchController implements Initializable, ScreenInterface {
 
     private GRiderCAS oApp;
     static CashflowControllers poSOATaggingController;
@@ -135,7 +135,6 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        psIndustryId = ""; // general
 
         poSOATaggingController = new CashflowControllers(oApp, null);
         poJSON = new JSONObject();

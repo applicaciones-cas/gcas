@@ -125,6 +125,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.util.Callback;
 import java.io.File;
+
 /**
  * Date : 4/28/2025
  *
@@ -777,7 +778,7 @@ public class JFXUtil {
         });
     }
 
-    /* Clears textFields, textAreas, checkboxes & datepickers by calling its parent anchorpane */
+    /* Clears textFields, textAreas, checkboxes,combobxes, & datepickers by calling its parent anchorpane */
  /* For datepicker it auto set value to null before clearing text input*/
     public static void clearTextFields(AnchorPane... anchorPanes) {
         for (AnchorPane pane : anchorPanes) {
@@ -797,6 +798,9 @@ public class JFXUtil {
                 }
             } else if (node instanceof CheckBox) {
                 ((CheckBox) node).setSelected(false); // uncheck
+            } else if (node instanceof ComboBox) {
+                ComboBox<?> combo = (ComboBox<?>) node;
+                combo.getSelectionModel().select(0);
             } else if (node instanceof Parent) {
                 clearTextInputsRecursive((Parent) node);
             }
@@ -2405,7 +2409,7 @@ public class JFXUtil {
         return valueToNameMap;
     }
 
-//    EventHandler<ActionEvent> comboboxlistener = JFXUtil.CmbActionListener(
+//    EventHandler<ActionEvent> comboBoxActionListener = JFXUtil.CmbActionListener(
 //            (cmbId, selectedIndex, selectedValue) -> {
 //            }
 //    );
@@ -2414,11 +2418,18 @@ public class JFXUtil {
             @SuppressWarnings("unchecked")
             ComboBox<T> comboBox = (ComboBox<T>) event.getSource();
 
-            String comboId = comboBox.getId() != null ? comboBox.getId() : "NO_ID";
-            int selectedIndex = comboBox.getSelectionModel().getSelectedIndex();
-            T selectedValue = comboBox.getSelectionModel().getSelectedItem();
+            // Ignore programmatic changes (like setValue/select in code)
+            if (!comboBox.isFocused()) {
+                return;
+            }
 
-            listener.onChange(comboId, selectedIndex, selectedValue);
+            Platform.runLater(() -> {
+                String comboId = comboBox.getId() != null ? comboBox.getId() : "NO_ID";
+                int selectedIndex = comboBox.getSelectionModel().getSelectedIndex();
+                T selectedValue = comboBox.getSelectionModel().getSelectedItem();
+
+                listener.onChange(comboId, selectedIndex, selectedValue);
+            });
         };
     }
 
@@ -2466,6 +2477,8 @@ public class JFXUtil {
         }
     }
 
+    /*Used when Reverse is applied*/
+ /*Requires Table's Observable list, pnDetail, and column index number that contains original index of the item from xml (e.g. 7 as index07-based on Model)*/
     public static int getDetailRow(ObservableList<?> dataList, int lnpn, int columnIndex) {
         int result = lnpn - 1;
         try {
@@ -2475,7 +2488,7 @@ public class JFXUtil {
                 String getterName = String.format("getIndex%02d", columnIndex);
                 String value = (String) item.getClass().getMethod(getterName).invoke(item);
 
-                if (String.valueOf(lnpn).equals(value)) {
+                if (String.valueOf(lnpn).equals(value)) { // (compares pnDetail & value of column)
                     // Always get index01
                     String index01 = (String) item.getClass().getMethod("getIndex01").invoke(item);
                     result = Integer.parseInt(index01) - 1;
@@ -2488,6 +2501,9 @@ public class JFXUtil {
         return result;
     }
 
+    /*Used when Reverse is applied*/
+ /*Requires Table's Observable list, Temporary Row No (RowNo visible in table), 
+    and column index number that contains original index of the item from xml (e.g. 7 as index07-based on Model)*/
     public static int getDetailTempRow(ObservableList<?> dataList, int lnpn, int columnIndex) {
         int result = 0;
         try {
@@ -2496,9 +2512,9 @@ public class JFXUtil {
                 // Always search using Index01
                 String index01 = (String) item.getClass().getMethod("getIndex01").invoke(item);
 
-                if (String.valueOf(lnpn).equals(index01)) {
+                if (String.valueOf(lnpn).equals(index01)) { // (compares temp Row No & value of column 1 or row 1)
                     // Build dynamic getter name for return field sample index07
-                    String getterName = String.format("getIndex%02d", columnIndex);
+                    String getterName = String.format("getIndex%02d", columnIndex); // gets the original index from columnIndex (e.g. 7)
                     String value = (String) item.getClass().getMethod(getterName).invoke(item);
                     result = Integer.parseInt(value);
                     break;
@@ -2510,7 +2526,9 @@ public class JFXUtil {
         return result;
     }
 
-    public static JSONObject checkIfFolderExists(JSONObject poJSON, String lsExportPath ) {
+    /*Checks if the folder exists from path, creates if not */
+ /*Requires JSONObject and folder path */
+    public static JSONObject checkIfFolderExists(JSONObject poJSON, String lsExportPath) {
         File folder = new File(lsExportPath);
         if (!folder.exists()) {
             if (folder.mkdirs()) {
