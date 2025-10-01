@@ -50,6 +50,7 @@ import org.guanzon.appdriver.constant.EditMode;
 import org.json.simple.JSONObject;
 import ph.com.guanzongroup.cas.cashflow.CheckImporting;
 import static ph.com.guanzongroup.cas.cashflow.CheckImporting.importToList;
+import ph.com.guanzongroup.cas.cashflow.CheckPaymentImporting;
 import ph.com.guanzongroup.cas.cashflow.Disbursement;
 import ph.com.guanzongroup.cas.cashflow.services.CashflowControllers;
 import ph.com.guanzongroup.cas.cashflow.status.DisbursementStatic;
@@ -65,7 +66,7 @@ public class CheckImportingController implements Initializable, ScreenInterface 
     private JSONObject poJSON;
     private static final int ROWS_PER_PAGE = 50;
     private final String pxeModuleName = "Check Importing";
-    private CheckImporting poCheckImporting;
+    private CheckPaymentImporting poCheckImporting;
 
     public int pnEditMode;
     private double xOffset = 0;
@@ -127,17 +128,17 @@ public class CheckImportingController implements Initializable, ScreenInterface 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         try {
-            poCheckImporting = new CashflowControllers(oApp, null).CheckImporting();
-            poCheckImporting.setTransactionStatus(DisbursementStatic.VERIFIED);
+            poCheckImporting = new CashflowControllers(oApp, null).CheckPaymentImporting();
+            poCheckImporting.setRecordStatus(DisbursementStatic.VERIFIED);
             poJSON = new JSONObject();
-            poJSON = poCheckImporting.InitTransaction();
-            if (!"success".equals((String) poJSON.get("result"))) {
-                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-            }
+//            poJSON = poCheckImporting.initialize();
+//            if (!"success".equals((String) poJSON.get("result"))) {
+//                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+//            }
             initAll();
             Platform.runLater(() -> {
-                poCheckImporting.Master().setIndustryID(psIndustryId);
-                poCheckImporting.Master().setCompanyID(psCompanyId);
+//                poCheckImporting.Master().setIndustryID(psIndustryId);
+//                poCheckImporting.Master().setCompanyID(psCompanyId);
                 loadRecordSearch();
             });
         } catch (SQLException | GuanzonException ex) {
@@ -155,11 +156,11 @@ public class CheckImportingController implements Initializable, ScreenInterface 
     }
 
     private void loadRecordSearch() {
-        try {
-            lblSource.setText(poCheckImporting.Master().Company().getCompanyName() + " - " + poCheckImporting.Master().Industry().getDescription());
-        } catch (SQLException | GuanzonException ex) {
-            Logger.getLogger(CheckImportingController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        }
+//        try {
+//            lblSource.setText(poCheckImporting.Master().Company().getCompanyName() + " - " + poCheckImporting.Master().Industry().getDescription());
+//        } catch (SQLException | GuanzonException ex) {
+//            Logger.getLogger(CheckImportingController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+//        }
     }
 
     private void initButtonsClickActions() {
@@ -175,22 +176,38 @@ public class CheckImportingController implements Initializable, ScreenInterface 
             switch (lsButton) {
                 case "btnImportFile":
                     handleImportFile(event);
+//                    for (int lnctr = 0; lnctr < main_data.size(); lnctr++) {
+//                         String Transaction = poCheckImporting.getCheckTransaction(String.valueOf(main_data.get(lnctr).getIndex02()),"DISb");
+//                         
+//                         poJSON = poCheckImporting.openRecord(Transaction);
+//
+//                         poJSON = poCheckImporting.updateRecord();
+//                        if ("error".equals(poJSON.get("result"))) {
+//                            ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
+//                            return;
+//                        }
+//                        poCheckImporting.CheckPayments(lnctr).setCheckNo(main_data.get(lnctr).getIndex07());
+//                    }
+                    pnEditMode = EditMode.UPDATE;
+                    initButtons(pnEditMode);
                     break;
                 case "btnSave":
                     if (!ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure you want to save the transaction?")) {
                         return;
                     }
-                    if (pnEditMode == EditMode.UPDATE) {
-                        poCheckImporting.Master().setModifiedDate(oApp.getServerDate());
-                        poCheckImporting.Master().setModifyingId(oApp.getUserID());
-                        poCheckImporting.Master().setBranchCode(oApp.getBranchCode());
-                    }
-                    poJSON = poCheckImporting.SaveTransaction();
-                    if (!"success".equals((String) poJSON.get("result"))) {
-                        ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
-                        return;
+                    for (int lnctr = 0; lnctr < main_data.size(); lnctr++) {
+                        String Transaction = poCheckImporting.getCheckTransaction(String.valueOf(main_data.get(lnctr).getIndex02()), "DISb");
+                        String CheckNo = String.valueOf(main_data.get(lnctr).getIndex07());
+//                        updateChecks(Transaction,lnctr);
+//                        poJSON = poCheckImporting.saveRecord();
+                       poJSON =  poCheckImporting.updateChecks(Transaction,CheckNo);
+                        if (!"success".equals((String) poJSON.get("result"))) {
+                            ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
+                            return;
+                        }
                     }
                     psImportingFilePath = "";
+                    main_data.clear();
                     pnEditMode = poCheckImporting.getEditMode();
                     ShowMessageFX.Information((String) poJSON.get("message"), pxeModuleName, null);
                     break;
@@ -240,7 +257,7 @@ public class CheckImportingController implements Initializable, ScreenInterface 
                                 if (!isExchangingBankName()) {
                                     return;
                                 }
-                                poJSON = poCheckImporting.SearchBanks(lsValue, false);
+                                poJSON = poCheckImporting.searchBanks(lsValue);
                                 if ("error".equals((String) poJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
                                     return;
@@ -430,6 +447,21 @@ public class CheckImportingController implements Initializable, ScreenInterface 
         return true;
     }
     
+    private void updateChecks(String TransactionNo, int row){
+            try {
+                poJSON = poCheckImporting.openRecord(TransactionNo);
+                
+                poJSON = poCheckImporting.updateRecord();
+                if ("error".equals(poJSON.get("result"))) {
+                    ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
+                    return;
+                }
+                poCheckImporting.CheckPayments(row).setCheckNo(main_data.get(row).getIndex07());
+            } catch (SQLException | GuanzonException ex) {
+                Logger.getLogger(CheckImportingController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+    }
+    
     private void handleImportFile(ActionEvent event) {
     FileChooser fileChooser = new FileChooser();
     fileChooser.setTitle("Import File");
@@ -458,12 +490,12 @@ public class CheckImportingController implements Initializable, ScreenInterface 
             List<CheckImporting.CheckRequest> merged = new ArrayList<>();
 
             // Step 1: read Excel/CSV rows into CheckRequest list
-            List<CheckImporting.CheckRequest> rawRows =
+            List<CheckPaymentImporting.CheckRequest> rawRows =
                 poCheckImporting.importToList(selectedFile.toPath());
 
             // Step 2: process each row individually
             for (int lnCtr = 0; lnCtr < rawRows.size(); lnCtr++) {
-                CheckImporting.CheckRequest row = rawRows.get(lnCtr);
+                CheckPaymentImporting.CheckRequest row = rawRows.get(lnCtr);
                 String voucherNo = row.getVoucherNo();
 
                 if (voucherNo == null || voucherNo.trim().isEmpty()) {
@@ -501,18 +533,6 @@ public class CheckImportingController implements Initializable, ScreenInterface 
             tblVwMain.setItems(main_data);  // display once all rows processed
             tblVwMain.refresh();
             // update transaction after successful import
-            JSONObject update = poCheckImporting.UpdateTransaction();
-            if ("error".equals(update.get("result"))) {
-                ShowMessageFX.Warning((String) update.get("message"), pxeModuleName, null);
-                return;
-            }
-
-            pnEditMode = poCheckImporting.getEditMode();
-            initButtons(pnEditMode);
-            for(int lnctr = 0;lnctr < main_data.size(); lnctr++){
-                poCheckImporting.CheckPayments(lnctr).setCheckNo(main_data.get(lnctr).getIndex07());
-                
-            }
 
         });
 
