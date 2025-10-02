@@ -1394,14 +1394,14 @@ public class POReplacement_EntryCarController implements Initializable, ScreenIn
                             }
                         } catch (Exception e) {
                         }
-                        if (poController.PurchaseOrderReceiving().getPurchaseOrderCount() > 0) {
+                        if (poController.PurchaseOrderReceiving().getPurchaseOrderReturnCount() > 0) {
                             //retreiving using column index
-                            for (int lnCtr = 0; lnCtr <= poController.PurchaseOrderReceiving().getPurchaseOrderCount() - 1; lnCtr++) {
+                            for (int lnCtr = 0; lnCtr <= poController.PurchaseOrderReceiving().getPurchaseOrderReturnCount() - 1; lnCtr++) {
                                 try {
                                     main_data.add(new ModelDeliveryAcceptance_Main(String.valueOf(lnCtr + 1),
-                                            String.valueOf(poController.PurchaseOrderReceiving().PurchaseOrderList(lnCtr).Supplier().getCompanyName()),
-                                            String.valueOf(poController.PurchaseOrderReceiving().PurchaseOrderList(lnCtr).getTransactionDate()),
-                                            String.valueOf(poController.PurchaseOrderReceiving().PurchaseOrderList(lnCtr).getTransactionNo())
+                                            String.valueOf(poController.PurchaseOrderReceiving().PurchaseOrderReturnList(lnCtr).Supplier().getCompanyName()),
+                                            String.valueOf(poController.PurchaseOrderReceiving().PurchaseOrderReturnList(lnCtr).getTransactionDate()),
+                                            String.valueOf(poController.PurchaseOrderReceiving().PurchaseOrderReturnList(lnCtr).getTransactionNo())
                                     ));
                                 } catch (Exception e) {
                                 }
