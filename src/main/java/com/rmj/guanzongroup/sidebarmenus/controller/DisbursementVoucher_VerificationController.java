@@ -245,8 +245,6 @@ public class DisbursementVoucher_VerificationController implements Initializable
     @FXML
     private TableView tblVwJournalDetails;
     @FXML
-    private Label txtAccountCode;
-    @FXML
     private TableColumn tblJournalRowNo, tblJournalAccountCode, tblJournalAccountDescription, tblJournalDebitAmount, tblJournalCreditAmount, tblJournalReportMonthYear;
 
     @Override
@@ -275,7 +273,7 @@ public class DisbursementVoucher_VerificationController implements Initializable
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         try {
-            txtAccountCode.setVisible(false);
+//            txtAccountCode.setVisible(false);
 //            tfAccountCodeDetail.setVisible(false);
             poDisbursementController = new CashflowControllers(oApp, null).Disbursement();
             poDisbursementController.setTransactionStatus(DisbursementStatic.OPEN + DisbursementStatic.VERIFIED + DisbursementStatic.RETURNED);

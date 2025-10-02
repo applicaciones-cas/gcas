@@ -181,8 +181,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
     /*DV Master Payment Mode Tabs */
     @FXML
     private Tab tabCheck, tabBankTransfer, tabOnlinePayment;
-    @FXML
-    private Label txtAccountCode;
+
     @FXML
     private DatePicker dpDVTransactionDate;
     @FXML
@@ -281,7 +280,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         try {
-            txtAccountCode.setVisible(false);
+//            txtAccountCode.setVisible(false);
 
             poDisbursementController = new CashflowControllers(oApp, null).Disbursement();
             poJSON = new JSONObject();
