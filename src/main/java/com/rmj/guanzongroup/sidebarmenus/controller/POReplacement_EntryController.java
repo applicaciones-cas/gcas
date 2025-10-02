@@ -369,6 +369,9 @@ public class POReplacement_EntryController implements Initializable, ScreenInter
                     loadTableDetail.reload();
                 }
                 initButton(pnEditMode);
+                if (lsButton.equals("btnUpdate")) {
+                    moveNext(false, false);
+                }
             }
         } catch (CloneNotSupportedException | SQLException | GuanzonException | ParseException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
@@ -1314,6 +1317,7 @@ public class POReplacement_EntryController implements Initializable, ScreenInter
                     goToPageBasedOnSelectedRow(String.valueOf(pnMain));
                 }
                 loadTableDetail.reload();
+                moveNext(false, false);
             } else {
                 ShowMessageFX.Warning(null, pxeModuleName, "Data can only be viewed when in ADD or UPDATE mode.");
             }
