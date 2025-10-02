@@ -167,6 +167,7 @@ public class POReplacement_EntrySPCarController implements Initializable, Screen
             loadRecordSearch();
             btnNew.fire();
         });
+        JFXUtil.initKeyClickObject(apMainAnchor, lastFocusedTextField, previousSearchedTextField); // for btnSearch Reference
 
     }
 

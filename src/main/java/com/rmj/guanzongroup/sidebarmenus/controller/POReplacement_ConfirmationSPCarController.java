@@ -27,6 +27,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
+import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -46,6 +47,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import static javafx.scene.input.KeyCode.DOWN;
 import static javafx.scene.input.KeyCode.ENTER;
 import static javafx.scene.input.KeyCode.F3;
@@ -69,22 +71,21 @@ import org.guanzon.cas.purchasing.services.PurchaseOrderReceivingControllers;
 import org.guanzon.cas.purchasing.status.PurchaseOrderReceivingStatus;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.format.DateTimeParseException;
 import javafx.animation.PauseTransition;
 import javafx.scene.control.ComboBox;
 import org.guanzon.appdriver.constant.DocumentType;
+import java.text.SimpleDateFormat;
 import org.guanzon.appdriver.agent.ShowDialogFX;
 import org.guanzon.appdriver.constant.UserRight;
 import java.util.concurrent.atomic.AtomicReference;
-import javafx.scene.input.KeyCode;
 
 /**
  * FXML Controller class
  *
  * @author Team 2
  */
-public class POReplacement_ConfirmationController implements Initializable, ScreenInterface {
+public class POReplacement_ConfirmationSPCarController implements Initializable, ScreenInterface {
 
     private GRiderCAS oApp;
     private JSONObject poJSON;
@@ -99,7 +100,6 @@ public class POReplacement_ConfirmationController implements Initializable, Scre
     private String psCompanyId = "";
     private String psCategoryId = "";
     private String psSupplierId = "";
-    private boolean pbEntered = false;
 
     private ObservableList<ModelDeliveryAcceptance_Main> main_data = FXCollections.observableArrayList();
     private ObservableList<ModelDeliveryAcceptance_Detail> details_data = FXCollections.observableArrayList();
@@ -109,11 +109,17 @@ public class POReplacement_ConfirmationController implements Initializable, Scre
     private FilteredList<ModelDeliveryAcceptance_Detail> filteredDataDetail;
     Map<String, String> imageinfo_temp = new HashMap<>();
 
+    private double mouseAnchorX;
+    private double mouseAnchorY;
+    private double scaleFactor = 1.0;
     private FileChooser fileChooser;
     private int pnAttachment;
 
     private int currentIndex = 0;
+    double ldstackPaneWidth = 0;
+    double ldstackPaneHeight = 0;
     boolean lbresetpredicate = false;
+    private boolean pbEntered = false;
 
     private final Map<String, List<String>> highlightedRowsMain = new HashMap<>();
     private final Map<String, List<String>> highlightedRowsDetail = new HashMap<>();
@@ -136,7 +142,7 @@ public class POReplacement_ConfirmationController implements Initializable, Scre
     @FXML
     private Button btnUpdate, btnSearch, btnSave, btnCancel, btnConfirm, btnVoid, btnPrint, btnReturn, btnHistory, btnRetrieve, btnClose, btnAddAttachment, btnRemoveAttachment, btnArrowLeft, btnArrowRight;
     @FXML
-    private DatePicker dpTransactionDate, dpReferenceDate, dpExpiryDate;
+    private DatePicker dpTransactionDate, dpReferenceDate;
     @FXML
     private TextArea taRemarks;
     @FXML
@@ -172,7 +178,6 @@ public class POReplacement_ConfirmationController implements Initializable, Scre
         clearTextFields();
 
         Platform.runLater(() -> {
-            psIndustryId = "";
             poController.PurchaseOrderReceiving().Master().setIndustryId(psIndustryId);
             poController.PurchaseOrderReceiving().Master().setCompanyId(psCompanyId);
             poController.PurchaseOrderReceiving().setIndustryId(psIndustryId);
@@ -188,8 +193,8 @@ public class POReplacement_ConfirmationController implements Initializable, Scre
 
         pnEditMode = EditMode.UNKNOWN;
         initButton(pnEditMode);
-
         JFXUtil.initKeyClickObject(apMainAnchor, lastFocusedTextField, previousSearchedTextField); // for btnSearch Reference
+
     }
 
     @Override
@@ -238,7 +243,6 @@ public class POReplacement_ConfirmationController implements Initializable, Scre
                                 poController.PurchaseOrderReceiving().Master().setIndustryId(psIndustryId);
                                 poController.PurchaseOrderReceiving().Master().setCompanyId(psCompanyId);
                                 poController.PurchaseOrderReceiving().Master().setCategoryCode(psCategoryId);
-
                             }
                             Platform.runLater(() -> {
                                 try {
@@ -250,11 +254,11 @@ public class POReplacement_ConfirmationController implements Initializable, Scre
                                     loadTableDetail.reload();
                                     loadTableAttachment.reload();
                                 } catch (CloneNotSupportedException ex) {
-                                    Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
+                                    Logger.getLogger(POReplacement_ConfirmationSPCarController.class.getName()).log(Level.SEVERE, null, ex);
                                 } catch (SQLException ex) {
-                                    Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
+                                    Logger.getLogger(POReplacement_ConfirmationSPCarController.class.getName()).log(Level.SEVERE, null, ex);
                                 } catch (GuanzonException ex) {
-                                    Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
+                                    Logger.getLogger(POReplacement_ConfirmationSPCarController.class.getName()).log(Level.SEVERE, null, ex);
                                 }
                                 isPrinted = false;
                             });
@@ -301,7 +305,7 @@ public class POReplacement_ConfirmationController implements Initializable, Scre
                             tfOrderNo.textProperty().removeListener(mainSearchListener);
                             mainSearchListener = null; // Clear reference to avoid memory leaks
                         }
-                        retrievePOReplacement();
+                        retrievePOR();
                         JFXUtil.disableAllHighlight(tblViewMainList, highlightedRowsMain);
                         break;
                     case "btnSave":
@@ -319,6 +323,7 @@ public class POReplacement_ConfirmationController implements Initializable, Scre
 
                                 // Confirmation Prompt
                                 JSONObject loJSON = poController.PurchaseOrderReceiving().OpenTransaction(poController.PurchaseOrderReceiving().Master().getTransactionNo());
+                                loadRecordMaster();
                                 if ("success".equals(loJSON.get("result"))) {
                                     if (poController.PurchaseOrderReceiving().Master().getTransactionStatus().equals(PurchaseOrderReceivingStatus.OPEN)) {
                                         if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to confirm this transaction?")) {
@@ -363,7 +368,7 @@ public class POReplacement_ConfirmationController implements Initializable, Scre
                             } else {
                                 ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
                                 JFXUtil.disableAllHighlightByColor(tblViewMainList, "#A7C7E7", highlightedRowsMain);
-                                JFXUtil.highlightByKey(tblViewMainList, String.valueOf(pnMain + 1), "#C1E1C1", highlightedRowsMain);;
+                                JFXUtil.highlightByKey(tblViewMainList, String.valueOf(pnMain + 1), "#C1E1C1", highlightedRowsMain);
                             }
                         } else {
                             return;
@@ -435,7 +440,6 @@ public class POReplacement_ConfirmationController implements Initializable, Scre
                             } else {
                                 imageinfo_temp.put(selectedFile.getName().toString(), imgPath.toString());
                             }
-
                             poJSON = poController.PurchaseOrderReceiving().addAttachment();
                             if ("error".equals((String) poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -443,7 +447,6 @@ public class POReplacement_ConfirmationController implements Initializable, Scre
                             pnAttachment = poController.PurchaseOrderReceiving().getTransactionAttachmentCount() - 1;
                             poController.PurchaseOrderReceiving().TransactionAttachmentList(pnAttachment).getModel().setFileName(imgPath2);
                             poController.PurchaseOrderReceiving().TransactionAttachmentList(pnAttachment).getModel().setSourceNo(poController.PurchaseOrderReceiving().Master().getTransactionNo());
-                            poController.PurchaseOrderReceiving().TransactionAttachmentList(pnAttachment).getModel().getTransactionNo();
                             loadTableAttachment.reload();
                             tblAttachments.getFocusModel().focus(pnAttachment);
                             tblAttachments.getSelectionModel().select(pnAttachment);
@@ -481,6 +484,7 @@ public class POReplacement_ConfirmationController implements Initializable, Scre
                     poController.PurchaseOrderReceiving().Master().setIndustryId(psIndustryId);
                     poController.PurchaseOrderReceiving().Master().setCompanyId(psCompanyId);
                     poController.PurchaseOrderReceiving().Master().setCategoryCode(psCategoryId);
+
                 }
 
                 if (lsButton.equals("btnPrint") || lsButton.equals("btnAddAttachment") || lsButton.equals("btnRemoveAttachment")
@@ -488,25 +492,24 @@ public class POReplacement_ConfirmationController implements Initializable, Scre
                 } else {
                     loadRecordMaster();
                     loadTableDetail.reload();
-                    loadTableAttachment.reload();
                 }
-                initButton(pnEditMode);
 
+                initButton(pnEditMode);
                 if (lsButton.equals("btnUpdate")) {
                     if (poController.PurchaseOrderReceiving().Detail(pnDetail).getStockId() != null && !poController.PurchaseOrderReceiving().Detail(pnDetail).getStockId().equals("")) {
                         tfReceiveQuantity.requestFocus();
                     } else {
-                        tfBarcode.requestFocus();
+                        tfBrand.requestFocus();
                     }
                 }
 
             }
         } catch (CloneNotSupportedException | SQLException | GuanzonException | ParseException | IOException ex) {
-            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(POReplacement_ConfirmationSPCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
 
-    public void retrievePOReplacement() {
+    public void retrievePOR() {
         poJSON = new JSONObject();
         poJSON = poController.PurchaseOrderReceiving().loadPurchaseOrderReceiving("confirmation", psCompanyId, psSupplierId, tfSearchReferenceNo.getText());
         if (!"success".equals((String) poJSON.get("result"))) {
@@ -515,204 +518,259 @@ public class POReplacement_ConfirmationController implements Initializable, Scre
             loadTableMain.reload();
         }
     }
-    ChangeListener<Boolean> txtMaster_Focus = JFXUtil.FocusListener(TextField.class,
-            (lsID, lsValue) -> {
-                /*Lost Focus*/
-                switch (lsID) {
-                    case "tfSupplier":
-                        if (lsValue.isEmpty()) {
-                            poJSON = poController.PurchaseOrderReceiving().Master().setSupplierId("");
-                        }
-                        break;
-                    case "tfTrucking":
-                        if (lsValue.isEmpty()) {
-                            poJSON = poController.PurchaseOrderReceiving().Master().setTruckingId("");
-                        }
-                        break;
-                    case "tfAreaRemarks":
-                        break;
-                    case "tfTerm":
-                        if (lsValue.isEmpty()) {
-                            poJSON = poController.PurchaseOrderReceiving().Master().setTermCode("");
-                        }
-                        break;
-                    case "tfReferenceNo":
-                        if (!lsValue.isEmpty()) {
-                            poJSON = poController.PurchaseOrderReceiving().Master().setReferenceNo(lsValue);
-                        } else {
-                            poJSON = poController.PurchaseOrderReceiving().Master().setReferenceNo("");
-                        }
-                        if ("error".equals(poJSON.get("result"))) {
-                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                            tfReferenceNo.setText("");
-                            break;
-                        }
-                        break;
-                    case "tfDiscountRate":
-                        lsValue = JFXUtil.removeComma(lsValue);
-                        poJSON = poController.PurchaseOrderReceiving().computeDiscount(Double.valueOf(lsValue));
-                        if ("error".equals(poJSON.get("result"))) {
-                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                            break;
-                        }
-                        poJSON = poController.PurchaseOrderReceiving().Master().setDiscountRate((Double.valueOf(lsValue)));
-                        if ("error".equals(poJSON.get("result"))) {
-                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                            break;
-                        }
 
+    final ChangeListener<? super Boolean> txtMaster_Focus = (o, ov, nv) -> {
+        poJSON = new JSONObject();
+        TextField txtPersonalInfo = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
+        String lsTxtFieldID = (txtPersonalInfo.getId());
+        String lsValue = (txtPersonalInfo.getText() == null ? "" : txtPersonalInfo.getText());
+
+        if (lsValue == null) {
+            return;
+        }
+        if (!nv) {
+            /*Lost Focus*/
+            switch (lsTxtFieldID) {
+                case "tfSupplier":
+                    if (lsValue.isEmpty()) {
+                        poJSON = poController.PurchaseOrderReceiving().Master().setSupplierId("");
+                    }
+                    break;
+                case "tfTrucking":
+                    if (lsValue.isEmpty()) {
+                        poJSON = poController.PurchaseOrderReceiving().Master().setTruckingId("");
+                    }
+                    break;
+                case "tfAreaRemarks":
+                    break;
+                case "tfTerm":
+                    if (lsValue.isEmpty()) {
+                        poJSON = poController.PurchaseOrderReceiving().Master().setTermCode("");
+                    }
+                    break;
+                case "tfReferenceNo":
+                    if (!lsValue.isEmpty()) {
+                        poJSON = poController.PurchaseOrderReceiving().Master().setReferenceNo(lsValue);
+                    } else {
+                        poJSON = poController.PurchaseOrderReceiving().Master().setReferenceNo("");
+                    }
+                    if ("error".equals(poJSON.get("result"))) {
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                        tfReferenceNo.setText("");
                         break;
-                    case "tfDiscountAmount":
-                        lsValue = JFXUtil.removeComma(lsValue);
-                        poJSON = poController.PurchaseOrderReceiving().computeDiscountRate(Double.valueOf(lsValue));
-                        if ("error".equals(poJSON.get("result"))) {
-                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                            break;
-                        }
-                        poJSON = poController.PurchaseOrderReceiving().Master().setDiscount(Double.valueOf(lsValue));
-                        if ("error".equals(poJSON.get("result"))) {
-                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                            break;
-                        }
-
+                    }
+                    break;
+                case "tfDiscountRate":
+                    if (lsValue.isEmpty()) {
+                        lsValue = "0.00";
+                    }
+                    poJSON = poController.PurchaseOrderReceiving().computeDiscount(Double.valueOf(lsValue.replace(",", "")));
+                    if ("error".equals(poJSON.get("result"))) {
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         break;
+                    }
+                    poJSON = poController.PurchaseOrderReceiving().Master().setDiscountRate((Double.valueOf(lsValue.replace(",", ""))));
+                    if ("error".equals(poJSON.get("result"))) {
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                        break;
+                    }
 
-                }
+                    break;
+                case "tfDiscountAmount":
+                    if (lsValue.isEmpty()) {
+                        lsValue = "0.00";
+                    }
 
-                loadRecordMaster();
-            });
+                    poJSON = poController.PurchaseOrderReceiving().computeDiscountRate(Double.valueOf(lsValue.replace(",", "")));
+                    if ("error".equals(poJSON.get("result"))) {
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                        break;
+                    }
+                    poJSON = poController.PurchaseOrderReceiving().Master().setDiscount(Double.valueOf(lsValue.replace(",", "")));
+                    if ("error".equals(poJSON.get("result"))) {
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                        break;
+                    }
 
-    ChangeListener<Boolean> txtArea_Focus = JFXUtil.FocusListener(TextArea.class,
-            (lsID, lsValue) -> {
-                /*Lost Focus*/
-                lsValue = lsValue.trim();
-                switch (lsID) {
-                    case "taRemarks"://Remarks
-                        poJSON = poController.PurchaseOrderReceiving().Master().setRemarks(lsValue);
+                    break;
+
+            }
+
+            loadRecordMaster();
+        }
+
+    };
+
+    final ChangeListener<? super Boolean> txtArea_Focus = (o, ov, nv) -> {
+        TextArea txtField = (TextArea) ((ReadOnlyBooleanPropertyBase) o).getBean();
+        String lsID = (txtField.getId());
+        String lsValue = txtField.getText();
+
+        if (lsValue == null) {
+            return;
+        }
+        poJSON = new JSONObject();
+        if (!nv) {
+            /*Lost Focus*/
+            lsValue = lsValue.trim();
+            switch (lsID) {
+
+                case "taRemarks"://Remarks
+                    poJSON = poController.PurchaseOrderReceiving().Master().setRemarks(lsValue);
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                        return;
+                    }
+                    break;
+            }
+            loadRecordMaster();
+        } else {
+            txtField.selectAll();
+        }
+    };
+
+    // Method to handle focus change and track the last focused TextField
+    final ChangeListener<? super Boolean> txtDetail_Focus = (o, ov, nv) -> {
+        poJSON = new JSONObject();
+        TextField txtPersonalInfo = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
+        String lsTxtFieldID = (txtPersonalInfo.getId());
+        String lsValue = (txtPersonalInfo.getText() == null ? "" : txtPersonalInfo.getText());
+
+        if (lsValue == null) {
+            return;
+        }
+        if (!nv) {
+            /*Lost Focus*/
+            switch (lsTxtFieldID) {
+                case "tfDescription":
+                case "tfBarcode":
+                    //if value is blank then reset
+                    if (lsValue.equals("")) {
+                        poJSON = poController.PurchaseOrderReceiving().Detail(pnDetail).setStockId("");
+                    }
+
+                    break;
+                case "tfSupersede":
+                    //if value is blank then reset
+                    if (lsValue.equals("")) {
+                        poJSON = poController.PurchaseOrderReceiving().Detail(pnDetail).setReplaceId("");
+                    }
+
+                    break;
+                case "tfCost":
+                    if (lsValue.isEmpty()) {
+                        lsValue = "0.00";
+                    }
+
+                    if (Double.parseDouble(lsValue.replace(",", "")) < 0.00) {
+                        ShowMessageFX.Warning(null, pxeModuleName, "Invalid Cost Amount");
+                        return;
+                    }
+
+                    double ldblOldVal = poController.PurchaseOrderReceiving().Detail(pnDetail).getUnitPrce().doubleValue();
+                    poJSON = poController.PurchaseOrderReceiving().Detail(pnDetail).setUnitPrce((Double.valueOf(lsValue.replace(",", ""))));
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                        tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.PurchaseOrderReceiving().Detail(pnDetail).getUnitPrce(), true));
+                        return;
+                    }
+
+                    try {
+                        poJSON = poController.PurchaseOrderReceiving().computeFields();
                         if ("error".equals((String) poJSON.get("result"))) {
                             System.err.println((String) poJSON.get("message"));
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                            return;
-                        }
-                        break;
-                }
-                loadRecordMaster();
-            });
-
-    ChangeListener<Boolean> txtDetail_Focus = JFXUtil.FocusListener(TextField.class,
-            (lsID, lsValue) -> {
-                /*Lost Focus*/
-
-                switch (lsID) {
-                    case "tfSupersede":
-                        //if value is blank then reset
-                        if (lsValue.equals("")) {
-                            poJSON = poController.PurchaseOrderReceiving().Detail(pnDetail).setReplaceId("");
-                        }
-
-                        break;
-                    case "tfCost":
-                        if (lsValue.isEmpty()) {
-                            lsValue = "0.00";
-                        }
-
-                        if (Double.parseDouble(lsValue) < 0.00) {
-                            ShowMessageFX.Warning(null, pxeModuleName, "Invalid Cost Amount");
-                            return;
-                        }
-
-                        double ldblOldVal = poController.PurchaseOrderReceiving().Detail(pnDetail).getUnitPrce().doubleValue();
-                        poJSON = poController.PurchaseOrderReceiving().Detail(pnDetail).setUnitPrce((Double.valueOf(lsValue)));
-                        if ("error".equals((String) poJSON.get("result"))) {
-                            System.err.println((String) poJSON.get("message"));
-                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                            poController.PurchaseOrderReceiving().Detail(pnDetail).setUnitPrce(ldblOldVal);
                             tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.PurchaseOrderReceiving().Detail(pnDetail).getUnitPrce(), true));
                             return;
                         }
+                    } catch (SQLException | GuanzonException ex) {
+                        Logger.getLogger(POReplacement_ConfirmationSPCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+                    }
 
-                        try {
-                            poJSON = poController.PurchaseOrderReceiving().computeFields();
-                            if ("error".equals((String) poJSON.get("result"))) {
-                                System.err.println((String) poJSON.get("message"));
-                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                poController.PurchaseOrderReceiving().Detail(pnDetail).setUnitPrce(ldblOldVal);
-                                tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.PurchaseOrderReceiving().Detail(pnDetail).getUnitPrce(), true));
-                                return;
-                            }
-                        } catch (SQLException | GuanzonException ex) {
-                            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+                    break;
+                case "tfReceiveQuantity":
+                    if (lsValue.isEmpty()) {
+                        lsValue = "0";
+                    }
+                    lsValue = JFXUtil.removeComma(lsValue);
+                    if (poController.PurchaseOrderReceiving().Detail(pnDetail).getOrderNo() != null
+                            && !"".equals(poController.PurchaseOrderReceiving().Detail(pnDetail).getOrderNo())) {
+                        if (poController.PurchaseOrderReceiving().Detail(pnDetail).getOrderQty().intValue() < Integer.valueOf(lsValue)) {
+                            ShowMessageFX.Warning(null, pxeModuleName, "Receive quantity cannot be greater than the order quantity.");
+                            poController.PurchaseOrderReceiving().Detail(pnDetail).setQuantity(0);
+                            tfReceiveQuantity.requestFocus();
+                            break;
                         }
-                        break;
-                    case "tfReceiveQuantity":
-                        if (lsValue.isEmpty()) {
-                            lsValue = "0";
-                        }
-                        lsValue = JFXUtil.removeComma(lsValue);
-                        if (poController.PurchaseOrderReceiving().Detail(pnDetail).getOrderNo() != null
-                        && !"".equals(poController.PurchaseOrderReceiving().Detail(pnDetail).getOrderNo())) {
-                            if (poController.PurchaseOrderReceiving().Detail(pnDetail).getOrderQty().intValue() < Integer.valueOf(lsValue)) {
-                                ShowMessageFX.Warning(null, pxeModuleName, "Receive quantity cannot be greater than the order quantity.");
-                                poController.PurchaseOrderReceiving().Detail(pnDetail).setQuantity(0);
-                                tfReceiveQuantity.requestFocus();
-                                break;
-                            }
-                        }
-                        int lnOldVal = poController.PurchaseOrderReceiving().Detail(pnDetail).getQuantity().intValue();
-                        poJSON = poController.PurchaseOrderReceiving().Detail(pnDetail).setQuantity((Integer.valueOf(lsValue)));
+                    }
+
+                    int lnOldVal = poController.PurchaseOrderReceiving().Detail(pnDetail).getQuantity().intValue();
+                    poJSON = poController.PurchaseOrderReceiving().Detail(pnDetail).setQuantity((Integer.valueOf(lsValue)));
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                    }
+
+                    try {
+                        poJSON = poController.PurchaseOrderReceiving().computeFields();
                         if ("error".equals((String) poJSON.get("result"))) {
                             System.err.println((String) poJSON.get("message"));
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                            poController.PurchaseOrderReceiving().Detail(pnDetail).setQuantity(lnOldVal);
+                            tfReceiveQuantity.setText(String.valueOf(poController.PurchaseOrderReceiving().Detail(pnDetail).getQuantity().intValue()));
+                            return;
                         }
-
-                        try {
-                            poJSON = poController.PurchaseOrderReceiving().computeFields();
-                            if ("error".equals((String) poJSON.get("result"))) {
-                                System.err.println((String) poJSON.get("message"));
-                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                poController.PurchaseOrderReceiving().Detail(pnDetail).setQuantity(lnOldVal);
-                                tfReceiveQuantity.setText(String.valueOf(poController.PurchaseOrderReceiving().Detail(pnDetail).getQuantity().intValue()));
-                                return;
-                            }
-                        } catch (SQLException | GuanzonException ex) {
-                            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-                        }
-
-                        if (pbEntered) {
-                            moveNext(false, true);
-                            pbEntered = false;
-                        }
-                        break;
-                }
-                Platform.runLater(() -> {
-                    PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
-                    delay.setOnFinished(event -> {
-                        loadTableDetail.reload();
-                    });
-                    delay.play();
+                    } catch (SQLException | GuanzonException ex) {
+                        Logger.getLogger(POReplacement_ConfirmationSPCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+                    }
+                    if (pbEntered) {
+                        moveNext(false, true);
+                        pbEntered = false;
+                    }
+                    break;
+            }
+            Platform.runLater(() -> {
+                PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
+                delay.setOnFinished(event -> {
+                    loadTableDetail.reload();
                 });
+                delay.play();
             });
+        }
+    };
 
-    ChangeListener<Boolean> txtField_Focus = JFXUtil.FocusListener(TextField.class,
-            (lsID, lsValue) -> {
-                /*Lost Focus*/
-                switch (lsID) {
-                    case "tfSearchSupplier":
-                        if (lsValue.equals("")) {
-                            psSupplierId = "";
-                        }
-                        break;
-                    case "tfSearchReferenceNo":
-                        break;
-                    case "tfAttachmentNo":
-                        break;
-                    case "":
-                        break;
-                }
-                if (lsID.equals("tfSearchSupplier")
-                || lsID.equals("tfSearchReferenceNo")) {
-                    loadRecordSearch();
-                }
-            });
+    final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
+        poJSON = new JSONObject();
+        TextField txtPersonalInfo = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
+        String lsTxtFieldID = (txtPersonalInfo.getId());
+        String lsValue = (txtPersonalInfo.getText() == null ? "" : txtPersonalInfo.getText());
+
+        if (lsValue == null) {
+            return;
+        }
+        if (!nv) {
+            /*Lost Focus*/
+            switch (lsTxtFieldID) {
+                case "tfSearchSupplier":
+                    if (lsValue.equals("")) {
+                        psSupplierId = "";
+                    }
+                    break;
+                case "tfSearchReferenceNo":
+                    break;
+                case "tfAttachmentNo":
+                    break;
+            }
+            if (lsTxtFieldID.equals("tfSearchSupplier")
+                    || lsTxtFieldID.equals("tfSearchReferenceNo")) {
+                loadRecordSearch();
+            } else {
+                loadRecordAttachment(true);
+            }
+        }
+    };
 
     public void moveNext(boolean isUp, boolean continueNext) {
         if (continueNext) {
@@ -730,6 +788,11 @@ public class POReplacement_ConfirmationController implements Initializable, Scre
             String lsID = (((TextField) event.getSource()).getId());
             String lsValue = (txtField.getText() == null ? "" : txtField.getText());
             poJSON = new JSONObject();
+            int lnRow = pnDetail;
+
+            TableView<?> currentTable = tblViewTransDetails;
+            TablePosition<?, ?> focusedCell = currentTable.getFocusModel().getFocusedCell();
+
             switch (event.getCode()) {
                 case TAB:
                 case ENTER:
@@ -776,17 +839,18 @@ public class POReplacement_ConfirmationController implements Initializable, Scre
                             poJSON = poController.PurchaseOrderReceiving().SearchSupplier(lsValue, false);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                tfSearchSupplier.setText("");
                                 psSupplierId = "";
                                 break;
                             } else {
                                 psSupplierId = poController.PurchaseOrderReceiving().Master().getSupplierId();
                             }
-                            retrievePOReplacement();
+                            retrievePOR();
                             loadRecordSearch();
                             return;
                         case "tfSearchReferenceNo":
                             poController.PurchaseOrderReceiving().Master().setTransactionNo(lsValue);
-                            retrievePOReplacement();
+                            retrievePOR();
                             return;
                         case "tfTrucking":
                             poJSON = poController.PurchaseOrderReceiving().SearchTrucking(lsValue, false);
@@ -809,8 +873,119 @@ public class POReplacement_ConfirmationController implements Initializable, Scre
                         case "tfOrderNo":
 
                             break;
+                        case "tfBarcode":
+                            poJSON = poController.PurchaseOrderReceiving().SearchBarcode(lsValue, true, pnDetail, true);
+                            lnRow = (int) poJSON.get("row");
+                            if ("error".equals(poJSON.get("result"))) {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                if (pnDetail != lnRow) {
+                                    poController.PurchaseOrderReceiving().Detail(pnDetail).setBrandId("");
+                                    pnDetail = lnRow;
+                                    loadRecordDetail();
+                                    tfReceiveQuantity.requestFocus();
+                                    return;
+                                }
+                                tfBarcode.setText("");
+                                break;
+                            }
+                            loadTableDetail.reload();
+                            Platform.runLater(() -> {
+                                PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
+                                delay.setOnFinished(event1 -> {
+                                    tfReceiveQuantity.requestFocus();
+                                });
+                                delay.play();
+                            });
+                            break;
+
+                        case "tfDescription":
+                            poJSON = poController.PurchaseOrderReceiving().SearchDescription(lsValue, false, pnDetail, true);
+                            lnRow = (int) poJSON.get("row");
+                            if ("error".equals(poJSON.get("result"))) {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                if (pnDetail != lnRow) {
+                                    poController.PurchaseOrderReceiving().Detail(pnDetail).setBrandId("");
+                                    pnDetail = lnRow;
+                                    loadRecordDetail();
+                                    tfReceiveQuantity.requestFocus();
+                                    return;
+                                }
+                                tfDescription.setText("");
+                                break;
+                            }
+                            loadTableDetail.reload();
+                            Platform.runLater(() -> {
+                                PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
+                                delay.setOnFinished(event1 -> {
+                                    tfReceiveQuantity.requestFocus();
+                                });
+                                delay.play();
+                            });
+                            break;
                         case "tfSupersede":
                             poJSON = poController.PurchaseOrderReceiving().SearchSupersede(lsValue, true, pnDetail, true);
+                            if ("error".equals(poJSON.get("result"))) {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                tfSupersede.setText("");
+                                break;
+                            }
+                            loadRecordDetail();
+                            break;
+                    }
+                    break;
+
+                case F4:
+                    switch (lsID) {
+                        case "tfBarcode":
+                            poJSON = poController.PurchaseOrderReceiving().SearchBarcode(lsValue, true, pnDetail, false);
+                            lnRow = (int) poJSON.get("row");
+                            if ("error".equals(poJSON.get("result"))) {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                if (pnDetail != lnRow) {
+                                    poController.PurchaseOrderReceiving().Detail(pnDetail).setBrandId("");
+                                    pnDetail = lnRow;
+                                    loadRecordDetail();
+                                    tfReceiveQuantity.requestFocus();
+                                    return;
+                                }
+                                tfBarcode.setText("");
+                                break;
+                            }
+                            loadTableDetail.reload();
+                            Platform.runLater(() -> {
+                                PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
+                                delay.setOnFinished(event1 -> {
+                                    tfReceiveQuantity.requestFocus();
+                                });
+                                delay.play();
+                            });
+                            break;
+                        case "tfDescription":
+                            poJSON = poController.PurchaseOrderReceiving().SearchDescription(lsValue, false, pnDetail, false);
+                            lnRow = (int) poJSON.get("row");
+                            if ("error".equals(poJSON.get("result"))) {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                if (pnDetail != lnRow) {
+                                    poController.PurchaseOrderReceiving().Detail(pnDetail).setBrandId("");
+                                    pnDetail = lnRow;
+                                    loadRecordDetail();
+                                    tfReceiveQuantity.requestFocus();
+                                    return;
+                                }
+                                tfDescription.setText("");
+                                break;
+                            }
+                            loadTableDetail.reload();
+                            Platform.runLater(() -> {
+                                PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
+                                delay.setOnFinished(event1 -> {
+                                    tfReceiveQuantity.requestFocus();
+                                });
+                                delay.play();
+                            });
+                            break;
+                        case "tfSupersede":
+                            poJSON = poController.PurchaseOrderReceiving().SearchSupersede(lsValue, true, pnDetail, false);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfSupersede.setText("");
@@ -823,13 +998,13 @@ public class POReplacement_ConfirmationController implements Initializable, Scre
                 default:
                     break;
             }
-
         } catch (GuanzonException ex) {
-            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(POReplacement_ConfirmationSPCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         } catch (SQLException ex) {
-            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(POReplacement_ConfirmationSPCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
+
     boolean pbSuccess = true;
 
     private void datepicker_Action(ActionEvent event) {
@@ -960,39 +1135,13 @@ public class POReplacement_ConfirmationController implements Initializable, Scre
                             pbSuccess = true; //Set to original value
                         }
                         break;
-                    case "dpExpiryDate":
-                        if (poController.PurchaseOrderReceiving().getEditMode() == EditMode.ADDNEW
-                                || poController.PurchaseOrderReceiving().getEditMode() == EditMode.UPDATE) {
-                            lsServerDate = sdfFormat.format(oApp.getServerDate());
-                            lsSelectedDate = sdfFormat.format(SQLUtil.toDate(JFXUtil.convertToIsoFormat(inputText), SQLUtil.FORMAT_SHORT_DATE));
-                            currentDate = LocalDate.parse(lsServerDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
-                            selectedDate = LocalDate.parse(lsSelectedDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
-
-                            if (selectedDate.isBefore(currentDate)) {
-                                poJSON.put("result", "error");
-                                poJSON.put("message", "The selected date cannot be earlier than the current date.");
-                                pbSuccess = false;
-                            }
-                            if (pbSuccess) {
-                                poController.PurchaseOrderReceiving().Detail(pnDetail).setExpiryDate(SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE));
-                            } else {
-                                if ("error".equals((String) poJSON.get("result"))) {
-                                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                }
-                            }
-
-                            pbSuccess = false; //Set to false to prevent multiple message box: Conflict with server date vs transaction date validation
-                            loadRecordDetail();
-                            pbSuccess = true; //Set to original value
-                        }
-                        break;
                     default:
 
                         break;
                 }
             }
         } catch (SQLException ex) {
-            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(POReplacement_ConfirmationSPCarController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -1018,6 +1167,7 @@ public class POReplacement_ConfirmationController implements Initializable, Scre
                     } catch (DateTimeParseException ignored) {
                     }
                 }
+
                 // Check if the user typed something in the text field
                 if (inputText != null && !inputText.trim().isEmpty()) {
                     try {
@@ -1060,34 +1210,18 @@ public class POReplacement_ConfirmationController implements Initializable, Scre
                             poController.PurchaseOrderReceiving().Master().setReferenceDate(SQLUtil.toDate(formattedDate, "yyyy-MM-dd"));
                         }
                         break;
-                    case "dpExpiryDate":
-                        if (selectedDate == null) {
-                            break;
-                        }
-                        if (selectedDate.isBefore(currentDate)) {
-                            poJSON.put("result", "error");
-                            poJSON.put("message", "The selected date cannot be earlier than the current date.");
-                        } else {
-                            poController.PurchaseOrderReceiving().Detail(pnDetail).setExpiryDate(SQLUtil.toDate(formattedDate, "yyyy-MM-dd"));
-                        }
-                        break;
                     default:
 
                         break;
                 }
+                datePicker.getEditor().setText(formattedDate);
                 if ("error".equals((String) poJSON.get("result"))) {
                     ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                     // datePicker.requestFocus();
                 }
                 Platform.runLater(() -> {
-                    if (lsID.equals("dpExpiryDate")) {
-                        loadRecordDetail();
-                    } else {
-                        loadRecordMaster();
-                    }
+                    loadRecordMaster();
                 });
-                datePicker.getEditor().setText(formattedDate);
-
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -1096,8 +1230,8 @@ public class POReplacement_ConfirmationController implements Initializable, Scre
 
     public void loadRecordSearch() {
         try {
-//            lblSource.setText(poController.PurchaseOrderReceiving().Master().Company().getCompanyName() + " - " + poController.PurchaseOrderReceiving().Master().Industry().getDescription());
-            lblSource.setText(poController.PurchaseOrderReceiving().Master().Company().getCompanyName());
+            lblSource.setText(poController.PurchaseOrderReceiving().Master().Company().getCompanyName() + " - " + poController.PurchaseOrderReceiving().Master().Industry().getDescription());
+
             if (psSupplierId.equals("")) {
                 tfSearchSupplier.setText("");
             } else {
@@ -1114,7 +1248,7 @@ public class POReplacement_ConfirmationController implements Initializable, Scre
             }
 
         } catch (SQLException | GuanzonException ex) {
-            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(POReplacement_ConfirmationSPCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
 
@@ -1172,14 +1306,32 @@ public class POReplacement_ConfirmationController implements Initializable, Scre
     }
 
     public void loadRecordDetail() {
-
         try {
             if (pnDetail < 0 || pnDetail > poController.PurchaseOrderReceiving().getDetailCount() - 1) {
                 return;
             }
-            // Expiry Date
-            String lsExpiryDate = CustomCommonUtil.formatDateToShortString(poController.PurchaseOrderReceiving().Detail(pnDetail).getExpiryDate());
-            dpExpiryDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsExpiryDate, "yyyy-MM-dd"));
+            boolean lbFields = (poController.PurchaseOrderReceiving().Detail(pnDetail).getOrderNo().equals("") || poController.PurchaseOrderReceiving().Detail(pnDetail).getOrderNo() == null) && poController.PurchaseOrderReceiving().Detail(pnDetail).getEditMode() == EditMode.ADDNEW;
+            tfBarcode.setDisable(!lbFields);
+            tfDescription.setDisable(!lbFields);
+            if (lbFields) {
+                while (tfBarcode.getStyleClass().contains("DisabledTextField") || tfDescription.getStyleClass().contains("DisabledTextField")) {
+                    tfBarcode.getStyleClass().remove("DisabledTextField");
+                    tfDescription.getStyleClass().remove("DisabledTextField");
+                }
+            } else {
+                tfBarcode.getStyleClass().add("DisabledTextField");
+                tfDescription.getStyleClass().add("DisabledTextField");
+            }
+
+            if (oApp.getUserLevel() <= UserRight.ENCODER) {
+                tfCost.getStyleClass().add("DisabledTextField");
+                tfCost.setDisable(true);
+            } else {
+                while (tfCost.getStyleClass().contains("DisabledTextField")) {
+                    tfCost.getStyleClass().remove("DisabledTextField");
+                }
+                tfCost.setDisable(false);
+            }
 
             tfBarcode.setText(poController.PurchaseOrderReceiving().Detail(pnDetail).Inventory().getBarCode());
             tfDescription.setText(poController.PurchaseOrderReceiving().Detail(pnDetail).Inventory().getDescription());
@@ -1197,14 +1349,14 @@ public class POReplacement_ConfirmationController implements Initializable, Scre
 
             JFXUtil.updateCaretPositions(apDetail);
         } catch (SQLException | GuanzonException ex) {
-            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(POReplacement_ConfirmationSPCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
+
     }
 
     public void loadRecordMaster() {
         boolean lbDisable = pnEditMode == EditMode.UPDATE;
         JFXUtil.setDisabled(lbDisable, tfSupplier);
-
         boolean lbIsReprint = poController.PurchaseOrderReceiving().Master().getPrint().equals("1") ? true : false;
         if (lbIsReprint) {
             btnPrint.setText("Reprint");
@@ -1257,9 +1409,12 @@ public class POReplacement_ConfirmationController implements Initializable, Scre
             tfTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.PurchaseOrderReceiving().Master().getTransactionTotal(), true));
 
             JFXUtil.updateCaretPositions(apMaster);
-        } catch (SQLException | GuanzonException ex) {
-            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(POReplacement_ConfirmationSPCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+        } catch (GuanzonException ex) {
+            Logger.getLogger(POReplacement_ConfirmationSPCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
+
     }
 
     private void goToPageBasedOnSelectedRow(String pnRowMain) {
@@ -1329,7 +1484,7 @@ public class POReplacement_ConfirmationController implements Initializable, Scre
             });
 
         } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
-            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(POReplacement_ConfirmationSPCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
 
@@ -1388,10 +1543,8 @@ public class POReplacement_ConfirmationController implements Initializable, Scre
                             goToPageBasedOnSelectedRow(String.valueOf(pnMain));
                             filteredDataDetail.setPredicate(null);
                             lbresetpredicate = false;
+                            tfOrderNo.textProperty().removeListener(detailSearchListener);
 
-                            if (detailSearchListener != null) {
-                                tfOrderNo.textProperty().removeListener(detailSearchListener);
-                            }
                             mainSearchListener = null;
                             filteredData.setPredicate(null);
                             initMainGrid();
@@ -1426,10 +1579,6 @@ public class POReplacement_ConfirmationController implements Initializable, Scre
 
                             double lnTotal = 0.0;
                             for (lnCtr = 0; lnCtr < poController.PurchaseOrderReceiving().getDetailCount(); lnCtr++) {
-                                if (poController.PurchaseOrderReceiving().Detail(lnCtr).getOrderNo() == null
-                                        || "".equals(poController.PurchaseOrderReceiving().Detail(lnCtr).getOrderNo())) {
-                                    continue;
-                                }
                                 try {
 
                                     lnTotal = poController.PurchaseOrderReceiving().Detail(lnCtr).getUnitPrce().doubleValue() * poController.PurchaseOrderReceiving().Detail(lnCtr).getQuantity().intValue();
@@ -1472,8 +1621,13 @@ public class POReplacement_ConfirmationController implements Initializable, Scre
                                 loadRecordDetail();
                             }
                             loadRecordMaster();
-                        } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
-                            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+
+                        } catch (SQLException ex) {
+                            Logger.getLogger(POReplacement_ConfirmationSPCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+                        } catch (GuanzonException ex) {
+                            Logger.getLogger(POReplacement_ConfirmationSPCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+                        } catch (CloneNotSupportedException ex) {
+                            Logger.getLogger(POReplacement_ConfirmationSPCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                         }
                     });
                 });
@@ -1490,7 +1644,6 @@ public class POReplacement_ConfirmationController implements Initializable, Scre
 
                         try {
                             Thread.sleep(100);
-
                             if (!poController.PurchaseOrderReceiving().Master().getTransactionDate().equals("")) {
                                 Object loDate = poController.PurchaseOrderReceiving().Master().getTransactionDate();
                                 if (loDate == null) {
@@ -1512,6 +1665,7 @@ public class POReplacement_ConfirmationController implements Initializable, Scre
                         } catch (Exception e) {
 
                         }
+
                         if (poController.PurchaseOrderReceiving().getPurchaseOrderReceivingCount() > 0) {
                             //pending
                             //retreiving using column index
@@ -1523,9 +1677,9 @@ public class POReplacement_ConfirmationController implements Initializable, Scre
                                             String.valueOf(poController.PurchaseOrderReceiving().PurchaseOrderReceivingList(lnCtr).getTransactionNo())
                                     ));
                                 } catch (SQLException ex) {
-                                    Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+                                    Logger.getLogger(POReplacement_ConfirmationSPCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                                 } catch (GuanzonException ex) {
-                                    Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+                                    Logger.getLogger(POReplacement_ConfirmationSPCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                                 }
 
                                 if (poController.PurchaseOrderReceiving().PurchaseOrderReceivingList(lnCtr).getTransactionStatus().equals(PurchaseOrderReceivingStatus.CONFIRMED)) {
@@ -1541,6 +1695,7 @@ public class POReplacement_ConfirmationController implements Initializable, Scre
                                 tblViewMainList.getSelectionModel().select(0);
                                 tblViewMainList.getFocusModel().focus(0);
                                 pnMain = tblViewMainList.getSelectionModel().getSelectedIndex();
+
                             }
                         } else {
                             /* FOCUS ON THE ROW THAT pnRowDetail POINTS TO */
@@ -1556,21 +1711,19 @@ public class POReplacement_ConfirmationController implements Initializable, Scre
     }
 
     public void initDatePickers() {
-        JFXUtil.setDatePickerFormat("MM/dd/yyyy", dpTransactionDate, dpReferenceDate, dpExpiryDate);
-        JFXUtil.setActionListener(this::datepicker_Action, dpTransactionDate, dpReferenceDate, dpExpiryDate);
+        JFXUtil.setDatePickerFormat("MM/dd/yyyy", dpTransactionDate, dpReferenceDate);
+        JFXUtil.setActionListener(this::datepicker_Action, dpTransactionDate, dpReferenceDate);
     }
 
     public void initTextFields() {
         JFXUtil.setFocusListener(txtArea_Focus, taRemarks);
         JFXUtil.setFocusListener(txtMaster_Focus, tfSupplier, tfTrucking, tfReferenceNo, tfTerm, tfDiscountRate, tfDiscountAmount);
-        JFXUtil.setFocusListener(txtDetail_Focus, tfOrderNo, tfSupersede, tfCost, tfReceiveQuantity);
+        JFXUtil.setFocusListener(txtDetail_Focus, tfOrderNo, tfBarcode, tfDescription, tfSupersede, tfCost, tfReceiveQuantity);
         JFXUtil.setFocusListener(txtField_Focus, tfSearchSupplier, tfSearchReferenceNo);
 
-        JFXUtil.setKeyPressedListener(this::txtField_KeyPressed, apBrowse, apMaster, apDetail, apAttachments);
+        JFXUtil.setKeyPressedListener(this::txtField_KeyPressed, apBrowse, apMaster, apDetail);
         JFXUtil.initComboBoxCellDesignColor(cmbAttachmentType, "#FF8201");
-
         CustomCommonUtil.inputIntegersOnly(tfReceiveQuantity);
-
         CustomCommonUtil.inputDecimalOnly(tfDiscountRate);
         JFXUtil.setCommaFormatter(tfDiscountAmount, tfCost);
         // Combobox
@@ -1585,6 +1738,7 @@ public class POReplacement_ConfirmationController implements Initializable, Scre
                 }
             }
         });
+
     }
 
     public void initTableOnClick() {
@@ -1612,7 +1766,6 @@ public class POReplacement_ConfirmationController implements Initializable, Scre
                 }
             }
         });
-
         tblViewMainList.setOnMouseClicked(event -> {
             pnMain = tblViewMainList.getSelectionModel().getSelectedIndex();
             if (pnMain >= 0) {
@@ -1629,10 +1782,10 @@ public class POReplacement_ConfirmationController implements Initializable, Scre
         JFXUtil.applyRowHighlighting(tblViewTransDetails, item -> ((ModelDeliveryAcceptance_Detail) item).getIndex01(), highlightedRowsDetail);
         JFXUtil.setKeyEventFilter(this::tableKeyEvents, tblViewTransDetails, tblAttachments);
         JFXUtil.adjustColumnForScrollbar(tblViewTransDetails, tblViewMainList, tblAttachments);  // need to use computed-size as min-width on particular column to work
+
     }
 
     private void initButton(int fnValue) {
-
         boolean lbShow1 = (fnValue == EditMode.UPDATE);
         boolean lbShow3 = (fnValue == EditMode.READY);
         boolean lbShow4 = (fnValue == EditMode.UNKNOWN || fnValue == EditMode.READY);
@@ -1681,7 +1834,6 @@ public class POReplacement_ConfirmationController implements Initializable, Scre
         JFXUtil.setColumnCenter(tblRowNoAttachment);
         JFXUtil.setColumnLeft(tblFileNameAttachment);
         JFXUtil.setColumnsIndexAndDisableReordering(tblAttachments);
-
         tblAttachments.setItems(attachment_data);
     }
 
@@ -1722,7 +1874,6 @@ public class POReplacement_ConfirmationController implements Initializable, Scre
         JFXUtil.setColumnLeft(tblBarcodeDetail, tblDescriptionDetail);
         JFXUtil.setColumnRight(tblCostDetail, tblOrderQuantityDetail, tblReceiveQuantityDetail, tblTotalDetail);
         JFXUtil.setColumnsIndexAndDisableReordering(tblViewTransDetails);
-
         filteredDataDetail = new FilteredList<>(details_data, b -> true);
         autoSearch(tfOrderNo);
 
@@ -1802,9 +1953,7 @@ public class POReplacement_ConfirmationController implements Initializable, Scre
             // If no results and autoSearchMain is enabled, remove listener and trigger autoSearchMain
             if (filteredDataDetail.isEmpty()) {
                 if (main_data.size() > 0) {
-                    if (detailSearchListener != null) {
-                        txtField.textProperty().removeListener(detailSearchListener);
-                    }
+                    txtField.textProperty().removeListener(detailSearchListener);
                     filteredData = new FilteredList<>(main_data, b -> true);
                     autoSearchMain(txtField); // Trigger autoSearchMain if no results
                     tblViewMainList.setItems(filteredData);
