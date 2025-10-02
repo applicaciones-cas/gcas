@@ -1109,8 +1109,7 @@ public class POReplacement_EntryCarController implements Initializable, ScreenIn
         try {
             JFXUtil.setStatusValue(lblStatus, PurchaseOrderReceivingStatus.class,
                     pnEditMode == EditMode.UNKNOWN ? "-1" : poController.PurchaseOrderReceiving().Master().getTransactionStatus());
-            boolean lbPrintStat = pnEditMode == EditMode.READY;
-            lbPrintStat = !(poController.PurchaseOrderReceiving().Master().getTransactionStatus() == PurchaseOrderReceivingStatus.VOID);
+            boolean lbPrintStat = pnEditMode == EditMode.READY && poController.PurchaseOrderReceiving().Master().getTransactionStatus() != PurchaseOrderReceivingStatus.VOID;
 
             btnPrint.setVisible(lbPrintStat);
             btnPrint.setManaged(lbPrintStat);
