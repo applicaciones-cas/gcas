@@ -435,13 +435,6 @@ public class POReplacement_EntryController implements Initializable, ScreenInter
             (lsID, lsValue) -> {
                 /*Lost Focus*/
                 switch (lsID) {
-//                    case "tfDescription":
-//                    case "tfBarcode":
-//                        //if value is blank then reset
-//                        if (lsValue.equals("")) {
-//                            poJSON = poController.PurchaseOrderReceiving().Detail(pnDetail).setStockId("");
-//                        }
-//                        break;
                     case "tfSupersede":
                         //if value is blank then reset
                         if (lsValue.equals("")) {
@@ -729,40 +722,6 @@ public class POReplacement_EntryController implements Initializable, ScreenInter
                             break;
                         case "tfOrderNo":
                             break;
-//                        case "tfBarcode":
-//                            poJSON = poController.PurchaseOrderReceiving().SearchBarcode(lsValue, true, pnDetail, true);
-//                            lnRow = (int) poJSON.get("row");
-//                            if ("error".equals(poJSON.get("result"))) {
-//                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-//                                if (pnDetail != lnRow) {
-//                                    pnDetail = lnRow;
-//                                    loadRecordDetail();
-//                                    tfReceiveQuantity.requestFocus();
-//                                    return;
-//                                }
-//                                tfBarcode.setText("");
-//                                break;
-//                            }
-//                            loadTableDetail.reload();
-//                            JFXUtil.textFieldMoveNext(tfReceiveQuantity);
-//                            break;
-//                        case "tfDescription":
-//                            poJSON = poController.PurchaseOrderReceiving().SearchDescription(lsValue, true, pnDetail, true);
-//                            lnRow = (int) poJSON.get("row");
-//                            if ("error".equals(poJSON.get("result"))) {
-//                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-//                                if (pnDetail != lnRow) {
-//                                    pnDetail = lnRow;
-//                                    loadRecordDetail();
-//                                    tfReceiveQuantity.requestFocus();
-//                                    return;
-//                                }
-//                                tfDescription.setText("");
-//                                break;
-//                            }
-//                            loadTableDetail.reload();
-//                            JFXUtil.textFieldMoveNext(tfReceiveQuantity);
-//                            break;
                         case "tfSupersede":
                             poJSON = poController.PurchaseOrderReceiving().SearchSupersede(lsValue, true, pnDetail, true);
                             if ("error".equals(poJSON.get("result"))) {
@@ -992,29 +951,13 @@ public class POReplacement_EntryController implements Initializable, ScreenInter
                         details_data.clear();
                         plOrderNoPartial.clear();
                         try {
-
-                            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                                lnCtr = poController.PurchaseOrderReceiving().getDetailCount() - 1;
-                                while (lnCtr >= 0) {
-                                    if (poController.PurchaseOrderReceiving().Detail(lnCtr).getStockId() == null || poController.PurchaseOrderReceiving().Detail(lnCtr).getStockId().equals("")) {
-                                        poController.PurchaseOrderReceiving().Detail().remove(lnCtr);
-                                    }
-                                    lnCtr--;
-                                }
-
-                                if ((poController.PurchaseOrderReceiving().getDetailCount() - 1) >= 0) {
-                                    if (poController.PurchaseOrderReceiving().Detail(poController.PurchaseOrderReceiving().getDetailCount() - 1).getStockId() != null && !poController.PurchaseOrderReceiving().Detail(poController.PurchaseOrderReceiving().getDetailCount() - 1).getStockId().equals("")) {
-                                        poController.PurchaseOrderReceiving().AddDetail();
-                                    }
-                                }
-
-                                if ((poController.PurchaseOrderReceiving().getDetailCount() - 1) < 0) {
-                                    poController.PurchaseOrderReceiving().AddDetail();
-                                }
-                            }
-
                             double lnTotal = 0.0;
                             for (lnCtr = 0; lnCtr < poController.PurchaseOrderReceiving().getDetailCount(); lnCtr++) {
+                                if (poController.PurchaseOrderReceiving().Detail(lnCtr).getOrderNo() == null
+                                        || "".equals(poController.PurchaseOrderReceiving().Detail(lnCtr).getOrderNo())) {
+                                    continue;
+                                }
+
                                 try {
 
                                     lnTotal = poController.PurchaseOrderReceiving().Detail(lnCtr).getUnitPrce().doubleValue() * poController.PurchaseOrderReceiving().Detail(lnCtr).getQuantity().intValue();
@@ -1058,7 +1001,7 @@ public class POReplacement_EntryController implements Initializable, ScreenInter
                                 loadRecordDetail();
                             }
                             loadRecordMaster();
-                        } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
+                        } catch (SQLException | GuanzonException ex) {
                             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                         }
 
@@ -1201,7 +1144,7 @@ public class POReplacement_EntryController implements Initializable, ScreenInter
 
             tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.PurchaseOrderReceiving().Detail(pnDetail).getUnitPrce(), true));
             tfOrderQuantity.setText(String.valueOf(poController.PurchaseOrderReceiving().Detail(pnDetail).getOrderQty().intValue()));
-            tfReceiveQuantity.setText(String.valueOf(poController.PurchaseOrderReceiving().Detail(pnDetail).getQuantity()));
+            tfReceiveQuantity.setText(String.valueOf(poController.PurchaseOrderReceiving().Detail(pnDetail).getQuantity().intValue()));
 
             JFXUtil.updateCaretPositions(apDetail);
         } catch (SQLException | GuanzonException ex) {
