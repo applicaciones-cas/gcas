@@ -954,6 +954,26 @@ public class POReplacement_EntryController implements Initializable, ScreenInter
                         details_data.clear();
                         plOrderNoPartial.clear();
                         try {
+                            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                                lnCtr = poController.PurchaseOrderReceiving().getDetailCount() - 1;
+                                while (lnCtr >= 0) {
+                                    if (poController.PurchaseOrderReceiving().Detail(lnCtr).getStockId() == null || poController.PurchaseOrderReceiving().Detail(lnCtr).getStockId().equals("")) {
+                                        poController.PurchaseOrderReceiving().Detail().remove(lnCtr);
+                                    }
+                                    lnCtr--;
+                                }
+
+                                if ((poController.PurchaseOrderReceiving().getDetailCount() - 1) >= 0) {
+                                    if (poController.PurchaseOrderReceiving().Detail(poController.PurchaseOrderReceiving().getDetailCount() - 1).getStockId() != null && !poController.PurchaseOrderReceiving().Detail(poController.PurchaseOrderReceiving().getDetailCount() - 1).getStockId().equals("")) {
+                                        poController.PurchaseOrderReceiving().AddDetail();
+                                    }
+                                }
+
+                                if ((poController.PurchaseOrderReceiving().getDetailCount() - 1) < 0) {
+                                    poController.PurchaseOrderReceiving().AddDetail();
+                                }
+                            }
+
                             double lnTotal = 0.0;
                             for (lnCtr = 0; lnCtr < poController.PurchaseOrderReceiving().getDetailCount(); lnCtr++) {
                                 if (poController.PurchaseOrderReceiving().Detail(lnCtr).getOrderNo() == null
@@ -1004,7 +1024,7 @@ public class POReplacement_EntryController implements Initializable, ScreenInter
                                 loadRecordDetail();
                             }
                             loadRecordMaster();
-                        } catch (SQLException | GuanzonException ex) {
+                        } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
                             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                         }
 
