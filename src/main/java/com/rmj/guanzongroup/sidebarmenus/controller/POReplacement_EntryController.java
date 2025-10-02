@@ -159,6 +159,7 @@ public class POReplacement_EntryController implements Initializable, ScreenInter
             poController.PurchaseOrderReceiving().setIndustryId(psIndustryId);
             poController.PurchaseOrderReceiving().setCompanyId(psCompanyId);
             poController.PurchaseOrderReceiving().setCategoryId(psCategoryId);
+            poController.PurchaseOrderReceiving().isReplacement(true);
             poController.PurchaseOrderReceiving().setWithUI(true);
             loadRecordSearch();
 
@@ -434,13 +435,13 @@ public class POReplacement_EntryController implements Initializable, ScreenInter
             (lsID, lsValue) -> {
                 /*Lost Focus*/
                 switch (lsID) {
-                    case "tfDescription":
-                    case "tfBarcode":
-                        //if value is blank then reset
-                        if (lsValue.equals("")) {
-                            poJSON = poController.PurchaseOrderReceiving().Detail(pnDetail).setStockId("");
-                        }
-                        break;
+//                    case "tfDescription":
+//                    case "tfBarcode":
+//                        //if value is blank then reset
+//                        if (lsValue.equals("")) {
+//                            poJSON = poController.PurchaseOrderReceiving().Detail(pnDetail).setStockId("");
+//                        }
+//                        break;
                     case "tfSupersede":
                         //if value is blank then reset
                         if (lsValue.equals("")) {
@@ -604,14 +605,13 @@ public class POReplacement_EntryController implements Initializable, ScreenInter
     public void moveNext(boolean isUp, boolean continueNext) {
         if (continueNext) {
             apDetail.requestFocus();
-            boolean lbContinue = true;
-            while (lbContinue) {
-                pnDetail = isUp ? JFXUtil.moveToPreviousRow(tblViewTransDetails) : JFXUtil.moveToNextRow(tblViewTransDetails);
-            }
+
+            pnDetail = isUp ? JFXUtil.moveToPreviousRow(tblViewTransDetails) : JFXUtil.moveToNextRow(tblViewTransDetails);
         }
         loadRecordDetail();
-        JFXUtil.requestFocusNullField(new Object[][]{ // alternative to if , else if
-            {poController.PurchaseOrderReceiving().Detail(pnDetail).getStockId(), tfBarcode},}, tfReceiveQuantity); // default
+        tfReceiveQuantity.requestFocus();
+//        JFXUtil.requestFocusNullField(new Object[][]{ // alternative to if , else if
+//            {poController.PurchaseOrderReceiving().Detail(pnDetail).getStockId(), tfBarcode},}, tfReceiveQuantity); // default
     }
 
     private void txtField_KeyPressed(KeyEvent event) {
@@ -729,40 +729,40 @@ public class POReplacement_EntryController implements Initializable, ScreenInter
                             break;
                         case "tfOrderNo":
                             break;
-                        case "tfBarcode":
-                            poJSON = poController.PurchaseOrderReceiving().SearchBarcode(lsValue, true, pnDetail, true);
-                            lnRow = (int) poJSON.get("row");
-                            if ("error".equals(poJSON.get("result"))) {
-                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                if (pnDetail != lnRow) {
-                                    pnDetail = lnRow;
-                                    loadRecordDetail();
-                                    tfReceiveQuantity.requestFocus();
-                                    return;
-                                }
-                                tfBarcode.setText("");
-                                break;
-                            }
-                            loadTableDetail.reload();
-                            JFXUtil.textFieldMoveNext(tfReceiveQuantity);
-                            break;
-                        case "tfDescription":
-                            poJSON = poController.PurchaseOrderReceiving().SearchDescription(lsValue, true, pnDetail, true);
-                            lnRow = (int) poJSON.get("row");
-                            if ("error".equals(poJSON.get("result"))) {
-                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                if (pnDetail != lnRow) {
-                                    pnDetail = lnRow;
-                                    loadRecordDetail();
-                                    tfReceiveQuantity.requestFocus();
-                                    return;
-                                }
-                                tfDescription.setText("");
-                                break;
-                            }
-                            loadTableDetail.reload();
-                            JFXUtil.textFieldMoveNext(tfReceiveQuantity);
-                            break;
+//                        case "tfBarcode":
+//                            poJSON = poController.PurchaseOrderReceiving().SearchBarcode(lsValue, true, pnDetail, true);
+//                            lnRow = (int) poJSON.get("row");
+//                            if ("error".equals(poJSON.get("result"))) {
+//                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+//                                if (pnDetail != lnRow) {
+//                                    pnDetail = lnRow;
+//                                    loadRecordDetail();
+//                                    tfReceiveQuantity.requestFocus();
+//                                    return;
+//                                }
+//                                tfBarcode.setText("");
+//                                break;
+//                            }
+//                            loadTableDetail.reload();
+//                            JFXUtil.textFieldMoveNext(tfReceiveQuantity);
+//                            break;
+//                        case "tfDescription":
+//                            poJSON = poController.PurchaseOrderReceiving().SearchDescription(lsValue, true, pnDetail, true);
+//                            lnRow = (int) poJSON.get("row");
+//                            if ("error".equals(poJSON.get("result"))) {
+//                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+//                                if (pnDetail != lnRow) {
+//                                    pnDetail = lnRow;
+//                                    loadRecordDetail();
+//                                    tfReceiveQuantity.requestFocus();
+//                                    return;
+//                                }
+//                                tfDescription.setText("");
+//                                break;
+//                            }
+//                            loadTableDetail.reload();
+//                            JFXUtil.textFieldMoveNext(tfReceiveQuantity);
+//                            break;
                         case "tfSupersede":
                             poJSON = poController.PurchaseOrderReceiving().SearchSupersede(lsValue, true, pnDetail, true);
                             if ("error".equals(poJSON.get("result"))) {
@@ -785,14 +785,14 @@ public class POReplacement_EntryController implements Initializable, ScreenInter
     public void initTextFields() {
         JFXUtil.setFocusListener(txtArea_Focus, taRemarks);
         JFXUtil.setFocusListener(txtMaster_Focus, tfTransactionNo, tfSupplier,
-                tfSupplier, tfTrucking, tfTrucking, tfReferenceNo, tfReferenceNo,
-                tfTerm, tfTerm, tfDiscountRate, tfDiscountRate, tfDiscountAmount,
+                tfTrucking, tfTrucking, tfReferenceNo,
+                tfTerm, tfDiscountRate,
                 tfDiscountAmount, tfTotal);
 
-        JFXUtil.setFocusListener(txtDetail_Focus, tfOrderNo, tfOrderNo, tfBarcode,
-                tfBarcode, tfDescription, tfDescription, tfSupersede, tfSupersede,
+        JFXUtil.setFocusListener(txtDetail_Focus, tfOrderNo, tfBarcode,
+                tfDescription, tfSupersede,
                 tfBrand, tfModel, tfColor, tfInventoryType, tfMeasure, tfCost,
-                tfCost, tfOrderQuantity, tfReceiveQuantity, tfReceiveQuantity);
+                tfCost, tfOrderQuantity, tfReceiveQuantity);
         JFXUtil.setKeyPressedListener(this::txtField_KeyPressed, apMaster, apDetail);
 
         CustomCommonUtil.inputIntegersOnly(tfReceiveQuantity);
@@ -1183,7 +1183,7 @@ public class POReplacement_EntryController implements Initializable, ScreenInter
                 return;
             }
             boolean lbFields = (poController.PurchaseOrderReceiving().Detail(pnDetail).getOrderNo().equals("") || poController.PurchaseOrderReceiving().Detail(pnDetail).getOrderNo() == null) && poController.PurchaseOrderReceiving().Detail(pnDetail).getEditMode() == EditMode.ADDNEW;
-            JFXUtil.setDisabled(!lbFields, tfBarcode, tfDescription);
+//            JFXUtil.setDisabled(!lbFields, tfBarcode, tfDescription);
             JFXUtil.setDisabled(oApp.getUserLevel() <= UserRight.ENCODER, tfCost);
 
             // Expiry Date
@@ -1201,7 +1201,7 @@ public class POReplacement_EntryController implements Initializable, ScreenInter
 
             tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.PurchaseOrderReceiving().Detail(pnDetail).getUnitPrce(), true));
             tfOrderQuantity.setText(String.valueOf(poController.PurchaseOrderReceiving().Detail(pnDetail).getOrderQty().intValue()));
-            tfReceiveQuantity.setText(String.valueOf(poController.PurchaseOrderReceiving().getQuantity(pnDetail)));
+            tfReceiveQuantity.setText(String.valueOf(poController.PurchaseOrderReceiving().Detail(pnDetail).getQuantity()));
 
             JFXUtil.updateCaretPositions(apDetail);
         } catch (SQLException | GuanzonException ex) {
@@ -1284,7 +1284,6 @@ public class POReplacement_EntryController implements Initializable, ScreenInter
                 }
                 loadRecordDetail();
                 tfOrderNo.setText("");
-                event.consume();
             }
         }
     }
