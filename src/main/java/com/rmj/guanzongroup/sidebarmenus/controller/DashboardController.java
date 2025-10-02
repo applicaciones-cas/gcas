@@ -1057,6 +1057,192 @@ public class DashboardController implements Initializable {
                     psIndustryID = "04";
                     psCategoryID = "0009";
                     return "Purchase Order Receiving History MH";
+                    
+                /*PURCHASE ORDER REPLACEMENT*/
+                //General
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_Entry.fxml":
+                    psIndustryID = "";
+                    psCategoryID = "0007";
+                    return "Purchase Order Replacement Entry";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_Confirmation.fxml":
+                    psIndustryID = "";
+                    psCategoryID = "0007";
+                    return "Purchase Order Replacement Confirmation";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_Approval.fxml":
+                    psIndustryID = "";
+                    psCategoryID = "0007";
+                    return "Purchase Order Replacement Approval";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_History.fxml":
+                    psIndustryID = "";
+                    psCategoryID = "0007";
+                    return "Purchase Order Replacement History";
+
+                // Appliances
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_EntryAppliances.fxml":
+                    psIndustryID = "07";
+                    psCategoryID = "0002";
+                    return "Purchase Order Replacement Entry Appliances";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_ConfirmationAppliances.fxml":
+                    psIndustryID = "07";
+                    psCategoryID = "0002";
+                    return "Purchase Order Replacement Confirmation Appliances";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_HistoryAppliances.fxml":
+                    psIndustryID = "07";
+                    psCategoryID = "0002";
+                    return "Purchase Order Replacement History Appliances";
+
+                //Car
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_EntryCar.fxml":
+                    psIndustryID = "03";
+
+                    psCategoryID = "0005";
+                    return "Purchase Order Replacement Entry Car";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_ConfirmationCar.fxml":
+                    psIndustryID = "03";
+                    psCategoryID = "0005";
+                    return "Purchase Order Replacement Confirmation Car";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_ApprovalCar.fxml":
+                    psIndustryID = "03";
+                    psCategoryID = "0005";
+                    return "Purchase Order Replacement Approval Car";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_HistoryCar.fxml":
+                    psIndustryID = "03";
+                    psCategoryID = "0005";
+
+                    return "Purchase Order Replacement History Car";
+
+                //Motorcyle
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_EntryMC.fxml":
+                    psIndustryID = "02";
+
+                    psCategoryID = "0003";
+                    return "Purchase Order Replacement Entry MC";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_ConfirmationMC.fxml":
+                    psIndustryID = "02";
+                    psCategoryID = "0003";
+                    return "Purchase Order Replacement Confirmation MC";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_ApprovalMC.fxml":
+                    psIndustryID = "02";
+                    psCategoryID = "0003";
+                    return "Purchase Order Replacement Approval MC";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_HistoryMC.fxml":
+                    psIndustryID = "02";
+                    psCategoryID = "0003";
+
+                    return "Purchase Order Replacement History MC";
+
+                //Mobile Phone
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_EntryMP.fxml":
+                    psIndustryID = "01";
+
+                    psCategoryID = "0001";
+                    return "Purchase Order Replacement Entry MP";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_ConfirmationMP.fxml":
+                    psIndustryID = "01";
+                    psCategoryID = "0001";
+                    return "Purchase Order Replacement Confirmation MP";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_ApprovalMP.fxml":
+                    psIndustryID = "01";
+                    psCategoryID = "0001";
+                    return "Purchase Order Replacement Approval MP";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_HistoryMP.fxml":
+                    psIndustryID = "01";
+                    psCategoryID = "0001";
+
+                    return "Purchase Order Replacement History MP";
+
+                //Los Pedritos
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_EntryLP.fxml":
+                    psIndustryID = "05";
+
+                    psCategoryID = "0008";
+                    return "Purchase Order Replacement Entry LP";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_ConfirmationLP.fxml":
+                    psIndustryID = "05";
+                    psCategoryID = "0008";
+                    return "Purchase Order Replacement Confirmation LP";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_ApprovalLP.fxml":
+                    psIndustryID = "05";
+                    psCategoryID = "0008";
+                    return "Purchase Order Replacement Approval LP";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_HistoryLP.fxml":
+                    psIndustryID = "05";
+                    psCategoryID = "0008";
+                    return "Purchase Order Replacement History LP";
+
+                //Spare Parts Car
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_EntrySPCar.fxml":
+                    psIndustryID = "03";
+                    psCategoryID = "0006";
+                    return "Purchase Order Replacement Entry SPCar";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_ConfirmationSPCar.fxml":
+                    psIndustryID = "03";
+                    psCategoryID = "0006";
+                    return "Purchase Order Replacement Confirmation SPCar";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_ApprovalSPCar.fxml":
+                    psIndustryID = "03";
+                    psCategoryID = "0006";
+                    return "Purchase Order Replacement Approval SPCar";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_HistorySPCar.fxml":
+                    psIndustryID = "03";
+                    psCategoryID = "0006";
+                    return "Purchase Order Replacement History SPCar";
+
+                //Spare Parts Motorcycle
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_EntrySPMC.fxml":
+                    psIndustryID = "02";
+                    psCategoryID = "0004";
+                    return "Purchase Order Replacement Entry SPMC";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_ConfirmationSPMC.fxml":
+                    psIndustryID = "02";
+                    psCategoryID = "0004";
+                    return "Purchase Order Replacement Confirmation SPMC";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_ApprovalSPMC.fxml":
+                    psIndustryID = "02";
+                    psCategoryID = "0004";
+                    return "Purchase Order Replacement Approval SPMC";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_HistorySPMC.fxml":
+                    psIndustryID = "02";
+                    psCategoryID = "0004";
+
+                    return "Purchase Order Replacement History SPMC";
+
+                //Monarch Food
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_EntryMonarchFood.fxml":
+                    psIndustryID = "04";
+                    psCategoryID = "0009";
+                    return "Purchase Order Replacement Entry MF";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_ConfirmationMonarchFood.fxml":
+                    psIndustryID = "04";
+                    psCategoryID = "0009";
+                    return "Purchase Order Replacement Confirmation MF";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_ApprovalMonarchFood.fxml":
+                    psIndustryID = "04";
+                    psCategoryID = "0009";
+                    return "Purchase Order Replacement Approval MF";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_HistoryMonarchFood.fxml":
+                    psIndustryID = "04";
+                    psCategoryID = "0009";
+
+                    return "Purchase Order Replacement History MF";
+
+                //Monarch Hospitality
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_EntryMonarchHospitality.fxml":
+                    psIndustryID = "04";
+                    psCategoryID = "0009";
+                    return "Purchase Order Replacement Entry MH";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_ConfirmationMonarchHospitality.fxml":
+                    psIndustryID = "04";
+                    psCategoryID = "0009";
+                    return "Purchase Order Replacement Confirmation MH";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_ApprovalMonarchHospitality.fxml":
+                    psIndustryID = "04";
+                    psCategoryID = "0009";
+                    return "Purchase Order Replacement Approval MH";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_HistoryMonarchHospitality.fxml":
+                    psIndustryID = "04";
+                    psCategoryID = "0009";
+                    return "Purchase Order Replacement History MH";
 
                 /*PURCHASE ORDER RETURN*/
                 //General
@@ -2279,7 +2465,7 @@ public class DashboardController implements Initializable {
                 return "/com/rmj/guanzongroup/sidebarmenus/views/POQuotation_History.fxml";
             /*END*/
 
- /*Purchase Order*/
+            /*Purchase Order*/
             case "Purchase Order":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_Entry.fxml";
             case "Purchase Order Confirmation":
@@ -2288,10 +2474,6 @@ public class DashboardController implements Initializable {
                 return "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_Approval.fxml";
             case "Purchase Order History":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_History.fxml";
-            case "Purchase Order Receiving":
-                return "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_Entry.fxml";
-            case "Purchasing Receiving Confirmation":
-                return "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_Confirmation.fxml";
 
             case "Purchase Order LP":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_EntryLP.fxml";
@@ -2366,7 +2548,7 @@ public class DashboardController implements Initializable {
                 return "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_HistoryCar.fxml";
             /*END PURCHASE ORDER*/
 
- /*PURCHASE ORDER RECEIVING*/
+            /*PURCHASE ORDER RECEIVING*/
             // General
             case "Purchase Order Receiving Entry":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_Entry.fxml";
@@ -2448,7 +2630,90 @@ public class DashboardController implements Initializable {
             case "Purchase Order Receiving History MH":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_HistoryMonarchHospitality.fxml";
             /*END PURCHASE ORDER RECEIVING*/
- /*PURCHASE ORDER RETURN*/
+                
+            /*PURCHASE ORDER REPLACEMENT*/
+            // General
+            case "Purchase Order Replacement Entry":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_Entry.fxml";
+            case "Purchase Order Replacement Confirmation":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_Confirmation.fxml";
+            case "Purchase Order Replacement History":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_History.fxml";
+
+            // Appliances
+            case "Purchase Order Replacement Entry Appliances":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_EntryAppliances.fxml";
+            case "Purchase Order Replacement Confirmation Appliances":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_ConfirmationAppliances.fxml";
+            case "Purchase Order Replacement History Appliances":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_HistoryAppliances.fxml";
+
+            // Car
+            case "Purchase Order Replacement Entry Car":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_EntryCar.fxml";
+            case "Purchase Order Replacement Confirmation Car":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_ConfirmationCar.fxml";
+            case "Purchase Order Replacement History Car":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_HistoryCar.fxml";
+
+            // Motorcycle
+            case "Purchase Order Replacement Entry MC":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_EntryMC.fxml";
+            case "Purchase Order Replacement Confirmation MC":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_ConfirmationMC.fxml";
+            case "Purchase Order Replacement History MC":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_HistoryMC.fxml";
+
+            // Mobile Phone
+            case "Purchase Order Replacement Entry MP":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_EntryMP.fxml";
+            case "Purchase Order Replacement Confirmation MP":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_ConfirmationMP.fxml";
+            case "Purchase Order Replacement History MP":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_HistoryMP.fxml";
+
+            // Los Pedritos
+            case "Purchase Order Replacement Entry LP":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_EntryLP.fxml";
+            case "Purchase Order Replacement Confirmation LP":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_ConfirmationLP.fxml";
+            case "Purchase Order Replacement History LP":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_HistoryLP.fxml";
+
+            // Spare Parts Car
+            case "Purchase Order Replacement Entry SPCar":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_EntrySPCar.fxml";
+            case "Purchase Order Replacement Confirmation SPCar":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_ConfirmationSPCar.fxml";
+            case "Purchase Order Replacement History SPCar":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_HistorySPCar.fxml";
+
+            // Spare Parts Motorcycle
+            case "Purchase Order Replacement Entry SPMC":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_EntrySPMC.fxml";
+            case "Purchase Order Replacement Confirmation SPMC":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_ConfirmationSPMC.fxml";
+            case "Purchase Order Replacement History SPMC":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_HistorySPMC.fxml";
+
+            // Monarch Food
+            case "Purchase Order Replacement Entry MF":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_EntryMonarchFood.fxml";
+            case "Purchase Order Replacement Confirmation MF":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_ConfirmationMonarchFood.fxml";
+            case "Purchase Order Replacement History MF":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_HistoryMonarchFood.fxml";
+
+            // Monarch Hospitality
+            case "Purchase Order Replacement Entry MH":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_EntryMonarchHospitality.fxml";
+            case "Purchase Order Replacement Confirmation MH":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_ConfirmationMonarchHospitality.fxml";
+            case "Purchase Order Replacement History MH":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_HistoryMonarchHospitality.fxml";
+            /*END PURCHASE ORDER REPLACEMENT*/
+                
+            /*PURCHASE ORDER RETURN*/
             // General
             case "Purchase Order Return Entry":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrderReturn_Entry.fxml";
@@ -3234,7 +3499,7 @@ public class DashboardController implements Initializable {
                     return new PurchaseOrder_HistoryAppliancesController();
 
                 /*PURCHASE ORDER RECEIVING*/
- /* PURCHASE ORDER RECEIVING */
+                /* PURCHASE ORDER RECEIVING */
                 // ENTRY
                 case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_EntryAppliances.fxml":
                     return new DeliveryAcceptance_EntryAppliancesController();
@@ -3299,7 +3564,71 @@ public class DashboardController implements Initializable {
                 case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_HistoryMonarchHospitality.fxml":
                     return new DeliveryAcceptance_HistoryMonarchHospitalityController();
 
-
+                /* PURCHASE ORDER REPLACEMENT */
+                // ENTRY
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_EntryAppliances.fxml":
+//                    return new POReplacement_EntryAppliancesController();
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_Entry.fxml":
+//                    return new POReplacement_EntryController();
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_EntryCar.fxml":
+//                    return new POReplacement_EntryCarController();
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_EntryMC.fxml":
+//                    return new POReplacement_EntryMCController();
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_EntryMP.fxml":
+//                    return new POReplacement_EntryMPController();
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_EntryLP.fxml":
+//                    return new POReplacement_EntryLPController();
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_EntrySPCar.fxml":
+//                    return new POReplacement_EntrySPCarController();
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_EntrySPMC.fxml":
+//                    return new POReplacement_EntrySPMCController();
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_EntryMonarchFood.fxml":
+//                    return new POReplacement_EntryMonarchFoodController();
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_EntryMonarchHospitality.fxml":
+//                    return new POReplacement_EntryMonarchHospitalityController();
+//                // CONFIRMATION
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_ConfirmationAppliances.fxml":
+//                    return new POReplacement_ConfirmationAppliancesController();
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_Confirmation.fxml":
+//                    return new POReplacement_ConfirmationController();
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_ConfirmationCar.fxml":
+//                    return new POReplacement_ConfirmationCarController();
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_ConfirmationMC.fxml":
+//                    return new POReplacement_ConfirmationMCController();
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_ConfirmationMP.fxml":
+//                    return new POReplacement_ConfirmationMPController();
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_ConfirmationLP.fxml":
+//                    return new POReplacement_ConfirmationLPController();
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_ConfirmationSPCar.fxml":
+//                    return new POReplacement_ConfirmationSPCarController();
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_ConfirmationSPMC.fxml":
+//                    return new POReplacement_ConfirmationSPMCController();
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_ConfirmationMonarchFood.fxml":
+//                    return new POReplacement_ConfirmationMonarchFoodController();
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_ConfirmationMonarchHospitality.fxml":
+//                    return new POReplacement_ConfirmationMonarchHospitalityController();
+//                // HISTORY
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_HistoryAppliances.fxml":
+//                    return new POReplacement_HistoryAppliancesController();
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_History.fxml":
+//                    return new POReplacement_HistoryController();
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_HistoryCar.fxml":
+//                    return new POReplacement_HistoryCarController();
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_HistoryMC.fxml":
+//                    return new POReplacement_HistoryMCController();
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_HistoryMP.fxml":
+//                    return new POReplacement_HistoryMPController();
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_HistoryLP.fxml":
+//                    return new POReplacement_HistoryLPController();
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_HistorySPCar.fxml":
+//                    return new POReplacement_HistorySPCarController();
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_HistorySPMC.fxml":
+//                    return new POReplacement_HistorySPMCController();
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_HistoryMonarchFood.fxml":
+//                    return new POReplacement_HistoryMonarchFoodController();
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_HistoryMonarchHospitality.fxml":
+//                    return new POReplacement_HistoryMonarchHospitalityController();
+                    
                 /*PURCHASE ORDER RETURN*/
                 //ENTRY
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrderReturn_Entry.fxml":
@@ -5165,6 +5494,18 @@ public class DashboardController implements Initializable {
                 + "{\"access_level\":\"01\",\"menu_name\":\"Mobile Phone\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_EntryMP.fxml\",\"controller_path\":\"DeliveryAcceptance_EntryMP.controller\",\"menu_id\":\"020\",\"menu_parent\":\"013\"},"
                 + "{\"access_level\":\"03\",\"menu_name\":\"Spare Parts Car\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_EntrySPCar.fxml\",\"controller_path\":\"DeliveryAcceptance_SPCar.controller\",\"menu_id\":\"021\",\"menu_parent\":\"013\"},"
                 + "{\"access_level\":\"02\",\"menu_name\":\"Spare Parts Motorycle\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_EntrySPMC.fxml\",\"controller_path\":\"DeliveryAcceptance_EntrySPMC.controller\",\"menu_id\":\"022\",\"menu_parent\":\"013\"},"
+                // Purchase Order Replacement Entry
+                + "{\"access_level\":\"01 02 03 04 05 06 07\",\"menu_name\":\"Purchase Order Replacement\",\"fxml_path\":\"Purchase Order Replacement\",\"controller_path\":\"po.controller\",\"menu_id\":\"135\",\"menu_parent\":\"002\"},"
+                + "{\"access_level\":\"07\",\"menu_name\":\"Appliances\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_EntryAppliances.fxml\",\"controller_path\":\"POReplacement_EntryAppliances.controller\",\"menu_id\":\"136\",\"menu_parent\":\"135\"},"
+                + "{\"access_level\":\"03\",\"menu_name\":\"Car\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_EntryCar.fxml\",\"controller_path\":\"POReplacement_EntryCar.controller\",\"menu_id\":\"137\",\"menu_parent\":\"135\"},"
+                + "{\"access_level\":\"01 02 03 04 05 06 07\",\"menu_name\":\"General\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_Entry.fxml\",\"controller_path\":\"POReplacement_Entry.controller\",\"menu_id\":\"138\",\"menu_parent\":\"135\"},"
+                + "{\"access_level\":\"05\",\"menu_name\":\"Los Pedritos\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_EntryLP.fxml\",\"controller_path\":\"POReplacement_EntryLP.controller\",\"menu_id\":\"139\",\"menu_parent\":\"135\"},"
+                + "{\"access_level\":\"04\",\"menu_name\":\"Monarch Restaurant\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_EntryMonarchFood.fxml\",\"controller_path\":\"POReplacement_EntryMonarchFood.controller\",\"menu_id\":\"140\",\"menu_parent\":\"135\"},"
+                + "{\"access_level\":\"04\",\"menu_name\":\"Monarch Hospitality\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_EntryMonarchHospitality.fxml\",\"controller_path\":\"POReplacement_EntryMonarchHospitality.controller\",\"menu_id\":\"141\",\"menu_parent\":\"135\"},"
+                + "{\"access_level\":\"02\",\"menu_name\":\"Motorcycle\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_EntryMC.fxml\",\"controller_path\":\"POReplacement_EntryMC.controller\",\"menu_id\":\"142\",\"menu_parent\":\"135\"},"
+                + "{\"access_level\":\"01\",\"menu_name\":\"Mobile Phone\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_EntryMP.fxml\",\"controller_path\":\"POReplacement_EntryMP.controller\",\"menu_id\":\"143\",\"menu_parent\":\"135\"},"
+                + "{\"access_level\":\"03\",\"menu_name\":\"Spare Parts Car\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_EntrySPCar.fxml\",\"controller_path\":\"POReplacement_SPCar.controller\",\"menu_id\":\"144\",\"menu_parent\":\"135\"},"
+                + "{\"access_level\":\"02\",\"menu_name\":\"Spare Parts Motorycle\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_EntrySPMC.fxml\",\"controller_path\":\"POReplacement_EntrySPMC.controller\",\"menu_id\":\"145\",\"menu_parent\":\"135\"},"
                 // Purchase Order Return Entry
                 + "{\"access_level\":\"01 02 03 04 05 06 07\",\"menu_name\":\"Purchase Order Return\",\"fxml_path\":\"Purchase Order Return\",\"controller_path\":\"po.controller\",\"menu_id\":\"086\",\"menu_parent\":\"002\"},"
                 + "{\"access_level\":\"07\",\"menu_name\":\"Appliances\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrderReturn_EntryAppliances.fxml\",\"controller_path\":\"PurchaseOrderReturn_EntryAppliances.controller\",\"menu_id\":\"087\",\"menu_parent\":\"086\"},"
@@ -5207,6 +5548,18 @@ public class DashboardController implements Initializable {
                 + "{\"access_level\":\"01\",\"menu_name\":\"Mobile Phone\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ConfirmationMP.fxml\",\"controller_path\":\"DeliveryAcceptance_ConfirmationMP.controller\",\"menu_id\":\"041\",\"menu_parent\":\"034\"},"
                 + "{\"access_level\":\"03\",\"menu_name\":\"Spare Parts Car\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ConfirmationSPCar.fxml\",\"controller_path\":\"DeliveryAcceptance_ConfirmationSPCar.controller\",\"menu_id\":\"042\",\"menu_parent\":\"034\"},"
                 + "{\"access_level\":\"02\",\"menu_name\":\"Spare Parts Motorycle\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ConfirmationSPMC.fxml\",\"controller_path\":\"DeliveryAcceptance_ConfirmationSPMC.controller\",\"menu_id\":\"043\",\"menu_parent\":\"034\"},"
+                // Purchase Order Replacement Confirmation
+                + "{\"access_level\":\"01 02 03 04 05 06 07\",\"menu_name\":\"Purchase Order Replacement\",\"fxml_path\":\"Purchase Order Replacement\",\"controller_path\":\"po.controller\",\"menu_id\":\"146\",\"menu_parent\":\"023\"},"
+                + "{\"access_level\":\"07\",\"menu_name\":\"Appliances\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_ConfirmationAppliances.fxml\",\"controller_path\":\"POReplacement_ConfirmationAppliances.controller\",\"menu_id\":\"147\",\"menu_parent\":\"146\"},"
+                + "{\"access_level\":\"03\",\"menu_name\":\"Car\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_ConfirmationCar.fxml\",\"controller_path\":\"POReplacement_ConfirmationCar.controller\",\"menu_id\":\"148\",\"menu_parent\":\"146\"},"
+                + "{\"access_level\":\"01 02 03 04 05 06 07\",\"menu_name\":\"General\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_Confirmation.fxml\",\"controller_path\":\"POReplacement_Confirmation.controller\",\"menu_id\":\"149\",\"menu_parent\":\"146\"},"
+                + "{\"access_level\":\"05\",\"menu_name\":\"Los Pedritos\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_ConfirmationLP.fxml\",\"controller_path\":\"POReplacement_ConfirmationLP.controller\",\"menu_id\":\"150\",\"menu_parent\":\"146\"},"
+                + "{\"access_level\":\"04\",\"menu_name\":\"Monarch Restaurant\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_ConfirmationMonarchFood.fxml\",\"controller_path\":\"POReplacement_ConfirmationMonarchFood.controller\",\"menu_id\":\"151\",\"menu_parent\":\"146\"},"
+                + "{\"access_level\":\"04\",\"menu_name\":\"Monarch Hospitality\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_ConfirmationMonarchHospitality.fxml\",\"controller_path\":\"POReplacement_ConfirmationMonarchHospitality.controller\",\"menu_id\":\"152\",\"menu_parent\":\"146\"},"
+                + "{\"access_level\":\"02\",\"menu_name\":\"Motorcycle\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_ConfirmationMC.fxml\",\"controller_path\":\"POReplacement_ConfirmationMC.controller\",\"menu_id\":\"153\",\"menu_parent\":\"146\"},"
+                + "{\"access_level\":\"01\",\"menu_name\":\"Mobile Phone\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_ConfirmationMP.fxml\",\"controller_path\":\"POReplacement_ConfirmationMP.controller\",\"menu_id\":\"154\",\"menu_parent\":\"146\"},"
+                + "{\"access_level\":\"03\",\"menu_name\":\"Spare Parts Car\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_ConfirmationSPCar.fxml\",\"controller_path\":\"POReplacement_ConfirmationSPCar.controller\",\"menu_id\":\"155\",\"menu_parent\":\"146\"},"
+                + "{\"access_level\":\"02\",\"menu_name\":\"Spare Parts Motorycle\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_ConfirmationSPMC.fxml\",\"controller_path\":\"POReplacement_ConfirmationSPMC.controller\",\"menu_id\":\"156\",\"menu_parent\":\"146\"},"
                 // Purchase Order Return Confirmation
                 + "{\"access_level\":\"01 02 03 04 05 06 07\",\"menu_name\":\"Purchase Order Return\",\"fxml_path\":\"Purchase Order Return\",\"controller_path\":\"po.controller\",\"menu_id\":\"097\",\"menu_parent\":\"023\"},"
                 + "{\"access_level\":\"07\",\"menu_name\":\"Appliances\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrderReturn_ConfirmationAppliances.fxml\",\"controller_path\":\"PurchaseOrderReturn_ConfirmationAppliances.controller\",\"menu_id\":\"098\",\"menu_parent\":\"097\"},"
@@ -5289,6 +5642,18 @@ public class DashboardController implements Initializable {
                 + "{\"access_level\":\"01\",\"menu_name\":\"Mobile Phone\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_HistoryMP.fxml\",\"controller_path\":\"DeliveryAcceptance_HistoryMP.controller\",\"menu_id\":\"083\",\"menu_parent\":\"076\"},"
                 + "{\"access_level\":\"03\",\"menu_name\":\"Spare Parts Car\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_HistorySPCar.fxml\",\"controller_path\":\"DeliveryAcceptance_HistorySPCar.controller\",\"menu_id\":\"084\",\"menu_parent\":\"076\"},"
                 + "{\"access_level\":\"02\",\"menu_name\":\"Spare Parts Motorycle\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_HistorySPMC.fxml\",\"controller_path\":\"DeliveryAcceptance_HistorySPMC.controller\",\"menu_id\":\"085\",\"menu_parent\":\"076\"},"
+                // Purchase Order Replacement History
+                + "{\"access_level\":\"01 02 03 04 05 06 07\",\"menu_name\":\"Purchase Order Replacement\",\"fxml_path\":\"Purchase Order Replacement\",\"controller_path\":\"po.controller\",\"menu_id\":\"157\",\"menu_parent\":\"065\"},"
+                + "{\"access_level\":\"07\",\"menu_name\":\"Appliances\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_HistoryAppliances.fxml\",\"controller_path\":\"POReplacement_HistoryAppliances.controller\",\"menu_id\":\"158\",\"menu_parent\":\"157\"},"
+                + "{\"access_level\":\"03\",\"menu_name\":\"Car\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_HistoryCar.fxml\",\"controller_path\":\"POReplacement_HistoryCar.controller\",\"menu_id\":\"159\",\"menu_parent\":\"157\"},"
+                + "{\"access_level\":\"01 02 03 04 05 06 07\",\"menu_name\":\"General\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_History.fxml\",\"controller_path\":\"POReplacement_History.controller\",\"menu_id\":\"160\",\"menu_parent\":\"157\"},"
+                + "{\"access_level\":\"05\",\"menu_name\":\"Los Pedritos\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_HistoryLP.fxml\",\"controller_path\":\"POReplacement_HistoryLP.controller\",\"menu_id\":\"161\",\"menu_parent\":\"157\"},"
+                + "{\"access_level\":\"04\",\"menu_name\":\"Monarch Restaurant\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_HistoryMonarchFood.fxml\",\"controller_path\":\"POReplacement_HistoryMonarchFood.controller\",\"menu_id\":\"162\",\"menu_parent\":\"157\"},"
+                + "{\"access_level\":\"04\",\"menu_name\":\"Monarch Hospitality\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_HistoryMonarchHospitality.fxml\",\"controller_path\":\"POReplacement_HistoryMonarchHospitality.controller\",\"menu_id\":\"163\",\"menu_parent\":\"157\"},"
+                + "{\"access_level\":\"02\",\"menu_name\":\"Motorcycle\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_HistoryMC.fxml\",\"controller_path\":\"POReplacement_HistoryMC.controller\",\"menu_id\":\"164\",\"menu_parent\":\"157\"},"
+                + "{\"access_level\":\"01\",\"menu_name\":\"Mobile Phone\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_HistoryMP.fxml\",\"controller_path\":\"POReplacement_HistoryMP.controller\",\"menu_id\":\"165\",\"menu_parent\":\"157\"},"
+                + "{\"access_level\":\"03\",\"menu_name\":\"Spare Parts Car\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_HistorySPCar.fxml\",\"controller_path\":\"POReplacement_HistorySPCar.controller\",\"menu_id\":\"166\",\"menu_parent\":\"157\"},"
+                + "{\"access_level\":\"02\",\"menu_name\":\"Spare Parts Motorycle\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_HistorySPMC.fxml\",\"controller_path\":\"POReplacement_HistorySPMC.controller\",\"menu_id\":\"167\",\"menu_parent\":\"157\"},"
                 // Purchase Order Return History
                 + "{\"access_level\":\"01 02 03 04 05 06 07\",\"menu_name\":\"Purchase Order Return\",\"fxml_path\":\"Purchase Order Return\",\"controller_path\":\"po.controller\",\"menu_id\":\"108\",\"menu_parent\":\"065\"},"
                 + "{\"access_level\":\"07\",\"menu_name\":\"Appliances\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrderReturn_HistoryAppliances.fxml\",\"controller_path\":\"PurchaseOrderReturn_HistoryAppliances.controller\",\"menu_id\":\"109\",\"menu_parent\":\"108\"},"

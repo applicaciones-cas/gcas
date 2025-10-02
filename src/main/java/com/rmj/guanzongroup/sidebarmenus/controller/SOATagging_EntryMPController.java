@@ -135,7 +135,6 @@ public class SOATagging_EntryMPController implements Initializable, ScreenInterf
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        
 
         poSOATaggingController = new CashflowControllers(oApp, null);
         poJSON = new JSONObject();
@@ -1085,9 +1084,14 @@ public class SOATagging_EntryMPController implements Initializable, ScreenInterf
                                     poSOATaggingController.SOATagging().PayableType(pnMain));
                             break;
                     }
-
                     if ("error".equals((String) poJSON.get("result"))) {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                    } else {
+                        if (poSOATaggingController.SOATagging().getDetailCount() <= 2) {
+                            JFXUtil.runWithDelay(0.50, () -> {
+                                retrievePayables(false);
+                            });
+                        }
                     }
                 }
                 Platform.runLater(() -> {
