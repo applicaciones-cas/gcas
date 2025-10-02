@@ -52,6 +52,8 @@ import org.json.simple.JSONObject;
 import ph.com.guanzongroup.cas.cashflow.model.Model_Check_Payments;
 import ph.com.guanzongroup.cas.check.module.mnv.CheckDeposit;
 import ph.com.guanzongroup.cas.check.module.mnv.constant.CheckDepositStatus;
+import ph.com.guanzongroup.cas.check.module.mnv.constant.CheckDepositStatus;
+import ph.com.guanzongroup.cas.check.module.mnv.constant.CheckTransferStatus;
 import ph.com.guanzongroup.cas.check.module.mnv.models.Model_Check_Deposit_Detail;
 import ph.com.guanzongroup.cas.check.module.mnv.services.CheckController;
 
@@ -60,7 +62,7 @@ import ph.com.guanzongroup.cas.check.module.mnv.services.CheckController;
  *
  * @author User
  */
-public class CheckDeposit_EntryController implements Initializable, ScreenInterface {
+public class CheckDeposit_ConfirmationController implements Initializable, ScreenInterface {
 
     private GRiderCAS poApp;
     private LogWrapper poLogWrapper;
@@ -87,7 +89,7 @@ public class CheckDeposit_EntryController implements Initializable, ScreenInterf
     private Label lblSource, lblStatus;
 
     @FXML
-    private Button btnSearch, btnBrowse, btnNew,btnCancel, btnUpdate, btnSave,
+    private Button btnSearch, btnBrowse, btnUpdate, btnSave,btnCancel, btnPrint, btnApprove, btnVoid,
             btnRetrieve, btnClose;
 
     @FXML
@@ -136,7 +138,7 @@ public class CheckDeposit_EntryController implements Initializable, ScreenInterf
         try {
             poLogWrapper = new LogWrapper(psFormName, psFormName);
             poAppController = new CheckController(poApp, poLogWrapper).CheckDeposit();
-            poAppController.setTransactionStatus(CheckDepositStatus.OPEN);
+    
 
             //initlalize and validate transaction objects from class controller
             if (!isJSONSuccess(poAppController.initTransaction(), psFormName)) {
@@ -146,17 +148,15 @@ public class CheckDeposit_EntryController implements Initializable, ScreenInterf
 
             //background thread
             Platform.runLater(() -> {
-                poAppController.setTransactionStatus("0");
+                poAppController.setTransactionStatus("10");
                 //initialize logged in category
                 poAppController.setIndustryID(psIndustryID);
                 System.err.println("Initialize value : Industry >" + psIndustryID);
-
-                btnNew.fire();
             });
             initializeTableDetail();
             initControlEvents();
         } catch (SQLException | GuanzonException e) {
-            Logger.getLogger(CheckDeposit_EntryController.class.getName()).log(Level.SEVERE, null, e);
+            Logger.getLogger(CheckDeposit_ConfirmationController.class.getName()).log(Level.SEVERE, null, e);
             poLogWrapper.severe(psFormName + " :" + e.getMessage());
         }
     }
@@ -323,15 +323,64 @@ public class CheckDeposit_EntryController implements Initializable, ScreenInterf
                     }
                     break;
 
-                case "btnNew":
-                    if (!isJSONSuccess(poAppController.NewTransaction(), "Initialize New Transaction")) {
+                case "btnApprove":
+                    if (tfTransactionNo.getText().isEmpty()) {
+                        ShowMessageFX.Information("Please load transaction before proceeding..", null, "Issuance Approval");
                         return;
                     }
-                    clearAllInputs();
-                    getLoadedTransaction();
-                    pnEditMode = poAppController.getEditMode();
+
+                    if (!poAppController.getMaster().getTransactionStatus().equalsIgnoreCase(CheckDepositStatus.OPEN)) {
+                        ShowMessageFX.Information("Status was already " + CheckDepositStatus.STATUS.get(Integer.parseInt(poAppController.getMaster().getTransactionStatus())).toLowerCase(), null, "Issuance Approval");
+                        return;
+                    }
+
+                    if (ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to confirm transaction?") == true) {
+                        if (!isJSONSuccess(poAppController.CloseTransaction(), "Initialize Close Transaction")) {
+                            return;
+                        }
+                        getLoadedTransaction();
+                        pnEditMode = poAppController.getEditMode();
+                        break;
+                    }
+                    break;
+                case "btnVoid":
+                    if (tfTransactionNo.getText().isEmpty()) {
+                        ShowMessageFX.Information("Please load transaction before proceeding..", null, "Issuance Approval");
+                        return;
+                    }
+
+                    if (ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to Void/Cancel transaction?") == true) {
+                        if (btnVoid.getText().equals("Void")) {
+                            if (!isJSONSuccess(poAppController.VoidTransaction(), "Initialize Void Transaction")) {
+                                return;
+                            }
+                        } else {
+                            if (!isJSONSuccess(poAppController.CancelTransaction(), "Initialize Cancel Transaction")) {
+                                return;
+                            }
+
+                        }
+                        getLoadedTransaction();
+                        pnEditMode = poAppController.getEditMode();
+                        break;
+                    }
                     break;
 
+                case "btnPrint":
+                    if (poAppController.getMaster().getTransactionNo() == null || poAppController.getMaster().getTransactionNo().isEmpty()) {
+                        ShowMessageFX.Information("Please load transaction before proceeding..", "Stock Request Approval", "");
+                        return;
+                    }
+                    if (ShowMessageFX.OkayCancel(null, psFormName, "Do you want to print the transaction ?") == true) {
+                        if (!isJSONSuccess(poAppController.printDepositSlip(),
+                                "Initialize Print Transaction")) {
+                            return;
+                        }
+                    }
+                    getLoadedTransaction();
+
+                    pnEditMode = poAppController.getEditMode();
+                    break;
                 case "btnUpdate":
                     if (poAppController.getMaster().getTransactionNo() == null || poAppController.getMaster().getTransactionNo().isEmpty()) {
                         ShowMessageFX.Information("Please load transaction before proceeding..", "Stock Request Issuance", "");
@@ -362,7 +411,7 @@ public class CheckDeposit_EntryController implements Initializable, ScreenInterf
                 case "btnCancel":
                     if (ShowMessageFX.OkayCancel(null, psFormName, "Do you want to disregard changes?") == true) {
                         poAppController = new CheckController(poApp, poLogWrapper).CheckDeposit();
-                        poAppController.setTransactionStatus("0");
+                        
 
                         if (!isJSONSuccess(poAppController.initTransaction(), "Initialize Transaction")) {
                             unloadForm appUnload = new unloadForm();
@@ -371,7 +420,7 @@ public class CheckDeposit_EntryController implements Initializable, ScreenInterf
 
                         Platform.runLater(() -> {
 
-                            poAppController.setTransactionStatus("0");
+                            poAppController.setTransactionStatus("10");
                             poAppController.getMaster().setIndustryId(psIndustryID);
                             poAppController.setIndustryID(psIndustryID);
 
@@ -439,8 +488,7 @@ public class CheckDeposit_EntryController implements Initializable, ScreenInterf
                         loadTransactionMaster();
 
                         break;
-                        
-                        
+
                     case "tfNote":
                         poAppController.getDetail(pnTransactionDetail).setRemarks(lsValue);
                         loadSelectedTransactionDetail(pnTransactionDetail);
@@ -653,6 +701,12 @@ public class CheckDeposit_EntryController implements Initializable, ScreenInterf
             tfBankAccountName.setText(poAppController.getMaster().BankAccount().getAccountName());
             taRemarks.setText(String.valueOf(poAppController.getMaster().getRemarks()));
             tfTotal.setText(String.valueOf(poAppController.getMaster().getTransactionTotalDeposit()));
+
+            if (poAppController.getMaster().getTransactionStatus().equals(CheckTransferStatus.CONFIRMED)) {
+                btnVoid.setText("Cancel");
+            } else {
+                btnVoid.setText("Void");
+            }
         } catch (SQLException | GuanzonException e) {
             poLogWrapper.severe(psFormName, e.getMessage());
         }
@@ -735,7 +789,7 @@ public class CheckDeposit_EntryController implements Initializable, ScreenInterf
             dpFilterFrom.setValue(ParseDate((Date) poApp.getServerDate()));
             dpFilterThru.setValue(ParseDate((Date) poApp.getServerDate()));
         } catch (SQLException ex) {
-            Logger.getLogger(CheckDeposit_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CheckDeposit_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

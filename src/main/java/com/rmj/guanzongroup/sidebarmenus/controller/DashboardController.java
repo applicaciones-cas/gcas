@@ -3766,11 +3766,9 @@ public class DashboardController implements Initializable {
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CheckDeposit_Entry.fxml":
                     return new CheckDeposit_EntryController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CheckDeposit_Confirmation.fxml":
-                    return new CheckTransfer_ConfirmationController();
+                    return new CheckDeposit_ConfirmationController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CheckDeposit_History.fxml":
                     return new CheckTransfer_HistoryController();
-                case "/com/rmj/guanzongroup/sidebarmenus/views/CheckDeposit_Posting.fxml":
-                    return new CheckTransfer_PostingController();
 
 //                UPDATE
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CheckStatusUpdate.fxml":
