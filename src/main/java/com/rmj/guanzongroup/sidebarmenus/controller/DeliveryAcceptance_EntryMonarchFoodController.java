@@ -1092,7 +1092,7 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
         for (TextField textField : textFields) {
             textField.setOnKeyPressed(this::txtField_KeyPressed);
         }
-        CustomCommonUtil.inputDecimalOnly(tfDiscountRate, tfDiscountAmount, tfCost, tfReceiveQuantity);
+        CustomCommonUtil.inputDecimalOnly(tfReceiveQuantity,tfDiscountRate, tfDiscountAmount, tfCost, tfReceiveQuantity);
     }
 
     boolean pbSuccess = true;

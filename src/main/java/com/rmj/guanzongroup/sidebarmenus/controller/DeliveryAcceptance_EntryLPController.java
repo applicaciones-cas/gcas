@@ -1095,7 +1095,7 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
         for (TextField textField : textFields) {
             textField.setOnKeyPressed(this::txtField_KeyPressed);
         }
-        CustomCommonUtil.inputDecimalOnly(tfDiscountRate, tfDiscountAmount, tfCost, tfReceiveQuantity);
+        CustomCommonUtil.inputDecimalOnly(tfReceiveQuantity,tfDiscountRate, tfDiscountAmount, tfCost, tfReceiveQuantity);
     }
     boolean pbSuccess = true;
 

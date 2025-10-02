@@ -2153,7 +2153,7 @@ public class DeliveryAcceptance_ConfirmationMonarchFoodController implements Ini
             textField.setOnKeyPressed(this::txtField_KeyPressed);
         }
         JFXUtil.initComboBoxCellDesignColor(cmbAttachmentType, "#FF8201");
-        CustomCommonUtil.inputDecimalOnly(tfDiscountRate, tfDiscountAmount, tfCost, tfReceiveQuantity);
+        CustomCommonUtil.inputDecimalOnly(tfReceiveQuantity,tfDiscountRate, tfDiscountAmount, tfCost, tfReceiveQuantity);
         // Combobox
         cmbAttachmentType.setItems(documentType);
         cmbAttachmentType.setOnAction(event -> {
