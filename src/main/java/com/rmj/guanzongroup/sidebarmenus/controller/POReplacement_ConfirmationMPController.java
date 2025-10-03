@@ -113,8 +113,6 @@ public class POReplacement_ConfirmationMPController implements Initializable, Sc
     private FileChooser fileChooser;
     private int pnAttachment;
 
-    private double xOffset = 0;
-    private double yOffset = 0;
     private int currentIndex = 0;
     boolean lbresetpredicate = false;
 
@@ -126,7 +124,6 @@ public class POReplacement_ConfirmationMPController implements Initializable, Sc
     private final JFXUtil.ImageViewer imageviewerutil = new JFXUtil.ImageViewer();
     JFXUtil.StageManager stageSerialDialog = new JFXUtil.StageManager();
 
-    private Stage dialogStage = null;
     private ChangeListener<String> detailSearchListener;
     private ChangeListener<String> mainSearchListener;
 
@@ -252,11 +249,7 @@ public class POReplacement_ConfirmationMPController implements Initializable, Sc
                                     loadRecordMaster();
                                     loadTableDetail.reload();
                                     loadTableAttachment.reload();
-                                } catch (CloneNotSupportedException ex) {
-                                    Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
-                                } catch (SQLException ex) {
-                                    Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
-                                } catch (GuanzonException ex) {
+                                } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
                                     Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
                                 }
                                 isPrinted = false;
@@ -270,6 +263,7 @@ public class POReplacement_ConfirmationMPController implements Initializable, Sc
                     case "btnClose":
                         unloadForm appUnload = new unloadForm();
                         if (ShowMessageFX.OkayCancel(null, "Close Tab", "Are you sure you want to close this Tab?") == true) {
+                            stageSerialDialog.closeDialog();
                             appUnload.unloadForm(apMainAnchor, oApp, pxeModuleName);
                         } else {
                             return;
@@ -587,14 +581,6 @@ public class POReplacement_ConfirmationMPController implements Initializable, Sc
 
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        }
-    }
-
-    public void closeSerialDialog() {
-        if (dialogStage != null && dialogStage.isShowing()) {
-            dialogStage.close();
-            dialogStage = null;
-        } else {
         }
     }
 
