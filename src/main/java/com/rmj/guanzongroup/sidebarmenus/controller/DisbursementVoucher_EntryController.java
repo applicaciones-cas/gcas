@@ -174,7 +174,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
     @FXML
     private TableView tblVwList;
     @FXML
-    private TableColumn tblRowNo, tblTransactionType, tblDueDate, tblRefNo, tblAmountMain;
+    private TableColumn tblRowNo, tblTransactionType,tblBranchName, tblDueDate, tblRefNo, tblAmountMain;
     @FXML
     private Pagination pagination;
 
@@ -725,6 +725,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                                     ModelDisbursementVoucher_Main loMain = new ModelDisbursementVoucher_Main(
                                             String.valueOf(main_data.size() + 1),
                                             obj.get("TransactionType") != null ? obj.get("TransactionType").toString() : "",
+                                            obj.get("sBranchNme") != null ? obj.get("sBranchNme").toString() : "",
                                             obj.get("dTransact") != null ? obj.get("dTransact").toString() : "",
                                             obj.get("sTransNox") != null ? obj.get("sTransNox").toString() : "",
                                             obj.get("Balance") != null ? CustomCommonUtil.setIntegerValueToDecimalFormat(obj.get("Balance"), true) : ""
@@ -775,6 +776,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
 
     private void initTableMain() {
         JFXUtil.setColumnCenter(tblRowNo, tblTransactionType, tblDueDate, tblRefNo);
+        JFXUtil.setColumnLeft(tblBranchName);
         JFXUtil.setColumnRight(tblAmountMain);
         JFXUtil.setColumnsIndexAndDisableReordering(tblVwList);
 
@@ -974,7 +976,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                     int pnRowMain = Integer.parseInt(selected.getIndex01()) - 1;
                     pnMain = pnRowMain;
                     String lsTransactionType = selected.getIndex02();
-                    String lsTransactionNo = selected.getIndex04();
+                    String lsTransactionNo = selected.getIndex05();
                     String lsHighLight = selected.getIndex01();
                     poJSON = poDisbursementController.addUnifiedPaymentToDisbursement(lsTransactionNo, lsTransactionType);
                     if ("error".equals(poJSON.get("result"))) {
@@ -1082,7 +1084,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                                     poDisbursementController.Detail(pnDetailDV).getAmountApplied(),
                                     poDisbursementController.Detail(pnDetailDV).getDetailVatRates(),
                                Double.parseDouble(JFXUtil.removeComma(tfPartialPayment.getText())),
-                                    true);
+                                    poDisbursementController.Detail(pnDetailDV).isWithVat());
                             
                             loadRecordDetailDV();
                             tblVwDetails.refresh();
@@ -2444,7 +2446,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                         poDisbursementController.computeVat(pnDetailDV,
                                 Double.parseDouble(JFXUtil.removeComma(tfPurchasedAmountDetail.getText())),
                                 Double.parseDouble(JFXUtil.removeComma(tfVatRateDetail.getText())),
-                                Double.valueOf(tfPartialPayment.getText()),
+                                Double.parseDouble(JFXUtil.removeComma(tfPartialPayment.getText())),
                                 true);
                         if (!chbkVatClassification.isSelected()) {
                             tfVatRateDetail.setDisable(true);
