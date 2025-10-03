@@ -1093,7 +1093,7 @@ public class POReplacement_EntryCarController implements Initializable, ScreenIn
 
             tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.PurchaseOrderReceiving().Detail(pnDetail).getUnitPrce(), true));
             tfOrderQuantity.setText(String.valueOf(poController.PurchaseOrderReceiving().Detail(pnDetail).getOrderQty().intValue()));
-            tfReceiveQuantity.setText(String.valueOf(poController.PurchaseOrderReceiving().getQuantity(pnDetail)));
+            tfReceiveQuantity.setText(String.valueOf(poController.PurchaseOrderReceiving().Detail(pnDetail).getQuantity().intValue()));
 
             JFXUtil.updateCaretPositions(apDetail);
         } catch (SQLException | GuanzonException ex) {

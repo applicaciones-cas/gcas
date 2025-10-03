@@ -1347,7 +1347,7 @@ public class POReplacement_EntryMPController implements Initializable, ScreenInt
             tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.PurchaseOrderReceiving().Detail(pnDetail).getUnitPrce(), true));
 //            tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.PurchaseOrderReceiving().Detail(pnDetail).getUnitPrce()));
             tfOrderQuantity.setText(String.valueOf(poController.PurchaseOrderReceiving().Detail(pnDetail).getOrderQty().intValue()));
-            tfReceiveQuantity.setText(String.valueOf(poController.PurchaseOrderReceiving().getQuantity(pnDetail)));
+            tfReceiveQuantity.setText(String.valueOf(poController.PurchaseOrderReceiving().Detail(pnDetail).getQuantity().intValue()));
 
             JFXUtil.updateCaretPositions(apDetail);
 
