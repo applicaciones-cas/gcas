@@ -90,7 +90,7 @@ public class POReplacement_ConfirmationSPMCController implements Initializable, 
     private static final int ROWS_PER_PAGE = 50;
     int pnDetail = 0;
     int pnMain = 0;
-    private final String pxeModuleName = JFXUtil.getFormattedClassTitle(this.getClass());
+    private final String pxeModuleName = JFXUtil.getFormattedClassTitle(this.getClass(), true);
     static PurchaseOrderReceivingControllers poController;
     public int pnEditMode;
     boolean isPrinted = false;

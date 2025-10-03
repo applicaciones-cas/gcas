@@ -1132,6 +1132,33 @@ public class JFXUtil {
 
         return className;
     }
+    /*V2, allow modification on naming*/
+    public static String getFormattedClassTitle(Class<?> javaclass, boolean allowPOChange) {
+        String className = javaclass.getSimpleName();
+
+        if (className.endsWith("Controller")) {
+            className = className.substring(0, className.length() - "Controller".length());
+        }
+
+        className = className.replace("MonarchFood", "MF");
+        className = className.replace("MonarchHospitality", "MH");
+
+        className = className.replace("_", " ");
+
+        className = className.replaceAll("(?<=[a-z])(?=[A-Z])", " ");
+        className = className.replaceAll("(?<=[A-Z])(?=[A-Z][a-z])", " ");
+
+        className = className.trim();
+
+        className = className.replace("SP Car", "SPCar");
+        className = className.replace("SP MC", "SPMC");
+
+        if (allowPOChange) {
+            // Replace "PO" when it appears as a whole word
+            className = className.replaceAll("\\bPO\\b", "Purchase Order");
+        }
+        return className;
+    }
 
     //sample usage
     //JFXUtil.getFormattedClassTitle(this.getClass());

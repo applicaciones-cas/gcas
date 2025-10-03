@@ -73,7 +73,7 @@ public class POReplacement_HistoryMonarchFoodController implements Initializable
     private GRiderCAS oApp;
     private JSONObject poJSON;
     int pnDetail = 0;
-    private final String pxeModuleName = JFXUtil.getFormattedClassTitle(this.getClass());
+    private final String pxeModuleName = JFXUtil.getFormattedClassTitle(this.getClass(), true);
     static PurchaseOrderReceivingControllers poController;
     public int pnEditMode;
 

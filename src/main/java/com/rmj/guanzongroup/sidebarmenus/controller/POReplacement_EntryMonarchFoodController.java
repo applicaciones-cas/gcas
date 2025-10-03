@@ -77,7 +77,7 @@ public class POReplacement_EntryMonarchFoodController implements Initializable, 
     int pnDetail = 0;
     int pnMain = 0;
     boolean lsIsSaved = false;
-    private final String pxeModuleName = JFXUtil.getFormattedClassTitle(this.getClass());
+    private final String pxeModuleName = JFXUtil.getFormattedClassTitle(this.getClass(), true);
     static PurchaseOrderReceivingControllers poController;
     public int pnEditMode;
 

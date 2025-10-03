@@ -81,7 +81,7 @@ public class POReplacement_EntryMPController implements Initializable, ScreenInt
     int pnDetail = 0;
     int pnMain = 0;
     boolean lsIsSaved = false;
-    private final String pxeModuleName = JFXUtil.getFormattedClassTitle(this.getClass());
+    private final String pxeModuleName = JFXUtil.getFormattedClassTitle(this.getClass(), true);
     static PurchaseOrderReceivingControllers poController;
     public int pnEditMode;
 
@@ -225,7 +225,7 @@ public class POReplacement_EntryMPController implements Initializable, ScreenInt
                 stageSerialDialog.showDialog((Stage) btnSave.getScene().getWindow(), getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_SerialMP.fxml"),
                         controller, "Inventory Serial", true, true, false);
                 stageSerialDialog.setOnHidden(event -> {
-                    
+
                     moveNext(false, true);
                     Platform.runLater(() -> {
                         loadTableDetail.reload();
@@ -450,10 +450,8 @@ public class POReplacement_EntryMPController implements Initializable, ScreenInt
                 }
 
             }
-        } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
+        } catch (CloneNotSupportedException | SQLException | GuanzonException | ParseException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } catch (ParseException ex) {
-            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
         }
     }
 
