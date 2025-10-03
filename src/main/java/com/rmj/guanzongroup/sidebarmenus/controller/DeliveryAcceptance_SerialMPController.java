@@ -54,6 +54,7 @@ import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRiderCAS;
 import org.guanzon.appdriver.base.GuanzonException;
 import org.guanzon.cas.purchasing.controller.PurchaseOrderReceiving;
+import org.guanzon.cas.purchasing.status.PurchaseOrderReceivingStatus;
 import org.json.simple.JSONObject;
 
 /**
@@ -255,6 +256,31 @@ public class DeliveryAcceptance_SerialMPController implements Initializable {
                         loadRecordDetail();
                     } else {
                         poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail2).setSerial01(lsValue);
+//                        if(!lsValue.isEmpty()){
+//                            poJSON = poPurchaseReceivingController.CheckSerial(lsValue, pnDetail2);
+//                            if ("error".equals((String) poJSON.get("result"))) {
+//                                if(!(boolean) poJSON.get("continue")){
+//                                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+//                                    tfIMEI1.setText("");
+//                                    tfIMEI1.requestFocus();
+//                                    return;
+//                                }
+//                            }
+//                            
+//                            //If no record found manually set the serial 01
+//                            if((boolean) poJSON.get("continue")){
+//                                poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail2).setSerial01(lsValue);
+//                            }
+//                        } else{
+//                            if(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail2).getSerialId() != null 
+//                                && !"".equals(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail2).getSerialId())){
+//                                poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail2).setSerialId("");
+//                                poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail2).setSerial01(lsValue);
+//                                poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail2).setSerial02(lsValue);
+//                            } else {
+//                                poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail2).setSerial01(lsValue);
+//                            }
+//                        }
                     }
                     break;
                 case "tfIMEI2":
@@ -270,6 +296,31 @@ public class DeliveryAcceptance_SerialMPController implements Initializable {
                         loadRecordDetail();
                     } else {
                         poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail2).setSerial02(lsValue);
+//                        if(!lsValue.isEmpty()){
+//                            poJSON = poPurchaseReceivingController.CheckSerial(lsValue, pnDetail2);
+//                            if ("error".equals((String) poJSON.get("result"))) {
+//                                if(!(boolean) poJSON.get("continue")){
+//                                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+//                                    tfIMEI2.setText("");
+//                                    tfIMEI2.requestFocus();
+//                                    return;
+//                                }
+//                            }
+//                            
+//                            //If no record found manually set the serial 01
+//                            if((boolean) poJSON.get("continue")){
+//                                poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail2).setSerial02(lsValue);
+//                            }
+//                        } else{
+//                            if(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail2).getSerialId() != null 
+//                                && !"".equals(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail2).getSerialId())){
+//                                poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail2).setSerialId("");
+//                                poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail2).setSerial01(lsValue);
+//                                poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail2).setSerial02(lsValue);
+//                            } else {
+//                                poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail2).setSerial02(lsValue);
+//                            }
+//                        }
                     }
                     break;
 
@@ -343,13 +394,15 @@ public class DeliveryAcceptance_SerialMPController implements Initializable {
                                 tblViewDetail.getSelectionModel().select(0);
                                 tblViewDetail.getFocusModel().focus(0);
                                 pnDetail = tblViewDetail.getSelectionModel().getSelectedIndex();
+                                loadRecordDetail();
                             }
                         } else {
                             // Check if the item matches the value of pnDetail
                             tblViewDetail.getSelectionModel().select(pnDetail);
                             tblViewDetail.getFocusModel().focus(pnDetail);
+                            loadRecordDetail();
                         }
-
+                        
                     } catch (SQLException | GuanzonException ex) {
                         Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -475,7 +528,8 @@ public class DeliveryAcceptance_SerialMPController implements Initializable {
         String lsID = (((TextField) event.getSource()).getId());
         String lsValue = (txtField.getText() == null ? "" : txtField.getText());
         poJSON = new JSONObject();
-
+        ModelDeliveryAcceptance_SerialMP selectedItem = tblViewDetail.getItems().get(pnDetail);
+        int pnDetail2 = Integer.valueOf(selectedItem.getIndex04());
         TableView<?> currentTable = tblViewDetail;
         TablePosition<?, ?> focusedCell = currentTable.getFocusModel().getFocusedCell();
         switch (event.getCode()) {
@@ -493,6 +547,28 @@ public class DeliveryAcceptance_SerialMPController implements Initializable {
                 pnDetail = moveToNextRow(currentTable, focusedCell);
                 loadRecordDetail();
                 event.consume();
+                break;
+            case F3:
+                if(poPurchaseReceivingController.Master().getPurpose().equals(PurchaseOrderReceivingStatus.Purpose.REPLACEMENT)){
+                    switch (lsID) {
+                        case "tfIMEI1":
+                            poJSON = poPurchaseReceivingController.SearchSerial(lsValue, pnDetail2);
+                            if ("error".equals((String) poJSON.get("result"))) {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                tfIMEI1.setText("");
+                            }
+                            loadTableDetail();
+                            break;
+                        case "tfIMEI2":
+                            poJSON = poPurchaseReceivingController.SearchSerial(lsValue, pnDetail2);
+                            if ("error".equals((String) poJSON.get("result"))) {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                tfIMEI2.setText("");
+                            }
+                            loadTableDetail();
+                            break;
+                    }
+                }
                 break;
             default:
                 break;

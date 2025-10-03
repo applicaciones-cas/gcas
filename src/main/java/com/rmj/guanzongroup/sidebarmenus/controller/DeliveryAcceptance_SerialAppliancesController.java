@@ -475,6 +475,8 @@ public class DeliveryAcceptance_SerialAppliancesController implements Initializa
         String lsValue = (txtField.getText() == null ? "" : txtField.getText());
         poJSON = new JSONObject();
 
+        ModelDeliveryAcceptance_SerialMP selectedItem = tblViewDetail.getItems().get(pnDetail);
+        int pnDetail2 = Integer.valueOf(selectedItem.getIndex04());
         TableView<?> currentTable = tblViewDetail;
         TablePosition<?, ?> focusedCell = currentTable.getFocusModel().getFocusedCell();
         switch (event.getCode()) {
@@ -492,6 +494,29 @@ public class DeliveryAcceptance_SerialAppliancesController implements Initializa
                 pnDetail = moveToNextRow(currentTable, focusedCell);
                 loadRecordDetail();
                 event.consume();
+                break;
+            
+            case F3:
+                if(poPurchaseReceivingController.Master().getPurpose().equals(PurchaseOrderReceivingStatus.Purpose.REPLACEMENT)){
+                    switch (lsID) {
+                        case "tfIMEI1":
+                            poJSON = poPurchaseReceivingController.SearchSerial(lsValue, pnDetail2);
+                            if ("error".equals((String) poJSON.get("result"))) {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                tfIMEI1.setText("");
+                            }
+                            loadTableDetail();
+                            break;
+                        case "tfIMEI2":
+                            poJSON = poPurchaseReceivingController.SearchSerial(lsValue, pnDetail2);
+                            if ("error".equals((String) poJSON.get("result"))) {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                tfIMEI2.setText("");
+                            }
+                            loadTableDetail();
+                            break;
+                    }
+                }
                 break;
             default:
                 break;

@@ -58,6 +58,7 @@ import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRiderCAS;
 import org.guanzon.appdriver.base.GuanzonException;
 import org.guanzon.cas.purchasing.controller.PurchaseOrderReceiving;
+import org.guanzon.cas.purchasing.status.PurchaseOrderReceivingStatus;
 import org.json.simple.JSONObject;
 
 /**
@@ -388,6 +389,26 @@ public class DeliveryAcceptance_SerialMCController implements Initializable {
                             }
                             loadTableDetail();
                             break;
+                        case "tfEngineNo":
+                            if(poPurchaseReceivingController.Master().getPurpose().equals(PurchaseOrderReceivingStatus.Purpose.REPLACEMENT)){
+                                poJSON = poPurchaseReceivingController.SearchSerial(lsValue, pnDetail2);
+                                if ("error".equals((String) poJSON.get("result"))) {
+                                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                    tfEngineNo.setText("");
+                                }
+                                loadTableDetail();
+                            }
+                            break;
+                        case "tfFrameNo":
+                            if(poPurchaseReceivingController.Master().getPurpose().equals(PurchaseOrderReceivingStatus.Purpose.REPLACEMENT)){
+                                poJSON = poPurchaseReceivingController.SearchSerial(lsValue, pnDetail2);
+                                if ("error".equals((String) poJSON.get("result"))) {
+                                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                    tfFrameNo.setText("");
+                                }
+                                loadTableDetail();
+                            }
+                            break;
                     }
                     break;
                 default:
@@ -465,11 +486,13 @@ public class DeliveryAcceptance_SerialMCController implements Initializable {
                                 tblViewDetail.getSelectionModel().select(0);
                                 tblViewDetail.getFocusModel().focus(0);
                                 pnDetail = tblViewDetail.getSelectionModel().getSelectedIndex();
+                                loadRecordDetail();
                             }
                         } else {
                             // Check if the item matches the value of pnDetail
                             tblViewDetail.getSelectionModel().select(pnDetail);
                             tblViewDetail.getFocusModel().focus(pnDetail);
+                            loadRecordDetail();
                         }
                         loadRecordDetail();
                     } catch (SQLException | GuanzonException ex) {
