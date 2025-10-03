@@ -566,7 +566,7 @@ public class POReplacement_ConfirmationMCController implements Initializable, Sc
                 stageSerialDialog.showDialog((Stage) btnSave.getScene().getWindow(), getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_SerialMC.fxml"),
                         controller, "Inventory Serial", true, true, false);
                 stageSerialDialog.setOnHidden(event -> {
-                    stageSerialDialog = null;
+                    
                     moveNext(false, true);
                     Platform.runLater(() -> {
                         loadTableDetail.reload();

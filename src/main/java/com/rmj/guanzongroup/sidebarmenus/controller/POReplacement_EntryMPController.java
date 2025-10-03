@@ -225,7 +225,7 @@ public class POReplacement_EntryMPController implements Initializable, ScreenInt
                 stageSerialDialog.showDialog((Stage) btnSave.getScene().getWindow(), getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_SerialMP.fxml"),
                         controller, "Inventory Serial", true, true, false);
                 stageSerialDialog.setOnHidden(event -> {
-                    stageSerialDialog = null;
+                    
                     moveNext(false, true);
                     Platform.runLater(() -> {
                         loadTableDetail.reload();

@@ -320,7 +320,7 @@ public class POReplacement_HistoryMCController implements Initializable, ScreenI
                 stageSerialDialog.showDialog((Stage) apMainAnchor.getScene().getWindow(), getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_SerialMC.fxml"),
                         controller, "Inventory Serial", true, true, false);
                 stageSerialDialog.setOnHidden(event -> {
-                    stageSerialDialog = null;
+                    
                     Platform.runLater(() -> {
                         loadTableDetail.reload();
                     });
