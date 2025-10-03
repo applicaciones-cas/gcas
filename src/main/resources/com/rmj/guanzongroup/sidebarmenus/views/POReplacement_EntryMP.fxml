@@ -4,7 +4,6 @@
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Pagination?>
@@ -238,7 +237,7 @@
                                                                           <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
                                                                           <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
                                                                           <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
-                                                                          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
+                                                                          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="31.0" vgrow="SOMETIMES" />
                                                                       </rowConstraints>
                                                                       <children>
                                                       <AnchorPane maxWidth="-Infinity" minWidth="-Infinity" prefHeight="27.0" prefWidth="140.0" style="-fx-background-color: FF8201;" GridPane.columnIndex="11" />
@@ -303,7 +302,7 @@
                                                                               <TextField fx:id="tfDiscountRate" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="11" GridPane.rowIndex="2" />
                                                                               <TextField fx:id="tfDiscountAmount" alignment="CENTER_RIGHT" promptText="0.0000" GridPane.columnIndex="11" GridPane.rowIndex="3" />
                                                                               <TextField fx:id="tfTotal" alignment="CENTER_RIGHT" disable="true" editable="false" promptText="0.0000" styleClass="DisabledTextField" GridPane.columnIndex="11" GridPane.rowIndex="4" />
-                                                      <TextArea fx:id="taRemarks" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="27.0" GridPane.columnIndex="2" GridPane.columnSpan="10" GridPane.rowIndex="5">
+                                                      <TextArea fx:id="taRemarks" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="31.0" GridPane.columnIndex="2" GridPane.columnSpan="10" GridPane.rowIndex="5">
                                                          <GridPane.margin>
                                                             <Insets top="1.0" />
                                                          </GridPane.margin>
@@ -427,10 +426,10 @@
                                                                 <TableColumn fx:id="tblRowNoDetail" editable="false" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="No." />
                                                                 <TableColumn fx:id="tblOrderNoDetail" editable="false" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Source No" />
                                                                 <TableColumn fx:id="tblBarcodeDetail" editable="false" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Barcode" />
-                                                                <TableColumn fx:id="tblDescriptionDetail" editable="false" maxWidth="292.0" minWidth="-1.0" prefWidth="292.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Description" />
+                                                                <TableColumn fx:id="tblDescriptionDetail" editable="false" maxWidth="284.0" minWidth="-1.0" prefWidth="284.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Description" />
                                                                 <TableColumn fx:id="tblCostDetail" editable="false" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Cost" />
-                                                                <TableColumn fx:id="tblOrderQuantityDetail" editable="false" maxWidth="60.0" minWidth="60.0" prefWidth="60.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Return" />
-                                                                <TableColumn fx:id="tblReceiveQuantityDetail" editable="false" maxWidth="60.0" minWidth="60.0" prefWidth="60.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Received" />
+                                                                <TableColumn fx:id="tblOrderQuantityDetail" editable="false" maxWidth="65.0" minWidth="65.0" prefWidth="65.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Return" />
+                                                                <TableColumn fx:id="tblReceiveQuantityDetail" editable="false" maxWidth="65.0" minWidth="65.0" prefWidth="65.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Received" />
                                                                 <TableColumn fx:id="tblTotalDetail" editable="false" maxWidth="115.0" minWidth="115.0" prefWidth="115.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Total" />
                                                             </columns>
                                              <columnResizePolicy>
