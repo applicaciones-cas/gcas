@@ -1057,7 +1057,7 @@ public class DashboardController implements Initializable {
                     psIndustryID = "04";
                     psCategoryID = "0009";
                     return "Purchase Order Receiving History MH";
-                    
+
                 /*PURCHASE ORDER REPLACEMENT*/
                 //General
                 case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_Entry.fxml":
@@ -2216,11 +2216,11 @@ public class DashboardController implements Initializable {
                     return "Check Transfer Posting";
 
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CheckDeposit_Entry.fxml":
-                    return "Check Transfer Entry";
+                    return "Check Deposit Entry";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CheckDeposit_Confirmation.fxml":
-                    return "Check Transfer Confirmation";
+                    return "Check Deposit Confirmation";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CheckDeposit_History.fxml":
-                    return "Check Transfer History";
+                    return "Check Deposit History";
 
                 //Update
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CheckStatusUpdate.fxml":
@@ -2465,7 +2465,7 @@ public class DashboardController implements Initializable {
                 return "/com/rmj/guanzongroup/sidebarmenus/views/POQuotation_History.fxml";
             /*END*/
 
-            /*Purchase Order*/
+ /*Purchase Order*/
             case "Purchase Order":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_Entry.fxml";
             case "Purchase Order Confirmation":
@@ -2548,7 +2548,7 @@ public class DashboardController implements Initializable {
                 return "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_HistoryCar.fxml";
             /*END PURCHASE ORDER*/
 
-            /*PURCHASE ORDER RECEIVING*/
+ /*PURCHASE ORDER RECEIVING*/
             // General
             case "Purchase Order Receiving Entry":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_Entry.fxml";
@@ -2630,8 +2630,8 @@ public class DashboardController implements Initializable {
             case "Purchase Order Receiving History MH":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_HistoryMonarchHospitality.fxml";
             /*END PURCHASE ORDER RECEIVING*/
-                
-            /*PURCHASE ORDER REPLACEMENT*/
+
+ /*PURCHASE ORDER REPLACEMENT*/
             // General
             case "Purchase Order Replacement Entry":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_Entry.fxml";
@@ -2712,8 +2712,8 @@ public class DashboardController implements Initializable {
             case "Purchase Order Replacement History MH":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_HistoryMonarchHospitality.fxml";
             /*END PURCHASE ORDER REPLACEMENT*/
-                
-            /*PURCHASE ORDER RETURN*/
+
+ /*PURCHASE ORDER RETURN*/
             // General
             case "Purchase Order Return Entry":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrderReturn_Entry.fxml";
@@ -3499,7 +3499,7 @@ public class DashboardController implements Initializable {
                     return new PurchaseOrder_HistoryAppliancesController();
 
                 /*PURCHASE ORDER RECEIVING*/
-                /* PURCHASE ORDER RECEIVING */
+ /* PURCHASE ORDER RECEIVING */
                 // ENTRY
                 case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_EntryAppliances.fxml":
                     return new DeliveryAcceptance_EntryAppliancesController();
@@ -3628,7 +3628,6 @@ public class DashboardController implements Initializable {
 //                    return new POReplacement_HistoryMonarchFoodController();
 //                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_HistoryMonarchHospitality.fxml":
 //                    return new POReplacement_HistoryMonarchHospitalityController();
-                    
                 /*PURCHASE ORDER RETURN*/
                 //ENTRY
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrderReturn_Entry.fxml":
@@ -4095,11 +4094,9 @@ public class DashboardController implements Initializable {
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CheckDeposit_Entry.fxml":
                     return new CheckDeposit_EntryController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CheckDeposit_Confirmation.fxml":
-                    return new CheckTransfer_ConfirmationController();
+                    return new CheckDeposit_ConfirmationController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CheckDeposit_History.fxml":
-                    return new CheckTransfer_HistoryController();
-                case "/com/rmj/guanzongroup/sidebarmenus/views/CheckDeposit_Posting.fxml":
-                    return new CheckTransfer_PostingController();
+                    return new CheckDeposit_HistoryController();
 
 //                UPDATE
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CheckStatusUpdate.fxml":

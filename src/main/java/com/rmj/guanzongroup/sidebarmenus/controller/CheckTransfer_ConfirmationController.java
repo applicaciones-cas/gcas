@@ -87,7 +87,7 @@ public class CheckTransfer_ConfirmationController implements Initializable, Scre
     private Label lblSource, lblStatus;
 
     @FXML
-    private Button btnSearch, btnBrowse, btnUpdate, btnSave, btnPrint, btnApprove, btnVoid,
+    private Button btnSearch, btnBrowse, btnUpdate, btnSave, btnCancel, btnPrint, btnApprove, btnVoid,
             btnRetrieve, btnClose;
 
     @FXML

@@ -87,7 +87,7 @@ public class CheckDeposit_EntryController implements Initializable, ScreenInterf
     private Label lblSource, lblStatus;
 
     @FXML
-    private Button btnSearch, btnBrowse, btnNew, btnUpdate, btnSave,
+    private Button btnSearch, btnBrowse, btnNew,btnCancel, btnUpdate, btnSave,
             btnRetrieve, btnClose;
 
     @FXML
@@ -439,6 +439,13 @@ public class CheckDeposit_EntryController implements Initializable, ScreenInterf
                         loadTransactionMaster();
 
                         break;
+                        
+                        
+                    case "tfNote":
+                        poAppController.getDetail(pnTransactionDetail).setRemarks(lsValue);
+                        loadSelectedTransactionDetail(pnTransactionDetail);
+
+                        break;
 
                 }
             } else {
@@ -660,7 +667,7 @@ public class CheckDeposit_EntryController implements Initializable, ScreenInterf
         tfCheckNo.setText(tblColDetailCheckNo.getCellData(tblIndex));
         tfCheckAmount.setText(tblColDetailCheckAmount.getCellData(tblIndex));
 
-        tfNote.setText(poAppController.getDetail(fnRow).CheckPayment().getRemarks());
+        tfNote.setText(poAppController.getDetail(fnRow).getRemarks());
         dpCheckDate.setValue(ParseDate(poAppController.getDetail(fnRow).CheckPayment().getTransactionDate()));
 
     }
