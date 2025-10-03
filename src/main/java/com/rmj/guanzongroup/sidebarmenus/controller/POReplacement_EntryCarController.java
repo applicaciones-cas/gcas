@@ -413,6 +413,7 @@ public class POReplacement_EntryCarController implements Initializable, ScreenIn
     }
 
     public void showSerialDialog() {
+        stageSerialDialog.closeDialog();
         poJSON = new JSONObject();
         try {
             if (!poController.PurchaseOrderReceiving().Detail(pnDetail).isSerialized()) {
@@ -1461,6 +1462,7 @@ public class POReplacement_EntryCarController implements Initializable, ScreenIn
                 if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
                     ModelDeliveryAcceptance_Detail selected = (ModelDeliveryAcceptance_Detail) tblViewTransDetails.getSelectionModel().getSelectedItem();
                     if (selected != null) {
+                        stageSerialDialog.closeDialog();
                         pnDetail = Integer.parseInt(selected.getIndex01()) - 1;
                         loadRecordDetail();
                         if (poController.PurchaseOrderReceiving().Detail(pnDetail).getStockId() != null && !poController.PurchaseOrderReceiving().Detail(pnDetail).getStockId().equals("")) {
@@ -1496,7 +1498,7 @@ public class POReplacement_EntryCarController implements Initializable, ScreenIn
 
         // Manage visibility and managed state of other buttons
         JFXUtil.setButtonsVisibility(!lbShow, btnNew);
-        JFXUtil.setButtonsVisibility(lbShow, btnSearch, btnSave, btnCancel);
+        JFXUtil.setButtonsVisibility(lbShow, btnSerials, btnSearch, btnSave, btnCancel);
         JFXUtil.setButtonsVisibility(lbShow2, btnUpdate, btnPrint, btnHistory);
         JFXUtil.setButtonsVisibility(lbShow3, btnBrowse, btnClose);
 

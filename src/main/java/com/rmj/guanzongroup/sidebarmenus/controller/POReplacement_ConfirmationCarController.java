@@ -266,6 +266,7 @@ public class POReplacement_ConfirmationCarController implements Initializable, S
                     case "btnClose":
                         unloadForm appUnload = new unloadForm();
                         if (ShowMessageFX.OkayCancel(null, "Close Tab", "Are you sure you want to close this Tab?") == true) {
+                            stageSerialDialog.closeDialog();
                             appUnload.unloadForm(apMainAnchor, oApp, pxeModuleName);
                         } else {
                             return;
@@ -539,6 +540,7 @@ public class POReplacement_ConfirmationCarController implements Initializable, S
     public void showSerialDialog() {
         poJSON = new JSONObject();
         try {
+            stageSerialDialog.closeDialog();
             if (!poController.PurchaseOrderReceiving().Detail(pnDetail).isSerialized()) {
                 return;
             }
@@ -1550,6 +1552,7 @@ public class POReplacement_ConfirmationCarController implements Initializable, S
                 if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
                     ModelDeliveryAcceptance_Detail selected = (ModelDeliveryAcceptance_Detail) tblViewTransDetails.getSelectionModel().getSelectedItem();
                     if (selected != null) {
+                        stageSerialDialog.closeDialog();
                         pnDetail = Integer.parseInt(selected.getIndex01()) - 1;
                         loadRecordDetail();
                         moveNext(false, false);
@@ -1618,7 +1621,7 @@ public class POReplacement_ConfirmationCarController implements Initializable, S
         boolean lbShow4 = (fnValue == EditMode.UNKNOWN || fnValue == EditMode.READY);
         // Manage visibility and managed state of other buttons
         //Update 
-        JFXUtil.setButtonsVisibility(lbShow1, btnSearch, btnSave, btnCancel);
+        JFXUtil.setButtonsVisibility(lbShow1, btnSerials, btnSearch, btnSave, btnCancel);
         JFXUtil.setButtonsVisibility(lbShow3, btnPrint, btnUpdate, btnHistory, btnConfirm, btnVoid);
         JFXUtil.setButtonsVisibility(lbShow4, btnClose);
         JFXUtil.setDisabled(!lbShow1, btnAddAttachment, btnRemoveAttachment);
