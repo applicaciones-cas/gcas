@@ -555,10 +555,7 @@ public class POReplacement_ConfirmationMPController implements Initializable, Sc
                 return;
             }
 
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_SerialMP.fxml"));
             DeliveryAcceptance_SerialMPController controller = new DeliveryAcceptance_SerialMPController();
-            loader.setController(controller);
-
             if (controller != null) {
                 controller.setGRider(oApp);
                 controller.setObject(poController.PurchaseOrderReceiving());
@@ -567,7 +564,7 @@ public class POReplacement_ConfirmationMPController implements Initializable, Sc
 
             try {
                 stageSerialDialog.showDialog((Stage) btnSave.getScene().getWindow(), getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_SerialMP.fxml"),
-                        controller, "Inventory Serial", true, true, true);
+                        controller, "Inventory Serial", true, true, false);
                 stageSerialDialog.setOnHidden(event -> {
                     stageSerialDialog = null;
                     moveNext(false, true);

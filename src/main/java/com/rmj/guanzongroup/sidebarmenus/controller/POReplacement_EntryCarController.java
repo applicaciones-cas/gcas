@@ -431,10 +431,7 @@ public class POReplacement_EntryCarController implements Initializable, ScreenIn
                 return;
             }
 
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_SerialCar.fxml"));
             DeliveryAcceptance_SerialCarController controller = new DeliveryAcceptance_SerialCarController();
-            loader.setController(controller);
-
             if (controller != null) {
                 controller.setGRider(oApp);
                 controller.setObject(poController.PurchaseOrderReceiving());
@@ -443,7 +440,7 @@ public class POReplacement_EntryCarController implements Initializable, ScreenIn
 
             try {
                 stageSerialDialog.showDialog((Stage) btnSave.getScene().getWindow(), getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_SerialCar.fxml"),
-                        controller, "Inventory Serial", true, true, true);
+                        controller, "Inventory Serial", true, true, false);
                 stageSerialDialog.setOnHidden(event -> {
                     stageSerialDialog = null;
                     moveNext(false, true);
