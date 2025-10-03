@@ -84,7 +84,7 @@ import javafx.scene.input.KeyCode;
  *
  * @author Team 2
  */
-public class POReplacement_ConfirmationController implements Initializable, ScreenInterface {
+public class POReplacement_ConfirmationLPController implements Initializable, ScreenInterface {
 
     private GRiderCAS oApp;
     private JSONObject poJSON;

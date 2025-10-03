@@ -84,7 +84,7 @@ import javafx.scene.input.KeyCode;
  *
  * @author Team 2
  */
-public class POReplacement_ConfirmationController implements Initializable, ScreenInterface {
+public class POReplacement_ConfirmationMonarchHospitalityController implements Initializable, ScreenInterface {
 
     private GRiderCAS oApp;
     private JSONObject poJSON;
@@ -640,15 +640,15 @@ public class POReplacement_ConfirmationController implements Initializable, Scre
                         lsValue = JFXUtil.removeComma(lsValue);
                         if (poController.PurchaseOrderReceiving().Detail(pnDetail).getOrderNo() != null
                         && !"".equals(poController.PurchaseOrderReceiving().Detail(pnDetail).getOrderNo())) {
-                            if (poController.PurchaseOrderReceiving().Detail(pnDetail).getOrderQty().doubleValue() < Double.valueOf(lsValue)) {
+                            if (poController.PurchaseOrderReceiving().Detail(pnDetail).getOrderQty().intValue() < Integer.valueOf(lsValue)) {
                                 ShowMessageFX.Warning(null, pxeModuleName, "Receive quantity cannot be greater than the order quantity.");
                                 poController.PurchaseOrderReceiving().Detail(pnDetail).setQuantity(0);
                                 tfReceiveQuantity.requestFocus();
                                 break;
                             }
                         }
-                        double lnOldVal = poController.PurchaseOrderReceiving().Detail(pnDetail).getQuantity().doubleValue();
-                        poJSON = poController.PurchaseOrderReceiving().Detail(pnDetail).setQuantity((Double.valueOf(lsValue)));
+                        int lnOldVal = poController.PurchaseOrderReceiving().Detail(pnDetail).getQuantity().intValue();
+                        poJSON = poController.PurchaseOrderReceiving().Detail(pnDetail).setQuantity((Integer.valueOf(lsValue)));
                         if ("error".equals((String) poJSON.get("result"))) {
                             System.err.println((String) poJSON.get("message"));
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -660,7 +660,7 @@ public class POReplacement_ConfirmationController implements Initializable, Scre
                                 System.err.println((String) poJSON.get("message"));
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 poController.PurchaseOrderReceiving().Detail(pnDetail).setQuantity(lnOldVal);
-                                tfReceiveQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.PurchaseOrderReceiving().Detail(pnDetail).getQuantity().doubleValue()));
+                                tfReceiveQuantity.setText(String.valueOf(poController.PurchaseOrderReceiving().Detail(pnDetail).getQuantity().intValue()));
                                 return;
                             }
                         } catch (SQLException | GuanzonException ex) {
@@ -676,7 +676,7 @@ public class POReplacement_ConfirmationController implements Initializable, Scre
                 JFXUtil.runWithDelay(0.50, () -> {
                     loadTableDetail.reload();
                 });
-
+            
             });
 
     ChangeListener<Boolean> txtField_Focus = JFXUtil.FocusListener(TextField.class,
@@ -813,7 +813,7 @@ public class POReplacement_ConfirmationController implements Initializable, Scre
 
         } catch (GuanzonException | SQLException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        }
+        } 
     }
     boolean pbSuccess = true;
 
@@ -1176,8 +1176,9 @@ public class POReplacement_ConfirmationController implements Initializable, Scre
             tfMeasure.setText(poController.PurchaseOrderReceiving().Detail(pnDetail).Inventory().Measure().getDescription());
 
             tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.PurchaseOrderReceiving().Detail(pnDetail).getUnitPrce(), true));
-            tfOrderQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.PurchaseOrderReceiving().Detail(pnDetail).getOrderQty().doubleValue()));
-            tfReceiveQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.PurchaseOrderReceiving().Detail(pnDetail).getQuantity().doubleValue()));
+//            tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.PurchaseOrderReceiving().Detail(pnDetail).getUnitPrce()));
+            tfOrderQuantity.setText(String.valueOf(poController.PurchaseOrderReceiving().Detail(pnDetail).getOrderQty().intValue()));
+            tfReceiveQuantity.setText(String.valueOf(poController.PurchaseOrderReceiving().Detail(pnDetail).getQuantity().intValue()));
 
             JFXUtil.updateCaretPositions(apDetail);
         } catch (SQLException | GuanzonException ex) {
@@ -1416,15 +1417,15 @@ public class POReplacement_ConfirmationController implements Initializable, Scre
                                 }
                                 try {
 
-                                    lnTotal = poController.PurchaseOrderReceiving().Detail(lnCtr).getUnitPrce().doubleValue() * poController.PurchaseOrderReceiving().Detail(lnCtr).getQuantity().doubleValue();
+                                    lnTotal = poController.PurchaseOrderReceiving().Detail(lnCtr).getUnitPrce().doubleValue() * poController.PurchaseOrderReceiving().Detail(lnCtr).getQuantity().intValue();
 
                                 } catch (Exception e) {
 
                                 }
 
                                 if ((!poController.PurchaseOrderReceiving().Detail(lnCtr).getOrderNo().equals("") && poController.PurchaseOrderReceiving().Detail(lnCtr).getOrderNo() != null)
-                                        && poController.PurchaseOrderReceiving().Detail(lnCtr).getOrderQty().doubleValue() != poController.PurchaseOrderReceiving().Detail(lnCtr).getQuantity().doubleValue()
-                                        && poController.PurchaseOrderReceiving().Detail(lnCtr).getQuantity().doubleValue() != 0) {
+                                        && poController.PurchaseOrderReceiving().Detail(lnCtr).getOrderQty().intValue() != poController.PurchaseOrderReceiving().Detail(lnCtr).getQuantity().intValue()
+                                        && poController.PurchaseOrderReceiving().Detail(lnCtr).getQuantity().intValue() != 0) {
                                     JFXUtil.highlightByKey(tblViewTransDetails, String.valueOf(lnCtr + 1), "#FAA0A0", highlightedRowsDetail);
                                 }
 
@@ -1434,8 +1435,8 @@ public class POReplacement_ConfirmationController implements Initializable, Scre
                                                 String.valueOf(poController.PurchaseOrderReceiving().Detail(lnCtr).Inventory().getBarCode()),
                                                 String.valueOf(poController.PurchaseOrderReceiving().Detail(lnCtr).Inventory().getDescription()),
                                                 String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.PurchaseOrderReceiving().Detail(lnCtr).getUnitPrce(), true)),
-                                                String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.PurchaseOrderReceiving().Detail(lnCtr).getOrderQty().doubleValue())),
-                                                String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.PurchaseOrderReceiving().Detail(lnCtr).getQuantity().doubleValue())),
+                                                String.valueOf(poController.PurchaseOrderReceiving().Detail(lnCtr).getOrderQty().intValue()),
+                                                String.valueOf(poController.PurchaseOrderReceiving().Detail(lnCtr).getQuantity().intValue()),
                                                 String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotal, true)) //identify total
                                         ));
                             }
@@ -1551,8 +1552,10 @@ public class POReplacement_ConfirmationController implements Initializable, Scre
         JFXUtil.setKeyPressedListener(this::txtField_KeyPressed, apBrowse, apMaster, apDetail, apAttachments);
         JFXUtil.initComboBoxCellDesignColor(cmbAttachmentType, "#FF8201");
 
+        CustomCommonUtil.inputIntegersOnly(tfReceiveQuantity);
+
         CustomCommonUtil.inputDecimalOnly(tfDiscountRate);
-        JFXUtil.setCommaFormatter(tfReceiveQuantity,tfDiscountAmount, tfCost);
+        JFXUtil.setCommaFormatter(tfDiscountAmount, tfCost);
         // Combobox
         cmbAttachmentType.setItems(documentType);
         cmbAttachmentType.setOnAction(event -> {
