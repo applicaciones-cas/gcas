@@ -1416,11 +1416,8 @@ public class POReplacement_ConfirmationMonarchHospitalityController implements I
                                     continue;
                                 }
                                 try {
-
                                     lnTotal = poController.PurchaseOrderReceiving().Detail(lnCtr).getUnitPrce().doubleValue() * poController.PurchaseOrderReceiving().Detail(lnCtr).getQuantity().intValue();
-
                                 } catch (Exception e) {
-
                                 }
 
                                 if ((!poController.PurchaseOrderReceiving().Detail(lnCtr).getOrderNo().equals("") && poController.PurchaseOrderReceiving().Detail(lnCtr).getOrderNo() != null)

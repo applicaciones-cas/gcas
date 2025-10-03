@@ -970,9 +970,7 @@ public class POReplacement_EntryController implements Initializable, ScreenInter
                                         || "".equals(poController.PurchaseOrderReceiving().Detail(lnCtr).getOrderNo())) {
                                     continue;
                                 }
-
                                 try {
-
                                     lnTotal = poController.PurchaseOrderReceiving().Detail(lnCtr).getUnitPrce().doubleValue() * poController.PurchaseOrderReceiving().Detail(lnCtr).getQuantity().intValue();
                                 } catch (Exception e) {
                                 }

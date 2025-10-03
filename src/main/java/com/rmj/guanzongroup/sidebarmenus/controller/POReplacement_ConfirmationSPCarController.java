@@ -825,7 +825,7 @@ public class POReplacement_ConfirmationSPCarController implements Initializable,
             }
         } catch (GuanzonException | SQLException ex) {
             Logger.getLogger(POReplacement_ConfirmationSPCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } 
+        }
     }
 
     boolean pbSuccess = true;
@@ -1378,12 +1378,13 @@ public class POReplacement_ConfirmationSPCarController implements Initializable,
 
                             double lnTotal = 0.0;
                             for (lnCtr = 0; lnCtr < poController.PurchaseOrderReceiving().getDetailCount(); lnCtr++) {
+                                if (poController.PurchaseOrderReceiving().Detail(lnCtr).getOrderNo() == null
+                                        || "".equals(poController.PurchaseOrderReceiving().Detail(lnCtr).getOrderNo())) {
+                                    continue;
+                                }
                                 try {
-
                                     lnTotal = poController.PurchaseOrderReceiving().Detail(lnCtr).getUnitPrce().doubleValue() * poController.PurchaseOrderReceiving().Detail(lnCtr).getQuantity().intValue();
-
                                 } catch (Exception e) {
-
                                 }
 
                                 if ((!poController.PurchaseOrderReceiving().Detail(lnCtr).getOrderNo().equals("") && poController.PurchaseOrderReceiving().Detail(lnCtr).getOrderNo() != null)
@@ -1423,7 +1424,7 @@ public class POReplacement_ConfirmationSPCarController implements Initializable,
 
                         } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
                             Logger.getLogger(POReplacement_ConfirmationSPCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-                        } 
+                        }
                     });
                 });
 
