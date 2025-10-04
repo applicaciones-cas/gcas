@@ -546,9 +546,7 @@ public class POReplacement_ConfirmationSPMCController implements Initializable, 
                         }
                         break;
                     case "tfDiscountRate":
-                        if (lsValue.isEmpty()) {
-                            lsValue = "0.00";
-                        }
+                        lsValue = JFXUtil.removeComma(lsValue);
                         poJSON = poController.PurchaseOrderReceiving().computeDiscount(Double.valueOf(lsValue));
                         if ("error".equals(poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -559,13 +557,9 @@ public class POReplacement_ConfirmationSPMCController implements Initializable, 
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                             break;
                         }
-
                         break;
                     case "tfDiscountAmount":
-                        if (lsValue.isEmpty()) {
-                            lsValue = "0.00";
-                        }
-
+                        lsValue = JFXUtil.removeComma(lsValue);
                         poJSON = poController.PurchaseOrderReceiving().computeDiscountRate(Double.valueOf(lsValue));
                         if ("error".equals(poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -612,10 +606,7 @@ public class POReplacement_ConfirmationSPMCController implements Initializable, 
 
                         break;
                     case "tfCost":
-                        if (lsValue.isEmpty()) {
-                            lsValue = "0.00";
-                        }
-
+                        lsValue = JFXUtil.removeComma(lsValue);
                         if (Double.parseDouble(lsValue) < 0.00) {
                             ShowMessageFX.Warning(null, pxeModuleName, "Invalid Cost Amount");
                             return;
@@ -645,35 +636,26 @@ public class POReplacement_ConfirmationSPMCController implements Initializable, 
 
                         break;
                     case "tfReceiveQuantity":
-                        if (lsValue.isEmpty()) {
-                            lsValue = "0";
-                        }
                         lsValue = JFXUtil.removeComma(lsValue);
                         if (poController.PurchaseOrderReceiving().Detail(pnDetail).getOrderNo() != null
                         && !"".equals(poController.PurchaseOrderReceiving().Detail(pnDetail).getOrderNo())) {
                             if (poController.PurchaseOrderReceiving().Detail(pnDetail).getOrderQty().intValue() < Integer.valueOf(lsValue)) {
                                 ShowMessageFX.Warning(null, pxeModuleName, "Receive quantity cannot be greater than the order quantity.");
-                                poController.PurchaseOrderReceiving().Detail(pnDetail).setQuantity(0);
-                                tfReceiveQuantity.requestFocus();
                                 break;
                             }
                         }
 
-                        int lnOldVal = poController.PurchaseOrderReceiving().Detail(pnDetail).getQuantity().intValue();
                         poJSON = poController.PurchaseOrderReceiving().Detail(pnDetail).setQuantity((Integer.valueOf(lsValue)));
                         if ("error".equals((String) poJSON.get("result"))) {
-                            System.err.println((String) poJSON.get("message"));
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                            break;
                         }
 
                         try {
                             poJSON = poController.PurchaseOrderReceiving().computeFields();
                             if ("error".equals((String) poJSON.get("result"))) {
-                                System.err.println((String) poJSON.get("message"));
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                poController.PurchaseOrderReceiving().Detail(pnDetail).setQuantity(lnOldVal);
-                                tfReceiveQuantity.setText(String.valueOf(poController.PurchaseOrderReceiving().Detail(pnDetail).getQuantity().intValue()));
-                                return;
+                                break;
                             }
                         } catch (SQLException | GuanzonException ex) {
                             Logger.getLogger(POReplacement_ConfirmationSPMCController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
