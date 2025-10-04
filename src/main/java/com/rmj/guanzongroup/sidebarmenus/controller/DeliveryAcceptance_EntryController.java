@@ -616,7 +616,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                             System.err.println((String) poJSON.get("message"));
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                             poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).setQuantity(lnOldVal);
-                            tfReceiveQuantity.setText(String.valueOf(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getQuantity().doubleValue()));
+                            tfReceiveQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getQuantity().doubleValue()));
                             return;
                         }
                     } catch (SQLException | GuanzonException ex) {
