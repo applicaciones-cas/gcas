@@ -172,7 +172,6 @@ public class POReplacement_ConfirmationLPController implements Initializable, Sc
         clearTextFields();
 
         Platform.runLater(() -> {
-            psIndustryId = "";
             poController.PurchaseOrderReceiving().Master().setIndustryId(psIndustryId);
             poController.PurchaseOrderReceiving().Master().setCompanyId(psCompanyId);
             poController.PurchaseOrderReceiving().setIndustryId(psIndustryId);
