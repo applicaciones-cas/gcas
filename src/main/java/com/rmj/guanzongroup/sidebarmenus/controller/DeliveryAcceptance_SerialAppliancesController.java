@@ -54,6 +54,7 @@ import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRiderCAS;
 import org.guanzon.appdriver.base.GuanzonException;
 import org.guanzon.cas.purchasing.controller.PurchaseOrderReceiving;
+import org.guanzon.cas.purchasing.status.PurchaseOrderReceivingStatus;
 import org.json.simple.JSONObject;
 
 /**
@@ -289,6 +290,10 @@ public class DeliveryAcceptance_SerialAppliancesController implements Initializa
             ModelDeliveryAcceptance_SerialMP selectedItem = tblViewDetail.getItems().get(pnDetail);
             int pnDetail2 = Integer.valueOf(selectedItem.getIndex04());
 
+            if(poPurchaseReceivingController.Master().getPurpose().equals(PurchaseOrderReceivingStatus.Purpose.REPLACEMENT)){
+                tfIMEI1.promptTextProperty().set("Press F3: Search");
+                tfIMEI2.promptTextProperty().set("Press F3: Search");
+            }
             tfIMEI1.setText(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail2).getSerial01());
             tfIMEI2.setText(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail2).getSerial02());
             updateCaretPositions(apDetail);
@@ -342,11 +347,13 @@ public class DeliveryAcceptance_SerialAppliancesController implements Initializa
                                 tblViewDetail.getSelectionModel().select(0);
                                 tblViewDetail.getFocusModel().focus(0);
                                 pnDetail = tblViewDetail.getSelectionModel().getSelectedIndex();
+                                loadRecordDetail();
                             }
                         } else {
                             // Check if the item matches the value of pnDetail
                             tblViewDetail.getSelectionModel().select(pnDetail);
                             tblViewDetail.getFocusModel().focus(pnDetail);
+                            loadRecordDetail();
                         }
 
                     } catch (SQLException | GuanzonException ex) {

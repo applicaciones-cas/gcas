@@ -55,6 +55,7 @@ import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRiderCAS;
 import org.guanzon.appdriver.base.GuanzonException;
 import org.guanzon.cas.purchasing.controller.PurchaseOrderReceiving;
+import org.guanzon.cas.purchasing.status.PurchaseOrderReceivingStatus;
 import org.json.simple.JSONObject;
 
 /**
@@ -414,8 +415,48 @@ public class DeliveryAcceptance_SerialCarController implements Initializable {
                             loadTableDetail();
                             loadRecordDetail();
                             break;
+                        case "tfEngineNo":
+                            if(poPurchaseReceivingController.Master().getPurpose().equals(PurchaseOrderReceivingStatus.Purpose.REPLACEMENT)){
+                                poJSON = poPurchaseReceivingController.SearchSerial(lsValue, pnDetail2);
+                                if ("error".equals((String) poJSON.get("result"))) {
+                                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                    tfEngineNo.setText("");
+                                }
+                                loadTableDetail();
+                            }
+                            break;
+                        case "tfFrameNo":
+                            if(poPurchaseReceivingController.Master().getPurpose().equals(PurchaseOrderReceivingStatus.Purpose.REPLACEMENT)){
+                                poJSON = poPurchaseReceivingController.SearchSerial(lsValue, pnDetail2);
+                                if ("error".equals((String) poJSON.get("result"))) {
+                                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                    tfFrameNo.setText("");
+                                }
+                                loadTableDetail();
+                            }
+                            break;
+                        case "tfCSNo":
+                            if(poPurchaseReceivingController.Master().getPurpose().equals(PurchaseOrderReceivingStatus.Purpose.REPLACEMENT)){
+                                poJSON = poPurchaseReceivingController.SearchSerial(lsValue, pnDetail2);
+                                if ("error".equals((String) poJSON.get("result"))) {
+                                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                    tfCSNo.setText("");
+                                }
+                                loadTableDetail();
+                            }
+                            break;
+                        case "tfPlateNo":
+                            if(poPurchaseReceivingController.Master().getPurpose().equals(PurchaseOrderReceivingStatus.Purpose.REPLACEMENT)){
+                                poJSON = poPurchaseReceivingController.SearchSerial(lsValue, pnDetail2);
+                                if ("error".equals((String) poJSON.get("result"))) {
+                                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                    tfPlateNo.setText("");
+                                }
+                                loadTableDetail();
+                            }
+                            break;
                     }
-                    break;
+                    
                 default:
                     break;
             }
@@ -431,6 +472,12 @@ public class DeliveryAcceptance_SerialCarController implements Initializable {
                 ModelDeliveryAcceptance_Serial selectedItem = tblViewDetail.getItems().get(pnDetail);
                 int pnDetail2 = Integer.valueOf(selectedItem.getIndex07());
 
+                if(poPurchaseReceivingController.Master().getPurpose().equals(PurchaseOrderReceivingStatus.Purpose.REPLACEMENT)){
+                    tfEngineNo.promptTextProperty().set("Press F3: Search");
+                    tfFrameNo.promptTextProperty().set("Press F3: Search");
+                    tfCSNo.promptTextProperty().set("Press F3: Search");
+                    tfPlateNo.promptTextProperty().set("Press F3: Search");
+                }
                 tfEngineNo.setText(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail2).getSerial01());
                 tfFrameNo.setText(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail2).getSerial02());
                 tfCSNo.setText(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail2).getConductionStickerNo());
@@ -499,11 +546,13 @@ public class DeliveryAcceptance_SerialCarController implements Initializable {
                                 tblViewDetail.getSelectionModel().select(0);
                                 tblViewDetail.getFocusModel().focus(0);
                                 pnDetail = tblViewDetail.getSelectionModel().getSelectedIndex();
+                                loadRecordDetail();
                             }
                         } else {
                             // Check if the item matches the value of pnDetail
                             tblViewDetail.getSelectionModel().select(pnDetail);
                             tblViewDetail.getFocusModel().focus(pnDetail);
+                            loadRecordDetail();
                         }
 
                     } catch (SQLException | GuanzonException ex) {

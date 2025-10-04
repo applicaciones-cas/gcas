@@ -425,7 +425,12 @@ public class DeliveryAcceptance_SerialMCController implements Initializable {
             if (details_data.size() > 0) {
                 ModelDeliveryAcceptance_SerialMC selectedItem = tblViewDetail.getItems().get(pnDetail);
                 int pnDetail2 = Integer.valueOf(selectedItem.getIndex05());
-
+                
+                if(poPurchaseReceivingController.Master().getPurpose().equals(PurchaseOrderReceivingStatus.Purpose.REPLACEMENT)){
+                    tfEngineNo.promptTextProperty().set("Press F3: Search");
+                    tfFrameNo.promptTextProperty().set("Press F3: Search");
+                }
+                
                 tfEngineNo.setText(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail2).getSerial01());
                 tfFrameNo.setText(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail2).getSerial02());
                 tfLocation.setText(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail2).Location().getDescription());

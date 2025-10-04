@@ -341,6 +341,11 @@ public class DeliveryAcceptance_SerialMPController implements Initializable {
             ModelDeliveryAcceptance_SerialMP selectedItem = tblViewDetail.getItems().get(pnDetail);
             int pnDetail2 = Integer.valueOf(selectedItem.getIndex04());
 
+            if(poPurchaseReceivingController.Master().getPurpose().equals(PurchaseOrderReceivingStatus.Purpose.REPLACEMENT)){
+                tfIMEI1.promptTextProperty().set("Press F3: Search");
+                tfIMEI2.promptTextProperty().set("Press F3: Search");
+            }
+            
             tfIMEI1.setText(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail2).getSerial01());
             tfIMEI2.setText(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail2).getSerial02());
             updateCaretPositions(apDetail);
