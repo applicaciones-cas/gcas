@@ -1153,7 +1153,7 @@ public class JFXUtil {
 
         className = className.replace("SP Car", "SPCar");
         className = className.replace("SP MC", "SPMC");
-        
+
         switch (lsChangeIdentifier) {
             case "PO":
                 className = className.replaceAll("\\bPO\\b", "Purchase Order");
@@ -2548,6 +2548,13 @@ public class JFXUtil {
             }
         }
         return poJSON;
+    }
+
+    public static void removeTextFieldListener(ChangeListener<String> searchListener, TextField textField) {
+        if (searchListener != null) {
+            // Remove the listener if already attached
+            textField.textProperty().removeListener(searchListener);
+        }
     }
 
 }
