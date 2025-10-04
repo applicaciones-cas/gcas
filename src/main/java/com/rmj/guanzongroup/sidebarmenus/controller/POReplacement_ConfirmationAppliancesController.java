@@ -178,6 +178,7 @@ public class POReplacement_ConfirmationAppliancesController implements Initializ
             poController.PurchaseOrderReceiving().setCategoryId(psCategoryId);
             poController.PurchaseOrderReceiving().initFields();
             poController.PurchaseOrderReceiving().setWithUI(true);
+            poController.PurchaseOrderReceiving().setPurpose(PurchaseOrderReceivingStatus.Purpose.REPLACEMENT);
             loadRecordSearch();
         });
 
@@ -1668,7 +1669,7 @@ public class POReplacement_ConfirmationAppliancesController implements Initializ
                 if (poController.PurchaseOrderReceiving().Master().isProcessed()) {
                     JFXUtil.setButtonsVisibility(false, btnUpdate, btnVoid);
                 } else {
-                    JFXUtil.setButtonsVisibility(false, btnReturn);
+                    JFXUtil.setButtonsVisibility(lbShow3, btnReturn);
                 }
                 break;
             case PurchaseOrderReceivingStatus.POSTED:

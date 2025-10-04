@@ -156,7 +156,8 @@ public class POReplacement_HistoryCarController implements Initializable, Screen
             poController.PurchaseOrderReceiving().setCompanyId(psCompanyId);
             poController.PurchaseOrderReceiving().setCategoryId(psCategoryId);
             poController.PurchaseOrderReceiving().initFields();
-            poController.PurchaseOrderReceiving().setWithUI(true);
+            poController.PurchaseOrderReceiving().setWithUI(true);            
+            poController.PurchaseOrderReceiving().setPurpose(PurchaseOrderReceivingStatus.Purpose.REPLACEMENT);
             loadRecordSearch();
         });
 

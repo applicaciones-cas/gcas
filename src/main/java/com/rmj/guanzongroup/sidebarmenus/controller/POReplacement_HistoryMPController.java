@@ -154,7 +154,8 @@ public class POReplacement_HistoryMPController implements Initializable, ScreenI
             poController.PurchaseOrderReceiving().setCompanyId(psCompanyId);
             poController.PurchaseOrderReceiving().setCategoryId(psCategoryId);
             poController.PurchaseOrderReceiving().initFields();
-            poController.PurchaseOrderReceiving().setWithUI(true);
+            poController.PurchaseOrderReceiving().setWithUI(true);            
+            poController.PurchaseOrderReceiving().setPurpose(PurchaseOrderReceivingStatus.Purpose.REPLACEMENT);
             loadRecordSearch();
         });
 
