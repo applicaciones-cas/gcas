@@ -781,6 +781,10 @@ public class POReplacement_ConfirmationCarController implements Initializable, S
             });
 
     public void moveNext(boolean isUp, boolean continueNext) {
+        if (details_data.size() <= 0) {
+            return;
+        }
+
         if (continueNext) {
             apDetail.requestFocus();
 

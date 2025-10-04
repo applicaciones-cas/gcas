@@ -788,6 +788,10 @@ public class POReplacement_ConfirmationMPController implements Initializable, Sc
             });
 
     public void moveNext(boolean isUp, boolean continueNext) {
+        if (details_data.size() <= 0) {
+            return;
+        }
+
         if (continueNext) {
             apDetail.requestFocus();
 
