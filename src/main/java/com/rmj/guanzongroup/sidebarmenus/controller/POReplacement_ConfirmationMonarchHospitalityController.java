@@ -136,7 +136,7 @@ public class POReplacement_ConfirmationMonarchHospitalityController implements I
     @FXML
     private Button btnUpdate, btnSearch, btnSave, btnCancel, btnConfirm, btnVoid, btnPrint, btnReturn, btnHistory, btnRetrieve, btnClose, btnAddAttachment, btnRemoveAttachment, btnArrowLeft, btnArrowRight;
     @FXML
-    private DatePicker dpTransactionDate, dpReferenceDate, dpExpiryDate;
+    private DatePicker dpTransactionDate, dpReferenceDate;
     @FXML
     private TextArea taRemarks;
     @FXML
@@ -676,7 +676,7 @@ public class POReplacement_ConfirmationMonarchHospitalityController implements I
                 JFXUtil.runWithDelay(0.50, () -> {
                     loadTableDetail.reload();
                 });
-            
+
             });
 
     ChangeListener<Boolean> txtField_Focus = JFXUtil.FocusListener(TextField.class,
@@ -813,7 +813,7 @@ public class POReplacement_ConfirmationMonarchHospitalityController implements I
 
         } catch (GuanzonException | SQLException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } 
+        }
     }
     boolean pbSuccess = true;
 
@@ -942,32 +942,6 @@ public class POReplacement_ConfirmationMonarchHospitalityController implements I
 
                             pbSuccess = false; //Set to false to prevent multiple message box: Conflict with server date vs transaction date validation
                             loadRecordMaster();
-                            pbSuccess = true; //Set to original value
-                        }
-                        break;
-                    case "dpExpiryDate":
-                        if (poController.PurchaseOrderReceiving().getEditMode() == EditMode.ADDNEW
-                                || poController.PurchaseOrderReceiving().getEditMode() == EditMode.UPDATE) {
-                            lsServerDate = sdfFormat.format(oApp.getServerDate());
-                            lsSelectedDate = sdfFormat.format(SQLUtil.toDate(JFXUtil.convertToIsoFormat(inputText), SQLUtil.FORMAT_SHORT_DATE));
-                            currentDate = LocalDate.parse(lsServerDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
-                            selectedDate = LocalDate.parse(lsSelectedDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
-
-                            if (selectedDate.isBefore(currentDate)) {
-                                poJSON.put("result", "error");
-                                poJSON.put("message", "The selected date cannot be earlier than the current date.");
-                                pbSuccess = false;
-                            }
-                            if (pbSuccess) {
-                                poController.PurchaseOrderReceiving().Detail(pnDetail).setExpiryDate(SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE));
-                            } else {
-                                if ("error".equals((String) poJSON.get("result"))) {
-                                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                }
-                            }
-
-                            pbSuccess = false; //Set to false to prevent multiple message box: Conflict with server date vs transaction date validation
-                            loadRecordDetail();
                             pbSuccess = true; //Set to original value
                         }
                         break;
@@ -1162,10 +1136,6 @@ public class POReplacement_ConfirmationMonarchHospitalityController implements I
             if (pnDetail < 0 || pnDetail > poController.PurchaseOrderReceiving().getDetailCount() - 1) {
                 return;
             }
-            // Expiry Date
-            String lsExpiryDate = CustomCommonUtil.formatDateToShortString(poController.PurchaseOrderReceiving().Detail(pnDetail).getExpiryDate());
-            dpExpiryDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsExpiryDate, "yyyy-MM-dd"));
-
             tfBarcode.setText(poController.PurchaseOrderReceiving().Detail(pnDetail).Inventory().getBarCode());
             tfDescription.setText(poController.PurchaseOrderReceiving().Detail(pnDetail).Inventory().getDescription());
             tfSupersede.setText(poController.PurchaseOrderReceiving().Detail(pnDetail).Supersede().getBarCode());
@@ -1536,8 +1506,8 @@ public class POReplacement_ConfirmationMonarchHospitalityController implements I
     }
 
     public void initDatePickers() {
-        JFXUtil.setDatePickerFormat("MM/dd/yyyy", dpTransactionDate, dpReferenceDate, dpExpiryDate);
-        JFXUtil.setActionListener(this::datepicker_Action, dpTransactionDate, dpReferenceDate, dpExpiryDate);
+        JFXUtil.setDatePickerFormat("MM/dd/yyyy", dpTransactionDate, dpReferenceDate);
+        JFXUtil.setActionListener(this::datepicker_Action, dpTransactionDate, dpReferenceDate);
     }
 
     public void initTextFields() {
