@@ -92,7 +92,7 @@ public class POReplacement_ConfirmationMPController implements Initializable, Sc
     private static final int ROWS_PER_PAGE = 50;
     int pnDetail = 0;
     int pnMain = 0;
-    private final String pxeModuleName = JFXUtil.getFormattedClassTitle(this.getClass());
+    private final String pxeModuleName = JFXUtil.getFormattedClassTitle(this.getClass(), "PO");
     static PurchaseOrderReceivingControllers poController;
     public int pnEditMode;
     boolean isPrinted = false;
@@ -181,6 +181,7 @@ public class POReplacement_ConfirmationMPController implements Initializable, Sc
             poController.PurchaseOrderReceiving().setCategoryId(psCategoryId);
             poController.PurchaseOrderReceiving().initFields();
             poController.PurchaseOrderReceiving().setWithUI(true);
+            poController.PurchaseOrderReceiving().setPurpose(PurchaseOrderReceivingStatus.Purpose.REPLACEMENT);
             loadRecordSearch();
         });
 
@@ -307,7 +308,7 @@ public class POReplacement_ConfirmationMPController implements Initializable, Sc
                     case "btnRetrieve":
                         //Retrieve data from purchase order to table main
                         if (mainSearchListener != null) {
-                            tfOrderNo.textProperty().removeListener(mainSearchListener);
+                            JFXUtil.removeTextFieldListener(mainSearchListener, tfOrderNo);
                             mainSearchListener = null; // Clear reference to avoid memory leaks
                         }
                         retrievePOR();
@@ -537,13 +538,14 @@ public class POReplacement_ConfirmationMPController implements Initializable, Sc
     }
 
     public void showSerialDialog() {
+        stageSerialDialog.closeDialog();
         poJSON = new JSONObject();
         try {
             if (!poController.PurchaseOrderReceiving().Detail(pnDetail).isSerialized()) {
                 return;
             }
 
-            if (poController.PurchaseOrderReceiving().getQuantity(pnDetail) == 0) {
+            if (poController.PurchaseOrderReceiving().Detail(pnDetail).getQuantity().intValue() == 0) {
                 ShowMessageFX.Warning(null, pxeModuleName, "Received quantity cannot be empty.");
                 return;
             }
@@ -555,10 +557,7 @@ public class POReplacement_ConfirmationMPController implements Initializable, Sc
                 return;
             }
 
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_SerialMP.fxml"));
             DeliveryAcceptance_SerialMPController controller = new DeliveryAcceptance_SerialMPController();
-            loader.setController(controller);
-
             if (controller != null) {
                 controller.setGRider(oApp);
                 controller.setObject(poController.PurchaseOrderReceiving());
@@ -566,15 +565,15 @@ public class POReplacement_ConfirmationMPController implements Initializable, Sc
             }
 
             try {
-                stageSerialDialog.showDialog((Stage) btnSave.getScene().getWindow(), getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_SerialMP.fxml"),
-                        controller, "Inventory Serial", true, true, true);
                 stageSerialDialog.setOnHidden(event -> {
-                    stageSerialDialog = null;
                     moveNext(false, true);
                     Platform.runLater(() -> {
                         loadTableDetail.reload();
                     });
                 });
+                stageSerialDialog.showDialog((Stage) btnSave.getScene().getWindow(), getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_SerialMP.fxml"),
+                        controller, "Inventory Serial", true, true, false);
+
             } catch (IOException ex) {
                 Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
             }
@@ -713,16 +712,15 @@ public class POReplacement_ConfirmationMPController implements Initializable, Sc
                         && !"".equals(poController.PurchaseOrderReceiving().Detail(pnDetail).getOrderNo())) {
                             if (poController.PurchaseOrderReceiving().Detail(pnDetail).getOrderQty().intValue() < Integer.valueOf(lsValue)) {
                                 ShowMessageFX.Warning(null, pxeModuleName, "Receive quantity cannot be greater than the order quantity.");
-                                poController.PurchaseOrderReceiving().Detail(pnDetail).setQuantity(0);
-                                tfReceiveQuantity.requestFocus();
+                                JFXUtil.textFieldMoveNext(tfReceiveQuantity);
                                 break;
                             }
                         }
 
                         poJSON = poController.PurchaseOrderReceiving().checkPurchaseOrderReceivingSerial(pnDetail + 1, Integer.valueOf(lsValue));
                         if ("error".equals((String) poJSON.get("result"))) {
-                            System.err.println((String) poJSON.get("message"));
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                            JFXUtil.textFieldMoveNext(tfReceiveQuantity);
                             break;
                         }
                         int lnNewVal = Integer.valueOf(lsValue);
@@ -730,8 +728,8 @@ public class POReplacement_ConfirmationMPController implements Initializable, Sc
 
                         poJSON = poController.PurchaseOrderReceiving().Detail(pnDetail).setQuantity((Integer.valueOf(lsValue)));
                         if ("error".equals((String) poJSON.get("result"))) {
-                            System.err.println((String) poJSON.get("message"));
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                            JFXUtil.textFieldMoveNext(tfReceiveQuantity);
                             break;
                         }
 
@@ -740,9 +738,7 @@ public class POReplacement_ConfirmationMPController implements Initializable, Sc
                             if ("error".equals((String) poJSON.get("result"))) {
                                 System.err.println((String) poJSON.get("message"));
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                poController.PurchaseOrderReceiving().Detail(pnDetail).setQuantity(lnOldVal);
-                                tfReceiveQuantity.setText(String.valueOf(poController.PurchaseOrderReceiving().Detail(pnDetail).getQuantity().intValue()));
-                                return;
+                                break;
                             }
                         } catch (SQLException | GuanzonException ex) {
                             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
@@ -792,6 +788,10 @@ public class POReplacement_ConfirmationMPController implements Initializable, Sc
             });
 
     public void moveNext(boolean isUp, boolean continueNext) {
+        if (details_data.size() <= 0) {
+            return;
+        }
+
         if (continueNext) {
             apDetail.requestFocus();
 
@@ -839,7 +839,7 @@ public class POReplacement_ConfirmationMPController implements Initializable, Sc
                     switch (lsID) {
                         case "tfOrderNo":
                             if (mainSearchListener != null) {
-                                txtField.textProperty().removeListener(mainSearchListener);
+                                JFXUtil.removeTextFieldListener(mainSearchListener, txtField);
                                 mainSearchListener = null; // Clear reference to avoid memory leaks
                                 initDetailsGrid();
                                 initMainGrid();
@@ -1038,88 +1038,6 @@ public class POReplacement_ConfirmationMPController implements Initializable, Sc
         }
     }
 
-    ChangeListener<Boolean> datepicker_Focus = (observable, oldValue, newValue) -> {
-        poJSON = new JSONObject();
-        poJSON.put("result", "success");
-        poJSON.put("message", "success");
-        try {
-            if (!newValue) { // Lost focus
-                DatePicker datePicker = (DatePicker) ((javafx.beans.property.ReadOnlyBooleanProperty) observable).getBean();
-                String lsID = datePicker.getId();
-                String inputText = datePicker.getEditor().getText();
-                LocalDate currentDate = LocalDate.now();
-                LocalDate selectedDate = null;
-
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-                if (inputText != null && !inputText.trim().isEmpty()) {
-                    try {
-                        LocalDate parsedDate = LocalDate.parse(inputText, DateTimeFormatter.ofPattern("MM/dd/yyyy"));
-                        datePicker.setValue(parsedDate);
-                        datePicker.getEditor().setText(formatter.format(parsedDate));
-                        inputText = datePicker.getEditor().getText();
-                    } catch (DateTimeParseException ignored) {
-                    }
-                }
-                // Check if the user typed something in the text field
-                if (inputText != null && !inputText.trim().isEmpty()) {
-                    try {
-                        selectedDate = LocalDate.parse(inputText, formatter);
-                        datePicker.setValue(selectedDate); // Update the DatePicker with the valid date
-                    } catch (Exception ex) {
-                        poJSON.put("result", "error");
-                        poJSON.put("message", "Invalid date format. Please use MM/dd/yyyy format.");
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                        loadRecordMaster();
-                        // datePicker.requestFocus();
-                        return;
-                    }
-                } else {
-                    selectedDate = datePicker.getValue(); // Fallback to selected date if nothing was typed
-                }
-
-                String formattedDate = selectedDate.toString();
-
-                switch (lsID) {
-                    case "dpTransactionDate":
-                        if (selectedDate == null) {
-                            break;
-                        }
-                        if (selectedDate.isAfter(currentDate)) {
-                            poJSON.put("result", "error");
-                            poJSON.put("message", "Future dates are not allowed.");
-                            break;
-                        } else {
-                            poController.PurchaseOrderReceiving().Master().setTransactionDate((SQLUtil.toDate(formattedDate, "yyyy-MM-dd")));
-                        }
-                        break;
-                    case "dpReferenceDate":
-                        if (selectedDate == null) {
-                            break;
-                        }
-                        if (selectedDate.isAfter(currentDate)) {
-                            poJSON.put("result", "error");
-                            poJSON.put("message", "Future dates are not allowed.");
-                        } else {
-                            poController.PurchaseOrderReceiving().Master().setReferenceDate(SQLUtil.toDate(formattedDate, "yyyy-MM-dd"));
-                        }
-                        break;
-                    default:
-
-                        break;
-                }
-                if ("error".equals((String) poJSON.get("result"))) {
-                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                }
-                Platform.runLater(() -> {
-                    loadRecordMaster();
-                });
-
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    };
-
     public void loadRecordSearch() {
         try {
             lblSource.setText(poController.PurchaseOrderReceiving().Master().Company().getCompanyName() + " - " + poController.PurchaseOrderReceiving().Master().Industry().getDescription());
@@ -1289,11 +1207,11 @@ public class POReplacement_ConfirmationMPController implements Initializable, Sc
 
     private void goToPageBasedOnSelectedRow(String pnRowMain) {
         if (mainSearchListener != null) {
-            tfOrderNo.textProperty().removeListener(mainSearchListener);
+            JFXUtil.removeTextFieldListener(mainSearchListener, tfOrderNo);
             mainSearchListener = null;
         }
         if (detailSearchListener != null) {
-            tfOrderNo.textProperty().removeListener(detailSearchListener);
+            JFXUtil.removeTextFieldListener(detailSearchListener, tfOrderNo);
             detailSearchListener = null;
         }
         filteredDataDetail.setPredicate(null);
@@ -1412,7 +1330,7 @@ public class POReplacement_ConfirmationMPController implements Initializable, Sc
                             goToPageBasedOnSelectedRow(String.valueOf(pnMain));
                             filteredDataDetail.setPredicate(null);
                             lbresetpredicate = false;
-                            tfOrderNo.textProperty().removeListener(detailSearchListener);
+                            JFXUtil.removeTextFieldListener(detailSearchListener, tfOrderNo);
 
                             mainSearchListener = null;
                             filteredData.setPredicate(null);
@@ -1462,12 +1380,13 @@ public class POReplacement_ConfirmationMPController implements Initializable, Sc
 
                             double lnTotal = 0.00;
                             for (lnCtr = 0; lnCtr < poController.PurchaseOrderReceiving().getDetailCount(); lnCtr++) {
+                                if (poController.PurchaseOrderReceiving().Detail(lnCtr).getOrderNo() == null
+                                        || "".equals(poController.PurchaseOrderReceiving().Detail(lnCtr).getOrderNo())) {
+                                    continue;
+                                }
                                 try {
-
                                     lnTotal = poController.PurchaseOrderReceiving().Detail(lnCtr).getUnitPrce().doubleValue() * poController.PurchaseOrderReceiving().Detail(lnCtr).getQuantity().intValue();
-
                                 } catch (Exception e) {
-
                                 }
 
                                 if ((!poController.PurchaseOrderReceiving().Detail(lnCtr).getOrderNo().equals("") && poController.PurchaseOrderReceiving().Detail(lnCtr).getOrderNo() != null)
@@ -1641,6 +1560,7 @@ public class POReplacement_ConfirmationMPController implements Initializable, Sc
                 if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
                     ModelDeliveryAcceptance_Detail selected = (ModelDeliveryAcceptance_Detail) tblViewTransDetails.getSelectionModel().getSelectedItem();
                     if (selected != null) {
+                        stageSerialDialog.closeDialog();
                         pnDetail = Integer.parseInt(selected.getIndex01()) - 1;
                         loadRecordDetail();
                         if (poController.PurchaseOrderReceiving().Detail(pnDetail).getStockId() != null && !poController.PurchaseOrderReceiving().Detail(pnDetail).getStockId().equals("")) {
@@ -1714,7 +1634,7 @@ public class POReplacement_ConfirmationMPController implements Initializable, Sc
         boolean lbShow4 = (fnValue == EditMode.UNKNOWN || fnValue == EditMode.READY);
         // Manage visibility and managed state of other buttons
         //Update 
-        JFXUtil.setButtonsVisibility(lbShow1, btnSearch, btnSave, btnCancel);
+        JFXUtil.setButtonsVisibility(lbShow1, btnSerials, btnSearch, btnSave, btnCancel);
         JFXUtil.setButtonsVisibility(lbShow3, btnPrint, btnUpdate, btnHistory, btnConfirm, btnVoid);
         JFXUtil.setButtonsVisibility(lbShow4, btnClose);
         JFXUtil.setDisabled(!lbShow1, btnAddAttachment, btnRemoveAttachment);
@@ -1729,7 +1649,7 @@ public class POReplacement_ConfirmationMPController implements Initializable, Sc
                 if (poController.PurchaseOrderReceiving().Master().isProcessed()) {
                     JFXUtil.setButtonsVisibility(false, btnUpdate, btnVoid);
                 } else {
-                    JFXUtil.setButtonsVisibility(false, btnReturn);
+                    JFXUtil.setButtonsVisibility(lbShow3, btnReturn);
                 }
                 break;
             case PurchaseOrderReceivingStatus.POSTED:
@@ -1831,7 +1751,7 @@ public class POReplacement_ConfirmationMPController implements Initializable, Sc
                     return true;
                 }
                 if (mainSearchListener != null) {
-                    txtField.textProperty().removeListener(mainSearchListener);
+                    JFXUtil.removeTextFieldListener(mainSearchListener, txtField);
                     mainSearchListener = null; // Clear reference to avoid memory leaks
                 }
                 String lowerCaseFilter = newValue.toLowerCase();
@@ -1840,7 +1760,7 @@ public class POReplacement_ConfirmationMPController implements Initializable, Sc
             // If no results and autoSearchMain is enabled, remove listener and trigger autoSearchMain
             if (filteredDataDetail.isEmpty()) {
                 if (main_data.size() > 0) {
-                    txtField.textProperty().removeListener(detailSearchListener);
+                    JFXUtil.removeTextFieldListener(detailSearchListener, txtField);
                     filteredData = new FilteredList<>(main_data, b -> true);
                     autoSearchMain(txtField); // Trigger autoSearchMain if no results
                     tblViewMainList.setItems(filteredData);
@@ -1865,7 +1785,7 @@ public class POReplacement_ConfirmationMPController implements Initializable, Sc
                 lbresetpredicate = true;
                 if (newValue == null || newValue.isEmpty()) {
                     if (mainSearchListener != null) {
-                        txtField.textProperty().removeListener(mainSearchListener);
+                        JFXUtil.removeTextFieldListener(mainSearchListener, txtField);
                         mainSearchListener = null; // Clear reference to avoid memory leaks
                         initDetailsGrid();
                     }

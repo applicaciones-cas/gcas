@@ -25,11 +25,9 @@ import java.time.format.DateTimeParseException;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Observable;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
@@ -46,7 +44,6 @@ import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
-import javafx.beans.property.ReadOnlyProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
@@ -815,12 +812,14 @@ public class JFXUtil {
         }
     }
 
+    /* Old usage(for particular use); used to add CSS class into textfield*/
     public static void AddStyleClass(String lsCssClassName, TextField... textFields) {
         for (TextField tf : textFields) {
             tf.getStyleClass().add(lsCssClassName);
         }
     }
 
+    /* Old usage(for particular use); used to remove CSS class from textfield*/
     public static void RemoveStyleClass(String lsCssClassName, TextField... textFields) {
         for (TextField tf : textFields) {
             tf.getStyleClass().remove(lsCssClassName);
@@ -837,6 +836,8 @@ public class JFXUtil {
         return false;
     }
 
+    /* Disables any node in UI*/
+ /* Requires boolean & Nodes*/
     public static void setDisabled(boolean disable, Node... nodes) {
         for (Node node : nodes) {
             node.setDisable(disable);
@@ -852,6 +853,7 @@ public class JFXUtil {
         }
     }
 
+    /*Sets a listener to any node*/
     public static void setFocusListener(ChangeListener<? super Boolean> listener, Node... nodes) {
         for (Node node : nodes) {
             if (node instanceof Control) {
@@ -928,6 +930,7 @@ public class JFXUtil {
         }
     }
 
+    /*Compares an object to any object if equal*/
     public static boolean isObjectEqualTo(Object source, Object... others) {
         if (source == null && others != null) {
             for (Object other : others) {
@@ -946,6 +949,7 @@ public class JFXUtil {
         return false;
     }
 
+    /*Sets a keypress listener to textfields in any anchorPane*/
     public static void setKeyPressedListener(EventHandler<KeyEvent> listener, AnchorPane... anchorPanes) {
         for (AnchorPane pane : anchorPanes) {
             for (Node node : pane.getChildrenUnmodifiable()) {
@@ -1005,6 +1009,7 @@ public class JFXUtil {
         int caretPos;
     }
 
+    /*Applies customed colored vertical scroll bar in textArea*/
     public static void setVerticalScroll(TextArea textArea) {
         textArea.applyCss();
         textArea.layout();
@@ -1099,6 +1104,8 @@ public class JFXUtil {
         return new LoadScreenComponents(progressIndicator, loadingPane, placeholderLabel);
     }
 
+    /*Sets in pxeModuleName for dynamic getter of form title*/
+ /*Requires controller class*/
     public static String getFormattedClassTitle(Class<?> javaclass) {
         String className = javaclass.getSimpleName();
 
@@ -1126,6 +1133,37 @@ public class JFXUtil {
         return className;
     }
 
+    /*V2, allow modification on naming*/
+    public static String getFormattedClassTitle(Class<?> javaclass, String lsChangeIdentifier) {
+        String className = javaclass.getSimpleName();
+
+        if (className.endsWith("Controller")) {
+            className = className.substring(0, className.length() - "Controller".length());
+        }
+
+        className = className.replace("MonarchFood", "MF");
+        className = className.replace("MonarchHospitality", "MH");
+
+        className = className.replace("_", " ");
+
+        className = className.replaceAll("(?<=[a-z])(?=[A-Z])", " ");
+        className = className.replaceAll("(?<=[A-Z])(?=[A-Z][a-z])", " ");
+
+        className = className.trim();
+
+        className = className.replace("SP Car", "SPCar");
+        className = className.replace("SP MC", "SPMC");
+
+        switch (lsChangeIdentifier) {
+            case "PO":
+                className = className.replaceAll("\\bPO\\b", "Purchase Order");
+                break;
+        }
+        return className;
+    }
+
+    //sample usage
+    //JFXUtil.getFormattedClassTitle(this.getClass());
     public static String getFormattedFXMLTitle(String fxmlPath) {
         // Extract the FXML file name without extension
         String fileName = fxmlPath.substring(fxmlPath.lastIndexOf('/') + 1, fxmlPath.lastIndexOf('.'));
@@ -1154,12 +1192,13 @@ public class JFXUtil {
         return fileName;
     }
 
-    //JFXUtil.getFormattedClassTitle(this.getClass());
+    /*Selects row through index number*/
     public static <T> void selectAndFocusRow(TableView<T> tableView, int index) {
         tableView.getSelectionModel().select(index);
         tableView.getFocusModel().focus(index);
     }
 
+    /*Sets any object to null*/
     public static void setValueToNull(Object... items) {
         for (Object item : items) {
             if (item instanceof Node) {
@@ -1179,36 +1218,6 @@ public class JFXUtil {
                 ((AtomicReference<?>) item).set(null);
             } else {
             }
-        }
-    }
-
-    public static String safeString(Object value) {
-        return value != null ? value.toString() : "";
-    }
-
-    public static TextFieldControlInfo getControlInfo(Observable o) {
-        if (o instanceof ReadOnlyProperty) {
-            Object bean = ((ReadOnlyProperty<?>) o).getBean();
-            if (bean instanceof TextInputControl) {
-                TextInputControl control = (TextInputControl) bean;
-                String id = control.getId();
-                String value = control.getText() != null ? control.getText() : "";
-                return new TextFieldControlInfo(id, value, control);
-            }
-        }
-        return null;
-    }
-
-    public static class TextFieldControlInfo {
-
-        public final String lsID;
-        public final String lsTxtValue;
-        public final TextInputControl txtField;
-
-        public TextFieldControlInfo(String id, String value, TextInputControl control) {
-            this.lsID = id;
-            this.lsTxtValue = value;
-            this.txtField = control;
         }
     }
 
@@ -1247,10 +1256,8 @@ public class JFXUtil {
         AtomicBoolean isAdjusting;
         int newCaretPos;
     }
-//    private static boolean isUpdating = false;
-//   private static  AtomicBoolean isAdjusting = new AtomicBoolean(false);
-//    private static int newCaretPos = 0;
 
+    /*Sets real-time comma formatting to a textfield (containing digits)*/
     public static void setCommaFormatter(TextField... textFields) {
 
         DecimalFormat finalFormat = (DecimalFormat) NumberFormat.getNumberInstance(Locale.US);
@@ -1327,6 +1334,7 @@ public class JFXUtil {
         }
     }
 
+    /*Experimental; customed Month & Year only picker*/
     public static class MonthYearPicker {
 
         public static class Picker {
@@ -1479,6 +1487,7 @@ public class JFXUtil {
         }
     }
 
+    /*Programmatically press depending on keyCode*/
     public static void makeKeyPressed(Node targetNode, KeyCode keyCode) {
         if (targetNode == null || keyCode == null) {
             return;
@@ -1508,6 +1517,7 @@ public class JFXUtil {
         }
     }
 
+    /*Focuses in first textfield existing in anchorPane*/
     public static void focusFirstTextField(final AnchorPane anchorPane) {
         Platform.runLater(new Runnable() {
             @Override
@@ -1534,6 +1544,7 @@ public class JFXUtil {
         return null;
     }
 
+    /*Removes comma character existing in a string containing number*/
     public static String removeComma(String numberStr) {
         if (numberStr == null || numberStr.equals("")) {
             return "0";
@@ -1542,47 +1553,8 @@ public class JFXUtil {
         return result.isEmpty() ? "0" : result;
     }
 
-    public static void removeNoByKey(List<Pair<String, String>> plOrderNoPartial, List<Pair<String, String>> plOrderNoFinal, String lsNo) {
-        removeFromListByKey(plOrderNoPartial, lsNo);
-        removeFromListByKey(plOrderNoFinal, lsNo);
-    }
-
-    private static void removeFromListByKey(List<Pair<String, String>> list, String key) {
-        Iterator<Pair<String, String>> iterator = list.iterator();
-        while (iterator.hasNext()) {
-            Pair<String, String> pair = iterator.next();
-            if (pair.getKey().equals(key)) {
-                iterator.remove();
-            }
-        }
-    }
-
-    private static void setKeyEvent(Scene scene, AtomicReference<Object> lastFocusedTextField, AtomicReference<Object> previousSearchedTextField) {
-        scene.focusOwnerProperty().addListener((obs, oldNode, newNode) -> {
-            if (newNode != null) {
-                if (newNode instanceof Button) {
-                } else {
-                    lastFocusedTextField.set(newNode);
-                    previousSearchedTextField.set(null);
-                }
-            }
-        });
-    }
-
-    public static void initKeyClickObject(AnchorPane ap, AtomicReference<Object> lastFocusedTextField, AtomicReference<Object> previousSearchedTextField) {
-        AnchorPane root = (AnchorPane) ap;
-        Scene scene = root.getScene();
-        if (scene != null) {
-            setKeyEvent(scene, lastFocusedTextField, previousSearchedTextField);
-        } else {
-            root.sceneProperty().addListener((obs, oldScene, newScene) -> {
-                if (newScene != null) {
-                    setKeyEvent(newScene, lastFocusedTextField, previousSearchedTextField);
-                }
-            });
-        }
-    }
-
+    /*Changes checkbox cursor type on hover, depending if enabled/disabled*/
+ /*Requires anchorPane to check any checkbox existing in the anchorPane*/
     public static void setCheckboxHoverCursor(Parent... anchorpane) {
         for (Parent container : anchorpane) {
             applyToCheckBoxes(container);
@@ -1606,6 +1578,7 @@ public class JFXUtil {
         }
     }
 
+    /*Identifies if an fxml industry is general*/
     public static boolean isGeneralFXML(String fxmlPath) {
         String fileName = fxmlPath.substring(fxmlPath.lastIndexOf('/') + 1, fxmlPath.lastIndexOf('.'));
 
@@ -1628,30 +1601,29 @@ public class JFXUtil {
         return false;
     }
 
-    public static String formatForMessageBox(String message, int maxLinewidth) {
-        if (message == null || message.isEmpty()) {
-            return "";
-        }
-
-        StringBuilder result = new StringBuilder();
-        String[] words = message.split(" ");
-        StringBuilder line = new StringBuilder();
-
-        for (String word : words) {
-            if (line.length() + word.length() + 1 > maxLinewidth) {
-                result.append(line.toString().trim()).append("\n");
-                line.setLength(0);
-            }
-            line.append(word).append(" ");
-        }
-
-        if (line.length() > 0) {
-            result.append(line.toString().trim());
-        }
-
-        return result.toString();
-    }
-
+//    public static String formatForMessageBox(String message, int maxLinewidth) {
+//        if (message == null || message.isEmpty()) {
+//            return "";
+//        }
+//
+//        StringBuilder result = new StringBuilder();
+//        String[] words = message.split(" ");
+//        StringBuilder line = new StringBuilder();
+//
+//        for (String word : words) {
+//            if (line.length() + word.length() + 1 > maxLinewidth) {
+//                result.append(line.toString().trim()).append("\n");
+//                line.setLength(0);
+//            }
+//            line.append(word).append(" ");
+//        }
+//
+//        if (line.length() > 0) {
+//            result.append(line.toString().trim());
+//        }
+//
+//        return result.toString();
+//    }
     @FunctionalInterface
     public interface Action<T> {
 
@@ -1814,7 +1786,8 @@ public class JFXUtil {
         }
     }
 
-    /*Returns new arranged indexes that should be set to dragged row*/
+    /*Enables drag and drop in tableView*/
+ /*Returns new arranged indexes that should be set to dragged row*/
     public static <T> void enableRowDragAndDrop(
             TableView<T> tableView,
             Function<T, StringProperty> index01Getter,
@@ -2090,6 +2063,7 @@ public class JFXUtil {
         }
     }
 
+    /*Requests focus in the node passed with 0.5 delay*/
     public static void textFieldMoveNext(Node node) {
         Platform.runLater(new Runnable() {
             @Override
@@ -2109,6 +2083,36 @@ public class JFXUtil {
         });
     }
 
+    /*Used particularly for btnSearch*/
+ /*Referenced to pass data, basis for initateBtnSearch*/
+    public static void initKeyClickObject(AnchorPane ap, AtomicReference<Object> lastFocusedTextField, AtomicReference<Object> previousSearchedTextField) {
+        AnchorPane root = (AnchorPane) ap;
+        Scene scene = root.getScene();
+        if (scene != null) {
+            setKeyEvent(scene, lastFocusedTextField, previousSearchedTextField);
+        } else {
+            root.sceneProperty().addListener((obs, oldScene, newScene) -> {
+                if (newScene != null) {
+                    setKeyEvent(newScene, lastFocusedTextField, previousSearchedTextField);
+                }
+            });
+        }
+    }
+
+    private static void setKeyEvent(Scene scene, AtomicReference<Object> lastFocusedTextField, AtomicReference<Object> previousSearchedTextField) {
+        scene.focusOwnerProperty().addListener((obs, oldNode, newNode) -> {
+            if (newNode != null) {
+                if (newNode instanceof Button) {
+                } else {
+                    lastFocusedTextField.set(newNode);
+                    previousSearchedTextField.set(null);
+                }
+            }
+        });
+    }
+
+    /*Used particularly for btnSearch, connected to initKeyClickObject*/
+ /*Detects & Validates if focused, identifies last focused node, and identifies if there is no focus in any textfield*/
     public static void initiateBtnSearch(
             String pxeModuleName,
             AtomicReference<Object> lastFocusedTextField,
@@ -2172,6 +2176,7 @@ public class JFXUtil {
         };
     }
 
+    /*Disables up and down focus in a tableView*/
     public static <T> void disableArrowNavigation(TableView<T> table) {
         table.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode() == KeyCode.UP || event.getCode() == KeyCode.DOWN) {
@@ -2180,6 +2185,8 @@ public class JFXUtil {
         });
     }
 
+    /*Adds checkbox to any column, returns column index and row index, and check status*/
+ /*Requires Table Model, tableView, boolean, and column index/s that checkbox will be applied (e.g. 0,1,2)*/
     public static <T> void addCheckboxColumns(
             Class<T> modelClass,
             TableView<T> table,
@@ -2278,6 +2285,8 @@ public class JFXUtil {
         void accept(T t, U u, V v, W w);
     }
 
+    /*Programmatically clicks particular tab based on its title*/
+ /*Requires Tabpane & tab title*/
     public static void clickTabByTitleText(TabPane tabPane, String title) {
         for (Tab tab : tabPane.getTabs()) {
             if (title.equals(tab.getText())) {
@@ -2293,6 +2302,7 @@ public class JFXUtil {
         }
     }
 
+    /*Alternative to Platform.runlater() added seconds delay before execution*/
     public static void runWithDelay(double seconds, Runnable action) {
         Platform.runLater(() -> {
             PauseTransition delay = new PauseTransition(Duration.seconds(seconds));
@@ -2301,6 +2311,8 @@ public class JFXUtil {
         });
     }
 
+    /*Experimental; Modern checkbox UI*/
+ /*Requires hex color, and checkbox id*/
     public static void setCheckboxStyle(String hexColor, CheckBox... checkBoxes) {
         for (CheckBox cb : checkBoxes) {
             if (!cb.getStyleClass().contains("modern")) {
@@ -2357,6 +2369,10 @@ public class JFXUtil {
 
     private static final Map<Class<?>, Map<String, String>> cache = new HashMap<>();
 
+    /*Sets value to a label, textField, textArea, or button from class various variable name w/ value*/
+ /*Ideally used for set Status of Transaction*/
+ /*Compares class variables values from string value (the third parameter)*/
+ /*Requires UI Node, class, a string value*/
     public static String setStatusValue(Node node, Class<?> clazz, String value) {
         String text = getNameByValue(clazz, value);
 
@@ -2409,6 +2425,7 @@ public class JFXUtil {
         return valueToNameMap;
     }
 
+//    sample usage
 //    EventHandler<ActionEvent> comboBoxActionListener = JFXUtil.CmbActionListener(
 //            (cmbId, selectedIndex, selectedValue) -> {
 //            }
@@ -2417,13 +2434,12 @@ public class JFXUtil {
         return event -> {
             @SuppressWarnings("unchecked")
             ComboBox<T> comboBox = (ComboBox<T>) event.getSource();
-
-            // Ignore programmatic changes (like setValue/select in code)
-            if (!comboBox.isFocused()) {
-                return;
-            }
-
             Platform.runLater(() -> {
+                // Ignore programmatic changes (like setValue/select in code)
+                if (!comboBox.isFocused()) {
+                    return;
+                }
+
                 String comboId = comboBox.getId() != null ? comboBox.getId() : "NO_ID";
                 int selectedIndex = comboBox.getSelectionModel().getSelectedIndex();
                 T selectedValue = comboBox.getSelectionModel().getSelectedItem();
@@ -2439,17 +2455,7 @@ public class JFXUtil {
         void onChange(String comboId, int selectedIndex, T selectedValue);
     }
 
-    public static <T> void setComboBoxValue(EventHandler<ActionEvent> listener, int selection, ComboBox<T>... comboBoxes) {
-        for (ComboBox<T> comboBox : comboBoxes) {
-
-            comboBox.setOnAction(null);
-            if (!comboBox.getItems().isEmpty()) {
-                comboBox.getSelectionModel().select(selection);
-            }
-            comboBox.setOnAction(listener);
-        }
-    }
-
+    /*Requests focus on a textfield, only if its object condition is null or blank*/
     public static void requestFocusNullField(Object[][] checks, TextField fallback) {
         Stream.of(checks)
                 .filter(c -> isObjectEqualTo(c[0], null, ""))
@@ -2464,7 +2470,7 @@ public class JFXUtil {
         return new AbstractMap.SimpleEntry<>(getFormattedClassTitle(clazz), clazz);
     }
 
-    static class BreakLoopException extends RuntimeException {
+    public static class BreakLoopException extends RuntimeException {
     }
 
     public static void ifError(boolean isError, TextField txtField, JSONObject poJSON, String pxeModuleName, Runnable orElse) {
@@ -2542,6 +2548,13 @@ public class JFXUtil {
             }
         }
         return poJSON;
+    }
+
+    public static void removeTextFieldListener(ChangeListener<String> searchListener, TextField textField) {
+        if (searchListener != null) {
+            // Remove the listener if already attached
+            textField.textProperty().removeListener(searchListener);
+        }
     }
 
 }
