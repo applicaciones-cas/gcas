@@ -573,6 +573,7 @@ public class POReplacement_EntryMPController implements Initializable, ScreenInt
                         && !"".equals(poController.PurchaseOrderReceiving().Detail(pnDetail).getOrderNo())) {
                             if (poController.PurchaseOrderReceiving().Detail(pnDetail).getOrderQty().intValue() < Integer.valueOf(lsValue)) {
                                 ShowMessageFX.Warning(null, pxeModuleName, "Receive quantity cannot be greater than the order quantity.");
+                                JFXUtil.textFieldMoveNext(tfReceiveQuantity);
                                 break;
                             }
                         }
@@ -589,6 +590,7 @@ public class POReplacement_EntryMPController implements Initializable, ScreenInt
                         poJSON = poController.PurchaseOrderReceiving().Detail(pnDetail).setQuantity((Integer.valueOf(lsValue)));
                         if ("error".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                            JFXUtil.textFieldMoveNext(tfReceiveQuantity);
                             break;
                         }
 
@@ -596,6 +598,7 @@ public class POReplacement_EntryMPController implements Initializable, ScreenInt
                             poJSON = poController.PurchaseOrderReceiving().computeFields();
                             if ("error".equals((String) poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                JFXUtil.textFieldMoveNext(tfReceiveQuantity);
                                 break;
                             }
                         } catch (SQLException | GuanzonException ex) {
@@ -617,7 +620,6 @@ public class POReplacement_EntryMPController implements Initializable, ScreenInt
                 }
                 JFXUtil.runWithDelay(0.50, () -> {
                     loadTableDetail.reload();
-
                 });
             });
 

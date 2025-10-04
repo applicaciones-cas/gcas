@@ -567,7 +567,7 @@ public class POReplacement_ConfirmationMCController implements Initializable, Sc
                 stageSerialDialog.showDialog((Stage) btnSave.getScene().getWindow(), getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_SerialMC.fxml"),
                         controller, "Inventory Serial", true, true, false);
                 stageSerialDialog.setOnHidden(event -> {
-                    
+
                     moveNext(false, true);
                     Platform.runLater(() -> {
                         loadTableDetail.reload();
@@ -704,6 +704,7 @@ public class POReplacement_ConfirmationMCController implements Initializable, Sc
                         && !"".equals(poController.PurchaseOrderReceiving().Detail(pnDetail).getOrderNo())) {
                             if (poController.PurchaseOrderReceiving().Detail(pnDetail).getOrderQty().intValue() < Integer.valueOf(lsValue)) {
                                 ShowMessageFX.Warning(null, pxeModuleName, "Receive quantity cannot be greater than the order quantity.");
+                                JFXUtil.textFieldMoveNext(tfReceiveQuantity);
                                 break;
                             }
                         }
@@ -711,6 +712,7 @@ public class POReplacement_ConfirmationMCController implements Initializable, Sc
                         poJSON = poController.PurchaseOrderReceiving().checkPurchaseOrderReceivingSerial(pnDetail + 1, Integer.valueOf(lsValue));
                         if ("error".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                            JFXUtil.textFieldMoveNext(tfReceiveQuantity);
                             break;
                         }
                         int lnNewVal = Integer.valueOf(lsValue);
@@ -719,6 +721,7 @@ public class POReplacement_ConfirmationMCController implements Initializable, Sc
                         poJSON = poController.PurchaseOrderReceiving().Detail(pnDetail).setQuantity((Integer.valueOf(lsValue)));
                         if ("error".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                            JFXUtil.textFieldMoveNext(tfReceiveQuantity);
                             break;
                         }
 
@@ -726,6 +729,7 @@ public class POReplacement_ConfirmationMCController implements Initializable, Sc
                             poJSON = poController.PurchaseOrderReceiving().computeFields();
                             if ("error".equals((String) poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                JFXUtil.textFieldMoveNext(tfReceiveQuantity);
                                 break;
                             }
                         } catch (SQLException | GuanzonException ex) {
