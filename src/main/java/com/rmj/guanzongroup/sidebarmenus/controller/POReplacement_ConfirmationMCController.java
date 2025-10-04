@@ -564,15 +564,15 @@ public class POReplacement_ConfirmationMCController implements Initializable, Sc
             }
 
             try {
-                stageSerialDialog.showDialog((Stage) btnSave.getScene().getWindow(), getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_SerialMC.fxml"),
-                        controller, "Inventory Serial", true, true, false);
                 stageSerialDialog.setOnHidden(event -> {
-
                     moveNext(false, true);
                     Platform.runLater(() -> {
                         loadTableDetail.reload();
                     });
                 });
+                stageSerialDialog.showDialog((Stage) btnSave.getScene().getWindow(), getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_SerialMC.fxml"),
+                        controller, "Inventory Serial", true, true, false);
+
             } catch (IOException ex) {
                 Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
             }

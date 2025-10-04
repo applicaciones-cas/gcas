@@ -154,7 +154,7 @@ public class POReplacement_HistoryMCController implements Initializable, ScreenI
             poController.PurchaseOrderReceiving().setCompanyId(psCompanyId);
             poController.PurchaseOrderReceiving().setCategoryId(psCategoryId);
             poController.PurchaseOrderReceiving().initFields();
-            poController.PurchaseOrderReceiving().setWithUI(true);            
+            poController.PurchaseOrderReceiving().setWithUI(true);
             poController.PurchaseOrderReceiving().setPurpose(PurchaseOrderReceivingStatus.Purpose.REPLACEMENT);
             loadRecordSearch();
         });
@@ -318,14 +318,14 @@ public class POReplacement_HistoryMCController implements Initializable, ScreenI
             }
 
             try {
-                stageSerialDialog.showDialog((Stage) apMainAnchor.getScene().getWindow(), getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_SerialMC.fxml"),
-                        controller, "Inventory Serial", true, true, false);
                 stageSerialDialog.setOnHidden(event -> {
-                    
                     Platform.runLater(() -> {
                         loadTableDetail.reload();
                     });
                 });
+                stageSerialDialog.showDialog((Stage) apMainAnchor.getScene().getWindow(), getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_SerialMC.fxml"),
+                        controller, "Inventory Serial", true, true, false);
+
             } catch (IOException ex) {
                 Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
             }

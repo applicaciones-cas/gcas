@@ -222,15 +222,14 @@ public class POReplacement_EntryMPController implements Initializable, ScreenInt
             }
 
             try {
-                stageSerialDialog.showDialog((Stage) btnSave.getScene().getWindow(), getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_SerialMP.fxml"),
-                        controller, "Inventory Serial", true, true, false);
                 stageSerialDialog.setOnHidden(event -> {
-
                     moveNext(false, true);
                     Platform.runLater(() -> {
                         loadTableDetail.reload();
                     });
                 });
+                stageSerialDialog.showDialog((Stage) btnSave.getScene().getWindow(), getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_SerialMP.fxml"),
+                        controller, "Inventory Serial", true, true, false);
             } catch (IOException ex) {
                 Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
             }
@@ -581,6 +580,7 @@ public class POReplacement_EntryMPController implements Initializable, ScreenInt
                         poJSON = poController.PurchaseOrderReceiving().checkPurchaseOrderReceivingSerial(pnDetail + 1, Integer.valueOf(lsValue));
                         if ("error".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                            JFXUtil.textFieldMoveNext(tfReceiveQuantity);
                             break;
                         }
 
