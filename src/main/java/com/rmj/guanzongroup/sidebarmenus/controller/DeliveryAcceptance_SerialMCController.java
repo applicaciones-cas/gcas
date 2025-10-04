@@ -182,6 +182,7 @@ public class DeliveryAcceptance_SerialMCController implements Initializable {
         poJSON = new JSONObject();
         int lnRow = 1;
         String lsMessage = "";
+        String lsSerialId = "";
         boolean inform = false;
         for (int lnCtr = 0; lnCtr <= poPurchaseReceivingController.getPurchaseOrderReceivingSerialCount() - 1; lnCtr++) {
             if (poPurchaseReceivingController.PurchaseOrderReceivingSerialList(lnCtr).getEntryNo() == pnEntryNo) {
@@ -203,6 +204,22 @@ public class DeliveryAcceptance_SerialMCController implements Initializable {
                     lsMessage = "Location No at row " + lnRow + " cannot be empty.";
                     inform = true;
                     break;
+                }
+                
+                if (lsButton.equals("btnOkay")) {
+                    if(poPurchaseReceivingController.Master().getPurpose().equals(PurchaseOrderReceivingStatus.Purpose.REPLACEMENT)){
+                        if (poPurchaseReceivingController.PurchaseOrderReceivingSerialList(lnCtr).getSerialId() == null || "".equals(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(lnCtr).getSerialId())) {
+                            lsSerialId = poPurchaseReceivingController.getSerialId(lnCtr);
+                            if(!lsSerialId.isEmpty()){
+                                poPurchaseReceivingController.PurchaseOrderReceivingSerialList(lnCtr).setSerialId(lsSerialId);
+                            } else {
+                                poJSON.put("result", "error");
+                                lsMessage = "Please select serial that exists in Purchase Order Return transaction at row "+lnRow+".";
+                                inform = true;
+                            }
+                            break;
+                        }
+                    }
                 }
 
                 lnRow++;
