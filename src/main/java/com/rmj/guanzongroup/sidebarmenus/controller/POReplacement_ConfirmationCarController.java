@@ -91,7 +91,7 @@ public class POReplacement_ConfirmationCarController implements Initializable, S
     private static final int ROWS_PER_PAGE = 50;
     int pnDetail = 0;
     int pnMain = 0;
-    private final String pxeModuleName = JFXUtil.getFormattedClassTitle(this.getClass(), true);
+    private final String pxeModuleName = JFXUtil.getFormattedClassTitle(this.getClass(), "PO");
     static PurchaseOrderReceivingControllers poController;
     public int pnEditMode;
     boolean isPrinted = false;

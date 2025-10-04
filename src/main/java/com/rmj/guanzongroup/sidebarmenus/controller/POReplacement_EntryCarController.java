@@ -83,7 +83,7 @@ public class POReplacement_EntryCarController implements Initializable, ScreenIn
     int pnDetail = 0;
     int pnMain = 0;
     boolean lsIsSaved = false;
-    private final String pxeModuleName = JFXUtil.getFormattedClassTitle(this.getClass(), true);
+    private final String pxeModuleName = JFXUtil.getFormattedClassTitle(this.getClass(), "PO");
     static PurchaseOrderReceivingControllers poController;
     public int pnEditMode;
 

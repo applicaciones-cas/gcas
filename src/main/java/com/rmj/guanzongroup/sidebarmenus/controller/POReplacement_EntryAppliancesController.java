@@ -80,7 +80,7 @@ public class POReplacement_EntryAppliancesController implements Initializable, S
     int pnDetail = 0;
     int pnMain = 0;
     boolean lsIsSaved = false;
-    private final String pxeModuleName = JFXUtil.getFormattedClassTitle(this.getClass(), true);
+    private final String pxeModuleName = JFXUtil.getFormattedClassTitle(this.getClass(), "PO");
     static PurchaseOrderReceivingControllers poController;
     public int pnEditMode;
 

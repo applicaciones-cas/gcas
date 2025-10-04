@@ -73,7 +73,7 @@ public class POReplacement_HistorySPMCController implements Initializable, Scree
     private GRiderCAS oApp;
     private JSONObject poJSON;
     int pnDetail = 0;
-    private final String pxeModuleName = JFXUtil.getFormattedClassTitle(this.getClass(), true);
+    private final String pxeModuleName = JFXUtil.getFormattedClassTitle(this.getClass(), "PO");
     static PurchaseOrderReceivingControllers poController;
     public int pnEditMode;
 

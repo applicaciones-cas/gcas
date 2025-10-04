@@ -1132,8 +1132,9 @@ public class JFXUtil {
 
         return className;
     }
+
     /*V2, allow modification on naming*/
-    public static String getFormattedClassTitle(Class<?> javaclass, boolean allowPOChange) {
+    public static String getFormattedClassTitle(Class<?> javaclass, String lsChangeIdentifier) {
         String className = javaclass.getSimpleName();
 
         if (className.endsWith("Controller")) {
@@ -1152,10 +1153,11 @@ public class JFXUtil {
 
         className = className.replace("SP Car", "SPCar");
         className = className.replace("SP MC", "SPMC");
-
-        if (allowPOChange) {
-            // Replace "PO" when it appears as a whole word
-            className = className.replaceAll("\\bPO\\b", "Purchase Order");
+        
+        switch (lsChangeIdentifier) {
+            case "PO":
+                className = className.replaceAll("\\bPO\\b", "Purchase Order");
+                break;
         }
         return className;
     }
