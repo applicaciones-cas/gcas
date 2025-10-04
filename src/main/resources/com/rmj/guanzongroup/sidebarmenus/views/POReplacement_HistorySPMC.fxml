@@ -299,8 +299,8 @@
                                                                                  <font>
                                                                                     <Font size="12.0" />
                                                                                  </font></Label>
-                                                                          <TextField fx:id="tfDescription" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.columnSpan="6" GridPane.rowIndex="2" />
-                                                                          <TextField fx:id="tfBarcode" maxHeight="25.0" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                                          <TextField fx:id="tfDescription" GridPane.columnIndex="2" GridPane.columnSpan="6" GridPane.rowIndex="2" />
+                                                                          <TextField fx:id="tfBarcode" maxHeight="25.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                                                                           <Label text="Model" GridPane.rowIndex="5">
                                                                                  <font>
                                                                                     <Font size="12.0" />
@@ -341,7 +341,7 @@
                                                                                  <font>
                                                                                     <Font size="12.0" />
                                                                                  </font></Label>
-                                                                              <TextField fx:id="tfSupersede" promptText="Press F3: Search" GridPane.columnIndex="6" GridPane.columnSpan="2" GridPane.rowIndex="1" />
+                                                                              <TextField fx:id="tfSupersede" GridPane.columnIndex="6" GridPane.columnSpan="2" GridPane.rowIndex="1" />
                                                                       </children>
                                                                   </GridPane>
                                                               </children>
