@@ -411,8 +411,8 @@
                                                                               </font>
                                                                           </Label>
                                                                         <TextField fx:id="tfOrderNo" promptText="Type: Search" GridPane.columnIndex="2" />
-                                                                          <TextField fx:id="tfBarcode" maxHeight="25.0" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                                                                          <TextField fx:id="tfDescription" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.columnSpan="6" GridPane.rowIndex="2" />
+                                                                          <TextField fx:id="tfBarcode" disable="true" maxHeight="25.0" styleClass="DisabledTextField" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                                          <TextField fx:id="tfDescription" disable="true" styleClass="DisabledTextField" GridPane.columnIndex="2" GridPane.columnSpan="6" GridPane.rowIndex="2" />
                                                                               <TextField fx:id="tfSupersede" promptText="Press F3: Search" GridPane.columnIndex="6" GridPane.columnSpan="2" GridPane.rowIndex="1" />
                                                       <TextField fx:id="tfCost" alignment="CENTER_RIGHT" promptText="0.0000" GridPane.columnIndex="11" GridPane.rowIndex="2" />
                                                       <TextField fx:id="tfReceiveQuantity" alignment="CENTER_RIGHT" GridPane.columnIndex="11" GridPane.rowIndex="6" />
