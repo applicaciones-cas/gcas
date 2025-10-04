@@ -293,7 +293,7 @@ public class POReplacement_EntryMonarchFoodController implements Initializable, 
                     case "btnRetrieve":
                         //Retrieve data from purchase order to table main
                         if (mainSearchListener != null) {
-                            tfOrderNo.textProperty().removeListener(mainSearchListener);
+                            JFXUtil.removeTextFieldListener(mainSearchListener, tfOrderNo);
                             mainSearchListener = null; // Clear reference to avoid memory leaks
                         }
                         poJSON = retrievePOReturn();
@@ -649,7 +649,7 @@ public class POReplacement_EntryMonarchFoodController implements Initializable, 
                         case "tfOrderNo":
                             if (mainSearchListener != null) {
                                 if (mainSearchListener != null) {
-                                    txtField.textProperty().removeListener(mainSearchListener);
+                                    JFXUtil.removeTextFieldListener(mainSearchListener, txtField);
                                     mainSearchListener = null; // Clear reference to avoid memory leaks
                                 }
                                 initDetailsGrid();
@@ -925,7 +925,7 @@ public class POReplacement_EntryMonarchFoodController implements Initializable, 
                         lbresetpredicate = false;
 
                         if (detailSearchListener != null) {
-                            tfOrderNo.textProperty().removeListener(detailSearchListener);
+                            JFXUtil.removeTextFieldListener(detailSearchListener, tfOrderNo);
                         }
 
                         mainSearchListener = null;
@@ -1274,11 +1274,11 @@ public class POReplacement_EntryMonarchFoodController implements Initializable, 
 
     private void goToPageBasedOnSelectedRow(String pnRowMain) {
         if (mainSearchListener != null) {
-            tfOrderNo.textProperty().removeListener(mainSearchListener);
+            JFXUtil.removeTextFieldListener(mainSearchListener, tfOrderNo);
             mainSearchListener = null;
         }
         if (detailSearchListener != null) {
-            tfOrderNo.textProperty().removeListener(detailSearchListener);
+            JFXUtil.removeTextFieldListener(detailSearchListener, tfOrderNo);
             detailSearchListener = null;
         }
         filteredDataDetail.setPredicate(null);
@@ -1370,7 +1370,7 @@ public class POReplacement_EntryMonarchFoodController implements Initializable, 
                     return true;
                 }
                 if (mainSearchListener != null) {
-                    txtField.textProperty().removeListener(mainSearchListener);
+                    JFXUtil.removeTextFieldListener(mainSearchListener, txtField);
                     mainSearchListener = null; // Clear reference to avoid memory leaks
                 }
                 String lowerCaseFilter = newValue.toLowerCase();
@@ -1380,7 +1380,7 @@ public class POReplacement_EntryMonarchFoodController implements Initializable, 
             if (filteredDataDetail.isEmpty()) {
                 if (main_data.size() > 0) {
                     if (detailSearchListener != null) {
-                        txtField.textProperty().removeListener(detailSearchListener);
+                        JFXUtil.removeTextFieldListener(detailSearchListener, txtField);
                     }
                     filteredData = new FilteredList<>(main_data, b -> true);
                     autoSearchMain(txtField); // Trigger autoSearchMain if no results
@@ -1406,7 +1406,7 @@ public class POReplacement_EntryMonarchFoodController implements Initializable, 
                 lbresetpredicate = true;
                 if (newValue == null || newValue.isEmpty()) {
                     if (mainSearchListener != null) {
-                        txtField.textProperty().removeListener(mainSearchListener);
+                        JFXUtil.removeTextFieldListener(mainSearchListener, txtField);
                         mainSearchListener = null; // Clear reference to avoid memory leaks
                         initDetailsGrid();
                     }
