@@ -483,7 +483,7 @@ public class POReplacement_EntryMonarchHospitalityController implements Initiali
                             }
                         }
 
-                        double lnOldVal = poController.PurchaseOrderReceiving().getQuantity(pnDetail);
+                        double lnOldVal = poController.PurchaseOrderReceiving().Detail(pnDetail).getQuantity().intValue();
                         poJSON = poController.PurchaseOrderReceiving().Detail(pnDetail).setQuantity((Double.valueOf(lsValue)));
                         if ("error".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -494,7 +494,7 @@ public class POReplacement_EntryMonarchHospitalityController implements Initiali
                             if ("error".equals((String) poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 poController.PurchaseOrderReceiving().Detail(pnDetail).setQuantity(lnOldVal);
-                                tfReceiveQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.PurchaseOrderReceiving().getQuantity(pnDetail)));
+                                tfReceiveQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.PurchaseOrderReceiving().Detail(pnDetail).getQuantity().intValue()));
                                 return;
                             }
                         } catch (SQLException | GuanzonException ex) {

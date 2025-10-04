@@ -546,7 +546,7 @@ public class POReplacement_ConfirmationCarController implements Initializable, S
                 return;
             }
 
-            if (poController.PurchaseOrderReceiving().getQuantity(pnDetail) == 0) {
+            if (poController.PurchaseOrderReceiving().Detail(pnDetail).getQuantity().intValue() == 0) {
                 ShowMessageFX.Warning(null, pxeModuleName, "Received quantity cannot be empty.");
                 return;
             }

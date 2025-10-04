@@ -199,7 +199,7 @@ public class POReplacement_EntryMPController implements Initializable, ScreenInt
                 return;
             }
 
-            if (poController.PurchaseOrderReceiving().getQuantity(pnDetail) == 0) {
+            if (poController.PurchaseOrderReceiving().Detail(pnDetail).getQuantity().intValue() == 0) {
                 ShowMessageFX.Warning(null, pxeModuleName, "Received quantity cannot be empty.");
                 return;
             }
@@ -479,7 +479,7 @@ public class POReplacement_EntryMPController implements Initializable, ScreenInt
     public void loadHighlightFromDetail() {
         for (int lnCtr = 0; lnCtr < poController.PurchaseOrderReceiving().getDetailCount(); lnCtr++) {
             String lsHighlightbasis = poController.PurchaseOrderReceiving().Detail(lnCtr).getOrderNo();
-            if (!JFXUtil.isObjectEqualTo(poController.PurchaseOrderReceiving().Detail(lnCtr).getQuantity(), null, "")) {
+            if (!JFXUtil.isObjectEqualTo(poController.PurchaseOrderReceiving(), null, "")) {
                 if (poController.PurchaseOrderReceiving().Detail(lnCtr).getQuantity().doubleValue() > 0.0000) {
                     plOrderNoPartial.add(new Pair<>(lsHighlightbasis, "1"));
                 } else {
@@ -587,7 +587,7 @@ public class POReplacement_EntryMPController implements Initializable, ScreenInt
                         }
 
                         int lnNewVal = Integer.valueOf(lsValue);
-                        double lnOldVal = poController.PurchaseOrderReceiving().getQuantity(pnDetail);
+                        double lnOldVal = poController.PurchaseOrderReceiving().Detail(pnDetail).getQuantity().intValue();
 
                         poJSON = poController.PurchaseOrderReceiving().Detail(pnDetail).setQuantity((Integer.valueOf(lsValue)));
                         if ("error".equals((String) poJSON.get("result"))) {
@@ -602,7 +602,7 @@ public class POReplacement_EntryMPController implements Initializable, ScreenInt
                                 System.err.println((String) poJSON.get("message"));
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 poController.PurchaseOrderReceiving().Detail(pnDetail).setQuantity(lnOldVal);
-                                tfReceiveQuantity.setText(String.valueOf(poController.PurchaseOrderReceiving().getQuantity(pnDetail)));
+                                tfReceiveQuantity.setText(String.valueOf(poController.PurchaseOrderReceiving().Detail(pnDetail).getQuantity().intValue()));
                                 return;
                             }
                         } catch (SQLException | GuanzonException ex) {
@@ -610,9 +610,7 @@ public class POReplacement_EntryMPController implements Initializable, ScreenInt
                         }
                         if (pbEntered) {
                             if (lnNewVal != lnOldVal) {
-                                if ((Integer.valueOf(lsValue) > 0
-                                && poController.PurchaseOrderReceiving().Detail(pnDetail).getStockId() != null
-                                && !"".equals(poController.PurchaseOrderReceiving().Detail(pnDetail).getStockId()))) {
+                                if ((Integer.valueOf(lsValue) > 0 && poController.PurchaseOrderReceiving().Detail(pnDetail).getStockId() != null && !"".equals(poController.PurchaseOrderReceiving().Detail(pnDetail).getStockId()))) {
                                     showSerialDialog();
                                 } else {
                                     moveNext(false, true);
