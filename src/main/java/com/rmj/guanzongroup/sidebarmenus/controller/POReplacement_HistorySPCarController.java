@@ -143,7 +143,6 @@ public class POReplacement_HistorySPCarController implements Initializable, Scre
         initTableOnClick();
         clearTextFields();
         Platform.runLater(() -> {
-            psIndustryId = "";
             poController.PurchaseOrderReceiving().Master().setIndustryId(psIndustryId);
             poController.PurchaseOrderReceiving().Master().setCompanyId(psCompanyId);
             poController.PurchaseOrderReceiving().setIndustryId(psIndustryId);

@@ -147,7 +147,6 @@ public class POReplacement_HistoryMCController implements Initializable, ScreenI
         initTableOnClick();
         clearTextFields();
         Platform.runLater(() -> {
-            psIndustryId = "";
             poController.PurchaseOrderReceiving().Master().setIndustryId(psIndustryId);
             poController.PurchaseOrderReceiving().Master().setCompanyId(psCompanyId);
             poController.PurchaseOrderReceiving().setIndustryId(psIndustryId);
