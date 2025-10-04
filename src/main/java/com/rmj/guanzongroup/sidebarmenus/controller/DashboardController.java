@@ -2221,6 +2221,9 @@ public class DashboardController implements Initializable {
                     return "Check Deposit Confirmation";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CheckDeposit_History.fxml":
                     return "Check Deposit History";
+                    
+                case "/com/rmj/guanzongroup/sidebarmenus/views/CheckRelease_Entry.fxml":
+                    return "Check Release Entry";
 
                 //Update
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CheckStatusUpdate.fxml":
@@ -4097,6 +4100,10 @@ public class DashboardController implements Initializable {
                     return new CheckDeposit_ConfirmationController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CheckDeposit_History.fxml":
                     return new CheckDeposit_HistoryController();
+                
+                    //Check Release
+                case "/com/rmj/guanzongroup/sidebarmenus/views/CheckRelease_Entry.fxml":
+                    return new CheckRelease_EntryController();
 
 //                UPDATE
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CheckStatusUpdate.fxml":
@@ -6113,6 +6120,10 @@ public class DashboardController implements Initializable {
                 + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Check Deposit Confirmation\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/CheckDeposit_Confirmation.fxml\",\"controller_path\":\"CheckDeposit_ConfimationController\",\"menu_id\":\"118\",\"menu_parent\":\"116\"},"
                 //History
                 + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Check Deposit History\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/CheckDeposit_History.fxml\",\"controller_path\":\"CheckDeposit_HistoryController\",\"menu_id\":\"119\",\"menu_parent\":\"116\"},"
+                //CheckRelease
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Check Release\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"120\",\"menu_parent\":\"001\"},"
+                //Entry
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Check Release Entry\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/CheckRelease_Entry.fxml\",\"controller_path\":\"CheckRelease_EntryController\",\"menu_id\":\"121\",\"menu_parent\":\"120\"},"
                 + "]";
         JSONParser parser = new JSONParser();
         try {
