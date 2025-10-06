@@ -310,6 +310,9 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
     private void loadRecordDetail() {
         try {
             if (pnTblDetailRow >= 0) {
+                CustomCommonUtil.setDisable(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).getSouceCode() == PurchaseOrderStatus.SourceCode.POQUOTATION,
+                        tfRequestQuantity);
+
                 tfBarcode.setText(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).Inventory().getBarCode() != null ? poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).Inventory().getBarCode() : "");
                 tfDescription.setText(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).Inventory().getDescription() != null ? poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).Inventory().getDescription() : "");
                 tfBrand.setText(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).Inventory().Brand().getDescription());
@@ -321,11 +324,28 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                 tfClass.setText(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InventoryMaster().getInventoryClassification());
                 tfAMC.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InventoryMaster().getAverageCost()));
                 tfROQ.setText("0");
-                tfRO.setText(CustomCommonUtil.setDecimalValueToIntegerFormat(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getReceived()));
-                tfBO.setText(CustomCommonUtil.setDecimalValueToIntegerFormat(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getBackOrder()));
-                tfQOH.setText(CustomCommonUtil.setDecimalValueToIntegerFormat(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getQuantityOnHand()));
+
+                double lnRO = 0, lnBO = 0, lnQOH = 0, lnRequestQuantity = 0;
+                switch (poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).getSouceCode()) {
+                    case PurchaseOrderStatus.SourceCode.STOCKREQUEST:
+                        lnRO = poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getReceived();
+                        lnBO = poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getBackOrder();
+                        lnQOH = poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getQuantityOnHand();
+                        lnRequestQuantity = poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getApproved();
+                        break;
+                    case PurchaseOrderStatus.SourceCode.POQUOTATION:
+                        lnRO = 0;
+                        lnBO = 0;
+                        lnQOH = 0;
+                        lnRequestQuantity = poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).POQuotationDetail().getQuantity();
+                        break;
+                }
+
+                tfRO.setText(CustomCommonUtil.setDecimalValueToIntegerFormat(lnRO));
+                tfBO.setText(CustomCommonUtil.setDecimalValueToIntegerFormat(lnBO));
+                tfQOH.setText(CustomCommonUtil.setDecimalValueToIntegerFormat(lnQOH));
                 tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).getUnitPrice(), true));
-                tfRequestQuantity.setText(CustomCommonUtil.setDecimalValueToIntegerFormat(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getApproved()));
+                tfRequestQuantity.setText(CustomCommonUtil.setDecimalValueToIntegerFormat(lnRequestQuantity));
                 tfOrderQuantity.setText(String.valueOf(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).getQuantity()));
             }
         } catch (GuanzonException | SQLException ex) {
@@ -1381,7 +1401,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                                         obj.get("total_details") != null ? obj.get("total_details").toString() : "",
                                         obj.get("sTransNox") != null ? obj.get("sTransNox").toString() : "",
                                         "0",
-                                        "",
+                                        obj.get("request_type") != null ? obj.get("request_type").toString() : "",
                                         "",
                                         ""
                                 );
@@ -1807,8 +1827,16 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                     ModelPurchaseOrder loSelectedStockRequest = (ModelPurchaseOrder) tblVwStockRequest.getSelectionModel().getSelectedItem();
                     if (loSelectedStockRequest != null) {
                         String lsTransactionNo = loSelectedStockRequest.getIndex06();
+                        String lsSource = loSelectedStockRequest.getIndex08();
                         try {
-                            poJSON = poPurchasingController.PurchaseOrder().addStockRequestOrdersToPODetail(lsTransactionNo);
+                            switch (lsSource) {
+                                case PurchaseOrderStatus.SourceCode.STOCKREQUEST:
+                                    poJSON = poPurchasingController.PurchaseOrder().addStockRequestOrdersToPODetail(lsTransactionNo);
+                                    break;
+                                case PurchaseOrderStatus.SourceCode.POQUOTATION:
+                                    poJSON = poPurchasingController.PurchaseOrder().addPOQuotationToPODetail(lsTransactionNo);
+                                    break;
+                            }
                             if ("success".equals(poJSON.get("result"))) {
                                 if (poPurchasingController.PurchaseOrder().getDetailCount() > 0) {
                                     pnTblDetailRow = poPurchasingController.PurchaseOrder().getDetailCount() - 1;
@@ -1890,6 +1918,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                     boolean isSourceNotEmpty = !poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).getSouceNo().isEmpty();
                     tfBarcode.setDisable(isSourceNotEmpty);
                     tfDescription.setDisable(isSourceNotEmpty);
+
                     if (poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).Inventory().getInventoryTypeId().equals("0007")) {
                         CustomCommonUtil.setDisable(false, tfBarcode, tfDescription);
                         tfOrderQuantity.requestFocus();
