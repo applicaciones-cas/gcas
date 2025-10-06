@@ -20,22 +20,32 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Control;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import static javafx.scene.input.KeyCode.ENTER;
+import static javafx.scene.input.KeyCode.F3;
+import static javafx.scene.input.KeyCode.TAB;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.GRiderCAS;
 import org.guanzon.appdriver.base.GuanzonException;
@@ -61,7 +71,9 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
     private Control lastFocusedControl;
     private CheckRelease poAppController;
     
-    private int pnSelectMaster, pnEditMode;
+    private ObservableList<Model_Check_Payments> laCheckList;
+    
+    private int pnSelectMaster, pnTransactionDetail, pnEditMode;
     
     @FXML
     private AnchorPane apMainAnchor, apMaster, apDetail, apCheckDettail, apTransaction;
@@ -116,7 +128,6 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
                 System.err.println("Initialize value : Industry >" + psIndustryID);
 
             });
-
             initControlEvents();
         } catch (SQLException | GuanzonException e) {
             Logger.getLogger(CheckDeposit_EntryController.class.getName()).log(Level.SEVERE, null, e);
@@ -144,6 +155,7 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
     
     @FXML
     void ontblMasterClicked(MouseEvent e) {
+        
         pnSelectMaster = tblViewMaster.getSelectionModel().getSelectedIndex();
         if (pnSelectMaster < 0) {
             return;
@@ -196,15 +208,23 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
                             break;
                             
                         case "tfSearchPayee":
-                            if (!isJSONSuccess(poAppController.SearchCheckTransaction(tfSearchPayee.getText().toString(), true, false), "Initialize Search Check Release Master")) {
+                            if (!isJSONSuccess(poAppController.SearchCheckTransaction(tfSearchPayee.getText().toString(),
+                                    true, false), "Initialize Search Check Release Master")) {
                                 break;
                             }
+                            reloadTableDetail();
                             break;
                             
                         case "tfSearchCheck":
-                            if (!isJSONSuccess(poAppController.SearchCheckTransaction(tfSearchCheck.getText().toString(), true, false), "Initialize Search Check Release Master")) {
+                            if (!isJSONSuccess(poAppController.SearchCheckTransaction(tfSearchCheck.getText().toString(), false, false), "Initialize Search Check Release Master")) {
                                 break;
                             }
+                            reloadTableDetail();
+                            break;
+                            
+                        case "dpCheckDtFrm":
+                        case "dpCheckDTTo":
+                            LoadCheckPayments();
                             break;
                     }
                     
@@ -224,6 +244,52 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
         } else {
             lsValue = loTxtField.getText();
         }
+        
+        try{
+            if (null != event.getCode()) {
+                switch (event.getCode()) {
+                    case TAB:
+                    case ENTER:
+                    case F3:
+                        switch (txtFieldID) {
+                            
+                            case "tfSearchTransNo":
+                            if (!isJSONSuccess(poAppController.SearchTransactionMaster(tfSearchTransNo.getText().toString(), true, true), "Initialize Search Check Release Master")) {
+                                break;
+                            }
+                            InitTransactionMaster();
+                            break;
+                        
+                            case "tfSearchReceived":
+                                if (!isJSONSuccess(poAppController.SearchTransactionMaster(tfSearchReceived.getText().toString(), true, false), "Initialize Search Check Release Master")) {
+                                    break;
+                                }
+                                InitTransactionMaster();
+                                break;
+
+                            case "tfSearchPayee":
+                                if (!isJSONSuccess(poAppController.SearchCheckTransaction(tfSearchPayee.getText().toString(), true, false), "Initialize Search Check Release Master")) {
+                                    break;
+                                }
+                                reloadTableDetail();
+                                break;
+
+                            case "tfSearchCheck":
+                                if (!isJSONSuccess(poAppController.SearchCheckTransaction(tfSearchCheck.getText().toString(), false, false), "Initialize Search Check Release Master")) {
+                                    break;
+                                }
+                                reloadTableDetail();
+                                break;
+                                
+                        }
+                }
+            }
+        }catch(Exception e){
+            Logger.getLogger(DeliverySchedule_EntryController.class
+                    .getName()).log(Level.SEVERE, null, e);
+            poLogWrapper.severe(psFormName + " :" + e.getMessage());
+        }
+            
     }
     
     private final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
@@ -248,6 +314,22 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
         }
     };
     
+    final ChangeListener<? super Boolean> dPicker_Focus = (o, ov, nv) -> {
+        DatePicker loDatePicker = (DatePicker) ((ReadOnlyBooleanPropertyBase) o).getBean();
+        String lsDatePickerID = loDatePicker.getId();
+        LocalDate loValue = loDatePicker.getValue();
+
+        if (loValue == null) {
+            return;
+        }
+        Date ldDateValue = Date.from(loValue.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        if (!nv) {
+            /*Lost Focus*/
+            switch (lsDatePickerID) {
+            }
+        }
+    };
+    
     private void initControlEvents() {
         List<Control> laControls = getAllSupportedControls();
 
@@ -264,6 +346,10 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
             } else if (loControl instanceof ComboBox) {
                 ComboBox loControlField = (ComboBox) loControl;
                 controllerFocusTracker(loControlField);
+            } else if (loControl instanceof DatePicker) {
+                DatePicker loControlField = (DatePicker) loControl;
+                controllerFocusTracker(loControlField);
+                loControlField.focusedProperty().addListener(dPicker_Focus);
             }
         }
 
@@ -360,6 +446,160 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
         tfTotal.setText((String.valueOf(poAppController.GetMaster().getTransactionTotal())));
     }
     
+    private void LoadCheckPayments(){
+        
+        StackPane overlay = getOverlayProgress(apTransaction);
+        ProgressIndicator pi = (ProgressIndicator) overlay.getChildren().get(0);
+        overlay.setVisible(true);
+        pi.setVisible(true);
+        
+        Task<ObservableList<Model_Check_Payments>> loadCheckPayment = new Task<ObservableList<Model_Check_Payments>>() {
+            @Override
+            protected ObservableList<Model_Check_Payments> call() throws Exception {
+  
+                if (!isJSONSuccess(poAppController.LoadCheckListByDate(String.valueOf(dpCheckDtFrm.getValue()), String.valueOf(dpCheckDTTo.getValue())),
+                        "Initialize : Load of Transaction List")) {
+                    return null;
+                }
+
+                List<Model_Check_Payments> rawList = poAppController.getCheckPaymentList();
+                return FXCollections.observableArrayList(new ArrayList<>(rawList));
+            }
+            
+            @Override
+            protected void succeeded() {
+                ObservableList<Model_Check_Payments> laMasterList = getValue();
+                tblViewMaster.setItems(laMasterList);
+
+                tblColNo.setCellValueFactory((loModel) -> {
+                    int index = tblViewMaster.getItems().indexOf(loModel.getValue()) + 1;
+                    return new SimpleStringProperty(String.valueOf(index));
+                });
+
+                tblColTransNo.setCellValueFactory((loModel) -> {
+                    try{
+                        return new SimpleStringProperty(loModel.getValue().getTransactionNo());
+                    }catch(Exception e){
+                        poLogWrapper.severe(psFormName, e.getMessage());
+                        return new SimpleStringProperty("");
+                    }
+                });
+
+                tblColTransDate.setCellValueFactory((loModel) -> {
+                    try{
+                        return new SimpleStringProperty(String.valueOf(loModel.getValue().getTransactionDate()));
+                    }catch(Exception e){
+                        poLogWrapper.severe(psFormName, e.getMessage());
+                        return new SimpleStringProperty("");
+                    }
+                });
+
+                tblColCheckNo.setCellValueFactory((loModel) -> {
+                    try{
+                        return new SimpleStringProperty(loModel.getValue().getCheckNo());
+                    }catch(Exception e){
+                        poLogWrapper.severe(psFormName, e.getMessage());
+                        return new SimpleStringProperty("");
+                    }
+                });
+
+                tblColCheckAmt.setCellValueFactory((loModel) -> {
+                    try{
+                        return new SimpleStringProperty(String.valueOf(loModel.getValue().getAmount()));
+                    }catch(Exception e){
+                        poLogWrapper.severe(psFormName, e.getMessage());
+                        return new SimpleStringProperty("");
+                    }
+                });
+                
+                overlay.setVisible(false);
+                pi.setVisible(false);
+
+            }
+
+            @Override
+            protected void failed() {
+                overlay.setVisible(false);
+                pi.setVisible(false);
+                Throwable ex = getException();
+                Logger
+                        .getLogger(DeliverySchedule_EntryController.class
+                                .getName()).log(Level.SEVERE, null, ex);
+                poLogWrapper.severe(psFormName + " : " + ex.getMessage());
+            }
+
+            @Override
+            protected void cancelled() {
+                overlay.setVisible(false);
+                pi.setVisible(false);
+            }
+        };
+        Thread thread = new Thread(loadCheckPayment);
+        thread.setDaemon(true);
+        thread.start();
+ 
+    }
+    
+    private void InitCheckPayments(){
+        
+        if(laCheckList == null){
+            
+            laCheckList = FXCollections.observableArrayList();
+            tblViewMaster.setItems(laCheckList);
+
+            tblViewMaster.setStyle("-fx-alignment: CENTER-RIGHT; -fx-padding: 0 5 0 0;");
+
+            tblColNo.setCellValueFactory((loModel) -> {
+                int index = tblViewMaster.getItems().indexOf(loModel.getValue()) + 1;
+                return new SimpleStringProperty(String.valueOf(index));
+            });
+
+            tblColTransNo.setCellValueFactory((loModel) -> {
+                try{
+                    return new SimpleStringProperty(loModel.getValue().getTransactionNo());
+                }catch(Exception e){
+                    poLogWrapper.severe(psFormName, e.getMessage());
+                    return new SimpleStringProperty("");
+                }
+            });
+
+            tblColTransDate.setCellValueFactory((loModel) -> {
+                try{
+                    return new SimpleStringProperty(String.valueOf(loModel.getValue().getTransactionDate()));
+                }catch(Exception e){
+                    poLogWrapper.severe(psFormName, e.getMessage());
+                    return new SimpleStringProperty("");
+                }
+            });
+
+            tblColCheckNo.setCellValueFactory((loModel) -> {
+                try{
+                    return new SimpleStringProperty(loModel.getValue().getCheckNo());
+                }catch(Exception e){
+                    poLogWrapper.severe(psFormName, e.getMessage());
+                    return new SimpleStringProperty("");
+                }
+            });
+
+            tblColCheckAmt.setCellValueFactory((loModel) -> {
+                try{
+                    return new SimpleStringProperty(String.valueOf(loModel.getValue().getAmount()));
+                }catch(Exception e){
+                    poLogWrapper.severe(psFormName, e.getMessage());
+                    return new SimpleStringProperty("");
+                }
+            });
+
+        }
+    }
+    
+    private void reloadTableDetail(){
+        
+        //load check payments
+        laCheckList.setAll(poAppController.getCheckPaymentList());
+  
+    }
+    
     private List<Control> getAllSupportedControls() {
         List<Control> controls = new ArrayList<>();
         for (Field field : getClass().getDeclaredFields()) {
@@ -411,6 +651,47 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
         poLogWrapper.info(psFormName + " : Success on " + fsModule);
         return true;
 
+    }
+    
+    private StackPane getOverlayProgress(AnchorPane foAnchorPane) {
+        ProgressIndicator localIndicator = null;
+        StackPane localOverlay = null;
+
+        // Check if overlay already exists
+        for (Node node : foAnchorPane.getChildren()) {
+            if (node instanceof StackPane) {
+                StackPane stack = (StackPane) node;
+                for (Node child : stack.getChildren()) {
+                    if (child instanceof ProgressIndicator) {
+                        localIndicator = (ProgressIndicator) child;
+                        localOverlay = stack;
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (localIndicator == null) {
+            localIndicator = new ProgressIndicator();
+            localIndicator.setMaxSize(50, 50);
+            localIndicator.setVisible(false);
+            localIndicator.setStyle("-fx-progress-color: orange;");
+        }
+
+        if (localOverlay == null) {
+            localOverlay = new StackPane();
+            localOverlay.setPickOnBounds(false); // Let clicks through
+            localOverlay.getChildren().add(localIndicator);
+
+            AnchorPane.setTopAnchor(localOverlay, 0.0);
+            AnchorPane.setBottomAnchor(localOverlay, 0.0);
+            AnchorPane.setLeftAnchor(localOverlay, 0.0);
+            AnchorPane.setRightAnchor(localOverlay, 0.0);
+
+            foAnchorPane.getChildren().add(localOverlay);
+        }
+
+        return localOverlay;
     }
     
 }
