@@ -269,6 +269,21 @@ public class PurchaseOrder_ApprovalController implements Initializable, ScreenIn
                 tfClass.setText(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InventoryMaster().getInventoryClassification());
                 tfAMC.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InventoryMaster().getAverageCost()));
                 tfROQ.setText("0");
+                double lnRO = 0, lnBO = 0, lnQOH = 0, lnRequestQuantity = 0;
+                switch (poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).getSouceCode()) {
+                    case PurchaseOrderStatus.SourceCode.STOCKREQUEST:
+                        lnRO = poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getReceived();
+                        lnBO = poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getBackOrder();
+                        lnQOH = poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getQuantityOnHand();
+                        lnRequestQuantity = poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getApproved();
+                        break;
+                    case PurchaseOrderStatus.SourceCode.POQUOTATION:
+                        lnRO = 0;
+                        lnBO = 0;
+                        lnQOH = 0;
+                        lnRequestQuantity = poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).POQuotationDetail().getQuantity();
+                        break;
+                }
                 tfRO.setText(CustomCommonUtil.setDecimalValueToIntegerFormat(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getReceived()));
                 tfBO.setText(CustomCommonUtil.setDecimalValueToIntegerFormat(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getBackOrder()));
                 tfQOH.setText(CustomCommonUtil.setDecimalValueToIntegerFormat(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getQuantityOnHand()));
