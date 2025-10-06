@@ -3566,68 +3566,68 @@ public class DashboardController implements Initializable {
 
                 /* PURCHASE ORDER REPLACEMENT */
                 // ENTRY
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_EntryAppliances.fxml":
-//                    return new POReplacement_EntryAppliancesController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_Entry.fxml":
-//                    return new POReplacement_EntryController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_EntryCar.fxml":
-//                    return new POReplacement_EntryCarController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_EntryMC.fxml":
-//                    return new POReplacement_EntryMCController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_EntryMP.fxml":
-//                    return new POReplacement_EntryMPController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_EntryLP.fxml":
-//                    return new POReplacement_EntryLPController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_EntrySPCar.fxml":
-//                    return new POReplacement_EntrySPCarController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_EntrySPMC.fxml":
-//                    return new POReplacement_EntrySPMCController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_EntryMonarchFood.fxml":
-//                    return new POReplacement_EntryMonarchFoodController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_EntryMonarchHospitality.fxml":
-//                    return new POReplacement_EntryMonarchHospitalityController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_EntryAppliances.fxml":
+                    return new POReplacement_EntryAppliancesController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_Entry.fxml":
+                    return new POReplacement_EntryController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_EntryCar.fxml":
+                    return new POReplacement_EntryCarController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_EntryMC.fxml":
+                    return new POReplacement_EntryMCController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_EntryMP.fxml":
+                    return new POReplacement_EntryMPController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_EntryLP.fxml":
+                    return new POReplacement_EntryLPController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_EntrySPCar.fxml":
+                    return new POReplacement_EntrySPCarController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_EntrySPMC.fxml":
+                    return new POReplacement_EntrySPMCController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_EntryMonarchFood.fxml":
+                    return new POReplacement_EntryMonarchFoodController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_EntryMonarchHospitality.fxml":
+                    return new POReplacement_EntryMonarchHospitalityController();
 //                // CONFIRMATION
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_ConfirmationAppliances.fxml":
-//                    return new POReplacement_ConfirmationAppliancesController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_Confirmation.fxml":
-//                    return new POReplacement_ConfirmationController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_ConfirmationCar.fxml":
-//                    return new POReplacement_ConfirmationCarController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_ConfirmationMC.fxml":
-//                    return new POReplacement_ConfirmationMCController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_ConfirmationMP.fxml":
-//                    return new POReplacement_ConfirmationMPController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_ConfirmationLP.fxml":
-//                    return new POReplacement_ConfirmationLPController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_ConfirmationSPCar.fxml":
-//                    return new POReplacement_ConfirmationSPCarController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_ConfirmationSPMC.fxml":
-//                    return new POReplacement_ConfirmationSPMCController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_ConfirmationMonarchFood.fxml":
-//                    return new POReplacement_ConfirmationMonarchFoodController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_ConfirmationMonarchHospitality.fxml":
-//                    return new POReplacement_ConfirmationMonarchHospitalityController();
-//                // HISTORY
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_HistoryAppliances.fxml":
-//                    return new POReplacement_HistoryAppliancesController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_History.fxml":
-//                    return new POReplacement_HistoryController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_HistoryCar.fxml":
-//                    return new POReplacement_HistoryCarController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_HistoryMC.fxml":
-//                    return new POReplacement_HistoryMCController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_HistoryMP.fxml":
-//                    return new POReplacement_HistoryMPController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_HistoryLP.fxml":
-//                    return new POReplacement_HistoryLPController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_HistorySPCar.fxml":
-//                    return new POReplacement_HistorySPCarController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_HistorySPMC.fxml":
-//                    return new POReplacement_HistorySPMCController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_HistoryMonarchFood.fxml":
-//                    return new POReplacement_HistoryMonarchFoodController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_HistoryMonarchHospitality.fxml":
-//                    return new POReplacement_HistoryMonarchHospitalityController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_ConfirmationAppliances.fxml":
+                    return new POReplacement_ConfirmationAppliancesController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_Confirmation.fxml":
+                    return new POReplacement_ConfirmationController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_ConfirmationCar.fxml":
+                    return new POReplacement_ConfirmationCarController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_ConfirmationMC.fxml":
+                    return new POReplacement_ConfirmationMCController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_ConfirmationMP.fxml":
+                    return new POReplacement_ConfirmationMPController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_ConfirmationLP.fxml":
+                    return new POReplacement_ConfirmationLPController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_ConfirmationSPCar.fxml":
+                    return new POReplacement_ConfirmationSPCarController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_ConfirmationSPMC.fxml":
+                    return new POReplacement_ConfirmationSPMCController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_ConfirmationMonarchFood.fxml":
+                    return new POReplacement_ConfirmationMonarchFoodController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_ConfirmationMonarchHospitality.fxml":
+                    return new POReplacement_ConfirmationMonarchHospitalityController();
+                // HISTORY
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_HistoryAppliances.fxml":
+                    return new POReplacement_HistoryAppliancesController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_History.fxml":
+                    return new POReplacement_HistoryController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_HistoryCar.fxml":
+                    return new POReplacement_HistoryCarController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_HistoryMC.fxml":
+                    return new POReplacement_HistoryMCController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_HistoryMP.fxml":
+                    return new POReplacement_HistoryMPController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_HistoryLP.fxml":
+                    return new POReplacement_HistoryLPController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_HistorySPCar.fxml":
+                    return new POReplacement_HistorySPCarController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_HistorySPMC.fxml":
+                    return new POReplacement_HistorySPMCController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_HistoryMonarchFood.fxml":
+                    return new POReplacement_HistoryMonarchFoodController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POReplacement_HistoryMonarchHospitality.fxml":
+                    return new POReplacement_HistoryMonarchHospitalityController();
                 /*PURCHASE ORDER RETURN*/
                 //ENTRY
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrderReturn_Entry.fxml":

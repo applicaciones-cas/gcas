@@ -77,7 +77,7 @@ public class POReplacement_EntryMonarchHospitalityController implements Initiali
     int pnDetail = 0;
     int pnMain = 0;
     boolean lsIsSaved = false;
-    private final String pxeModuleName = JFXUtil.getFormattedClassTitle(this.getClass());
+    private final String pxeModuleName = JFXUtil.getFormattedClassTitle(this.getClass(), "PO");
     static PurchaseOrderReceivingControllers poController;
     public int pnEditMode;
 
@@ -116,7 +116,7 @@ public class POReplacement_EntryMonarchHospitalityController implements Initiali
     @FXML
     private TextField tfTransactionNo, tfSupplier, tfTrucking, tfReferenceNo, tfTerm, tfDiscountRate, tfDiscountAmount, tfTotal, tfOrderNo, tfBarcode, tfDescription, tfSupersede, tfBrand, tfModel, tfColor, tfInventoryType, tfMeasure, tfCost, tfOrderQuantity, tfReceiveQuantity;
     @FXML
-    private DatePicker dpTransactionDate, dpReferenceDate, dpExpiryDate;
+    private DatePicker dpTransactionDate, dpReferenceDate;
     @FXML
     private TextArea taRemarks;
     @FXML
@@ -153,7 +153,6 @@ public class POReplacement_EntryMonarchHospitalityController implements Initiali
         initButton(pnEditMode);
 
         Platform.runLater(() -> {
-            psIndustryId = "";
             poController.PurchaseOrderReceiving().Master().setIndustryId(psIndustryId);
             poController.PurchaseOrderReceiving().Master().setCompanyId(psCompanyId);
             poController.PurchaseOrderReceiving().setIndustryId(psIndustryId);
@@ -293,7 +292,7 @@ public class POReplacement_EntryMonarchHospitalityController implements Initiali
                     case "btnRetrieve":
                         //Retrieve data from purchase order to table main
                         if (mainSearchListener != null) {
-                            tfOrderNo.textProperty().removeListener(mainSearchListener);
+                            JFXUtil.removeTextFieldListener(mainSearchListener, tfOrderNo);
                             mainSearchListener = null; // Clear reference to avoid memory leaks
                         }
                         poJSON = retrievePOReturn();
@@ -445,7 +444,7 @@ public class POReplacement_EntryMonarchHospitalityController implements Initiali
                         break;
                     case "tfCost":
                         lsValue = JFXUtil.removeComma(lsValue);
-                        if (Double.parseDouble(lsValue.replace(",", "")) < 0.00) {
+                        if (Double.parseDouble(lsValue) < 0.00) {
                             ShowMessageFX.Warning(null, pxeModuleName, "Invalid Cost Amount");
                             return;
                         }
@@ -477,25 +476,25 @@ public class POReplacement_EntryMonarchHospitalityController implements Initiali
                         && !"".equals(poController.PurchaseOrderReceiving().Detail(pnDetail).getOrderNo())) {
                             if (poController.PurchaseOrderReceiving().Detail(pnDetail).getOrderQty().doubleValue() < Integer.valueOf(lsValue)) {
                                 ShowMessageFX.Warning(null, pxeModuleName, "Receive quantity cannot be greater than the order quantity.");
-                                poController.PurchaseOrderReceiving().Detail(pnDetail).setQuantity(0);
-                                tfReceiveQuantity.requestFocus();
+                                JFXUtil.textFieldMoveNext(tfReceiveQuantity);
                                 break;
                             }
                         }
 
-                        double lnOldVal = poController.PurchaseOrderReceiving().getQuantity(pnDetail);
+                        double lnOldVal = poController.PurchaseOrderReceiving().Detail(pnDetail).getQuantity().intValue();
                         poJSON = poController.PurchaseOrderReceiving().Detail(pnDetail).setQuantity((Double.valueOf(lsValue)));
                         if ("error".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                            JFXUtil.textFieldMoveNext(tfReceiveQuantity);
+                            break;
                         }
 
                         try {
                             poJSON = poController.PurchaseOrderReceiving().computeFields();
                             if ("error".equals((String) poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                poController.PurchaseOrderReceiving().Detail(pnDetail).setQuantity(lnOldVal);
-                                tfReceiveQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poController.PurchaseOrderReceiving().getQuantity(pnDetail)));
-                                return;
+                                JFXUtil.textFieldMoveNext(tfReceiveQuantity);
+                                break;
                             }
                         } catch (SQLException | GuanzonException ex) {
                             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
@@ -572,7 +571,7 @@ public class POReplacement_EntryMonarchHospitalityController implements Initiali
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                             break;
                         }
-                        poJSON = poController.PurchaseOrderReceiving().Master().setDiscountRate((Double.valueOf(lsValue.replace(",", ""))));
+                        poJSON = poController.PurchaseOrderReceiving().Master().setDiscountRate((Double.valueOf(lsValue)));
                         if ("error".equals(poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                             break;
@@ -598,6 +597,10 @@ public class POReplacement_EntryMonarchHospitalityController implements Initiali
             });
 
     public void moveNext(boolean isUp, boolean continueNext) {
+        if (details_data.size() <= 0) {
+            return;
+        }
+
         if (continueNext) {
             apDetail.requestFocus();
 
@@ -649,7 +652,7 @@ public class POReplacement_EntryMonarchHospitalityController implements Initiali
                         case "tfOrderNo":
                             if (mainSearchListener != null) {
                                 if (mainSearchListener != null) {
-                                    txtField.textProperty().removeListener(mainSearchListener);
+                                    JFXUtil.removeTextFieldListener(mainSearchListener, txtField);
                                     mainSearchListener = null; // Clear reference to avoid memory leaks
                                 }
                                 initDetailsGrid();
@@ -875,32 +878,6 @@ public class POReplacement_EntryMonarchHospitalityController implements Initiali
                             pbSuccess = true; //Set to original value
                         }
                         break;
-                    case "dpExpiryDate":
-                        if (poController.PurchaseOrderReceiving().getEditMode() == EditMode.ADDNEW
-                                || poController.PurchaseOrderReceiving().getEditMode() == EditMode.UPDATE) {
-                            lsServerDate = sdfFormat.format(oApp.getServerDate());
-                            lsSelectedDate = sdfFormat.format(SQLUtil.toDate(JFXUtil.convertToIsoFormat(inputText), SQLUtil.FORMAT_SHORT_DATE));
-                            currentDate = LocalDate.parse(lsServerDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
-                            selectedDate = LocalDate.parse(lsSelectedDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
-
-                            if (selectedDate.isBefore(currentDate)) {
-                                poJSON.put("result", "error");
-                                poJSON.put("message", "The selected date cannot be earlier than the current date.");
-                                pbSuccess = false;
-                            }
-                            if (pbSuccess) {
-                                poController.PurchaseOrderReceiving().Detail(pnDetail).setExpiryDate(SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE));
-                            } else {
-                                if ("error".equals((String) poJSON.get("result"))) {
-                                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                }
-                            }
-
-                            pbSuccess = false; //Set to false to prevent multiple message box: Conflict with server date vs transaction date validation
-                            loadRecordDetail();
-                            pbSuccess = true; //Set to original value
-                        }
-                        break;
                     default:
 
                         break;
@@ -926,7 +903,7 @@ public class POReplacement_EntryMonarchHospitalityController implements Initiali
                         lbresetpredicate = false;
 
                         if (detailSearchListener != null) {
-                            tfOrderNo.textProperty().removeListener(detailSearchListener);
+                            JFXUtil.removeTextFieldListener(detailSearchListener, tfOrderNo);
                         }
 
                         mainSearchListener = null;
@@ -1089,8 +1066,8 @@ public class POReplacement_EntryMonarchHospitalityController implements Initiali
     }
 
     public void initDatePickers() {
-        JFXUtil.setDatePickerFormat("MM/dd/yyyy", dpTransactionDate, dpReferenceDate, dpExpiryDate);
-        JFXUtil.setActionListener(this::datepicker_Action, dpTransactionDate, dpReferenceDate, dpExpiryDate);
+        JFXUtil.setDatePickerFormat("MM/dd/yyyy", dpTransactionDate, dpReferenceDate);
+        JFXUtil.setActionListener(this::datepicker_Action, dpTransactionDate, dpReferenceDate);
     }
 
     public void initDetailsGrid() {
@@ -1141,10 +1118,6 @@ public class POReplacement_EntryMonarchHospitalityController implements Initiali
             boolean lbFields = (poController.PurchaseOrderReceiving().Detail(pnDetail).getOrderNo().equals("") || poController.PurchaseOrderReceiving().Detail(pnDetail).getOrderNo() == null) && poController.PurchaseOrderReceiving().Detail(pnDetail).getEditMode() == EditMode.ADDNEW;
 //            JFXUtil.setDisabled(!lbFields, tfBarcode, tfDescription);
             JFXUtil.setDisabled(oApp.getUserLevel() <= UserRight.ENCODER, tfCost);
-
-            // Expiry Date
-            String lsExpiryDate = CustomCommonUtil.formatDateToShortString(poController.PurchaseOrderReceiving().Detail(pnDetail).getExpiryDate());
-            dpExpiryDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsExpiryDate, "yyyy-MM-dd"));
 
             tfBarcode.setText(poController.PurchaseOrderReceiving().Detail(pnDetail).Inventory().getBarCode());
             tfDescription.setText(poController.PurchaseOrderReceiving().Detail(pnDetail).Inventory().getDescription());
@@ -1275,11 +1248,11 @@ public class POReplacement_EntryMonarchHospitalityController implements Initiali
 
     private void goToPageBasedOnSelectedRow(String pnRowMain) {
         if (mainSearchListener != null) {
-            tfOrderNo.textProperty().removeListener(mainSearchListener);
+            JFXUtil.removeTextFieldListener(mainSearchListener, tfOrderNo);
             mainSearchListener = null;
         }
         if (detailSearchListener != null) {
-            tfOrderNo.textProperty().removeListener(detailSearchListener);
+            JFXUtil.removeTextFieldListener(detailSearchListener, tfOrderNo);
             detailSearchListener = null;
         }
         filteredDataDetail.setPredicate(null);
@@ -1371,7 +1344,7 @@ public class POReplacement_EntryMonarchHospitalityController implements Initiali
                     return true;
                 }
                 if (mainSearchListener != null) {
-                    txtField.textProperty().removeListener(mainSearchListener);
+                    JFXUtil.removeTextFieldListener(mainSearchListener, txtField);
                     mainSearchListener = null; // Clear reference to avoid memory leaks
                 }
                 String lowerCaseFilter = newValue.toLowerCase();
@@ -1381,7 +1354,7 @@ public class POReplacement_EntryMonarchHospitalityController implements Initiali
             if (filteredDataDetail.isEmpty()) {
                 if (main_data.size() > 0) {
                     if (detailSearchListener != null) {
-                        txtField.textProperty().removeListener(detailSearchListener);
+                        JFXUtil.removeTextFieldListener(detailSearchListener, txtField);
                     }
                     filteredData = new FilteredList<>(main_data, b -> true);
                     autoSearchMain(txtField); // Trigger autoSearchMain if no results
@@ -1407,7 +1380,7 @@ public class POReplacement_EntryMonarchHospitalityController implements Initiali
                 lbresetpredicate = true;
                 if (newValue == null || newValue.isEmpty()) {
                     if (mainSearchListener != null) {
-                        txtField.textProperty().removeListener(mainSearchListener);
+                        JFXUtil.removeTextFieldListener(mainSearchListener, txtField);
                         mainSearchListener = null; // Clear reference to avoid memory leaks
                         initDetailsGrid();
                     }
