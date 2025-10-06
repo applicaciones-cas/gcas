@@ -286,7 +286,7 @@ public class PurchaseOrder_ConfirmationLPController implements Initializable, Sc
                 tfBO.setText(CustomCommonUtil.setDecimalValueToIntegerFormat(lnBO));
                 tfQOH.setText(CustomCommonUtil.setDecimalValueToIntegerFormat(lnQOH));
                 tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).getUnitPrice(), true));
-                tfRequestQuantity.setText(CustomCommonUtil.setDecimalValueToIntegerFormat(lnRequestQuantity));
+                tfRequestQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(lnRequestQuantity));
                 tfOrderQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).getQuantity()));
             }
         } catch (GuanzonException | SQLException ex) {
