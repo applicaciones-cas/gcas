@@ -1815,8 +1815,16 @@ public class PurchaseOrder_EntryLPController implements Initializable, ScreenInt
                     ModelPurchaseOrder loSelectedStockRequest = (ModelPurchaseOrder) tblVwStockRequest.getSelectionModel().getSelectedItem();
                     if (loSelectedStockRequest != null) {
                         String lsTransactionNo = loSelectedStockRequest.getIndex06();
+                        String lsSource = loSelectedStockRequest.getIndex08();
                         try {
-                            poJSON = poPurchasingController.PurchaseOrder().addStockRequestOrdersToPODetail(lsTransactionNo);
+                            switch (lsSource) {
+                                case PurchaseOrderStatus.SourceCode.STOCKREQUEST:
+                                    poJSON = poPurchasingController.PurchaseOrder().addStockRequestOrdersToPODetail(lsTransactionNo);
+                                    break;
+                                case PurchaseOrderStatus.SourceCode.POQUOTATION:
+                                    poJSON = poPurchasingController.PurchaseOrder().addPOQuotationToPODetail(lsTransactionNo);
+                                    break;
+                            }
                             if ("success".equals(poJSON.get("result"))) {
                                 if (poPurchasingController.PurchaseOrder().getDetailCount() > 0) {
                                     pnTblDetailRow = poPurchasingController.PurchaseOrder().getDetailCount() - 1;
