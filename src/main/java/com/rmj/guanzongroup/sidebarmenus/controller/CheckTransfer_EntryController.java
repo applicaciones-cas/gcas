@@ -372,6 +372,7 @@ public class CheckTransfer_EntryController implements Initializable, ScreenInter
                         if (!isJSONSuccess(poAppController.CloseTransaction(), "Initialize Close Transaction")) {
                             return;
                         }
+
                         if (ShowMessageFX.OkayCancel(null, psFormName, "Do you want to Print transaction?") == true) {
                             if (!isJSONSuccess(poAppController.printRecord(), "Initialize Print Transaction")) {
                                 return;
@@ -457,6 +458,11 @@ public class CheckTransfer_EntryController implements Initializable, ScreenInter
                     case "taRemarks":
                         poAppController.getMaster().setRemarks(lsValue);
                         loadTransactionMaster();
+
+                        break;
+                    case "tfNote":
+                        poAppController.getDetail(pnTransactionDetail).setRemarks(lsValue);
+                        loadSelectedTransactionDetail(pnTransactionDetail);
 
                         break;
 
@@ -668,7 +674,7 @@ public class CheckTransfer_EntryController implements Initializable, ScreenInter
         tfCheckNo.setText(tblColDetailCheckNo.getCellData(tblIndex));
         tfCheckAmount.setText(tblColDetailCheckAmount.getCellData(tblIndex));
 
-        tfNote.setText(poAppController.getDetail(fnRow).CheckPayment().getRemarks());
+        tfNote.setText(poAppController.getDetail(fnRow).getRemarks());
         dpCheckDate.setValue(ParseDate(poAppController.getDetail(fnRow).CheckPayment().getTransactionDate()));
         recomputeTotal();
     }
@@ -884,19 +890,21 @@ public class CheckTransfer_EntryController implements Initializable, ScreenInter
         if ("error".equals(result)) {
             String message = (String) loJSON.get("message");
             poLogWrapper.severe(psFormName + " :" + message);
-            Platform.runLater(() -> {
+//            Platform.runLater(() -> {
+            if (message != null) {
                 ShowMessageFX.Warning(null, psFormName, fsModule + ": " + message);
-            });
+//            });
+            }
             return false;
         }
         String message = (String) loJSON.get("message");
 
         poLogWrapper.severe(psFormName + " :" + message);
-        Platform.runLater(() -> {
-            if (message != null) {
-                ShowMessageFX.Information(null, psFormName, fsModule + ": " + message);
-            }
-        });
+//        Platform.runLater(() -> {
+        if (message != null) {
+            ShowMessageFX.Information(null, psFormName, fsModule + ": " + message);
+        }
+//        });
         poLogWrapper.info(psFormName + " : Success on " + fsModule);
         return true;
 

@@ -173,7 +173,7 @@ public class CheckDeposit_ConfirmationController implements Initializable, Scree
         if (e.getClickCount() == 2 && !e.isConsumed()) {
             try {
                 e.consume();
-                if (!isJSONSuccess(poAppController.searchTransaction( tblColTransNo.getCellData(pnSelectMaster), true,true), psFormName)) {
+                if (!isJSONSuccess(poAppController.searchTransaction(tblColTransNo.getCellData(pnSelectMaster), true, true), psFormName)) {
 //                    ShowMessageFX.Information("Failed to add detail", psFormName, null);
                     return;
                 }
@@ -386,6 +386,14 @@ public class CheckDeposit_ConfirmationController implements Initializable, Scree
                     break;
 
                 case "btnPrint":
+                    if (poAppController.getMaster().getTransactionStatus().equalsIgnoreCase(CheckTransferStatus.OPEN)) {
+                        if (ShowMessageFX.OkayCancel(null, psFormName, "Do you want to close the transaction ?") == true) {
+                            if (!isJSONSuccess(poAppController.CloseTransaction(),
+                                    "Initialize Close Transaction")) {
+                                return;
+                            }
+                        }
+                    }
                     if (poAppController.getMaster().getTransactionNo() == null || poAppController.getMaster().getTransactionNo().isEmpty()) {
                         ShowMessageFX.Information("Please load transaction before proceeding..", "Stock Request Approval", "");
                         return;
@@ -993,9 +1001,12 @@ public class CheckDeposit_ConfirmationController implements Initializable, Scree
         if ("error".equals(result)) {
             String message = (String) loJSON.get("message");
             poLogWrapper.severe(psFormName + " :" + message);
-            Platform.runLater(() -> {
+//            Platform.runLater(() -> {
+
+            if (message != null) {
                 ShowMessageFX.Warning(null, psFormName, fsModule + ": " + message);
-            });
+            }
+//            });
             return false;
         }
         String message = (String) loJSON.get("message");

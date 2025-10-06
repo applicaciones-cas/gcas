@@ -350,7 +350,7 @@ public class CheckTransfer_ConfirmationController implements Initializable, Scre
                 case "btnApprove":
                     if (tfTransactionNo.getText().isEmpty()) {
                         ShowMessageFX.Information("Please load transaction before proceeding..", null,
-                                "Check Transfer Approval");
+                                "Check Transfer Confirmation");
                         return;
                     }
 
@@ -392,6 +392,15 @@ public class CheckTransfer_ConfirmationController implements Initializable, Scre
                     break;
 
                 case "btnPrint":
+
+                    if (poAppController.getMaster().getTransactionStatus().equalsIgnoreCase(CheckTransferStatus.OPEN)) {
+                        if (ShowMessageFX.OkayCancel(null, psFormName, "Do you want to close the transaction ?") == true) {
+                            if (!isJSONSuccess(poAppController.CloseTransaction(),
+                                    "Initialize Close Transaction")) {
+                                return;
+                            }
+                        }
+                    }
                     if (poAppController.getMaster().getTransactionNo() == null || poAppController.getMaster().getTransactionNo().isEmpty()) {
                         ShowMessageFX.Information("Please load transaction before proceeding..", psFormName, "");
                         return;
@@ -517,25 +526,33 @@ public class CheckTransfer_ConfirmationController implements Initializable, Scre
         TextField loTextField = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
         String lsTextFieldID = loTextField.getId();
         String lsValue = loTextField.getText();
-        if (lsValue == null) {
-            return;
-        }
-
-        if (!nv) {
-            /*Lost Focus*/
-            switch (lsTextFieldID) {
-
-                case "taRemarks":
-                    poAppController.getMaster().setRemarks(lsValue);
-                    loadTransactionMaster();
-
-                    break;
-
+        try {
+            if (lsValue == null) {
+                return;
             }
-        } else {
-            loTextField.selectAll();
-        }
 
+            if (!nv) {
+                /*Lost Focus*/
+                switch (lsTextFieldID) {
+
+                    case "taRemarks":
+                        poAppController.getMaster().setRemarks(lsValue);
+                        loadTransactionMaster();
+
+                        break;
+                    case "tfNote":
+                        poAppController.getDetail(pnTransactionDetail).setRemarks(lsValue);
+                        loadSelectedTransactionDetail(pnTransactionDetail);
+
+                        break;
+
+                }
+            } else {
+                loTextField.selectAll();
+            }
+        } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
+            poLogWrapper.severe(psFormName + " :" + ex.getMessage());
+        }
     };
 
     private void txtField_KeyPressed(KeyEvent event) {
@@ -669,7 +686,7 @@ public class CheckTransfer_ConfirmationController implements Initializable, Scre
         tfCheckNo.setText(tblColDetailCheckNo.getCellData(tblIndex));
         tfCheckAmount.setText(tblColDetailCheckAmount.getCellData(tblIndex));
 
-        tfNote.setText(poAppController.getDetail(fnRow).CheckPayment().getRemarks());
+        tfNote.setText(poAppController.getDetail(fnRow).getRemarks());
         dpCheckDate.setValue(ParseDate(poAppController.getDetail(fnRow).CheckPayment().getTransactionDate()));
         recomputeTotal();
     }
@@ -945,19 +962,21 @@ public class CheckTransfer_ConfirmationController implements Initializable, Scre
         if ("error".equals(result)) {
             String message = (String) loJSON.get("message");
             poLogWrapper.severe(psFormName + " :" + message);
-            Platform.runLater(() -> {
+//            Platform.runLater(() -> {
+            if (message != null) {
                 ShowMessageFX.Warning(null, psFormName, fsModule + ": " + message);
-            });
+//            });
+            }
             return false;
         }
         String message = (String) loJSON.get("message");
 
         poLogWrapper.severe(psFormName + " :" + message);
-        Platform.runLater(() -> {
-            if (message != null) {
-                ShowMessageFX.Information(null, psFormName, fsModule + ": " + message);
-            }
-        });
+//        Platform.runLater(() -> {
+        if (message != null) {
+            ShowMessageFX.Information(null, psFormName, fsModule + ": " + message);
+        }
+//        });
         poLogWrapper.info(psFormName + " : Success on " + fsModule);
         return true;
 

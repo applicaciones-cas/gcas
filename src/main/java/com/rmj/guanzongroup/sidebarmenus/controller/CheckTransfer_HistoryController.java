@@ -257,6 +257,14 @@ public class CheckTransfer_HistoryController implements Initializable, ScreenInt
                         ShowMessageFX.Information("Please load transaction before proceeding..", "Stock Request Approval", "");
                         return;
                     }
+                    if (poAppController.getMaster().getTransactionStatus().equalsIgnoreCase(CheckTransferStatus.OPEN)) {
+                        if (ShowMessageFX.OkayCancel(null, psFormName, "Do you want to close the transaction ?") == true) {
+                            if (!isJSONSuccess(poAppController.CloseTransaction(),
+                                    "Initialize Close Transaction")) {
+                                return;
+                            }
+                        }
+                    }
                     if (ShowMessageFX.OkayCancel(null, psFormName, "Do you want to print the transaction ?") == true) {
                         if (!isJSONSuccess(poAppController.printRecord(),
                                 "Initialize Print Transaction")) {
@@ -402,7 +410,7 @@ public class CheckTransfer_HistoryController implements Initializable, ScreenInt
         tfCheckNo.setText(tblColDetailCheckNo.getCellData(tblIndex));
         tfCheckAmount.setText(tblColDetailCheckAmount.getCellData(tblIndex));
 
-        tfNote.setText(poAppController.getDetail(fnRow).CheckPayment().getRemarks());
+        tfNote.setText(poAppController.getDetail(fnRow).getRemarks());
         cbIsReceived.setSelected(poAppController.getDetail(fnRow).isReceived());
         dpCheckDate.setValue(ParseDate(poAppController.getDetail(fnRow).CheckPayment().getTransactionDate()));
 
@@ -594,9 +602,11 @@ public class CheckTransfer_HistoryController implements Initializable, ScreenInt
         if ("error".equals(result)) {
             String message = (String) loJSON.get("message");
             poLogWrapper.severe(psFormName + " :" + message);
-            Platform.runLater(() -> {
+//            Platform.runLater(() -> {
+            if (message != null) {
                 ShowMessageFX.Warning(null, psFormName, fsModule + ": " + message);
-            });
+//            });
+            }
             return false;
         }
         String message = (String) loJSON.get("message");
