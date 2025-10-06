@@ -64,7 +64,7 @@ public class CheckTransfer_EntryController implements Initializable, ScreenInter
 
     private GRiderCAS poApp;
     private LogWrapper poLogWrapper;
-    private String psFormName = "Check Entry";
+    private String psFormName = "Check Transfer Entry";
     private String psIndustryID;
     private Control lastFocusedControl;
     private CheckTransfer poAppController;

@@ -255,7 +255,7 @@ public class CheckDeposit_HistoryController implements Initializable, ScreenInte
 
                 case "btnPost":
                     if (tfTransactionNo.getText().isEmpty()) {
-                        ShowMessageFX.Information("Please load transaction before proceeding..", "Inventory Stock Issuance Posting", "");
+                        ShowMessageFX.Information("Please load transaction before proceeding..", psFormName, "");
                         return;
                     }
                     if (!isJSONSuccess(poAppController.PostTransaction(), "Initialize Post Transaction")) {

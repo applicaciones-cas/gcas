@@ -63,7 +63,7 @@ public class CheckTransfer_HistoryController implements Initializable, ScreenInt
 
     private GRiderCAS poApp;
     private LogWrapper poLogWrapper;
-    private String psFormName = "Check Entry";
+    private String psFormName = "Check Transfer History";
     private String psIndustryID;
     private Control lastFocusedControl;
     private CheckTransfer poAppController;
@@ -164,7 +164,6 @@ public class CheckTransfer_HistoryController implements Initializable, ScreenInt
 
             loadSelectedTransactionDetail(pnTransactionDetail);
         } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
-            Logger.getLogger(InventoryStockIssuance_PostingController.class.getName()).log(Level.SEVERE, null, ex);
             poLogWrapper.severe(psFormName + " :" + ex.getMessage());
         }
     }

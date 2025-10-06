@@ -173,7 +173,7 @@ public class CheckDeposit_ConfirmationController implements Initializable, Scree
         if (e.getClickCount() == 2 && !e.isConsumed()) {
             try {
                 e.consume();
-                if (!isJSONSuccess(poAppController.searchDetailByCheck(poAppController.getDetailCount(), tblColTransNo.getCellData(pnSelectMaster), true), psFormName)) {
+                if (!isJSONSuccess(poAppController.searchTransaction( tblColTransNo.getCellData(pnSelectMaster), true,true), psFormName)) {
 //                    ShowMessageFX.Information("Failed to add detail", psFormName, null);
                     return;
                 }

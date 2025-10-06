@@ -65,7 +65,7 @@ public class CheckTransfer_ConfirmationController implements Initializable, Scre
 
     private GRiderCAS poApp;
     private LogWrapper poLogWrapper;
-    private String psFormName = "Check Entry";
+    private String psFormName = "Check Transfer Confirmation";
     private String psIndustryID;
     private Control lastFocusedControl;
     private CheckTransfer poAppController;
@@ -171,7 +171,7 @@ public class CheckTransfer_ConfirmationController implements Initializable, Scre
         if (e.getClickCount() == 2 && !e.isConsumed()) {
             try {
                 e.consume();
-                if (!isJSONSuccess(poAppController.searchDetailByCheck(poAppController.getDetailCount(), tblColTransNo.getCellData(pnSelectMaster), true), psFormName)) {
+                if (!isJSONSuccess(poAppController.searchTransaction(tblColTransNo.getCellData(pnSelectMaster), true, true), psFormName)) {
 //                    ShowMessageFX.Information("Failed to add detail", psFormName, null);
                     return;
                 }
