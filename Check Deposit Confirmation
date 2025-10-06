@@ -1,0 +1,32 @@
+Oct 06, 2025 12:26:28 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Deposit Confirmation :null
+Oct 06, 2025 12:26:28 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Deposit Confirmation : Success on Check Deposit Confirmation
+Oct 06, 2025 12:26:30 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Deposit Confirmation :No record loaded.
+Oct 06, 2025 12:26:32 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Deposit Confirmation :null
+Oct 06, 2025 12:26:32 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Deposit Confirmation : Success on Initialize : Load of Transaction List
+Oct 06, 2025 12:26:33 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Deposit Confirmation :No record loaded.
+Oct 06, 2025 12:26:35 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Deposit Confirmation :No record loaded.
+Oct 06, 2025 12:26:39 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Deposit Confirmation :No record loaded.
+Oct 06, 2025 12:44:22 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Deposit Confirmation :null
+Oct 06, 2025 12:44:22 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Deposit Confirmation : Success on Check Deposit Confirmation
+Oct 06, 2025 12:44:26 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Deposit Confirmation :null
+Oct 06, 2025 12:44:26 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Deposit Confirmation : Success on Initialize : Load of Transaction List
+Oct 06, 2025 12:44:27 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Deposit Confirmation :null
+Oct 06, 2025 12:44:27 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Deposit Confirmation : Success on Check Deposit Confirmation
+Oct 06, 2025 12:44:28 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Deposit Confirmation :null
+Oct 06, 2025 12:44:28 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Deposit Confirmation : Success on Check Deposit Confirmation
