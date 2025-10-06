@@ -287,7 +287,7 @@ public class PurchaseOrder_ApprovalMPController implements Initializable, Screen
                 tfQOH.setText(CustomCommonUtil.setDecimalValueToIntegerFormat(lnQOH));
                 tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).getUnitPrice(), true));
                 tfRequestQuantity.setText(CustomCommonUtil.setDecimalValueToIntegerFormat(lnRequestQuantity));
-                tfOrderQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).getQuantity()));
+                tfOrderQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).getQuantity().intValue()));
             }
         } catch (GuanzonException | SQLException ex) {
             Logger.getLogger(PurchaseOrder_ApprovalMPController.class.getName()).log(Level.SEVERE, null, ex);

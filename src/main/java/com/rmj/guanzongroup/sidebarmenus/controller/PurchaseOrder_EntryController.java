@@ -346,7 +346,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                 tfQOH.setText(CustomCommonUtil.setDecimalValueToIntegerFormat(lnQOH));
                 tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).getUnitPrice(), true));
                 tfRequestQuantity.setText(CustomCommonUtil.setDecimalValueToIntegerFormat(lnRequestQuantity));
-                tfOrderQuantity.setText(String.valueOf(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).getQuantity()));
+                tfOrderQuantity.setText(String.valueOf(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).getQuantity().intValue()));
             }
         } catch (GuanzonException | SQLException ex) {
             Logger.getLogger(PurchaseOrder_EntryController.class.getName()).log(Level.SEVERE, null, ex);

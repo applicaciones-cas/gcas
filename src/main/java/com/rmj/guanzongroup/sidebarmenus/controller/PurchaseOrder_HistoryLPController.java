@@ -265,7 +265,7 @@ public class PurchaseOrder_HistoryLPController implements Initializable, ScreenI
                 tfQOH.setText(CustomCommonUtil.setDecimalValueToIntegerFormat(lnQOH));
                 tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).getUnitPrice(), true));
                 tfRequestQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(lnRequestQuantity));
-                tfOrderQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).getQuantity()));
+                tfOrderQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).getQuantity().doubleValue()));
             }
         } catch (GuanzonException | SQLException ex) {
             Logger.getLogger(PurchaseOrder_EntryController.class.getName()).log(Level.SEVERE, null, ex);
