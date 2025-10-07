@@ -239,32 +239,14 @@ public class CustomCommonUtil {
      * }</pre>
      */
     public static void inputDecimalOnly(TextField... foTxtFields) {
-        Pattern pattern = Pattern.compile("\\d*(\\.\\d*)?");
+        Pattern pattern = Pattern.compile("[0-9,.]*");
         for (TextField txtField : foTxtFields) {
             if (txtField != null) {
-                txtField.setTextFormatter(new TextFormatter<>(change -> {
-                    String newText = change.getControlNewText();
-
-                    // Allow empty input
-                    if (newText.isEmpty()) {
-                        return change;
-                    }
-
-                    // Reject if contains a comma
-                    if (newText.contains(",")) {
-                        return null;
-                    }
-
-                    // Check pattern match (only digits and one dot allowed)
-                    if (!pattern.matcher(newText).matches()) {
-                        return null;
-                    }
-
-                    return change;
-                }));
+                txtField.setTextFormatter(new TextFormaterUtil(pattern));
             }
         }
     }
+
 
     /**
      * @param foTxtFields The {@link TextField} to apply the behavior to.
