@@ -681,7 +681,8 @@ public class CheckTransfer_EntryController implements Initializable, ScreenInter
                     return new SimpleStringProperty(String.valueOf(loModel.getValue().getCheckNo()));
                 });
                 tblColCheckAmount.setCellValueFactory(loModel -> {
-                    return new SimpleStringProperty(String.valueOf(loModel.getValue().getAmount()));
+                    return new SimpleStringProperty(CommonUtils.NumberFormat(loModel.getValue().getAmount(), "###,##0.0000"));
+
                 });
 
                 overlay.setVisible(false);
@@ -721,7 +722,7 @@ public class CheckTransfer_EntryController implements Initializable, ScreenInter
             tfDestination.setText(poAppController.getMaster().BranchDestination().getBranchName());
             tfDepartment.setText(poAppController.getMaster().Department().getDescription());
             taRemarks.setText(String.valueOf(poAppController.getMaster().getRemarks()));
-            tfTotal.setText(String.valueOf(poAppController.getMaster().getTransactionTotal()));
+            tfTotal.setText(CommonUtils.NumberFormat(poAppController.getMaster().getTransactionTotal(), "###,##0.0000"));
             tfDepartment.setDisable(!poAppController.getMaster().BranchDestination().isMainOffice() || !poAppController.getMaster().BranchDestination().isWarehouse());
         } catch (SQLException | GuanzonException e) {
             poLogWrapper.severe(psFormName, e.getMessage());
@@ -751,7 +752,7 @@ public class CheckTransfer_EntryController implements Initializable, ScreenInter
             lnTotal = lnTotal + poAppController.getDetail(lnCtr).CheckPayment().getAmount();
         }
         poAppController.getMaster().setTransactionTotal(lnTotal);
-        tfTotal.setText(String.valueOf(poAppController.getMaster().getTransactionTotal()));
+        tfTotal.setText(CommonUtils.NumberFormat(poAppController.getMaster().getTransactionTotal(), "###,##0.0000"));
     }
 
     private void loadRetrieveFilter() throws SQLException, GuanzonException, CloneNotSupportedException {
@@ -922,7 +923,7 @@ public class CheckTransfer_EntryController implements Initializable, ScreenInter
 
             tblColDetailCheckAmount.setCellValueFactory((loModel) -> {
                 try {
-                    return new SimpleStringProperty(String.valueOf(loModel.getValue().CheckPayment().getAmount()));
+                    return new SimpleStringProperty(CommonUtils.NumberFormat(loModel.getValue().CheckPayment().getAmount(), "###,##0.0000"));
                 } catch (SQLException | GuanzonException e) {
                     poLogWrapper.severe(psFormName, e.getMessage());
                     return new SimpleStringProperty("");
