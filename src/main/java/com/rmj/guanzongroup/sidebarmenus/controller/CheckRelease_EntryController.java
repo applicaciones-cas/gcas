@@ -79,11 +79,11 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
     private AnchorPane apMainAnchor, apMaster, apDetail, apCheckDettail, apTransaction;
     
     @FXML
-    Label lblStatus;
+    Label lblStatus, lblSource;
     
     @FXML
     private TextField tfSearchReceived, tfSearchTransNo, tfTransNo, tfReceivedBy, tfTotal, tfSearchCheckRef, tfPayee, tfParticular,
-            tfCheckAmt, tfNote, tfSearchPayee, tfSearchCheck;
+            tfCheckAmt, tfNote, tfSearchPayee, tfSearchCheck, tfCheckNo;
     
     @FXML
     private TextArea taRemarks;
@@ -98,19 +98,20 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
     private TableView<Model_Check_Payments> tblViewMaster;
     
     @FXML
-    private TableView<Model_Check_Release_Detail> tblViewDetails;
+    private TableView<Model_Check_Payments> tblViewDetails;
     
     @FXML
     private TableColumn<Model_Check_Payments, String> tblColNo, tblColTransNo, tblColTransDate, tblColCheckNo, tblColCheckAmt;
     
     @FXML
-    private TableColumn<Model_Check_Release_Detail, String> tblColDetailNo, tblColDetailReference, tblColDetailPayee, tblColDetailParticular, tblColDetailCheckDt, tblColDetailCheckNo, tblColDetailAmt;
+    private TableColumn<Model_Check_Payments, String> tblColDetailNo, tblColDetailReference, tblColDetailPayee, tblColDetailParticular, tblColDetailCheckDt, tblColDetailCheckNo, tblColDetailAmt;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         try {
             poLogWrapper = new LogWrapper(psFormName, psFormName);
             poAppController = new CheckController(poApp, poLogWrapper).CheckRelease();
+            
             poAppController.setTransactionStatus(CheckReleaseStatus.OPEN);
 
             //initlalize and validate transaction objects from class controller
@@ -126,11 +127,13 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
                 poAppController.setIndustryID(psIndustryID);
                 
                 System.err.println("Initialize value : Industry >" + psIndustryID);
+                btnNew.fire();
 
             });
             initControlEvents();
+            InitCheckPayments();
         } catch (SQLException | GuanzonException e) {
-            Logger.getLogger(CheckDeposit_EntryController.class.getName()).log(Level.SEVERE, null, e);
+            Logger.getLogger(CheckRelease_EntryController.class.getName()).log(Level.SEVERE, null, e);
             poLogWrapper.severe(psFormName + " :" + e.getMessage());
         }
     }
@@ -163,10 +166,12 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
 
         if (e.getClickCount() == 1 && !e.isConsumed()) {
             e.consume();
-            if (!isJSONSuccess(poAppController.SearchCheckTransaction(tblColTransNo.getCellData(pnSelectMaster), true, true), psFormName)) {
+            
+            //set entry no default value by counting list item from details
+            if (!isJSONSuccess(poAppController.LoadCheckTransaction(tblColTransNo.getCellData(pnSelectMaster), laCheckList.size() <= 0 ? 1 : laCheckList.size() + 1), psFormName)) {
                 return;
             }
-
+            getLoadedTransaction();
         }
         return;
     }
@@ -174,6 +179,16 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
     @FXML
     void ontblDetailClicked(MouseEvent e) {
         
+        pnTransactionDetail = tblViewDetails.getSelectionModel().getSelectedIndex();
+        if (pnTransactionDetail < 0) {
+            return;
+        }
+        
+        if (e.getClickCount() == 1 && !e.isConsumed()) {
+            e.consume();
+            
+            InitCheckDetail();
+        }
     }
     
     @FXML
@@ -227,6 +242,14 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
                             LoadCheckPayments();
                             break;
                     }
+                case "btnNew":
+                    if (!isJSONSuccess(poAppController.NewTransaction(), "Initialize New Transaction")) {
+                        return;
+                    }
+                    clearAllInputs();
+                    getLoadedTransaction();
+                    pnEditMode = poAppController.getEditMode();
+                    break;
                     
             }
         }catch(Exception e){
@@ -437,13 +460,43 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
     
     private void InitTransactionMaster(){
         
-        lblStatus.setText(CheckReleaseStatus.STATUS.get(Integer.parseInt(poAppController.GetMaster().getTransactionStatus())) == null ? "STATUS"
-                    : CheckReleaseStatus.STATUS.get(Integer.parseInt(poAppController.GetMaster().getTransactionStatus())));
-        dpTransactionDate.setValue(ParseDate((Date) poAppController.GetMaster().getTransactionDate()));
-        tfTransNo.setText(poAppController.GetMaster().getTransactionNo());
-        tfReceivedBy.setText(poAppController.GetMaster().getReceivedBy());
-        taRemarks.setText(poAppController.GetMaster().getRemarks());
-        tfTotal.setText((String.valueOf(poAppController.GetMaster().getTransactionTotal())));
+        try {
+            lblSource.setText(poAppController.GetMaster().Industry().getDescription() == null ? "" : poAppController.GetMaster().Industry().getDescription());
+            System.out.print("THIS IS THE STATUS " + poAppController.GetMaster().GetStatus());
+        
+//        lblStatus.setText(CheckReleaseStatus.STATUS.get(Integer.parseInt(poAppController.GetMaster().getTransactionStatus())) == null ? "STATUS"
+//                    : CheckReleaseStatus.STATUS.get(Integer.parseInt(poAppController.GetMaster().getTransactionStatus())));
+//        dpTransactionDate.setValue(ParseDate(poAppController.GetMaster().getTransactionDate()));
+//        tfTransNo.setText(poAppController.GetMaster().getTransactionNo());
+//        tfReceivedBy.setText(poAppController.GetMaster().getReceivedBy());
+//        taRemarks.setText(poAppController.GetMaster().getRemarks());
+//        tfTotal.setText((String.valueOf(poAppController.GetMaster().getTransactionTotal())));
+        } catch (SQLException ex) {
+            Logger.getLogger(CheckRelease_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (GuanzonException ex) {
+            Logger.getLogger(CheckRelease_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    private void InitCheckDetail(){
+        
+        try{
+            if(pnTransactionDetail < 0)  return;
+                    
+            Model_Check_Payments loCheck = poAppController.getCheckDetail(pnTransactionDetail);
+        
+            tfSearchCheckRef.setText(loCheck.getTransactionNo());
+            tfPayee.setText(loCheck.Payee().getPayeeName());
+            tfParticular.setText(loCheck.Banks().getBankName());
+            dpCheckDate.setValue(ParseDate(loCheck.getCheckDate()));
+            tfCheckNo.setText(loCheck.getCheckNo());
+            tfCheckAmt.setText(String.valueOf(loCheck.getAmount()));
+            tfNote.setText(loCheck.getRemarks());
+            
+        }catch(GuanzonException | SQLException e){
+            Logger.getLogger(CheckRelease_EntryController.class.getName()).log(Level.SEVERE, null, e);
+            poLogWrapper.severe(psFormName + " :" + e.getMessage());
+        }
     }
     
     private void LoadCheckPayments(){
@@ -523,7 +576,7 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
                 pi.setVisible(false);
                 Throwable ex = getException();
                 Logger
-                        .getLogger(DeliverySchedule_EntryController.class
+                        .getLogger(CheckRelease_EntryController.class
                                 .getName()).log(Level.SEVERE, null, ex);
                 poLogWrapper.severe(psFormName + " : " + ex.getMessage());
             }
@@ -545,16 +598,16 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
         if(laCheckList == null){
             
             laCheckList = FXCollections.observableArrayList();
-            tblViewMaster.setItems(laCheckList);
+            tblViewDetails.setItems(laCheckList);
 
-            tblViewMaster.setStyle("-fx-alignment: CENTER-RIGHT; -fx-padding: 0 5 0 0;");
+            tblViewDetails.setStyle("-fx-alignment: CENTER-RIGHT; -fx-padding: 0 5 0 0;");
 
-            tblColNo.setCellValueFactory((loModel) -> {
-                int index = tblViewMaster.getItems().indexOf(loModel.getValue()) + 1;
+            tblColDetailNo.setCellValueFactory((loModel) -> {
+                int index = tblViewDetails.getItems().indexOf(loModel.getValue()) + 1;
                 return new SimpleStringProperty(String.valueOf(index));
             });
 
-            tblColTransNo.setCellValueFactory((loModel) -> {
+            tblColDetailReference.setCellValueFactory((loModel) -> {
                 try{
                     return new SimpleStringProperty(loModel.getValue().getTransactionNo());
                 }catch(Exception e){
@@ -563,16 +616,34 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
                 }
             });
 
-            tblColTransDate.setCellValueFactory((loModel) -> {
+            tblColDetailPayee.setCellValueFactory((loModel) -> {
                 try{
-                    return new SimpleStringProperty(String.valueOf(loModel.getValue().getTransactionDate()));
+                    return new SimpleStringProperty(loModel.getValue().Payee().getPayeeName());
                 }catch(Exception e){
                     poLogWrapper.severe(psFormName, e.getMessage());
                     return new SimpleStringProperty("");
                 }
             });
 
-            tblColCheckNo.setCellValueFactory((loModel) -> {
+            tblColDetailParticular.setCellValueFactory((loModel) -> {
+                try{
+                    return new SimpleStringProperty(loModel.getValue().Banks().getBankName());
+                }catch(Exception e){
+                    poLogWrapper.severe(psFormName, e.getMessage());
+                    return new SimpleStringProperty("");
+                }
+            });
+
+            tblColDetailCheckDt.setCellValueFactory((loModel) -> {
+                try{
+                    return new SimpleStringProperty(String.valueOf(loModel.getValue().getCheckDate()));
+                }catch(Exception e){
+                    poLogWrapper.severe(psFormName, e.getMessage());
+                    return new SimpleStringProperty("");
+                }
+            });
+            
+            tblColDetailCheckNo.setCellValueFactory((loModel) -> {
                 try{
                     return new SimpleStringProperty(loModel.getValue().getCheckNo());
                 }catch(Exception e){
@@ -580,8 +651,8 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
                     return new SimpleStringProperty("");
                 }
             });
-
-            tblColCheckAmt.setCellValueFactory((loModel) -> {
+            
+            tblColDetailAmt.setCellValueFactory((loModel) -> {
                 try{
                     return new SimpleStringProperty(String.valueOf(loModel.getValue().getAmount()));
                 }catch(Exception e){
@@ -596,8 +667,48 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
     private void reloadTableDetail(){
         
         //load check payments
-        laCheckList.setAll(poAppController.getCheckPaymentList());
+        laCheckList.setAll(poAppController.getDetailCheckList());
   
+        // Restore or select last row
+        int indexToSelect = (pnTransactionDetail >= 1 && pnTransactionDetail < laCheckList.size())
+                ? pnTransactionDetail - 1
+                : laCheckList.size() - 1;
+
+        tblViewDetails.getSelectionModel().select(indexToSelect);
+
+        pnTransactionDetail = tblViewDetails.getSelectionModel().getSelectedIndex(); // Not focusedIndex
+        tblViewDetails.refresh();
+        
+    }
+    
+    private void getLoadedTransaction(){
+        clearAllInputs();
+        InitTransactionMaster();
+        reloadTableDetail();
+        InitCheckDetail();
+    }
+    
+    private boolean isJSONSuccess(JSONObject loJSON, String fsModule) {
+        String result = (String) loJSON.get("result");
+        if ("error".equals(result)) {
+            String message = (String) loJSON.get("message");
+            poLogWrapper.severe(psFormName + " :" + message);
+            Platform.runLater(() -> {
+                ShowMessageFX.Warning(null, psFormName, fsModule + ": " + message);
+            });
+            return false;
+        }
+        String message = (String) loJSON.get("message");
+
+        poLogWrapper.severe(psFormName + " :" + message);
+//        Platform.runLater(() -> {
+//            if (message != null) {
+//                ShowMessageFX.Information(null, psFormName, fsModule + ": " + message);
+//            }
+//        });
+        poLogWrapper.info(psFormName + " : Success on " + fsModule);
+        return true;
+
     }
     
     private List<Control> getAllSupportedControls() {
@@ -628,29 +739,6 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
         }
         Date loDate = new java.util.Date(date.getTime());
         return loDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-    }
-    
-    private boolean isJSONSuccess(JSONObject loJSON, String fsModule) {
-        String result = (String) loJSON.get("result");
-        if ("error".equals(result)) {
-            String message = (String) loJSON.get("message");
-            poLogWrapper.severe(psFormName + " :" + message);
-            Platform.runLater(() -> {
-                ShowMessageFX.Warning(null, psFormName, fsModule + ": " + message);
-            });
-            return false;
-        }
-        String message = (String) loJSON.get("message");
-
-        poLogWrapper.severe(psFormName + " :" + message);
-        Platform.runLater(() -> {
-            if (message != null) {
-                ShowMessageFX.Information(null, psFormName, fsModule + ": " + message);
-            }
-        });
-        poLogWrapper.info(psFormName + " : Success on " + fsModule);
-        return true;
-
     }
     
     private StackPane getOverlayProgress(AnchorPane foAnchorPane) {

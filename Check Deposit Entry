@@ -1,0 +1,8 @@
+Oct 07, 2025 9:15:10 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Deposit Entry :null
+Oct 07, 2025 9:15:10 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Deposit Entry : Success on Check Deposit Entry
+Oct 07, 2025 9:15:11 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Deposit Entry :null
+Oct 07, 2025 9:15:11 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Deposit Entry : Success on Initialize New Transaction
