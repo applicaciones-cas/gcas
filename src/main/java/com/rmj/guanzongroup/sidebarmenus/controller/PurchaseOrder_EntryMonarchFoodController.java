@@ -735,9 +735,7 @@ public class PurchaseOrder_EntryMonarchFoodController implements Initializable, 
                     poPurchasingController.PurchaseOrder().Master().setReference(lsValue);
                     break;
                 case "tfDiscountRate":
-                    if (lsValue.isEmpty()) {
-                        lsValue = "0.00";
-                    }
+                    lsValue = JFXUtil.removeComma(lsValue);
                     poJSON = poPurchasingController.PurchaseOrder().setDiscountRate(lsValue);
                     if (!"success".equals((String) poJSON.get("result"))) {
                         ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
@@ -746,9 +744,7 @@ public class PurchaseOrder_EntryMonarchFoodController implements Initializable, 
                     tfNetAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getNetTotal(), true));
                     break;
                 case "tfDiscountAmount":
-                    if (lsValue.isEmpty()) {
-                        lsValue = "0.0000";
-                    }
+                    lsValue = JFXUtil.removeComma(lsValue);
                     poJSON = poPurchasingController.PurchaseOrder().setDiscountAmount(lsValue);
                     if (!"success".equals((String) poJSON.get("result"))) {
                         ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
@@ -757,9 +753,7 @@ public class PurchaseOrder_EntryMonarchFoodController implements Initializable, 
                     tfNetAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getNetTotal(), true));
                     break;
                 case "tfAdvancePRate":
-                    if (lsValue.isEmpty()) {
-                        lsValue = "0.00";
-                    }
+                    lsValue = JFXUtil.removeComma(lsValue);
                     poJSON = poPurchasingController.PurchaseOrder().setAdvancePaymentRate(lsValue);
                     if (!"success".equals((String) poJSON.get("result"))) {
                         ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
@@ -769,9 +763,7 @@ public class PurchaseOrder_EntryMonarchFoodController implements Initializable, 
                     tfNetAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getNetTotal(), true));
                     break;
                 case "tfAdvancePAmount":
-                    if (lsValue.isEmpty()) {
-                        lsValue = "0.0000";
-                    }
+                    lsValue = JFXUtil.removeComma(lsValue);
                     poJSON = poPurchasingController.PurchaseOrder().setAdvancePaymentAmount(lsValue);
                     if (!"success".equals((String) poJSON.get("result"))) {
                         ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
@@ -1084,8 +1076,8 @@ public class PurchaseOrder_EntryMonarchFoodController implements Initializable, 
     }
 
     private void initTextFieldPattern() {
-        CustomCommonUtil.inputDecimalOnly(tfDiscountRate, tfDiscountAmount, tfAdvancePRate,
-                tfAdvancePAmount, tfCost, tfOrderQuantity);
+        JFXUtil.inputDecimalOnly(tfDiscountRate, tfAdvancePRate);
+        JFXUtil.setCommaFormatter(tfCost, tfDiscountAmount, tfAdvancePAmount, tfOrderQuantity);
     }
 
     private void initDatePickerActions() {
