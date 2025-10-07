@@ -74,6 +74,7 @@ import org.guanzon.cas.purchasing.status.PurchaseOrderStatus;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
+import com.rmj.guanzongroup.sidebarmenus.utility.JFXUtil;
 
 /**
  * FXML Controller class
@@ -1485,19 +1486,9 @@ public class PurchaseOrder_EntrySPMCController implements Initializable, ScreenI
         } else {
             tblVwStockRequest.setEditable(false);
         }
-        // Set cell value factories
-        tblRowNo.setCellValueFactory(new PropertyValueFactory<>("index01"));
-        tblBranchName.setCellValueFactory(new PropertyValueFactory<>("index02"));
-        tblDate.setCellValueFactory(new PropertyValueFactory<>("index03"));
-        tblReferenceNo.setCellValueFactory(new PropertyValueFactory<>("index04"));
-        tblNoOfItems.setCellValueFactory(new PropertyValueFactory<>("index05"));
-
-        tblVwStockRequest.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
-            TableHeaderRow header = (TableHeaderRow) tblVwStockRequest.lookup("TableHeaderRow");
-            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-                header.setReordering(false);
-            });
-        });
+        JFXUtil.setColumnCenter(tblRowNo, tblDate, tblReferenceNo, tblNoOfItems);
+        JFXUtil.setColumnLeft(tblBranchName);
+        JFXUtil.setColumnsIndexAndDisableReordering(tblVwStockRequest);
         initTableHighlithers();
     }
 

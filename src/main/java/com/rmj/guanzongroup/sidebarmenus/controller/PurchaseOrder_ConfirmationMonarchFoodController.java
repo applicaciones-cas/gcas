@@ -69,6 +69,7 @@ import org.guanzon.cas.purchasing.status.PurchaseOrderStaticData;
 import org.guanzon.cas.purchasing.status.PurchaseOrderStatus;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
+import com.rmj.guanzongroup.sidebarmenus.utility.JFXUtil;
 
 /**
  * FXML Controller class
@@ -1129,17 +1130,9 @@ public class PurchaseOrder_ConfirmationMonarchFoodController implements Initiali
     }
 
     private void initTableMain() {
-        tblRowNo.setCellValueFactory(new PropertyValueFactory<>("index01"));
-        tblTransactionNo.setCellValueFactory(new PropertyValueFactory<>("index02"));
-        tblDate.setCellValueFactory(new PropertyValueFactory<>("index03"));
-        tblSupplier.setCellValueFactory(new PropertyValueFactory<>("index04"));
-
-        tblVwPurchaseOrder.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
-            TableHeaderRow header = (TableHeaderRow) tblVwPurchaseOrder.lookup("TableHeaderRow");
-            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-                header.setReordering(false);
-            });
-        });
+        JFXUtil.setColumnCenter(tblRowNo, tblDate, tblTransactionNo);
+        JFXUtil.setColumnLeft(tblSupplier);
+        JFXUtil.setColumnsIndexAndDisableReordering(tblVwPurchaseOrder);
         initTableHighlithers();
     }
 

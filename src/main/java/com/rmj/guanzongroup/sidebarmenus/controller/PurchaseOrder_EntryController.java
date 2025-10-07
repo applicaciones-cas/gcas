@@ -7,7 +7,6 @@ package com.rmj.guanzongroup.sidebarmenus.controller;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelPurchaseOrder;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelPurchaseOrderDetail;
 import com.rmj.guanzongroup.sidebarmenus.utility.CustomCommonUtil;
-import com.rmj.guanzongroup.sidebarmenus.utility.JFXUtil;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import java.net.URL;
 import java.sql.SQLException;
@@ -75,6 +74,7 @@ import org.guanzon.cas.purchasing.status.PurchaseOrderStatus;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
+import com.rmj.guanzongroup.sidebarmenus.utility.JFXUtil;
 
 /**
  * FXML Controller class
@@ -1496,7 +1496,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
         JFXUtil.setColumnCenter(tblRowNo, tblDate, tblReferenceNo, tblNoOfItems);
         JFXUtil.setColumnLeft(tblBranchName);
         JFXUtil.setColumnsIndexAndDisableReordering(tblVwStockRequest);
-        
+
         initTableHighlithers();
     }
 
