@@ -1040,9 +1040,9 @@ public class PurchaseOrder_ApprovalAppliancesController implements Initializable
                             for (int lnCntr = 0; lnCntr <= poPurchasingController.PurchaseOrder().getPOMasterCount() - 1; lnCntr++) {
                                 main_data.add(new ModelPurchaseOrder(
                                         String.valueOf(lnCntr + 1),
-                                        poPurchasingController.PurchaseOrder().POMaster(lnCntr).getTransactionNo(),
-                                        SQLUtil.dateFormat(poPurchasingController.PurchaseOrder().POMaster(lnCntr).getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE),
                                         poPurchasingController.PurchaseOrder().POMaster(lnCntr).Supplier().getCompanyName(),
+                                        SQLUtil.dateFormat(poPurchasingController.PurchaseOrder().POMaster(lnCntr).getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE),
+                                        poPurchasingController.PurchaseOrder().POMaster(lnCntr).getTransactionNo(),
                                         "",
                                         "",
                                         "",
@@ -1337,7 +1337,7 @@ public class PurchaseOrder_ApprovalAppliancesController implements Initializable
         if (event.getClickCount() == 2) {
             ModelPurchaseOrder loSelectedPurchaseOrder = (ModelPurchaseOrder) tblVwPurchaseOrder.getSelectionModel().getSelectedItem();
             if (loSelectedPurchaseOrder != null) {
-                String lsTransactionNo = loSelectedPurchaseOrder.getIndex02();
+                String lsTransactionNo = loSelectedPurchaseOrder.getIndex04();
                 try {
                     poJSON = poPurchasingController.PurchaseOrder().InitTransaction();
                     if ("success".equals((String) poJSON.get("result"))) {
