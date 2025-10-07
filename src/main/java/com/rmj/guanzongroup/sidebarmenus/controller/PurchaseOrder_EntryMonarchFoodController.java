@@ -1548,6 +1548,7 @@ public class PurchaseOrder_EntryMonarchFoodController implements Initializable, 
         loadingPane.setAlignment(Pos.CENTER);
         loadingPane.setStyle("-fx-background-color: transparent;");
 
+        detail_data.clear();
         tblVwOrderDetails.setPlaceholder(loadingPane);
         progressIndicator.setVisible(true);
 

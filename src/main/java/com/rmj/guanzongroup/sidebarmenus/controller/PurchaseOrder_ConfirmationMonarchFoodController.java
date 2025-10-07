@@ -1199,6 +1199,7 @@ public class PurchaseOrder_ConfirmationMonarchFoodController implements Initiali
         loadingPane.setAlignment(Pos.CENTER);
         loadingPane.setStyle("-fx-background-color: transparent;");
 
+        detail_data.clear();
         tblVwOrderDetails.setPlaceholder(loadingPane);
         progressIndicator.setVisible(true);
 
