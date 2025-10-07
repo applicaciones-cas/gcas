@@ -44,6 +44,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import org.guanzon.appdriver.agent.ShowMessageFX;
+import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRiderCAS;
 import org.guanzon.appdriver.base.LogWrapper;
 import org.guanzon.appdriver.constant.EditMode;
@@ -394,7 +395,7 @@ public class CheckTransfer_HistoryController implements Initializable, ScreenInt
             tfDestination.setText(poAppController.getMaster().BranchDestination().getBranchName());
             tfDepartment.setText(poAppController.getMaster().Department().getDescription());
             taRemarks.setText(String.valueOf(poAppController.getMaster().getRemarks()));
-            tfTotal.setText(String.valueOf(poAppController.getMaster().getTransactionTotal()));
+            tfTotal.setText(CommonUtils.NumberFormat(poAppController.getMaster().getTransactionTotal(), "###,##0.0000"));
 
         } catch (SQLException | GuanzonException e) {
             poLogWrapper.severe(psFormName, e.getMessage());
@@ -566,7 +567,7 @@ public class CheckTransfer_HistoryController implements Initializable, ScreenInt
 
             tblColDetailCheckAmount.setCellValueFactory((loModel) -> {
                 try {
-                    return new SimpleStringProperty(String.valueOf(loModel.getValue().CheckPayment().getAmount()));
+                    return new SimpleStringProperty(CommonUtils.NumberFormat(loModel.getValue().CheckPayment().getAmount(), "###,##0.0000"));
                 } catch (SQLException | GuanzonException e) {
                     poLogWrapper.severe(psFormName, e.getMessage());
                     return new SimpleStringProperty("");

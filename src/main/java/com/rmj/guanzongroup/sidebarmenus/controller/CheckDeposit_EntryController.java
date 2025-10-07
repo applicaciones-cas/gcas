@@ -703,7 +703,8 @@ public class CheckDeposit_EntryController implements Initializable, ScreenInterf
                     return new SimpleStringProperty(String.valueOf(loModel.getValue().getCheckNo()));
                 });
                 tblColCheckAmount.setCellValueFactory(loModel -> {
-                    return new SimpleStringProperty(String.valueOf(loModel.getValue().getAmount()));
+                    return new SimpleStringProperty(CommonUtils.NumberFormat(loModel.getValue().getAmount(), "###,##0.0000"));
+
                 });
 
                 overlay.setVisible(false);
@@ -745,7 +746,7 @@ public class CheckDeposit_EntryController implements Initializable, ScreenInterf
             tfBankAccountName.setText(poAppController.getMaster().BankAccount().getAccountName());
 
             taRemarks.setText(poAppController.getMaster().getRemarks());
-            tfTotal.setText(String.valueOf(poAppController.getMaster().getTransactionTotalDeposit()));
+            tfTotal.setText(CommonUtils.NumberFormat(poAppController.getMaster().getTransactionTotalDeposit(), "###,##0.0000"));
 
             loadRetrieveFilter();
         } catch (SQLException | GuanzonException | CloneNotSupportedException e) {
@@ -776,7 +777,8 @@ public class CheckDeposit_EntryController implements Initializable, ScreenInterf
             lnTotal = lnTotal + poAppController.getDetail(lnCtr).CheckPayment().getAmount();
         }
         poAppController.getMaster().setTransactionTotalDeposit(lnTotal);
-        tfTotal.setText(String.valueOf(poAppController.getMaster().getTransactionTotalDeposit()));
+        tfTotal.setText(CommonUtils.NumberFormat(poAppController.getMaster().getTransactionTotalDeposit(), "###,##0.0000"));
+
     }
 
     private void loadRetrieveFilter() throws SQLException, GuanzonException, CloneNotSupportedException {
@@ -949,7 +951,7 @@ public class CheckDeposit_EntryController implements Initializable, ScreenInterf
 
             tblColDetailCheckAmount.setCellValueFactory((loModel) -> {
                 try {
-                    return new SimpleStringProperty(String.valueOf(loModel.getValue().CheckPayment().getAmount()));
+                    return new SimpleStringProperty(CommonUtils.NumberFormat(loModel.getValue().CheckPayment().getAmount(), "###,##0.0000"));
                 } catch (SQLException | GuanzonException e) {
                     poLogWrapper.severe(psFormName, e.getMessage());
                     return new SimpleStringProperty("");

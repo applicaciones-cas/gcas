@@ -93,7 +93,7 @@ public class CheckTransfer_ConfirmationController implements Initializable, Scre
 
     @FXML
     private Button btnSearch, btnBrowse, btnUpdate, btnSave, btnCancel, btnPrint, btnApprove, btnVoid,
-            btnRetrieve, btnClose, btnReturn;
+            btnRetrieve, btnClose;
 
     @FXML
     private TextArea taRemarks;
@@ -332,27 +332,27 @@ public class CheckTransfer_ConfirmationController implements Initializable, Scre
                             break;
                     }
                     break;
-                case "btnReturn":
-                    if (tfTransactionNo.getText().isEmpty()) {
-                        ShowMessageFX.Information("Please load transaction before proceeding..", null, psFormName);
-                        return;
-                    }
-
-                    if (!poAppController.getMaster().getTransactionStatus().equalsIgnoreCase(CheckTransferStatus.OPEN)) {
-                        ShowMessageFX.Information("Status was already " + CheckTransferStatus.STATUS.get(Integer.parseInt(poAppController.getMaster().getTransactionStatus())).toLowerCase(), null,
-                                "Check Transfer Approval");
-                        return;
-                    }
-
-                    if (ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to return transaction?") == true) {
-                        if (!isJSONSuccess(poAppController.ReturnTransaction(), "Initialize Close Transaction")) {
-                            return;
-                        }
-                        getLoadedTransaction();
-                        pnEditMode = poAppController.getEditMode();
-                        break;
-                    }
-                    break;
+//                case "btnReturn":
+//                    if (tfTransactionNo.getText().isEmpty()) {
+//                        ShowMessageFX.Information("Please load transaction before proceeding..", null, psFormName);
+//                        return;
+//                    }
+//
+//                    if (!poAppController.getMaster().getTransactionStatus().equalsIgnoreCase(CheckTransferStatus.OPEN)) {
+//                        ShowMessageFX.Information("Status was already " + CheckTransferStatus.STATUS.get(Integer.parseInt(poAppController.getMaster().getTransactionStatus())).toLowerCase(), null,
+//                                "Check Transfer Approval");
+//                        return;
+//                    }
+//
+//                    if (ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to return transaction?") == true) {
+//                        if (!isJSONSuccess(poAppController.ReturnTransaction(), "Initialize Close Transaction")) {
+//                            return;
+//                        }
+//                        getLoadedTransaction();
+//                        pnEditMode = poAppController.getEditMode();
+//                        break;
+//                    }
+//                    break;
                 case "btnApprove":
                     if (tfTransactionNo.getText().isEmpty()) {
                         ShowMessageFX.Information("Please load transaction before proceeding..", null,
@@ -724,7 +724,7 @@ public class CheckTransfer_ConfirmationController implements Initializable, Scre
             tfDestination.setText(poAppController.getMaster().BranchDestination().getBranchName());
             tfDepartment.setText(poAppController.getMaster().Department().getDescription());
             taRemarks.setText(String.valueOf(poAppController.getMaster().getRemarks()));
-            tfTotal.setText(String.valueOf(poAppController.getMaster().getTransactionTotal()));
+            tfTotal.setText(CommonUtils.NumberFormat(poAppController.getMaster().getTransactionTotal(), "###,##0.0000"));
             tfDepartment.setDisable(!poAppController.getMaster().BranchDestination().isMainOffice() || !poAppController.getMaster().BranchDestination().isWarehouse());
 
             if (poAppController.getMaster().getTransactionStatus().equals(CheckTransferStatus.CONFIRMED)) {
@@ -760,7 +760,7 @@ public class CheckTransfer_ConfirmationController implements Initializable, Scre
             lnTotal = lnTotal + poAppController.getDetail(lnCtr).CheckPayment().getAmount();
         }
         poAppController.getMaster().setTransactionTotal(lnTotal);
-        tfTotal.setText(String.valueOf(poAppController.getMaster().getTransactionTotal()));
+        tfTotal.setText(CommonUtils.NumberFormat(poAppController.getMaster().getTransactionTotal(), "###,##0.0000"));
     }
 
     private void loadTransactionMasterList(String fsValue, String fsColumn) {
@@ -901,7 +901,7 @@ public class CheckTransfer_ConfirmationController implements Initializable, Scre
 
         // Show-only based on mode
         initButtonControls(lbShow, "btnSearch", "btnSave", "btnCancel");
-        initButtonControls(!lbShow, "btnBrowse", "btnUpdate", "btnPrint", "btnApprove", "btnVoid", "btnReturn");
+        initButtonControls(!lbShow, "btnBrowse", "btnUpdate", "btnPrint", "btnApprove", "btnVoid");
 
         apMaster.setDisable(!lbShow);
         apDetail.setDisable(!lbShow);
@@ -991,7 +991,7 @@ public class CheckTransfer_ConfirmationController implements Initializable, Scre
 
             tblColDetailCheckAmount.setCellValueFactory((loModel) -> {
                 try {
-                    return new SimpleStringProperty(String.valueOf(loModel.getValue().CheckPayment().getAmount()));
+                    return new SimpleStringProperty(CommonUtils.NumberFormat(loModel.getValue().CheckPayment().getAmount(), "###,##0.0000"));
                 } catch (SQLException | GuanzonException e) {
                     poLogWrapper.severe(psFormName, e.getMessage());
                     return new SimpleStringProperty("");
@@ -1021,7 +1021,6 @@ public class CheckTransfer_ConfirmationController implements Initializable, Scre
         reloadTableDetail();
         loadSelectedTransactionDetail(pnTransactionDetail);
     }
-
 
     boolean isJSONSuccess(JSONObject loJSON, String fsModule) {
         String result = (String) loJSON.get("result");

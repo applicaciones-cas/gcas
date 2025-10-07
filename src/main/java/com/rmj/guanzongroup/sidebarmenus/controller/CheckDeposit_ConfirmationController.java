@@ -95,7 +95,7 @@ public class CheckDeposit_ConfirmationController implements Initializable, Scree
     private Label lblSource, lblStatus;
 
     @FXML
-    private Button btnSearch, btnBrowse, btnReturn, btnUpdate, btnSave, btnCancel, btnPrint, btnApprove, btnVoid,
+    private Button btnSearch, btnBrowse, btnUpdate, btnSave, btnCancel, btnPrint, btnApprove, btnVoid,
             btnRetrieve, btnClose;
 
     @FXML
@@ -426,27 +426,27 @@ public class CheckDeposit_ConfirmationController implements Initializable, Scree
                     getLoadedTransaction();
                     pnEditMode = poAppController.getEditMode();
                     break;
-                case "btnReturn":
-                    if (tfTransactionNo.getText().isEmpty()) {
-                        ShowMessageFX.Information("Please load transaction before proceeding..", null, psFormName);
-                        return;
-                    }
-
-                    if (!poAppController.getMaster().getTransactionStatus().equalsIgnoreCase(CheckTransferStatus.OPEN)) {
-                        ShowMessageFX.Information("Status was already " + CheckTransferStatus.STATUS.get(Integer.parseInt(poAppController.getMaster().getTransactionStatus())).toLowerCase(), null,
-                                "Check Deposit Approval");
-                        return;
-                    }
-
-                    if (ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to return transaction?") == true) {
-                        if (!isJSONSuccess(poAppController.ReturnTransaction(), "Initialize Close Transaction")) {
-                            return;
-                        }
-                        getLoadedTransaction();
-                        pnEditMode = poAppController.getEditMode();
-                        break;
-                    }
-                    break;
+//                case "btnReturn":
+//                    if (tfTransactionNo.getText().isEmpty()) {
+//                        ShowMessageFX.Information("Please load transaction before proceeding..", null, psFormName);
+//                        return;
+//                    }
+//
+//                    if (!poAppController.getMaster().getTransactionStatus().equalsIgnoreCase(CheckTransferStatus.OPEN)) {
+//                        ShowMessageFX.Information("Status was already " + CheckTransferStatus.STATUS.get(Integer.parseInt(poAppController.getMaster().getTransactionStatus())).toLowerCase(), null,
+//                                "Check Deposit Approval");
+//                        return;
+//                    }
+//
+//                    if (ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to return transaction?") == true) {
+//                        if (!isJSONSuccess(poAppController.ReturnTransaction(), "Initialize Close Transaction")) {
+//                            return;
+//                        }
+//                        getLoadedTransaction();
+//                        pnEditMode = poAppController.getEditMode();
+//                        break;
+//                    }
+//                    break;
                 case "btnSave":
                     if (tfTransactionNo.getText().isEmpty()) {
                         ShowMessageFX.Information("Please load transaction before proceeding..", psFormName, "");
@@ -831,7 +831,7 @@ public class CheckDeposit_ConfirmationController implements Initializable, Scree
             tfBankAccountNo.setText(poAppController.getMaster().BankAccount().getAccountNo());
             tfBankAccountName.setText(poAppController.getMaster().BankAccount().getAccountName());
             taRemarks.setText(String.valueOf(poAppController.getMaster().getRemarks()));
-            tfTotal.setText(String.valueOf(poAppController.getMaster().getTransactionTotalDeposit()));
+            tfTotal.setText(CommonUtils.NumberFormat(poAppController.getMaster().getTransactionTotalDeposit(), "###,##0.0000"));
 
             if (poAppController.getMaster().getTransactionStatus().equals(CheckTransferStatus.CONFIRMED)) {
                 btnVoid.setText("Cancel");
@@ -869,7 +869,8 @@ public class CheckDeposit_ConfirmationController implements Initializable, Scree
             lnTotal = lnTotal + poAppController.getDetail(lnCtr).CheckPayment().getAmount();
         }
         poAppController.getMaster().setTransactionTotalDeposit(lnTotal);
-        tfTotal.setText(String.valueOf(poAppController.getMaster().getTransactionTotalDeposit()));
+        tfTotal.setText(CommonUtils.NumberFormat(poAppController.getMaster().getTransactionTotalDeposit(), "###,##0.0000"));
+
     }
 
     private void initControlEvents() {
@@ -941,7 +942,7 @@ public class CheckDeposit_ConfirmationController implements Initializable, Scree
 
         // Show-only based on mode
         initButtonControls(lbShow, "btnSearch", "btnSave", "btnCancel");
-        initButtonControls(!lbShow, "btnBrowse", "btnApprove", "btnVoid", "btnPrint", "btnReturn", "btnUpdate");
+        initButtonControls(!lbShow, "btnBrowse", "btnApprove", "btnVoid", "btnPrint", "btnUpdate");
 
         apMaster.setDisable(!lbShow);
         apDetail.setDisable(!lbShow);
@@ -1031,7 +1032,7 @@ public class CheckDeposit_ConfirmationController implements Initializable, Scree
 
             tblColDetailCheckAmount.setCellValueFactory((loModel) -> {
                 try {
-                    return new SimpleStringProperty(String.valueOf(loModel.getValue().CheckPayment().getAmount()));
+                    return new SimpleStringProperty(CommonUtils.NumberFormat(loModel.getValue().CheckPayment().getAmount(), "###,##0.0000"));
                 } catch (SQLException | GuanzonException e) {
                     poLogWrapper.severe(psFormName, e.getMessage());
                     return new SimpleStringProperty("");
