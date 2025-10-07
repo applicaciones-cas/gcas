@@ -1022,7 +1022,6 @@ public class CheckTransfer_ConfirmationController implements Initializable, Scre
         loadSelectedTransactionDetail(pnTransactionDetail);
     }
 
-    pprivate
 
     boolean isJSONSuccess(JSONObject loJSON, String fsModule) {
         String result = (String) loJSON.get("result");

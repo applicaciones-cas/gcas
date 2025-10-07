@@ -631,7 +631,6 @@ public class CheckTransfer_HistoryController implements Initializable, ScreenInt
         poLogWrapper.warning(psFormName + " : Unrecognized result: " + result);
         return false;
     }
-    }
 
     private LocalDate ParseDate(Date date) {
         if (date == null) {
