@@ -36,14 +36,17 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import static javafx.scene.input.KeyCode.DOWN;
 import static javafx.scene.input.KeyCode.ENTER;
 import static javafx.scene.input.KeyCode.F3;
 import static javafx.scene.input.KeyCode.TAB;
+import static javafx.scene.input.KeyCode.UP;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import org.guanzon.appdriver.agent.ShowMessageFX;
+import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRiderCAS;
 import org.guanzon.appdriver.base.LogWrapper;
 import org.guanzon.appdriver.constant.EditMode;
@@ -397,7 +400,7 @@ public class CheckTransfer_ConfirmationController implements Initializable, Scre
                 case "btnPrint":
 
                     if (poAppController.getMaster().getTransactionStatus().equalsIgnoreCase(CheckTransferStatus.OPEN)) {
-                        if (ShowMessageFX.OkayCancel(null, psFormName, "Do you want to close the transaction ?") == true) {
+                        if (ShowMessageFX.OkayCancel(null, psFormName, "Do you want to confirm the transaction ?") == true) {
                             if (!isJSONSuccess(poAppController.CloseTransaction(),
                                     "Initialize Close Transaction")) {
                                 return;
@@ -655,6 +658,60 @@ public class CheckTransfer_ConfirmationController implements Initializable, Scre
             poLogWrapper.severe(psFormName + " :" + ex.getMessage());
         }
     }
+    private final ChangeListener<? super Boolean> txtArea_Focus = (o, ov, nv) -> {
+        TextArea loTextField = (TextArea) ((ReadOnlyBooleanPropertyBase) o).getBean();
+        String lsTextFieldID = loTextField.getId();
+        String lsValue = loTextField.getText();
+        if (lsValue == null) {
+            return;
+        }
+
+        if (!nv) {
+            /*Lost Focus*/
+            switch (lsTextFieldID) {
+
+                case "taRemarks":
+                    poAppController.getMaster().setRemarks(lsValue);
+                    loadTransactionMaster();
+
+                    break;
+
+            }
+        } else {
+            loTextField.selectAll();
+        }
+
+    };
+
+    private void txtArea_KeyPressed(KeyEvent event) {
+        TextArea loTxtField = (TextArea) event.getSource();
+        String txtFieldID = ((TextArea) event.getSource()).getId();
+        String lsValue = "";
+        if (loTxtField.getText() == null) {
+            lsValue = "";
+        } else {
+            lsValue = loTxtField.getText();
+        }
+        try {
+            if (null != event.getCode()) {
+                switch (event.getCode()) {
+                    case TAB:
+                    case ENTER:
+                    case UP:
+                        CommonUtils.SetPreviousFocus((TextField) event.getSource());
+                        return;
+                    case DOWN:
+                        CommonUtils.SetNextFocus(loTxtField);
+                        return;
+
+                }
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(DeliverySchedule_EntryController.class
+                    .getName()).log(Level.SEVERE, null, ex);
+            poLogWrapper.severe(psFormName + " :" + ex.getMessage());
+        }
+    }
 
     private void loadTransactionMaster() {
         try {
@@ -786,6 +843,11 @@ public class CheckTransfer_ConfirmationController implements Initializable, Scre
                 controllerFocusTracker(loControlField);
                 loControlField.setOnKeyPressed(this::txtField_KeyPressed);
                 loControlField.focusedProperty().addListener(txtField_Focus);
+            } else if (loControl instanceof TextArea) {
+                TextArea loControlField = (TextArea) loControl;
+                controllerFocusTracker(loControlField);
+                loControlField.setOnKeyPressed(this::txtArea_KeyPressed);
+                loControlField.focusedProperty().addListener(txtArea_Focus);
             } else if (loControl instanceof TableView) {
                 TableView loControlField = (TableView) loControl;
                 controllerFocusTracker(loControlField);
@@ -960,29 +1022,41 @@ public class CheckTransfer_ConfirmationController implements Initializable, Scre
         loadSelectedTransactionDetail(pnTransactionDetail);
     }
 
-    private boolean isJSONSuccess(JSONObject loJSON, String fsModule) {
+    pprivate
+
+    boolean isJSONSuccess(JSONObject loJSON, String fsModule) {
         String result = (String) loJSON.get("result");
-        if ("error".equals(result)) {
-            String message = (String) loJSON.get("message");
-            poLogWrapper.severe(psFormName + " :" + message);
-//            Platform.runLater(() -> {
-            if (message != null) {
-                ShowMessageFX.Warning(null, psFormName, fsModule + ": " + message);
-//            });
+        String message = (String) loJSON.get("message");
+
+        System.out.println("isJSONSuccess called. Thread: " + Thread.currentThread().getName());
+
+        if ("error".equalsIgnoreCase(result)) {
+            poLogWrapper.severe(psFormName + " : " + message);
+            if (message != null && !message.trim().isEmpty()) {
+                if (Platform.isFxApplicationThread()) {
+                    ShowMessageFX.Warning(null, psFormName, fsModule + ": " + message);
+                } else {
+                    Platform.runLater(() -> ShowMessageFX.Warning(null, psFormName, fsModule + ": " + message));
+                }
             }
             return false;
         }
-        String message = (String) loJSON.get("message");
 
-        poLogWrapper.severe(psFormName + " :" + message);
-//        Platform.runLater(() -> {
-        if (message != null) {
-            ShowMessageFX.Information(null, psFormName, fsModule + ": " + message);
+        if ("success".equalsIgnoreCase(result)) {
+            if (message != null && !message.trim().isEmpty()) {
+                if (Platform.isFxApplicationThread()) {
+                    ShowMessageFX.Information(null, psFormName, fsModule + ": " + message);
+                } else {
+                    Platform.runLater(() -> ShowMessageFX.Information(null, psFormName, fsModule + ": " + message));
+                }
+            }
+            poLogWrapper.info(psFormName + " : Success on " + fsModule);
+            return true;
         }
-//        });
-        poLogWrapper.info(psFormName + " : Success on " + fsModule);
-        return true;
 
+        // Unknown or null result
+        poLogWrapper.warning(psFormName + " : Unrecognized result: " + result);
+        return false;
     }
 
     private LocalDate ParseDate(Date date) {
