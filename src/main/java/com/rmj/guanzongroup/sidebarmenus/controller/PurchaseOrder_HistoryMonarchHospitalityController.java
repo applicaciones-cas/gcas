@@ -477,7 +477,7 @@ public class PurchaseOrder_HistoryMonarchHospitalityController implements Initia
                                 orderDetail.Inventory().getBarCode(),
                                 orderDetail.Inventory().getDescription(),
                                 CustomCommonUtil.setIntegerValueToDecimalFormat(orderDetail.getUnitPrice(), true),
-                                "",
+                                     "0",
                                 CustomCommonUtil.setDecimalValueToIntegerFormat(lnRequestQuantity),
                                 CustomCommonUtil.setDecimalValueToIntegerFormat(orderDetail.getQuantity().doubleValue()),
                                 CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotalAmount, true),
