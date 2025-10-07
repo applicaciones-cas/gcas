@@ -599,27 +599,38 @@ public class CheckTransfer_HistoryController implements Initializable, ScreenInt
 
     private boolean isJSONSuccess(JSONObject loJSON, String fsModule) {
         String result = (String) loJSON.get("result");
-        if ("error".equals(result)) {
-            String message = (String) loJSON.get("message");
-            poLogWrapper.severe(psFormName + " :" + message);
-//            Platform.runLater(() -> {
-            if (message != null) {
-                ShowMessageFX.Warning(null, psFormName, fsModule + ": " + message);
-//            });
+        String message = (String) loJSON.get("message");
+
+        System.out.println("isJSONSuccess called. Thread: " + Thread.currentThread().getName());
+
+        if ("error".equalsIgnoreCase(result)) {
+            poLogWrapper.severe(psFormName + " : " + message);
+            if (message != null && !message.trim().isEmpty()) {
+                if (Platform.isFxApplicationThread()) {
+                    ShowMessageFX.Warning(null, psFormName, fsModule + ": " + message);
+                } else {
+                    Platform.runLater(() -> ShowMessageFX.Warning(null, psFormName, fsModule + ": " + message));
+                }
             }
             return false;
         }
-        String message = (String) loJSON.get("message");
 
-        poLogWrapper.severe(psFormName + " :" + message);
-        Platform.runLater(() -> {
-            if (message != null) {
-                ShowMessageFX.Information(null, psFormName, fsModule + ": " + message);
+        if ("success".equalsIgnoreCase(result)) {
+            if (message != null && !message.trim().isEmpty()) {
+                if (Platform.isFxApplicationThread()) {
+                    ShowMessageFX.Information(null, psFormName, fsModule + ": " + message);
+                } else {
+                    Platform.runLater(() -> ShowMessageFX.Information(null, psFormName, fsModule + ": " + message));
+                }
             }
-        });
-        poLogWrapper.info(psFormName + " : Success on " + fsModule);
-        return true;
+            poLogWrapper.info(psFormName + " : Success on " + fsModule);
+            return true;
+        }
 
+        // Unknown or null result
+        poLogWrapper.warning(psFormName + " : Unrecognized result: " + result);
+        return false;
+    }
     }
 
     private LocalDate ParseDate(Date date) {
