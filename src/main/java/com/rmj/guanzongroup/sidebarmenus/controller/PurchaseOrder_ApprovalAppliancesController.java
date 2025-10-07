@@ -68,6 +68,7 @@ import org.guanzon.cas.purchasing.status.PurchaseOrderStatus;
 import org.json.simple.JSONObject;
 import com.rmj.guanzongroup.sidebarmenus.utility.JFXUtil;
 import org.json.simple.parser.ParseException;
+
 /**
  * FXML Controller class
  *
@@ -253,6 +254,9 @@ public class PurchaseOrder_ApprovalAppliancesController implements Initializable
 
     private void loadRecordDetail() {
         try {
+            if (pnTblDetailRow < 0 || pnTblDetailRow > poPurchasingController.PurchaseOrder().getDetailCount() - 1) {
+                return;
+            }
             if (pnTblDetailRow >= 0) {
                 tfBrand.setText(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).Inventory().Brand().getDescription() != null ? poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).Inventory().Brand().getDescription() : "");
                 tfModel.setText(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).Inventory().Model().getDescription() != null ? poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).Inventory().Model().getDescription() : "");

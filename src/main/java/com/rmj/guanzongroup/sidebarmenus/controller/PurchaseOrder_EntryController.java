@@ -310,6 +310,9 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
 
     private void loadRecordDetail() {
         try {
+            if (pnTblDetailRow < 0 || pnTblDetailRow > poPurchasingController.PurchaseOrder().getDetailCount() - 1) {
+                return;
+            }
             if (pnTblDetailRow >= 0) {
                 CustomCommonUtil.setDisable(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).getSouceCode() == PurchaseOrderStatus.SourceCode.POQUOTATION,
                         tfRequestQuantity);
