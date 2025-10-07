@@ -5,6 +5,8 @@ import java.lang.reflect.Field;
 import java.net.URL;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,6 +51,7 @@ import org.guanzon.appdriver.base.GRiderCAS;
 import org.guanzon.appdriver.base.LogWrapper;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.appdriver.base.GuanzonException;
+import org.guanzon.appdriver.base.SQLUtil;
 import org.json.simple.JSONObject;
 import ph.com.guanzongroup.cas.check.module.mnv.CheckTransfer;
 import ph.com.guanzongroup.cas.check.module.mnv.constant.CheckTransferStatus;
@@ -83,7 +86,7 @@ public class CheckTransfer_PostingController implements Initializable, ScreenInt
             tfCheckNo, tfNote;
 
     @FXML
-    private DatePicker dpSearchTransactionDate, dpTransactionDate, dpCheckDate;
+    private DatePicker dpSearchTransactionDate, dpTransactionDate, dpCheckDate, dpReceivedDate;
 
     @FXML
     private Label lblSource, lblStatus;
@@ -173,13 +176,15 @@ public class CheckTransfer_PostingController implements Initializable, ScreenInt
         if (e.getClickCount() == 2 && !e.isConsumed()) {
             try {
                 e.consume();
-                if (!isJSONSuccess(poAppController.searchTransaction(tblColTransNo.getCellData(pnSelectMaster), true, true), psFormName)) {
+                if (ShowMessageFX.OkayCancel(null, "Search Transaction! by Trasaction", "Are you sure you want replace loaded Transaction?") == false) {
+                    return;
+                }
+                if (!isJSONSuccess(poAppController.searchTransactionPosting(tblColTransNo.getCellData(pnSelectMaster), true, true), psFormName)) {
 //                    ShowMessageFX.Information("Failed to add detail", psFormName, null);
                     return;
                 }
-
-                reloadTableDetail();
-                loadSelectedTransactionDetail(pnTransactionDetail);
+                getLoadedTransaction();
+                initButtonDisplay(poAppController.getEditMode());
             } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
 
                 poLogWrapper.severe(psFormName + " :" + ex.getMessage());
@@ -289,6 +294,21 @@ public class CheckTransfer_PostingController implements Initializable, ScreenInt
                     }
                     break;
 
+                case "btnPost":
+                    if (tfTransactionNo.getText().isEmpty()) {
+                        ShowMessageFX.Information("Please load transaction before proceeding..", psFormName, "");
+                        return;
+                    }
+                    if (dpReceivedDate.getValue() == null) {
+                        ShowMessageFX.Information("Please input date received before proceeding..", "Inventory Stock Issuance Posting", "");
+                        return;
+                    }
+                    if (!isJSONSuccess(poAppController.PostTransaction(), "Initialize Post Transaction")) {
+                        return;
+                    }
+                    getLoadedTransaction();
+                    pnEditMode = poAppController.getEditMode();
+                    break;
                 case "btnReceived":
                     if (btnReceived.getText().toLowerCase().contains("unreceived")) {
                         unreceivedDetailAll();
@@ -301,8 +321,8 @@ public class CheckTransfer_PostingController implements Initializable, ScreenInt
 
                 case "btnRetrieve":
                     if (lastFocusedControl == null) {
-                        ShowMessageFX.Information(null, psFormName,
-                                "Search unavailable. Please ensure a searchable field is selected or focused before proceeding..");
+
+                        loadTransactionMasterList(tfSearchTransNo.getText().trim(), "a.sTransNox");
                         return;
                     }
 
@@ -315,6 +335,9 @@ public class CheckTransfer_PostingController implements Initializable, ScreenInt
                             break;
                         case "dpSearchTransactionDate":
                             loadTransactionMasterList(String.valueOf(dpSearchTransactionDate.getValue()), "a.dTransact");
+                            break;
+                        default:
+                            loadTransactionMasterList(tfSearchTransNo.getText().trim(), "a.sTransNox");
                             break;
                     }
                     break;
@@ -473,7 +496,7 @@ public class CheckTransfer_PostingController implements Initializable, ScreenInt
                 });
                 tblColDepartment.setCellValueFactory((loModel) -> {
                     try {
-                        return new SimpleStringProperty(String.valueOf(loModel.getValue().Department().getDescription()));
+                        return new SimpleStringProperty(loModel.getValue().Department().getDescription() != null ? loModel.getValue().Department().getDescription() : "");
                     } catch (SQLException | GuanzonException e) {
                         poLogWrapper.severe(psFormName, e.getMessage());
                         return new SimpleStringProperty("");
@@ -518,6 +541,10 @@ public class CheckTransfer_PostingController implements Initializable, ScreenInt
             tfDepartment.setText(poAppController.getMaster().Department().getDescription());
             taRemarks.setText(String.valueOf(poAppController.getMaster().getRemarks()));
             tfTotal.setText(String.valueOf(poAppController.getMaster().getTransactionTotal()));
+            dpReceivedDate.setValue(
+                    poAppController.getMaster().getReceivedDate() != null ? ParseDate(poAppController.getMaster().getReceivedDate()) : LocalDate.now());
+
+            dpReceivedDate.requestFocus();
         } catch (SQLException | GuanzonException e) {
             poLogWrapper.severe(psFormName, e.getMessage());
         }
@@ -534,12 +561,12 @@ public class CheckTransfer_PostingController implements Initializable, ScreenInt
 
         cbIsReceived.setSelected(poAppController.getDetail(fnRow).isReceived());
 
-        if (isAllReceived()) {
+        if (!isAllReceived()) {
             btnReceived.setText("Received All");
         } else {
             btnReceived.setText("Unreceived All");
         }
-        tfNote.setText(poAppController.getDetail(fnRow).CheckPayment().getRemarks());
+        tfNote.setText(poAppController.getDetail(fnRow).getRemarks());
         dpCheckDate.setValue(ParseDate(poAppController.getDetail(fnRow).CheckPayment().getTransactionDate()));
 
     }
@@ -551,6 +578,11 @@ public class CheckTransfer_PostingController implements Initializable, ScreenInt
             }
             poAppController.getDetail(lnCtr).setReceived(true);
         }
+        if (!isAllReceived()) {
+            btnReceived.setText("Received All");
+        } else {
+            btnReceived.setText("Unreceived All");
+        }
 
     }
 
@@ -560,6 +592,12 @@ public class CheckTransfer_PostingController implements Initializable, ScreenInt
                 continue;
             }
             poAppController.getDetail(lnCtr).setReceived(false);
+        }
+
+        if (!isAllReceived()) {
+            btnReceived.setText("Received All");
+        } else {
+            btnReceived.setText("Unreceived All");
         }
 
     }
@@ -591,11 +629,20 @@ public class CheckTransfer_PostingController implements Initializable, ScreenInt
             } else if (loControl instanceof ComboBox) {
                 ComboBox loControlField = (ComboBox) loControl;
                 controllerFocusTracker(loControlField);
+
+            } else if (loControl instanceof DatePicker) {
+                DatePicker loControlField = (DatePicker) loControl;
+                controllerFocusTracker(loControlField);
+                loControlField.focusedProperty().addListener(dPicker_Focus);
+                loControlField.getEditor().setOnKeyPressed(this::dPicker_KeyPressed);
             }
         }
-        cbIsReceived.setOnAction(e -> {
+
+        cbIsReceived.setOnAction(e
+                -> {
             poAppController.getDetail(pnTransactionDetail).setReceived(cbIsReceived.isSelected());
-        });
+        }
+        );
 
         clearAllInputs();
     }
@@ -754,10 +801,11 @@ public class CheckTransfer_PostingController implements Initializable, ScreenInt
     }
 
     private void getLoadedTransaction() throws SQLException, GuanzonException, CloneNotSupportedException {
-        clearAllInputs();
+//        clearAllInputs();
         loadTransactionMaster();
         reloadTableDetail();
         loadSelectedTransactionDetail(pnTransactionDetail);
+        dpReceivedDate.requestFocus();
     }
 
     private boolean isJSONSuccess(JSONObject loJSON, String fsModule) {
@@ -782,6 +830,54 @@ public class CheckTransfer_PostingController implements Initializable, ScreenInt
         return true;
 
     }
+
+    private void dPicker_KeyPressed(KeyEvent event) {
+
+        TextField loTxtField = (TextField) event.getSource();
+        String loDatePickerID = ((DatePicker) loTxtField.getParent()).getId(); // cautious cast
+        String loValue = loTxtField.getText();
+        String lsValue = "";
+        if (loValue != null && !loValue.isEmpty()) {
+            Date toDateValue = SQLUtil.toDate(loValue, "dd/MM/yyyy");
+            lsValue = SQLUtil.dateFormat(toDateValue, SQLUtil.FORMAT_SHORT_DATE);
+
+        }
+
+        if (event.getCode() != null) {
+            switch (event.getCode()) {
+                case TAB:
+                case ENTER:
+                case F3:
+                    event.consume();
+                    switch (loDatePickerID) {
+
+                    }
+            }
+        }
+        event.consume();
+
+    }
+    final ChangeListener<? super Boolean> dPicker_Focus = (o, ov, nv) -> {
+        DatePicker loDatePicker = (DatePicker) ((ReadOnlyBooleanPropertyBase) o).getBean();
+        String lsDatePickerID = loDatePicker.getId();
+        LocalDate loValue = loDatePicker.getValue();
+
+        if (loValue == null) {
+            return;
+        }
+
+        LocalDateTime ldDateTimeValue = loValue.atTime(LocalTime.now());
+        Date ldDateValue = Date.from(loValue.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        if (!nv) {
+            /*Lost Focus*/
+            switch (lsDatePickerID) {
+                case "dpReceivedDate":
+                    poAppController.getMaster().setReceivedDate((ldDateTimeValue));
+                    return;
+
+            }
+        }
+    };
 
     private LocalDate ParseDate(Date date) {
         if (date == null) {

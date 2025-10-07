@@ -912,7 +912,7 @@ public class CheckDeposit_EntryController implements Initializable, ScreenInterf
     }
 
     private void getLoadedTransaction() throws SQLException, GuanzonException, CloneNotSupportedException {
-        clearAllInputs();
+//        clearAllInputs();
         loadTransactionMaster();
         reloadTableDetail();
         loadSelectedTransactionDetail(pnTransactionDetail);
@@ -923,9 +923,11 @@ public class CheckDeposit_EntryController implements Initializable, ScreenInterf
         if ("error".equals(result)) {
             String message = (String) loJSON.get("message");
             poLogWrapper.severe(psFormName + " :" + message);
-            Platform.runLater(() -> {
+//            Platform.runLater(() -> {
+            if (message != null) {
                 ShowMessageFX.Warning(null, psFormName, fsModule + ": " + message);
-            });
+//            });
+            }
             return false;
         }
         String message = (String) loJSON.get("message");

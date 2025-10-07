@@ -52,6 +52,7 @@ import org.json.simple.JSONObject;
 import ph.com.guanzongroup.cas.cashflow.model.Model_Check_Payments;
 import ph.com.guanzongroup.cas.check.module.mnv.CheckDeposit;
 import ph.com.guanzongroup.cas.check.module.mnv.constant.CheckDepositStatus;
+import ph.com.guanzongroup.cas.check.module.mnv.constant.CheckTransferStatus;
 import ph.com.guanzongroup.cas.check.module.mnv.models.Model_Check_Deposit_Detail;
 import ph.com.guanzongroup.cas.check.module.mnv.services.CheckController;
 
@@ -89,7 +90,7 @@ public class CheckDeposit_HistoryController implements Initializable, ScreenInte
     private Label lblSource, lblStatus;
 
     @FXML
-    private Button btnBrowse, btnPost, btnClose;
+    private Button btnBrowse, btnPost, btnPrint, btnClose;
 
     @FXML
     private TextArea taRemarks;
@@ -139,7 +140,7 @@ public class CheckDeposit_HistoryController implements Initializable, ScreenInte
 
             //background thread
             Platform.runLater(() -> {
-                poAppController.setTransactionStatus("01234");
+                poAppController.setTransactionStatus("012347");
                 //initialize logged in category
                 poAppController.setIndustryID(psIndustryID);
                 System.err.println("Initialize value : Industry >" + psIndustryID);
@@ -261,10 +262,31 @@ public class CheckDeposit_HistoryController implements Initializable, ScreenInte
                     if (!isJSONSuccess(poAppController.PostTransaction(), "Initialize Post Transaction")) {
                         return;
                     }
-                    reloadTableDetail();
+                    getLoadedTransaction();
+                    break;
+                case "btnPrint":
+                    if (poAppController.getMaster().getTransactionStatus().equalsIgnoreCase(CheckTransferStatus.OPEN)) {
+                        if (ShowMessageFX.OkayCancel(null, psFormName, "Do you want to close the transaction ?") == true) {
+                            if (!isJSONSuccess(poAppController.CloseTransaction(),
+                                    "Initialize Close Transaction")) {
+                                return;
+                            }
+                        }
+                    }
+                    if (poAppController.getMaster().getTransactionNo() == null || poAppController.getMaster().getTransactionNo().isEmpty()) {
+                        ShowMessageFX.Information("Please load transaction before proceeding..", "Stock Request Approval", "");
+                        return;
+                    }
+                    if (ShowMessageFX.OkayCancel(null, psFormName, "Do you want to print the transaction ?") == true) {
+                        if (!isJSONSuccess(poAppController.printDepositSlip(),
+                                "Initialize Print Transaction")) {
+                            return;
+                        }
+                    }
+                    getLoadedTransaction();
+
                     pnEditMode = poAppController.getEditMode();
                     break;
-
                 case "btnClose":
                     if (ShowMessageFX.YesNo("Are you sure you want to close this form?", psFormName, null)) {
                         if (poUnload != null) {
@@ -463,7 +485,7 @@ public class CheckDeposit_HistoryController implements Initializable, ScreenInte
         boolean lbShow = (fnEditMode == EditMode.ADDNEW || fnEditMode == EditMode.UPDATE);
 
         // Always show these buttons
-        initButtonControls(true, "btnBrowse", "btnPost", "btnClose");
+        initButtonControls(true, "btnBrowse", "btnPost", "btnPrint", "btnClose");
 
         apMaster.setDisable(!lbShow);
         apDetail.setDisable(!lbShow);
@@ -589,19 +611,22 @@ public class CheckDeposit_HistoryController implements Initializable, ScreenInte
         if ("error".equals(result)) {
             String message = (String) loJSON.get("message");
             poLogWrapper.severe(psFormName + " :" + message);
-            Platform.runLater(() -> {
+//            Platform.runLater(() -> {
+
+            if (message != null) {
                 ShowMessageFX.Warning(null, psFormName, fsModule + ": " + message);
-            });
+//            }});
+            }
             return false;
         }
         String message = (String) loJSON.get("message");
 
         poLogWrapper.severe(psFormName + " :" + message);
-        Platform.runLater(() -> {
-            if (message != null) {
-                ShowMessageFX.Information(null, psFormName, fsModule + ": " + message);
-            }
-        });
+//        Platform.runLater(() -> {
+        if (message != null) {
+            ShowMessageFX.Information(null, psFormName, fsModule + ": " + message);
+        }
+//        });
         poLogWrapper.info(psFormName + " : Success on " + fsModule);
         return true;
 
