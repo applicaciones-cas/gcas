@@ -1748,7 +1748,7 @@ public class PurchaseOrder_EntryMPController implements Initializable, ScreenInt
                                 orderDetail.Inventory().getBarCode(),
                                 orderDetail.Inventory().getDescription(),
                                 CustomCommonUtil.setIntegerValueToDecimalFormat(orderDetail.getUnitPrice(), true),
-                                "",
+                                "0",
                                 String.valueOf(lnRequestQuantity),
                                 String.valueOf(orderDetail.getQuantity().intValue()),
                                 CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotalAmount, true),

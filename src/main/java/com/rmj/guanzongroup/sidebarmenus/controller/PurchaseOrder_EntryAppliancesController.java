@@ -1757,7 +1757,7 @@ public class PurchaseOrder_EntryAppliancesController implements Initializable, S
                                 orderDetail.Inventory().getBarCode(),
                                 orderDetail.Inventory().getDescription(),
                                 CustomCommonUtil.setIntegerValueToDecimalFormat(orderDetail.getUnitPrice(), true),
-                                "",
+                                "0",
                                 CustomCommonUtil.setDecimalValueToIntegerFormat(lnRequestQuantity),
                                 String.valueOf(orderDetail.getQuantity().doubleValue()),
                                 CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotalAmount, true),
