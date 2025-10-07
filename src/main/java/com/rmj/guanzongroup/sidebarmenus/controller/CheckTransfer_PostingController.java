@@ -176,13 +176,15 @@ public class CheckTransfer_PostingController implements Initializable, ScreenInt
         if (e.getClickCount() == 2 && !e.isConsumed()) {
             try {
                 e.consume();
-                if (!isJSONSuccess(poAppController.searchTransaction(tblColTransNo.getCellData(pnSelectMaster), true, true), psFormName)) {
+                if (ShowMessageFX.OkayCancel(null, "Search Transaction! by Trasaction", "Are you sure you want replace loaded Transaction?") == false) {
+                    return;
+                }
+                if (!isJSONSuccess(poAppController.searchTransactionPosting(tblColTransNo.getCellData(pnSelectMaster), true, true), psFormName)) {
 //                    ShowMessageFX.Information("Failed to add detail", psFormName, null);
                     return;
                 }
-
-                reloadTableDetail();
-                loadSelectedTransactionDetail(pnTransactionDetail);
+                getLoadedTransaction();
+                initButtonDisplay(poAppController.getEditMode());
             } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
 
                 poLogWrapper.severe(psFormName + " :" + ex.getMessage());
@@ -304,7 +306,7 @@ public class CheckTransfer_PostingController implements Initializable, ScreenInt
                     if (!isJSONSuccess(poAppController.PostTransaction(), "Initialize Post Transaction")) {
                         return;
                     }
-                    reloadTableDetail();
+                    getLoadedTransaction();
                     pnEditMode = poAppController.getEditMode();
                     break;
                 case "btnReceived":
@@ -319,8 +321,8 @@ public class CheckTransfer_PostingController implements Initializable, ScreenInt
 
                 case "btnRetrieve":
                     if (lastFocusedControl == null) {
-                        ShowMessageFX.Information(null, psFormName,
-                                "Search unavailable. Please ensure a searchable field is selected or focused before proceeding..");
+
+                        loadTransactionMasterList(tfSearchTransNo.getText().trim(), "a.sTransNox");
                         return;
                     }
 
@@ -333,6 +335,9 @@ public class CheckTransfer_PostingController implements Initializable, ScreenInt
                             break;
                         case "dpSearchTransactionDate":
                             loadTransactionMasterList(String.valueOf(dpSearchTransactionDate.getValue()), "a.dTransact");
+                            break;
+                        default:
+                            loadTransactionMasterList(tfSearchTransNo.getText().trim(), "a.sTransNox");
                             break;
                     }
                     break;
@@ -491,7 +496,7 @@ public class CheckTransfer_PostingController implements Initializable, ScreenInt
                 });
                 tblColDepartment.setCellValueFactory((loModel) -> {
                     try {
-                        return new SimpleStringProperty(String.valueOf(loModel.getValue().Department().getDescription()));
+                        return new SimpleStringProperty(loModel.getValue().Department().getDescription() != null ? loModel.getValue().Department().getDescription() : "");
                     } catch (SQLException | GuanzonException e) {
                         poLogWrapper.severe(psFormName, e.getMessage());
                         return new SimpleStringProperty("");
@@ -538,6 +543,7 @@ public class CheckTransfer_PostingController implements Initializable, ScreenInt
             tfTotal.setText(String.valueOf(poAppController.getMaster().getTransactionTotal()));
             dpReceivedDate.setValue(
                     poAppController.getMaster().getReceivedDate() != null ? ParseDate(poAppController.getMaster().getReceivedDate()) : LocalDate.now());
+
             dpReceivedDate.requestFocus();
         } catch (SQLException | GuanzonException e) {
             poLogWrapper.severe(psFormName, e.getMessage());
@@ -795,10 +801,11 @@ public class CheckTransfer_PostingController implements Initializable, ScreenInt
     }
 
     private void getLoadedTransaction() throws SQLException, GuanzonException, CloneNotSupportedException {
-        clearAllInputs();
+//        clearAllInputs();
         loadTransactionMaster();
         reloadTableDetail();
         loadSelectedTransactionDetail(pnTransactionDetail);
+        dpReceivedDate.requestFocus();
     }
 
     private boolean isJSONSuccess(JSONObject loJSON, String fsModule) {

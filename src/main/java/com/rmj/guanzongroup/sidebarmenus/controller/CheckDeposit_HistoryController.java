@@ -262,8 +262,7 @@ public class CheckDeposit_HistoryController implements Initializable, ScreenInte
                     if (!isJSONSuccess(poAppController.PostTransaction(), "Initialize Post Transaction")) {
                         return;
                     }
-                    reloadTableDetail();
-                    pnEditMode = poAppController.getEditMode();
+                    getLoadedTransaction();
                     break;
                 case "btnPrint":
                     if (poAppController.getMaster().getTransactionStatus().equalsIgnoreCase(CheckTransferStatus.OPEN)) {

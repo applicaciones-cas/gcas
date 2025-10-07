@@ -170,14 +170,17 @@ public class CheckTransfer_ConfirmationController implements Initializable, Scre
 
         if (e.getClickCount() == 2 && !e.isConsumed()) {
             try {
+
                 e.consume();
+                if (ShowMessageFX.OkayCancel(null, "Search Transaction! by Trasaction", "Are you sure you want replace loaded Transaction?") == false) {
+                    return;
+                }
                 if (!isJSONSuccess(poAppController.searchTransaction(tblColTransNo.getCellData(pnSelectMaster), true, true), psFormName)) {
 //                    ShowMessageFX.Information("Failed to add detail", psFormName, null);
                     return;
                 }
-
-                reloadTableDetail();
-                loadSelectedTransactionDetail(pnTransactionDetail);
+                getLoadedTransaction();
+                initButtonDisplay(poAppController.getEditMode());
             } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
 
                 poLogWrapper.severe(psFormName + " :" + ex.getMessage());
@@ -951,7 +954,7 @@ public class CheckTransfer_ConfirmationController implements Initializable, Scre
     }
 
     private void getLoadedTransaction() throws SQLException, GuanzonException, CloneNotSupportedException {
-        clearAllInputs();
+//        clearAllInputs();
         loadTransactionMaster();
         reloadTableDetail();
         loadSelectedTransactionDetail(pnTransactionDetail);
