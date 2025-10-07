@@ -1233,7 +1233,7 @@ public class PurchaseOrder_ApprovalMCController implements Initializable, Screen
                                 orderDetail.Inventory().getBarCode(),
                                 orderDetail.Inventory().getDescription(),
                                 CustomCommonUtil.setIntegerValueToDecimalFormat(orderDetail.getUnitPrice(), true),
-                                "",
+                                "0",
                                 CustomCommonUtil.setDecimalValueToIntegerFormat(lnRequestQuantity),
                                 CustomCommonUtil.setDecimalValueToIntegerFormat(orderDetail.getQuantity().doubleValue()),
                                 CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotalAmount, true),

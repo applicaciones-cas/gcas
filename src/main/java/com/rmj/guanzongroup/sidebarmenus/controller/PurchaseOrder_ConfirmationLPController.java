@@ -1232,7 +1232,7 @@ public class PurchaseOrder_ConfirmationLPController implements Initializable, Sc
                                 orderDetail.Inventory().getBarCode(),
                                 orderDetail.Inventory().getDescription(),
                                 CustomCommonUtil.setIntegerValueToDecimalFormat(orderDetail.getUnitPrice(), true),
-                                "",
+                                "0",
                                 CustomCommonUtil.setIntegerValueToDecimalFormat(lnRequestQuantity),
                                 CustomCommonUtil.setIntegerValueToDecimalFormat(orderDetail.getQuantity()),
                                 CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotalAmount, true),
