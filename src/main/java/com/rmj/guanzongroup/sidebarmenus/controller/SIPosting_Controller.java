@@ -1882,8 +1882,8 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
     }
 
     public void initDatePickers() {
-        JFXUtil.setDatePickerFormat("MM/dd/yyyy", dpTransactionDate, dpReferenceDate, dpSIDate, dpExpiryDate, dpJETransactionDate, dpReportMonthYear, dpSIDate);
-        JFXUtil.setActionListener(this::datepicker_Action, dpTransactionDate, dpReferenceDate, dpSIDate, dpExpiryDate, dpJETransactionDate, dpReportMonthYear, dpSIDate);
+        JFXUtil.setDatePickerFormat("MM/dd/yyyy", dpTransactionDate, dpReferenceDate, dpExpiryDate, dpJETransactionDate, dpReportMonthYear, dpSIDate);
+        JFXUtil.setActionListener(this::datepicker_Action, dpTransactionDate, dpReferenceDate, dpExpiryDate, dpJETransactionDate, dpReportMonthYear, dpSIDate);
     }
 
     public void initTextFields() {
