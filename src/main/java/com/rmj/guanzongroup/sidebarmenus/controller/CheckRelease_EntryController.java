@@ -55,7 +55,6 @@ import org.json.simple.JSONObject;
 import ph.com.guanzongroup.cas.cashflow.model.Model_Check_Payments;
 import ph.com.guanzongroup.cas.check.module.mnv.CheckRelease;
 import ph.com.guanzongroup.cas.check.module.mnv.constant.CheckReleaseStatus;
-import ph.com.guanzongroup.cas.check.module.mnv.models.Model_Check_Release_Detail;
 import ph.com.guanzongroup.cas.check.module.mnv.services.CheckController;
 
 /**
@@ -71,7 +70,8 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
     private Control lastFocusedControl;
     private CheckRelease poAppController;
     
-    private ObservableList<Model_Check_Payments> laCheckList;
+    private ObservableList<Model_Check_Payments> laCheckListPayment = FXCollections.observableArrayList();
+    private ObservableList<Model_Check_Payments> laCheckListDetail = FXCollections.observableArrayList();
     
     private int pnSelectMaster, pnTransactionDetail, pnEditMode;
     
@@ -111,27 +111,24 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
         try {
             poLogWrapper = new LogWrapper(psFormName, psFormName);
             poAppController = new CheckController(poApp, poLogWrapper).CheckRelease();
-            
-            poAppController.setTransactionStatus(CheckReleaseStatus.OPEN);
 
             //initlalize and validate transaction objects from class controller
             if (!isJSONSuccess(poAppController.initTransaction(), psFormName)) {
                 unloadForm appUnload = new unloadForm();
                 appUnload.unloadForm(apMainAnchor, poApp, psFormName);
+                return;
             }
 
             //background thread
             Platform.runLater(() -> {
                 
-                poAppController.setTransactionStatus("0");
+                poAppController.setTransactionStatus(CheckReleaseStatus.OPEN);
                 poAppController.setIndustryID(psIndustryID);
                 
                 System.err.println("Initialize value : Industry >" + psIndustryID);
                 btnNew.fire();
-
             });
             initControlEvents();
-            InitCheckPayments();
         } catch (SQLException | GuanzonException e) {
             Logger.getLogger(CheckRelease_EntryController.class.getName()).log(Level.SEVERE, null, e);
             poLogWrapper.severe(psFormName + " :" + e.getMessage());
@@ -168,7 +165,7 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
             e.consume();
             
             //set entry no default value by counting list item from details
-            if (!isJSONSuccess(poAppController.LoadCheckTransaction(tblColTransNo.getCellData(pnSelectMaster), laCheckList.size() <= 0 ? 1 : laCheckList.size() + 1), psFormName)) {
+            if (!isJSONSuccess(poAppController.LoadCheckTransaction(tblColTransNo.getCellData(pnSelectMaster), pnTransactionDetail >= 0 ? pnTransactionDetail : laCheckListDetail.size() + 1), psFormName)) {
                 return;
             }
             getLoadedTransaction();
@@ -199,6 +196,98 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
             String btnID = ((Button) event.getSource()).getId();
             switch (btnID) {
                 
+                case "btnSearch":
+                    if (lastFocusedControl == null) {
+                        ShowMessageFX.Information(null, psFormName,
+                                "Search unavailable. Please ensure a searchable field is selected or focused before proceeding..");
+                        break;
+                    }
+                    
+                    switch (lastFocusedControl.getId()) {
+                        
+                        case "tfSearchTransNo":
+                            
+                            if (pnEditMode != EditMode.READY && pnEditMode != EditMode.UNKNOWN) {
+                        
+                                if (!poAppController.GetMaster().getTransactionNo().isEmpty()) {
+                                    
+                                    if (ShowMessageFX.OkayCancel(null, "Initialize Search Check Release Master", "Do you want to disregard changes?") == false) {
+                                        return;
+                                    }
+
+                                }
+                            }
+
+                            if (!isJSONSuccess(poAppController.SearchTransactionMaster(tfSearchTransNo.getText().toString(), true, true), "Initialize Search Check Release Master")) {
+                                break;
+                            }
+                            if (!isJSONSuccess(poAppController.LoadDetail(poAppController.GetMaster().getTransactionNo()),
+                                    "Initialize : Load of Transaction List")) {
+                                break;
+                            }
+                            
+                            clearAllInputs();
+                            getLoadedTransaction();
+                            break;
+                        
+                        case "tfSearchReceived":
+                            
+                            if (pnEditMode != EditMode.READY && pnEditMode != EditMode.UNKNOWN) {
+                        
+                                if (!poAppController.GetMaster().getTransactionNo().isEmpty()) {
+                                    
+                                    if (ShowMessageFX.OkayCancel(null, "Initialize Search Check Release Master", "Do you want to disregard changes?") == false) {
+                                        return;
+                                    }
+
+                                }
+                            }
+                            
+                            if (!isJSONSuccess(poAppController.SearchTransactionMaster(tfSearchReceived.getText().toString(), true, false), "Initialize Search Check Release Master")) {
+                                return;
+                            }
+                            if (!isJSONSuccess(poAppController.LoadDetail(poAppController.GetMaster().getTransactionNo()),
+                                    "Initialize : Load of Transaction List")) {
+                                break;
+                            }
+                            
+                            clearAllInputs();
+                            getLoadedTransaction();
+                            break;
+                        
+                         case "tfSearchPayee":
+                            if (!isJSONSuccess(poAppController.SearchCheckTransaction(tfSearchPayee.getText().toString(),
+                                    true, false), "Initialize Search Check Release Master")) {
+                                break;
+                            }
+                            LoadCheckPayments();
+                            break;
+                            
+                        case "tfSearchCheck":
+                            if (!isJSONSuccess(poAppController.SearchCheckTransaction(tfSearchCheck.getText().toString(), false, false), "Initialize Search Check Release Master")) {
+                                break;
+                            }
+                            LoadCheckPayments();
+                            break;
+                            
+                        case "tfSearchCheckRef":
+                            if (!isJSONSuccess(poAppController.SearchCheckTransaction(tfSearchCheck.getText().toString(), true, true), "Initialize Search Check Release Master")) {
+                                break;
+                            }
+                            LoadCheckPayments();
+                            break;
+                            
+                        case "dpCheckDtFrm":
+                        case "dpCheckDTTo":
+                            if (!isJSONSuccess(poAppController.LoadCheckListByDate(String.valueOf(dpCheckDtFrm.getValue()), String.valueOf(dpCheckDTTo.getValue())),
+                                    "Initialize : Load of Transaction List")) {
+                                return;
+                            }
+                            LoadCheckPayments();
+                            break;
+                    }
+                    break;
+                    
                 case "btnBrowse":
                     if (lastFocusedControl == null) {
                         ShowMessageFX.Information(null, psFormName,
@@ -209,39 +298,33 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
                     switch (lastFocusedControl.getId()) {
                         
                         case "tfSearchTransNo":
-                            if (!isJSONSuccess(poAppController.SearchTransactionMaster(tfSearchTransNo.getText().toString(), true, true), "Initialize Search Check Release Master")) {
+                             if (!isJSONSuccess(poAppController.SearchTransactionMaster(tfSearchTransNo.getText().toString(), true, true), "Initialize Search Check Release Master")) {
                                 break;
                             }
-                            InitTransactionMaster();
+                            if (!isJSONSuccess(poAppController.LoadDetail(poAppController.GetMaster().getTransactionNo()),
+                                    "Initialize : Load of Transaction List")) {
+                                break;
+                            }
+                            
+                            clearAllInputs();
+                            getLoadedTransaction();
                             break;
                         
                         case "tfSearchReceived":
-                            if (!isJSONSuccess(poAppController.SearchTransactionMaster(tfSearchReceived.getText().toString(), true, false), "Initialize Search Check Release Master")) {
+                             if (!isJSONSuccess(poAppController.SearchTransactionMaster(tfSearchReceived.getText().toString(), true, false), "Initialize Search Check Release Master")) {
+                                return;
+                            }
+                            if (!isJSONSuccess(poAppController.LoadDetail(poAppController.GetMaster().getTransactionNo()),
+                                    "Initialize : Load of Transaction List")) {
                                 break;
                             }
-                            InitTransactionMaster();
-                            break;
                             
-                        case "tfSearchPayee":
-                            if (!isJSONSuccess(poAppController.SearchCheckTransaction(tfSearchPayee.getText().toString(),
-                                    true, false), "Initialize Search Check Release Master")) {
-                                break;
-                            }
-                            reloadTableDetail();
-                            break;
-                            
-                        case "tfSearchCheck":
-                            if (!isJSONSuccess(poAppController.SearchCheckTransaction(tfSearchCheck.getText().toString(), false, false), "Initialize Search Check Release Master")) {
-                                break;
-                            }
-                            reloadTableDetail();
-                            break;
-                            
-                        case "dpCheckDtFrm":
-                        case "dpCheckDTTo":
-                            LoadCheckPayments();
+                            clearAllInputs();
+                            getLoadedTransaction();
                             break;
                     }
+                    break;
+                    
                 case "btnNew":
                     if (!isJSONSuccess(poAppController.NewTransaction(), "Initialize New Transaction")) {
                         return;
@@ -277,31 +360,70 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
                         switch (txtFieldID) {
                             
                             case "tfSearchTransNo":
-                            if (!isJSONSuccess(poAppController.SearchTransactionMaster(tfSearchTransNo.getText().toString(), true, true), "Initialize Search Check Release Master")) {
-                                break;
-                            }
-                            InitTransactionMaster();
-                            break;
+                                if (pnEditMode != EditMode.READY && pnEditMode != EditMode.UNKNOWN) {
                         
-                            case "tfSearchReceived":
-                                if (!isJSONSuccess(poAppController.SearchTransactionMaster(tfSearchReceived.getText().toString(), true, false), "Initialize Search Check Release Master")) {
+                                    if (!poAppController.GetMaster().getTransactionNo().isEmpty()) {
+
+                                        if (ShowMessageFX.OkayCancel(null, "Initialize Search Check Release Master", "Do you want to disregard changes?") == false) {
+                                            return;
+                                        }
+
+                                    }
+                                }
+                                
+                                if (!isJSONSuccess(poAppController.SearchTransactionMaster(tfSearchTransNo.getText().toString(), true, true), "Initialize Search Check Release Master")) {
+                                return;
+                                }
+                                if (!isJSONSuccess(poAppController.LoadDetail(poAppController.GetMaster().getTransactionNo()),
+                                        "Initialize : Load of Transaction List")) {
                                     break;
                                 }
-                                InitTransactionMaster();
-                                break;
+
+                                clearAllInputs();
+                                getLoadedTransaction();
+                        
+                            case "tfSearchReceived":
+                                if (pnEditMode != EditMode.READY && pnEditMode != EditMode.UNKNOWN) {
+                        
+                                    if (!poAppController.GetMaster().getTransactionNo().isEmpty()) {
+
+                                        if (ShowMessageFX.OkayCancel(null, "Initialize Search Check Release Master", "Do you want to disregard changes?") == false) {
+                                            return;
+                                        }
+
+                                    }
+                                }
+
+                                if (!isJSONSuccess(poAppController.SearchTransactionMaster(tfSearchReceived.getText().toString(), true, false), "Initialize Search Check Release Master")) {
+                                    return;
+                                }
+                                if (!isJSONSuccess(poAppController.LoadDetail(poAppController.GetMaster().getTransactionNo()),
+                                        "Initialize : Load of Transaction List")) {
+                                    break;
+                                }
+
+                                clearAllInputs();
+                                getLoadedTransaction();
 
                             case "tfSearchPayee":
                                 if (!isJSONSuccess(poAppController.SearchCheckTransaction(tfSearchPayee.getText().toString(), true, false), "Initialize Search Check Release Master")) {
                                     break;
                                 }
-                                reloadTableDetail();
+                                LoadCheckPayments();
                                 break;
 
                             case "tfSearchCheck":
                                 if (!isJSONSuccess(poAppController.SearchCheckTransaction(tfSearchCheck.getText().toString(), false, false), "Initialize Search Check Release Master")) {
                                     break;
                                 }
-                                reloadTableDetail();
+                                LoadCheckPayments();
+                                break;
+                            
+                            case "tfSearchCheckRef":
+                                if (!isJSONSuccess(poAppController.SearchCheckTransaction(tfSearchCheck.getText().toString(), true, true), "Initialize Search Check Release Master")) {
+                                    break;
+                                }
+                                LoadCheckPayments();
                                 break;
                                 
                         }
@@ -461,19 +583,17 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
     private void InitTransactionMaster(){
         
         try {
+            
             lblSource.setText(poAppController.GetMaster().Industry().getDescription() == null ? "" : poAppController.GetMaster().Industry().getDescription());
-            System.out.print("THIS IS THE STATUS " + poAppController.GetMaster().GetStatus());
-        
-//        lblStatus.setText(CheckReleaseStatus.STATUS.get(Integer.parseInt(poAppController.GetMaster().getTransactionStatus())) == null ? "STATUS"
-//                    : CheckReleaseStatus.STATUS.get(Integer.parseInt(poAppController.GetMaster().getTransactionStatus())));
-//        dpTransactionDate.setValue(ParseDate(poAppController.GetMaster().getTransactionDate()));
-//        tfTransNo.setText(poAppController.GetMaster().getTransactionNo());
-//        tfReceivedBy.setText(poAppController.GetMaster().getReceivedBy());
-//        taRemarks.setText(poAppController.GetMaster().getRemarks());
-//        tfTotal.setText((String.valueOf(poAppController.GetMaster().getTransactionTotal())));
-        } catch (SQLException ex) {
-            Logger.getLogger(CheckRelease_EntryController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (GuanzonException ex) {
+            lblStatus.setText(CheckReleaseStatus.STATUS.get(Integer.parseInt(poAppController.GetMaster().getTransactionStatus())) == null ? "STATUS"
+                    : CheckReleaseStatus.STATUS.get(Integer.parseInt(poAppController.GetMaster().getTransactionStatus())));
+            dpTransactionDate.setValue(ParseDate(poAppController.GetMaster().getTransactionDate()));
+            tfTransNo.setText(poAppController.GetMaster().getTransactionNo());
+            tfReceivedBy.setText(poAppController.GetMaster().getReceivedBy());
+            taRemarks.setText(poAppController.GetMaster().getRemarks());
+            tfTotal.setText((String.valueOf(poAppController.GetMaster().getTransactionTotal())));
+            
+        } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(CheckRelease_EntryController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -481,10 +601,11 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
     private void InitCheckDetail(){
         
         try{
+            
             if(pnTransactionDetail < 0)  return;
-                    
+
             Model_Check_Payments loCheck = poAppController.getCheckDetail(pnTransactionDetail);
-        
+
             tfSearchCheckRef.setText(loCheck.getTransactionNo());
             tfPayee.setText(loCheck.Payee().getPayeeName());
             tfParticular.setText(loCheck.Banks().getBankName());
@@ -493,7 +614,7 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
             tfCheckAmt.setText(String.valueOf(loCheck.getAmount()));
             tfNote.setText(loCheck.getRemarks());
             
-        }catch(GuanzonException | SQLException e){
+        }catch(Exception e){
             Logger.getLogger(CheckRelease_EntryController.class.getName()).log(Level.SEVERE, null, e);
             poLogWrapper.severe(psFormName + " :" + e.getMessage());
         }
@@ -509,14 +630,9 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
         Task<ObservableList<Model_Check_Payments>> loadCheckPayment = new Task<ObservableList<Model_Check_Payments>>() {
             @Override
             protected ObservableList<Model_Check_Payments> call() throws Exception {
-  
-                if (!isJSONSuccess(poAppController.LoadCheckListByDate(String.valueOf(dpCheckDtFrm.getValue()), String.valueOf(dpCheckDTTo.getValue())),
-                        "Initialize : Load of Transaction List")) {
-                    return null;
-                }
-
-                List<Model_Check_Payments> rawList = poAppController.getCheckPaymentList();
-                return FXCollections.observableArrayList(new ArrayList<>(rawList));
+                
+                laCheckListPayment.setAll(poAppController.getCheckPaymentList());
+                return laCheckListPayment;
             }
             
             @Override
@@ -593,86 +709,120 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
  
     }
     
-    private void InitCheckPayments(){
+    private void LoadTransactionDetails(){
         
-        if(laCheckList == null){
-            
-            laCheckList = FXCollections.observableArrayList();
-            tblViewDetails.setItems(laCheckList);
+        StackPane overlay = getOverlayProgress(apCheckDettail);
+        ProgressIndicator pi = (ProgressIndicator) overlay.getChildren().get(0);
+        overlay.setVisible(true);
+        pi.setVisible(true);
 
-            tblViewDetails.setStyle("-fx-alignment: CENTER-RIGHT; -fx-padding: 0 5 0 0;");
+        Task<ObservableList<Model_Check_Payments>> loadCheckPayment = new Task<ObservableList<Model_Check_Payments>>() {
+            @Override
+            protected ObservableList<Model_Check_Payments> call() throws Exception {
+                return laCheckListDetail;
+            }
 
-            tblColDetailNo.setCellValueFactory((loModel) -> {
-                int index = tblViewDetails.getItems().indexOf(loModel.getValue()) + 1;
-                return new SimpleStringProperty(String.valueOf(index));
-            });
+            @Override
+            protected void succeeded() {
+                
+                ObservableList<Model_Check_Payments> laDetailList = getValue();
+                    tblViewDetails.setItems(laDetailList);
 
-            tblColDetailReference.setCellValueFactory((loModel) -> {
-                try{
-                    return new SimpleStringProperty(loModel.getValue().getTransactionNo());
-                }catch(Exception e){
-                    poLogWrapper.severe(psFormName, e.getMessage());
-                    return new SimpleStringProperty("");
-                }
-            });
+                    tblColDetailNo.setCellValueFactory((loModel) -> {
+                        int index = tblViewDetails.getItems().indexOf(loModel.getValue()) + 1;
+                        return new SimpleStringProperty(String.valueOf(index));
+                    });
 
-            tblColDetailPayee.setCellValueFactory((loModel) -> {
-                try{
-                    return new SimpleStringProperty(loModel.getValue().Payee().getPayeeName());
-                }catch(Exception e){
-                    poLogWrapper.severe(psFormName, e.getMessage());
-                    return new SimpleStringProperty("");
-                }
-            });
+                    tblColDetailReference.setCellValueFactory((loModel) -> {
+                        try{
+                            return new SimpleStringProperty(loModel.getValue().getTransactionNo());
+                        }catch(Exception e){
+                            poLogWrapper.severe(psFormName, e.getMessage());
+                            return new SimpleStringProperty("");
+                        }
+                    });
 
-            tblColDetailParticular.setCellValueFactory((loModel) -> {
-                try{
-                    return new SimpleStringProperty(loModel.getValue().Banks().getBankName());
-                }catch(Exception e){
-                    poLogWrapper.severe(psFormName, e.getMessage());
-                    return new SimpleStringProperty("");
-                }
-            });
+                    tblColDetailPayee.setCellValueFactory((loModel) -> {
+                        try{
+                            return new SimpleStringProperty(loModel.getValue().Payee().getPayeeName());
+                        }catch(Exception e){
+                            poLogWrapper.severe(psFormName, e.getMessage());
+                            return new SimpleStringProperty("");
+                        }
+                    });
 
-            tblColDetailCheckDt.setCellValueFactory((loModel) -> {
-                try{
-                    return new SimpleStringProperty(String.valueOf(loModel.getValue().getCheckDate()));
-                }catch(Exception e){
-                    poLogWrapper.severe(psFormName, e.getMessage());
-                    return new SimpleStringProperty("");
-                }
-            });
-            
-            tblColDetailCheckNo.setCellValueFactory((loModel) -> {
-                try{
-                    return new SimpleStringProperty(loModel.getValue().getCheckNo());
-                }catch(Exception e){
-                    poLogWrapper.severe(psFormName, e.getMessage());
-                    return new SimpleStringProperty("");
-                }
-            });
-            
-            tblColDetailAmt.setCellValueFactory((loModel) -> {
-                try{
-                    return new SimpleStringProperty(String.valueOf(loModel.getValue().getAmount()));
-                }catch(Exception e){
-                    poLogWrapper.severe(psFormName, e.getMessage());
-                    return new SimpleStringProperty("");
-                }
-            });
+                    tblColDetailParticular.setCellValueFactory((loModel) -> {
+                        try{
+                            return new SimpleStringProperty(loModel.getValue().Banks().getBankName());
+                        }catch(Exception e){
+                            poLogWrapper.severe(psFormName, e.getMessage());
+                            return new SimpleStringProperty("");
+                        }
+                    });
 
-        }
+                    tblColDetailCheckDt.setCellValueFactory((loModel) -> {
+                        try{
+                            return new SimpleStringProperty(String.valueOf(loModel.getValue().getCheckDate()));
+                        }catch(Exception e){
+                            poLogWrapper.severe(psFormName, e.getMessage());
+                            return new SimpleStringProperty("");
+                        }
+                    });
+
+                    tblColDetailCheckNo.setCellValueFactory((loModel) -> {
+                        try{
+                            return new SimpleStringProperty(loModel.getValue().getCheckNo());
+                        }catch(Exception e){
+                            poLogWrapper.severe(psFormName, e.getMessage());
+                            return new SimpleStringProperty("");
+                        }
+                    });
+
+                    tblColDetailAmt.setCellValueFactory((loModel) -> {
+                        try{
+                            return new SimpleStringProperty(String.valueOf(loModel.getValue().getAmount()));
+                        }catch(Exception e){
+                            poLogWrapper.severe(psFormName, e.getMessage());
+                            return new SimpleStringProperty("");
+                        }
+                    });
+
+                    overlay.setVisible(false);
+                    pi.setVisible(false);
+
+            }
+
+            @Override
+            protected void failed() {
+                overlay.setVisible(false);
+                pi.setVisible(false);
+                Throwable ex = getException();
+                Logger
+                        .getLogger(CheckRelease_EntryController.class
+                                .getName()).log(Level.SEVERE, null, ex);
+                poLogWrapper.severe(psFormName + " : " + ex.getMessage());
+            }
+
+            @Override
+            protected void cancelled() {
+                overlay.setVisible(false);
+                pi.setVisible(false);
+            }
+        };
+        Thread thread = new Thread(loadCheckPayment);
+        thread.setDaemon(true);
+        thread.start();
     }
     
     private void reloadTableDetail(){
         
         //load check payments
-        laCheckList.setAll(poAppController.getDetailCheckList());
+        laCheckListDetail.setAll(poAppController.getDetailCheckList());
   
         // Restore or select last row
-        int indexToSelect = (pnTransactionDetail >= 1 && pnTransactionDetail < laCheckList.size())
+        int indexToSelect = (pnTransactionDetail >= 1 && pnTransactionDetail < laCheckListDetail.size())
                 ? pnTransactionDetail - 1
-                : laCheckList.size() - 1;
+                : laCheckListDetail.size() - 1;
 
         tblViewDetails.getSelectionModel().select(indexToSelect);
 
@@ -682,9 +832,9 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
     }
     
     private void getLoadedTransaction(){
-        clearAllInputs();
         InitTransactionMaster();
         reloadTableDetail();
+        LoadTransactionDetails();
         InitCheckDetail();
     }
     
