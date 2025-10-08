@@ -122,6 +122,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.util.Callback;
 import java.io.File;
+import java.util.regex.Pattern;
 
 /**
  * Date : 4/28/2025
@@ -1331,6 +1332,27 @@ public class JFXUtil {
                 }
 
             });
+        }
+    }
+
+    public static void inputDecimalOnly(TextField... foTxtFields) {
+        Pattern pattern = Pattern.compile("\\d*(\\.\\d*)?");
+        for (TextField txtField : foTxtFields) {
+            if (txtField != null) {
+                txtField.setTextFormatter(new TextFormatter<>(change -> {
+                    String newText = change.getControlNewText();
+                    if (newText.isEmpty()) {
+                        return change;
+                    }
+                    if (newText.contains(",")) {
+                        return null;
+                    }
+                    if (!pattern.matcher(newText).matches()) {
+                        return null;
+                    }
+                    return change;
+                }));
+            }
         }
     }
 
