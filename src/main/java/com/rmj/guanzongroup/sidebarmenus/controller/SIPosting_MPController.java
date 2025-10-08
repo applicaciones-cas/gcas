@@ -257,7 +257,7 @@ public class SIPosting_MPController implements Initializable, ScreenInterface {
     private void populateJE() {
         try {
             JSONObject pnJSON = new JSONObject();
-            JFXUtil.setValueToNull(dpJETransactionDate, dpReportMonthYear);
+            JFXUtil.setValueToNull(dpJETransactionDate, dpReportMonthYear, dpSIDate);
             JFXUtil.clearTextFields(apJEMaster, apJEDetail);
             pnJSON = poPurchaseReceivingController.PurchaseOrderReceiving().populateJournal();
             if (JFXUtil.isJSONSuccess(pnJSON)) {
@@ -1941,8 +1941,8 @@ public class SIPosting_MPController implements Initializable, ScreenInterface {
 
     public void initDatePickers() {
         JFXUtil.setDatePickerFormat("MM/dd/yyyy",
-                dpTransactionDate, dpReferenceDate, dpJETransactionDate, dpReportMonthYear);
-        JFXUtil.setActionListener(this::datepicker_Action, dpTransactionDate, dpReferenceDate, dpJETransactionDate, dpReportMonthYear);
+                dpTransactionDate, dpReferenceDate, dpJETransactionDate, dpReportMonthYear, dpSIDate);
+        JFXUtil.setActionListener(this::datepicker_Action, dpTransactionDate, dpReferenceDate, dpJETransactionDate, dpReportMonthYear, dpSIDate);
     }
 
     public void initTextFields() {
@@ -2219,7 +2219,7 @@ public class SIPosting_MPController implements Initializable, ScreenInterface {
     public void clearTextFields() {
         Platform.runLater(() -> {
             imageinfo_temp.clear();
-            JFXUtil.setValueToNull(previousSearchedTextField, lastFocusedTextField, dpTransactionDate, dpReferenceDate, dpReportMonthYear);
+            JFXUtil.setValueToNull(previousSearchedTextField, lastFocusedTextField, dpTransactionDate, dpReferenceDate, dpReportMonthYear, dpSIDate);
             psSearchSupplierId = "";
             psSearchBranchId = "";
             psSupplierId = "";
