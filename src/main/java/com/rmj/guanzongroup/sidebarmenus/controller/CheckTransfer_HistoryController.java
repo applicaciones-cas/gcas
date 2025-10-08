@@ -44,6 +44,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import org.guanzon.appdriver.agent.ShowMessageFX;
+import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRiderCAS;
 import org.guanzon.appdriver.base.LogWrapper;
 import org.guanzon.appdriver.constant.EditMode;
@@ -63,13 +64,14 @@ public class CheckTransfer_HistoryController implements Initializable, ScreenInt
 
     private GRiderCAS poApp;
     private LogWrapper poLogWrapper;
-    private String psFormName = "Check Entry";
+    private String psFormName = "Check Transfer History";
     private String psIndustryID;
     private Control lastFocusedControl;
     private CheckTransfer poAppController;
     private ObservableList<Model_Check_Transfer_Detail> laTransactionDetail;
     private int pnSelectMaster, pnEditMode, pnTransactionDetail;
 
+    private unloadForm poUnload = new unloadForm();
     @FXML
     private AnchorPane apMainAnchor, apBrowse, apMaster, apDetail, apButton, apTransaction;
 
@@ -163,7 +165,6 @@ public class CheckTransfer_HistoryController implements Initializable, ScreenInt
 
             loadSelectedTransactionDetail(pnTransactionDetail);
         } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
-            Logger.getLogger(InventoryStockIssuance_PostingController.class.getName()).log(Level.SEVERE, null, ex);
             poLogWrapper.severe(psFormName + " :" + ex.getMessage());
         }
     }
@@ -176,8 +177,18 @@ public class CheckTransfer_HistoryController implements Initializable, ScreenInt
             switch (btnID) {
                 case "btnBrowse":
                     if (lastFocusedControl == null) {
-                        ShowMessageFX.Information(null, psFormName,
-                                "Search unavailable. Please ensure a searchable field is selected or focused before proceeding..");
+                        if (!tfTransactionNo.getText().isEmpty()) {
+                            if (ShowMessageFX.OkayCancel(null, "Search Transaction! by Trasaction", "Are you sure you want replace loaded Transaction?") == false) {
+                                return;
+                            }
+                        }
+                        if (!isJSONSuccess(poAppController.searchTransaction(tfSearchTransNo.getText(), true, true),
+                                "Initialize Search Source No! ")) {
+                            return;
+                        }
+
+                        getLoadedTransaction();
+                        initButtonDisplay(poAppController.getEditMode());
                         return;
                     }
 
@@ -224,6 +235,21 @@ public class CheckTransfer_HistoryController implements Initializable, ScreenInt
                             getLoadedTransaction();
                             initButtonDisplay(poAppController.getEditMode());
                             break;
+                        default:
+                            if (!tfTransactionNo.getText().isEmpty()) {
+                                if (ShowMessageFX.OkayCancel(null, "Search Transaction! by Trasaction", "Are you sure you want replace loaded Transaction?") == false) {
+                                    return;
+                                }
+                            }
+                            if (!isJSONSuccess(poAppController.searchTransaction(tfSearchTransNo.getText(), true, true),
+                                    "Initialize Search Source No! ")) {
+                                return;
+                            }
+
+                            getLoadedTransaction();
+                            initButtonDisplay(poAppController.getEditMode());
+                            break;
+
                     }
                     break;
 
@@ -231,6 +257,14 @@ public class CheckTransfer_HistoryController implements Initializable, ScreenInt
                     if (poAppController.getMaster().getTransactionNo() == null || poAppController.getMaster().getTransactionNo().isEmpty()) {
                         ShowMessageFX.Information("Please load transaction before proceeding..", "Stock Request Approval", "");
                         return;
+                    }
+                    if (poAppController.getMaster().getTransactionStatus().equalsIgnoreCase(CheckTransferStatus.OPEN)) {
+                        if (ShowMessageFX.OkayCancel(null, psFormName, "Do you want to close the transaction ?") == true) {
+                            if (!isJSONSuccess(poAppController.CloseTransaction(),
+                                    "Initialize Close Transaction")) {
+                                return;
+                            }
+                        }
                     }
                     if (ShowMessageFX.OkayCancel(null, psFormName, "Do you want to print the transaction ?") == true) {
                         if (!isJSONSuccess(poAppController.printRecord(),
@@ -244,11 +278,13 @@ public class CheckTransfer_HistoryController implements Initializable, ScreenInt
                     break;
 
                 case "btnClose":
-                    unloadForm appUnload = new unloadForm();
-                    if (ShowMessageFX.OkayCancel(null, "Close Tab", "Are you sure you want to close this Tab?")) {
-                        appUnload.unloadForm(apMainAnchor, poApp, psFormName);
+                    if (ShowMessageFX.YesNo("Are you sure you want to close this form?", psFormName, null)) {
+                        if (poUnload != null) {
+                            poUnload.unloadForm(apMainAnchor, poApp, psFormName);
+                        } else {
+                            ShowMessageFX.Warning("Please notify the system administrator to configure the null value at the close button.", "Warning", null);
+                        }
                     }
-                    break;
             }
 
             initButtonDisplay(poAppController.getEditMode());
@@ -359,7 +395,7 @@ public class CheckTransfer_HistoryController implements Initializable, ScreenInt
             tfDestination.setText(poAppController.getMaster().BranchDestination().getBranchName());
             tfDepartment.setText(poAppController.getMaster().Department().getDescription());
             taRemarks.setText(String.valueOf(poAppController.getMaster().getRemarks()));
-            tfTotal.setText(String.valueOf(poAppController.getMaster().getTransactionTotal()));
+            tfTotal.setText(CommonUtils.NumberFormat(poAppController.getMaster().getTransactionTotal(), "###,##0.0000"));
 
         } catch (SQLException | GuanzonException e) {
             poLogWrapper.severe(psFormName, e.getMessage());
@@ -375,7 +411,7 @@ public class CheckTransfer_HistoryController implements Initializable, ScreenInt
         tfCheckNo.setText(tblColDetailCheckNo.getCellData(tblIndex));
         tfCheckAmount.setText(tblColDetailCheckAmount.getCellData(tblIndex));
 
-        tfNote.setText(poAppController.getDetail(fnRow).CheckPayment().getRemarks());
+        tfNote.setText(poAppController.getDetail(fnRow).getRemarks());
         cbIsReceived.setSelected(poAppController.getDetail(fnRow).isReceived());
         dpCheckDate.setValue(ParseDate(poAppController.getDetail(fnRow).CheckPayment().getTransactionDate()));
 
@@ -496,7 +532,7 @@ public class CheckTransfer_HistoryController implements Initializable, ScreenInt
 
             tblColDetailPayee.setCellValueFactory((loModel) -> {
                 try {
-                    return new SimpleStringProperty(loModel.getValue().CheckPayment().Payee().Client().getCompanyName());
+                    return new SimpleStringProperty(loModel.getValue().CheckPayment().Payee().getPayeeName());
                 } catch (SQLException | GuanzonException e) {
                     poLogWrapper.severe(psFormName, e.getMessage());
                     return new SimpleStringProperty("");
@@ -531,7 +567,7 @@ public class CheckTransfer_HistoryController implements Initializable, ScreenInt
 
             tblColDetailCheckAmount.setCellValueFactory((loModel) -> {
                 try {
-                    return new SimpleStringProperty(String.valueOf(loModel.getValue().CheckPayment().getAmount()));
+                    return new SimpleStringProperty(CommonUtils.NumberFormat(loModel.getValue().CheckPayment().getAmount(), "###,##0.0000"));
                 } catch (SQLException | GuanzonException e) {
                     poLogWrapper.severe(psFormName, e.getMessage());
                     return new SimpleStringProperty("");
@@ -556,7 +592,7 @@ public class CheckTransfer_HistoryController implements Initializable, ScreenInt
     }
 
     private void getLoadedTransaction() throws SQLException, GuanzonException, CloneNotSupportedException {
-        clearAllInputs();
+//        clearAllInputs();
         loadTransactionMaster();
         reloadTableDetail();
         loadSelectedTransactionDetail(pnTransactionDetail);
@@ -564,25 +600,37 @@ public class CheckTransfer_HistoryController implements Initializable, ScreenInt
 
     private boolean isJSONSuccess(JSONObject loJSON, String fsModule) {
         String result = (String) loJSON.get("result");
-        if ("error".equals(result)) {
-            String message = (String) loJSON.get("message");
-            poLogWrapper.severe(psFormName + " :" + message);
-            Platform.runLater(() -> {
-                ShowMessageFX.Warning(null, psFormName, fsModule + ": " + message);
-            });
-            return false;
-        }
         String message = (String) loJSON.get("message");
 
-        poLogWrapper.severe(psFormName + " :" + message);
-        Platform.runLater(() -> {
-            if (message != null) {
-                ShowMessageFX.Information(null, psFormName, fsModule + ": " + message);
-            }
-        });
-        poLogWrapper.info(psFormName + " : Success on " + fsModule);
-        return true;
+        System.out.println("isJSONSuccess called. Thread: " + Thread.currentThread().getName());
 
+        if ("error".equalsIgnoreCase(result)) {
+            poLogWrapper.severe(psFormName + " : " + message);
+            if (message != null && !message.trim().isEmpty()) {
+                if (Platform.isFxApplicationThread()) {
+                    ShowMessageFX.Warning(null, psFormName, fsModule + ": " + message);
+                } else {
+                    Platform.runLater(() -> ShowMessageFX.Warning(null, psFormName, fsModule + ": " + message));
+                }
+            }
+            return false;
+        }
+
+        if ("success".equalsIgnoreCase(result)) {
+            if (message != null && !message.trim().isEmpty()) {
+                if (Platform.isFxApplicationThread()) {
+                    ShowMessageFX.Information(null, psFormName, fsModule + ": " + message);
+                } else {
+                    Platform.runLater(() -> ShowMessageFX.Information(null, psFormName, fsModule + ": " + message));
+                }
+            }
+            poLogWrapper.info(psFormName + " : Success on " + fsModule);
+            return true;
+        }
+
+        // Unknown or null result
+        poLogWrapper.warning(psFormName + " : Unrecognized result: " + result);
+        return false;
     }
 
     private LocalDate ParseDate(Date date) {

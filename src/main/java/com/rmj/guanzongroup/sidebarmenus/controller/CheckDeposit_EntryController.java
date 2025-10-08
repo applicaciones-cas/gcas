@@ -36,14 +36,17 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import static javafx.scene.input.KeyCode.DOWN;
 import static javafx.scene.input.KeyCode.ENTER;
 import static javafx.scene.input.KeyCode.F3;
 import static javafx.scene.input.KeyCode.TAB;
+import static javafx.scene.input.KeyCode.UP;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import org.guanzon.appdriver.agent.ShowMessageFX;
+import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRiderCAS;
 import org.guanzon.appdriver.base.LogWrapper;
 import org.guanzon.appdriver.constant.EditMode;
@@ -71,6 +74,8 @@ public class CheckDeposit_EntryController implements Initializable, ScreenInterf
     private ObservableList<Model_Check_Deposit_Detail> laTransactionDetail;
     private int pnSelectMaster, pnEditMode, pnTransactionDetail;
 
+    private unloadForm poUnload = new unloadForm();
+
     @FXML
     private AnchorPane apMainAnchor, apBrowse, apMaster, apDetail, apButton, apTransaction;
 
@@ -87,7 +92,7 @@ public class CheckDeposit_EntryController implements Initializable, ScreenInterf
     private Label lblSource, lblStatus;
 
     @FXML
-    private Button btnSearch, btnBrowse, btnNew,btnCancel, btnUpdate, btnSave,
+    private Button btnSearch, btnBrowse, btnNew, btnCancel, btnUpdate, btnSave,
             btnRetrieve, btnClose;
 
     @FXML
@@ -136,7 +141,6 @@ public class CheckDeposit_EntryController implements Initializable, ScreenInterf
         try {
             poLogWrapper = new LogWrapper(psFormName, psFormName);
             poAppController = new CheckController(poApp, poLogWrapper).CheckDeposit();
-            poAppController.setTransactionStatus(CheckDepositStatus.OPEN);
 
             //initlalize and validate transaction objects from class controller
             if (!isJSONSuccess(poAppController.initTransaction(), psFormName)) {
@@ -146,7 +150,7 @@ public class CheckDeposit_EntryController implements Initializable, ScreenInterf
 
             //background thread
             Platform.runLater(() -> {
-                poAppController.setTransactionStatus("0");
+                poAppController.setTransactionStatus("07");
                 //initialize logged in category
                 poAppController.setIndustryID(psIndustryID);
                 System.err.println("Initialize value : Industry >" + psIndustryID);
@@ -235,7 +239,7 @@ public class CheckDeposit_EntryController implements Initializable, ScreenInterf
                             loadSelectedTransactionDetail(pnTransactionDetail);
                             break;
                         case "tfFilterBank":
-                            if (!isJSONSuccess(poAppController.searchTransactionBankFilter(tfFilterBank.getText(), false),
+                            if (!isJSONSuccess(poAppController.searchTransactionBankFilter(tfFilterBank.getText() != null ? tfFilterBank.getText() : "", false),
                                     "Initialize Search Check! ")) {
                                 return;
                             }
@@ -272,8 +276,18 @@ public class CheckDeposit_EntryController implements Initializable, ScreenInterf
 
                 case "btnBrowse":
                     if (lastFocusedControl == null) {
-                        ShowMessageFX.Information(null, psFormName,
-                                "Search unavailable. Please ensure a searchable field is selected or focused before proceeding..");
+                        if (!tfTransactionNo.getText().isEmpty()) {
+                            if (ShowMessageFX.OkayCancel(null, "Search Transaction! by Trasaction", "Are you sure you want replace loaded Transaction?") == false) {
+                                return;
+                            }
+                        }
+                        if (!isJSONSuccess(poAppController.searchTransaction(tfSearchTransNo.getText(), true, true),
+                                "Initialize Search Source No! ")) {
+                            return;
+                        }
+
+                        getLoadedTransaction();
+                        initButtonDisplay(poAppController.getEditMode());
                         return;
                     }
 
@@ -320,6 +334,20 @@ public class CheckDeposit_EntryController implements Initializable, ScreenInterf
                             getLoadedTransaction();
                             initButtonDisplay(poAppController.getEditMode());
                             break;
+                        default:
+                            if (!tfTransactionNo.getText().isEmpty()) {
+                                if (ShowMessageFX.OkayCancel(null, "Search Transaction! by Trasaction", "Are you sure you want replace loaded Transaction?") == false) {
+                                    return;
+                                }
+                            }
+                            if (!isJSONSuccess(poAppController.searchTransaction(tfSearchTransNo.getText(), true, true),
+                                    "Initialize Search Source No! ")) {
+                                return;
+                            }
+
+                            getLoadedTransaction();
+                            initButtonDisplay(poAppController.getEditMode());
+                            break;
                     }
                     break;
 
@@ -334,7 +362,7 @@ public class CheckDeposit_EntryController implements Initializable, ScreenInterf
 
                 case "btnUpdate":
                     if (poAppController.getMaster().getTransactionNo() == null || poAppController.getMaster().getTransactionNo().isEmpty()) {
-                        ShowMessageFX.Information("Please load transaction before proceeding..", "Stock Request Issuance", "");
+                        ShowMessageFX.Information("Please load transaction before proceeding..", psFormName, "");
                         return;
                     }
                     poAppController.OpenTransaction(poAppController.getMaster().getTransactionNo());
@@ -347,13 +375,25 @@ public class CheckDeposit_EntryController implements Initializable, ScreenInterf
 
                 case "btnSave":
                     if (tfTransactionNo.getText().isEmpty()) {
-                        ShowMessageFX.Information("Please load transaction before proceeding..", "Stock Request Issuance", "");
+                        ShowMessageFX.Information("Please load transaction before proceeding..", psFormName, "");
                         return;
                     }
 
                     if (!isJSONSuccess(poAppController.SaveTransaction(), "Initialize Save Transaction")) {
                         return;
                     }
+
+                    if (ShowMessageFX.OkayCancel(null, psFormName, "Do you want to Confirm transaction?") == true) {
+                        if (!isJSONSuccess(poAppController.CloseTransaction(), "Initialize Close Transaction")) {
+                            return;
+                        }
+                        if (ShowMessageFX.OkayCancel(null, psFormName, "Do you want to Print transaction?") == true) {
+                            if (!isJSONSuccess(poAppController.printDepositSlip(), "Initialize Print Transaction")) {
+                                return;
+                            }
+                        }
+                    }
+
                     getLoadedTransaction();
                     pnEditMode = poAppController.getEditMode();
 
@@ -362,7 +402,7 @@ public class CheckDeposit_EntryController implements Initializable, ScreenInterf
                 case "btnCancel":
                     if (ShowMessageFX.OkayCancel(null, psFormName, "Do you want to disregard changes?") == true) {
                         poAppController = new CheckController(poApp, poLogWrapper).CheckDeposit();
-                        poAppController.setTransactionStatus("0");
+                        poAppController.setTransactionStatus("07");
 
                         if (!isJSONSuccess(poAppController.initTransaction(), "Initialize Transaction")) {
                             unloadForm appUnload = new unloadForm();
@@ -371,7 +411,7 @@ public class CheckDeposit_EntryController implements Initializable, ScreenInterf
 
                         Platform.runLater(() -> {
 
-                            poAppController.setTransactionStatus("0");
+                            poAppController.setTransactionStatus("07");
                             poAppController.getMaster().setIndustryId(psIndustryID);
                             poAppController.setIndustryID(psIndustryID);
 
@@ -393,11 +433,13 @@ public class CheckDeposit_EntryController implements Initializable, ScreenInterf
 
                     break;
                 case "btnClose":
-                    unloadForm appUnload = new unloadForm();
-                    if (ShowMessageFX.OkayCancel(null, "Close Tab", "Are you sure you want to close this Tab?")) {
-                        appUnload.unloadForm(apMainAnchor, poApp, psFormName);
+                    if (ShowMessageFX.YesNo("Are you sure you want to close this form?", psFormName, null)) {
+                        if (poUnload != null) {
+                            poUnload.unloadForm(apMainAnchor, poApp, psFormName);
+                        } else {
+                            ShowMessageFX.Warning("Please notify the system administrator to configure the null value at the close button.", "Warning", null);
+                        }
                     }
-                    break;
             }
 
             initButtonDisplay(poAppController.getEditMode());
@@ -428,19 +470,15 @@ public class CheckDeposit_EntryController implements Initializable, ScreenInterf
                         }
                         loadRetrieveFilter();
 
+                        break;
                     case "tfBankMaster":
                         if (lsValue.trim().isEmpty()) {
                             poAppController.ClearMasterFilterBanks();
 
                         }
                         loadRetrieveFilter();
-                    case "taRemarks":
-                        poAppController.getMaster().setRemarks(lsValue);
-                        loadTransactionMaster();
-
                         break;
-                        
-                        
+
                     case "tfNote":
                         poAppController.getDetail(pnTransactionDetail).setRemarks(lsValue);
                         loadSelectedTransactionDetail(pnTransactionDetail);
@@ -531,7 +569,7 @@ public class CheckDeposit_EntryController implements Initializable, ScreenInterf
                                 break;
 
                             case "tfFilterBank":
-                                if (!isJSONSuccess(poAppController.searchTransactionBankFilter(tfFilterBank.getText(), false),
+                                if (!isJSONSuccess(poAppController.searchTransactionBankFilter(tfFilterBank.getText() != null ? tfFilterBank.getText() : "", false),
                                         "Initialize Search Check! ")) {
                                     return;
                                 }
@@ -539,7 +577,7 @@ public class CheckDeposit_EntryController implements Initializable, ScreenInterf
                                 break;
 
                             case "tfBankMaster":
-                                if (!isJSONSuccess(poAppController.searchTransactionBankFilter(tfBankMaster.getText(), false),
+                                if (!isJSONSuccess(poAppController.searchTransactionBankMasterFilter(tfBankMaster.getText(), false),
                                         "Initialize Search Check! ")) {
                                     return;
                                 }
@@ -564,6 +602,60 @@ public class CheckDeposit_EntryController implements Initializable, ScreenInterf
                                 break;
                         }
                         break;
+                }
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(DeliverySchedule_EntryController.class
+                    .getName()).log(Level.SEVERE, null, ex);
+            poLogWrapper.severe(psFormName + " :" + ex.getMessage());
+        }
+    }
+    private final ChangeListener<? super Boolean> txtArea_Focus = (o, ov, nv) -> {
+        TextArea loTextField = (TextArea) ((ReadOnlyBooleanPropertyBase) o).getBean();
+        String lsTextFieldID = loTextField.getId();
+        String lsValue = loTextField.getText();
+        if (lsValue == null) {
+            return;
+        }
+
+        if (!nv) {
+            /*Lost Focus*/
+            switch (lsTextFieldID) {
+
+                case "taRemarks":
+                    poAppController.getMaster().setRemarks(lsValue);
+                    loadTransactionMaster();
+
+                    break;
+
+            }
+        } else {
+            loTextField.selectAll();
+        }
+
+    };
+
+    private void txtArea_KeyPressed(KeyEvent event) {
+        TextArea loTxtField = (TextArea) event.getSource();
+        String txtFieldID = ((TextArea) event.getSource()).getId();
+        String lsValue = "";
+        if (loTxtField.getText() == null) {
+            lsValue = "";
+        } else {
+            lsValue = loTxtField.getText();
+        }
+        try {
+            if (null != event.getCode()) {
+                switch (event.getCode()) {
+                    case TAB:
+                    case ENTER:
+                    case UP:
+                        CommonUtils.SetPreviousFocus((TextField) event.getSource());
+                        return;
+                    case DOWN:
+                        CommonUtils.SetNextFocus(loTxtField);
+                        return;
+
                 }
             }
         } catch (Exception ex) {
@@ -611,7 +703,8 @@ public class CheckDeposit_EntryController implements Initializable, ScreenInterf
                     return new SimpleStringProperty(String.valueOf(loModel.getValue().getCheckNo()));
                 });
                 tblColCheckAmount.setCellValueFactory(loModel -> {
-                    return new SimpleStringProperty(String.valueOf(loModel.getValue().getAmount()));
+                    return new SimpleStringProperty(CommonUtils.NumberFormat(loModel.getValue().getAmount(), "###,##0.0000"));
+
                 });
 
                 overlay.setVisible(false);
@@ -651,9 +744,12 @@ public class CheckDeposit_EntryController implements Initializable, ScreenInterf
             dpTransactionReferDate.setValue(ParseDate(poAppController.getMaster().getTransactionReferDate()));
             tfBankAccountNo.setText(poAppController.getMaster().BankAccount().getAccountNo());
             tfBankAccountName.setText(poAppController.getMaster().BankAccount().getAccountName());
-            taRemarks.setText(String.valueOf(poAppController.getMaster().getRemarks()));
-            tfTotal.setText(String.valueOf(poAppController.getMaster().getTransactionTotalDeposit()));
-        } catch (SQLException | GuanzonException e) {
+
+            taRemarks.setText(poAppController.getMaster().getRemarks());
+            tfTotal.setText(CommonUtils.NumberFormat(poAppController.getMaster().getTransactionTotalDeposit(), "###,##0.0000"));
+
+            loadRetrieveFilter();
+        } catch (SQLException | GuanzonException | CloneNotSupportedException e) {
             poLogWrapper.severe(psFormName, e.getMessage());
         }
     }
@@ -669,6 +765,19 @@ public class CheckDeposit_EntryController implements Initializable, ScreenInterf
 
         tfNote.setText(poAppController.getDetail(fnRow).getRemarks());
         dpCheckDate.setValue(ParseDate(poAppController.getDetail(fnRow).CheckPayment().getTransactionDate()));
+        recomputeTotal();
+    }
+
+    private void recomputeTotal() throws SQLException, GuanzonException {
+        double lnTotal = 0.00;
+        for (int lnCtr = 1; lnCtr <= poAppController.getDetailCount(); lnCtr++) {
+            if (poAppController.getDetail(lnCtr).getSourceNo() == null || poAppController.getDetail(lnCtr).getSourceNo().isEmpty()) {
+                continue;
+            }
+            lnTotal = lnTotal + poAppController.getDetail(lnCtr).CheckPayment().getAmount();
+        }
+        poAppController.getMaster().setTransactionTotalDeposit(lnTotal);
+        tfTotal.setText(CommonUtils.NumberFormat(poAppController.getMaster().getTransactionTotalDeposit(), "###,##0.0000"));
 
     }
 
@@ -688,6 +797,11 @@ public class CheckDeposit_EntryController implements Initializable, ScreenInterf
                 controllerFocusTracker(loControlField);
                 loControlField.setOnKeyPressed(this::txtField_KeyPressed);
                 loControlField.focusedProperty().addListener(txtField_Focus);
+            } else if (loControl instanceof TextArea) {
+                TextArea loControlField = (TextArea) loControl;
+                controllerFocusTracker(loControlField);
+                loControlField.setOnKeyPressed(this::txtArea_KeyPressed);
+                loControlField.focusedProperty().addListener(txtArea_Focus);
             } else if (loControl instanceof TableView) {
                 TableView loControlField = (TableView) loControl;
                 controllerFocusTracker(loControlField);
@@ -732,7 +846,7 @@ public class CheckDeposit_EntryController implements Initializable, ScreenInterf
         pnEditMode = poAppController.getEditMode();
         initButtonDisplay(poAppController.getEditMode());
         try {
-            dpFilterFrom.setValue(ParseDate((Date) poApp.getServerDate()));
+            dpFilterFrom.setValue((ParseDate((Date) poApp.getServerDate()).minusMonths(1)));
             dpFilterThru.setValue(ParseDate((Date) poApp.getServerDate()));
         } catch (SQLException ex) {
             Logger.getLogger(CheckDeposit_EntryController.class.getName()).log(Level.SEVERE, null, ex);
@@ -802,7 +916,7 @@ public class CheckDeposit_EntryController implements Initializable, ScreenInterf
 
             tblColDetailPayee.setCellValueFactory((loModel) -> {
                 try {
-                    return new SimpleStringProperty(loModel.getValue().CheckPayment().Payee().Client().getCompanyName());
+                    return new SimpleStringProperty(loModel.getValue().CheckPayment().Payee().getPayeeName());
                 } catch (SQLException | GuanzonException e) {
                     poLogWrapper.severe(psFormName, e.getMessage());
                     return new SimpleStringProperty("");
@@ -837,7 +951,7 @@ public class CheckDeposit_EntryController implements Initializable, ScreenInterf
 
             tblColDetailCheckAmount.setCellValueFactory((loModel) -> {
                 try {
-                    return new SimpleStringProperty(String.valueOf(loModel.getValue().CheckPayment().getAmount()));
+                    return new SimpleStringProperty(CommonUtils.NumberFormat(loModel.getValue().CheckPayment().getAmount(), "###,##0.0000"));
                 } catch (SQLException | GuanzonException e) {
                     poLogWrapper.severe(psFormName, e.getMessage());
                     return new SimpleStringProperty("");
@@ -862,7 +976,7 @@ public class CheckDeposit_EntryController implements Initializable, ScreenInterf
     }
 
     private void getLoadedTransaction() throws SQLException, GuanzonException, CloneNotSupportedException {
-        clearAllInputs();
+//        clearAllInputs();
         loadTransactionMaster();
         reloadTableDetail();
         loadSelectedTransactionDetail(pnTransactionDetail);
@@ -870,25 +984,37 @@ public class CheckDeposit_EntryController implements Initializable, ScreenInterf
 
     private boolean isJSONSuccess(JSONObject loJSON, String fsModule) {
         String result = (String) loJSON.get("result");
-        if ("error".equals(result)) {
-            String message = (String) loJSON.get("message");
-            poLogWrapper.severe(psFormName + " :" + message);
-            Platform.runLater(() -> {
-                ShowMessageFX.Warning(null, psFormName, fsModule + ": " + message);
-            });
-            return false;
-        }
         String message = (String) loJSON.get("message");
 
-        poLogWrapper.severe(psFormName + " :" + message);
-        Platform.runLater(() -> {
-            if (message != null) {
-                ShowMessageFX.Information(null, psFormName, fsModule + ": " + message);
-            }
-        });
-        poLogWrapper.info(psFormName + " : Success on " + fsModule);
-        return true;
+        System.out.println("isJSONSuccess called. Thread: " + Thread.currentThread().getName());
 
+        if ("error".equalsIgnoreCase(result)) {
+            poLogWrapper.severe(psFormName + " : " + message);
+            if (message != null && !message.trim().isEmpty()) {
+                if (Platform.isFxApplicationThread()) {
+                    ShowMessageFX.Warning(null, psFormName, fsModule + ": " + message);
+                } else {
+                    Platform.runLater(() -> ShowMessageFX.Warning(null, psFormName, fsModule + ": " + message));
+                }
+            }
+            return false;
+        }
+
+        if ("success".equalsIgnoreCase(result)) {
+            if (message != null && !message.trim().isEmpty()) {
+                if (Platform.isFxApplicationThread()) {
+                    ShowMessageFX.Information(null, psFormName, fsModule + ": " + message);
+                } else {
+                    Platform.runLater(() -> ShowMessageFX.Information(null, psFormName, fsModule + ": " + message));
+                }
+            }
+            poLogWrapper.info(psFormName + " : Success on " + fsModule);
+            return true;
+        }
+
+        // Unknown or null result
+        poLogWrapper.warning(psFormName + " : Unrecognized result: " + result);
+        return false;
     }
 
     private LocalDate ParseDate(Date date) {
