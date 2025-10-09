@@ -1051,6 +1051,8 @@ public class POReplacement_ConfirmationAppliancesController implements Initializ
             if (poController.PurchaseOrderReceiving().Detail(pnDetail).getStockId() != null && !poController.PurchaseOrderReceiving().Detail(pnDetail).getStockId().equals("")) {
                 poController.PurchaseOrderReceiving().Detail(pnDetail).setBrandId(poController.PurchaseOrderReceiving().Detail(pnDetail).Inventory().getBrandId());
             }
+            JFXUtil.setDisabled(oApp.getUserLevel() <= UserRight.ENCODER, tfCost);
+            
             tfBarcode.setText(poController.PurchaseOrderReceiving().Detail(pnDetail).Inventory().getBarCode());
             tfDescription.setText(poController.PurchaseOrderReceiving().Detail(pnDetail).Inventory().getDescription());
             tfBrand.setText(poController.PurchaseOrderReceiving().Detail(pnDetail).Brand().getDescription()); //TODO

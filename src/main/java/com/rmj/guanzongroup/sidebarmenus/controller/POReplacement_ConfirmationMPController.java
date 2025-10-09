@@ -1120,6 +1120,7 @@ public class POReplacement_ConfirmationMPController implements Initializable, Sc
             if (pnDetail < 0 || pnDetail > poController.PurchaseOrderReceiving().getDetailCount() - 1) {
                 return;
             }
+            JFXUtil.setDisabled(oApp.getUserLevel() <= UserRight.ENCODER, tfCost);
             if (poController.PurchaseOrderReceiving().Detail(pnDetail).getStockId() != null && !poController.PurchaseOrderReceiving().Detail(pnDetail).getStockId().equals("")) {
                 poController.PurchaseOrderReceiving().Detail(pnDetail).setBrandId(poController.PurchaseOrderReceiving().Detail(pnDetail).Inventory().getBrandId());
             }

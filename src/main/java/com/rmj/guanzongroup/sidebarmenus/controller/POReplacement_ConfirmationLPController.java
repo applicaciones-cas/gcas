@@ -1065,6 +1065,7 @@ public class POReplacement_ConfirmationLPController implements Initializable, Sc
             if (pnDetail < 0 || pnDetail > poController.PurchaseOrderReceiving().getDetailCount() - 1) {
                 return;
             }
+            JFXUtil.setDisabled(oApp.getUserLevel() <= UserRight.ENCODER, tfCost);
             // Expiry Date
             String lsExpiryDate = CustomCommonUtil.formatDateToShortString(poController.PurchaseOrderReceiving().Detail(pnDetail).getExpiryDate());
             dpExpiryDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsExpiryDate, "yyyy-MM-dd"));

@@ -1040,6 +1040,7 @@ public class POReplacement_ConfirmationSPMCController implements Initializable, 
             if (pnDetail < 0 || pnDetail > poController.PurchaseOrderReceiving().getDetailCount() - 1) {
                 return;
             }
+            JFXUtil.setDisabled(oApp.getUserLevel() <= UserRight.ENCODER, tfCost);
             tfBarcode.setText(poController.PurchaseOrderReceiving().Detail(pnDetail).Inventory().getBarCode());
             tfDescription.setText(poController.PurchaseOrderReceiving().Detail(pnDetail).Inventory().getDescription());
             tfSupersede.setText(poController.PurchaseOrderReceiving().Detail(pnDetail).Supersede().getBarCode());
