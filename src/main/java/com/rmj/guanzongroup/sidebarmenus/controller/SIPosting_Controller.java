@@ -257,7 +257,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
     private void populateJE() {
         try {
             JSONObject pnJSON = new JSONObject();
-            JFXUtil.setValueToNull(dpJETransactionDate, dpReportMonthYear, dpSIDate);
+            JFXUtil.setValueToNull(dpJETransactionDate, dpReportMonthYear);
             JFXUtil.clearTextFields(apJEMaster, apJEDetail);
             pnJSON = poPurchaseReceivingController.PurchaseOrderReceiving().populateJournal();
             if (JFXUtil.isJSONSuccess(pnJSON)) {
@@ -1495,10 +1495,12 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
             tfTrucking.setText(poPurchaseReceivingController.PurchaseOrderReceiving().Master().Trucking().getCompanyName());
 
             String lsReferenceDate = CustomCommonUtil.formatDateToShortString(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getReferenceDate());
-            dpReferenceDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsReferenceDate, "yyyy-MM-dd"));
+            dpReferenceDate.setValue(JFXUtil.isObjectEqualTo(lsReferenceDate, "1900-01-01") ? null : CustomCommonUtil.parseDateStringToLocalDate(lsReferenceDate, "yyyy-MM-dd"));
+
             tfReferenceNo.setText(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getReferenceNo());
             String lsSIDate = CustomCommonUtil.formatDateToShortString(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getSalesInvoiceDate());
-            dpSIDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsSIDate, "yyyy-MM-dd"));
+            dpSIDate.setValue(JFXUtil.isObjectEqualTo(lsSIDate, "1900-01-01") ? null : CustomCommonUtil.parseDateStringToLocalDate(lsSIDate, "yyyy-MM-dd"));
+
             tfSINo.setText(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getSalesInvoice());
             tfTerm.setText(poPurchaseReceivingController.PurchaseOrderReceiving().Master().Term().getDescription());
             taRemarks.setText(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getRemarks());
