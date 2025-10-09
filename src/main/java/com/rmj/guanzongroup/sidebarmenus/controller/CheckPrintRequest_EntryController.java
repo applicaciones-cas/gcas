@@ -445,7 +445,8 @@ public class CheckPrintRequest_EntryController implements Initializable, ScreenI
                                         poCheckPrintingRequestController.CheckPayments(lnCntr).Banks().getBankName(),
                                         poCheckPrintingRequestController.CheckPayments(lnCntr).Bank_Account_Master().getAccountNo(),
                                         CustomCommonUtil.formatDateToShortString(poCheckPrintingRequestController.CheckPayments(lnCntr).getTransactionDate()),
-                                        poCheckPrintingRequestController.CheckPayments(lnCntr).getSourceNo()
+                                        poCheckPrintingRequestController.CheckPayments(lnCntr).getSourceNo(),
+                                        ""
                                 ));
                             }
                         }

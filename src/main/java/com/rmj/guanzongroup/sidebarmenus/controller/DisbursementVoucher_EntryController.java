@@ -730,8 +730,9 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                                             obj.get("TransactionType") != null ? obj.get("TransactionType").toString() : "",
                                             obj.get("sBranchNme") != null ? obj.get("sBranchNme").toString() : "",
                                             obj.get("dTransact") != null ? obj.get("dTransact").toString() : "",
-                                            obj.get("sTransNox") != null ? obj.get("sTransNox").toString() : "",
-                                            obj.get("Balance") != null ? CustomCommonUtil.setIntegerValueToDecimalFormat(obj.get("Balance"), true) : ""
+                                            obj.get("Reference") != null ? obj.get("Reference").toString() : "",
+                                            obj.get("Balance") != null ? CustomCommonUtil.setIntegerValueToDecimalFormat(obj.get("Balance"), true) : "",
+                                            obj.get("sTransNox") != null ? obj.get("sTransNox").toString() : ""
                                     );
                                     main_data.add(loMain);
                                 }
@@ -986,7 +987,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                     int pnRowMain = Integer.parseInt(selected.getIndex01()) - 1;
                     pnMain = pnRowMain;
                     String lsTransactionType = selected.getIndex02();
-                    String lsTransactionNo = selected.getIndex05();
+                    String lsTransactionNo = selected.getIndex07();
                     String lsHighLight = selected.getIndex01();
                     poJSON = poDisbursementController.addUnifiedPaymentToDisbursement(lsTransactionNo, lsTransactionType);
                     if ("error".equals(poJSON.get("result"))) {
@@ -1336,9 +1337,38 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                 tfAccountCode, tfAccountDescription, tfDebitAmount, tfCreditAmount,tfVatAmountDetail,tfVatRateDetail, tfSearchBranch,tfSearchParticular,tfSearchPayee);
         loTxtFieldKeyPressed.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
         
-        
+        JFXUtil.setFocusListener(txtSearch_Focus, tfSearchBranch,tfSearchParticular,tfSearchPayee);
 
     }
+    final ChangeListener<? super Boolean> txtSearch_Focus = (o, ov, nv) -> {
+        poJSON = new JSONObject();
+        TextField txtMasterCheck = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
+        String lsTxtFieldID = (txtMasterCheck.getId());
+        String lsValue = (txtMasterCheck.getText() == null ? "" : txtMasterCheck.getText());
+
+        lastFocusedTextField = txtMasterCheck;
+        previousSearchedTextField = null;
+//        if (lsValue == null) {
+//            return;
+//        }
+        if (!nv) {
+            /*Lost Focus*/
+            switch (lsTxtFieldID) {
+                case "tfSearchBranch":
+                    if(lsValue == null || lsValue.isEmpty()){
+                        poDisbursementController.Master().setSearchBranch(null);
+                        loadTableMain();
+                    }
+                    break;
+                case "tfSearchPayee":
+                    if(lsValue == null || lsValue.isEmpty()){
+                        poDisbursementController.Master().setSearchpayee(null);
+                        loadTableMain();
+                    }
+                    break;
+            }
+        }
+    };
     final ChangeListener<? super Boolean> txtMasterCheck_Focus = (o, ov, nv) -> {
         poJSON = new JSONObject();
         TextField txtMasterCheck = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
@@ -1664,22 +1694,22 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                     case F3:
                         switch (lsID) {
                             case "tfSearchPayee":
-                                poJSON = poDisbursementController.SearchPayee(lsValue, false);
+                                poJSON = poDisbursementController.SearchFilterpayee(lsValue, false);
                                 if ("error".equals((String) poJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
                                     return;
                                 }
-                                tfSearchPayee.setText(poDisbursementController.Master().Payee().getPayeeName());
+                                tfSearchPayee.setText((String)poJSON.get("payee"));
                                 loadTableMain();
                                 break;
                                 
                             case "tfSearchBranch":
-                                poJSON = poDisbursementController.SearchBranch(lsValue, false);
+                                poJSON = poDisbursementController.SearchFilterBranch(lsValue, false);
                                 if ("error".equals((String) poJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
                                     return;
                                 }
-                                tfSearchPayee.setText(poDisbursementController.Master().Branch().getBranchName());
+                                tfSearchBranch.setText((String)poJSON.get("branch"));
                                 loadTableMain();
                                 break;
                                 
@@ -2948,4 +2978,6 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
         tfAuthorizedPerson.clear();
         JFXUtil.setValueToNull(null, cmbPayeeType, cmbDisbursementMode, cmbClaimantType);
     }
+ 
+    
 }
