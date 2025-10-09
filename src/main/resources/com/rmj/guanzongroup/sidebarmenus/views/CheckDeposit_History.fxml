@@ -174,6 +174,7 @@
                                                       <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="10.0" vgrow="SOMETIMES" />
                                                       <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                       <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                      <RowConstraints maxHeight="-Infinity" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                       <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
                                                       <RowConstraints maxHeight="-Infinity" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                       <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -196,26 +197,26 @@
                                                             <Font name="System Bold" size="14.0" />
                                                          </font>
                                                       </Label>
-                                                  <Label text="Remarks" GridPane.rowIndex="6">
+                                                  <Label text="Remarks" GridPane.rowIndex="7">
                                                          <font>
                                                             <Font size="12.0" />
                                                          </font>
                                                       </Label>
-                                                  <Label text="Bank Account No" GridPane.rowIndex="4">
+                                                  <Label text="Bank Account No" GridPane.rowIndex="5">
                                                          <font>
                                                             <Font size="12.0" />
                                                          </font>
                                                       </Label>
-                                                      <Label layoutX="31.0" layoutY="14.0" text="Total" GridPane.columnIndex="8" GridPane.rowIndex="7">
+                                                      <Label layoutX="31.0" layoutY="14.0" text="Total" GridPane.columnIndex="8" GridPane.rowIndex="8">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
                                                   <TextField fx:id="tfTransactionNo" disable="true" editable="false" maxHeight="25.0" prefWidth="139.0" style="-fx-font-weight: bold;" styleClass="DisabledTextField" GridPane.columnIndex="2" />
                                                       <DatePicker fx:id="dpTransactionDate" editable="false" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                                                  <TextField fx:id="tfBankAccountNo" editable="false" maxHeight="25.0" GridPane.columnIndex="2" GridPane.columnSpan="5" GridPane.rowIndex="4" />
-                                                      <TextField fx:id="tfTotal" alignment="CENTER_RIGHT" disable="true" editable="false" promptText="0.00" styleClass="DisabledTextField" GridPane.columnIndex="10" GridPane.rowIndex="7" />
-                              <TextArea fx:id="taRemarks" editable="false" prefHeight="27.0" GridPane.columnIndex="2" GridPane.columnSpan="5" GridPane.rowIndex="6" GridPane.rowSpan="2">
+                                                  <TextField fx:id="tfBankAccountNo" editable="false" maxHeight="25.0" GridPane.columnIndex="2" GridPane.columnSpan="5" GridPane.rowIndex="5" />
+                                                      <TextField fx:id="tfTotal" alignment="CENTER_RIGHT" disable="true" editable="false" promptText="0.00" styleClass="DisabledTextField" GridPane.columnIndex="10" GridPane.rowIndex="8" />
+                              <TextArea fx:id="taRemarks" editable="false" prefHeight="27.0" GridPane.columnIndex="2" GridPane.columnSpan="5" GridPane.rowIndex="7" GridPane.rowSpan="2">
                                  <GridPane.margin>
                                     <Insets top="1.0" />
                                  </GridPane.margin>
@@ -226,12 +227,18 @@
                                                          </font>
                                                       </Label>
                                                       <DatePicker fx:id="dpTransactionReferDate" editable="false" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-                                                      <Label text="Bank Account Name" GridPane.rowIndex="5">
+                                                      <Label text="Bank Account Name" GridPane.rowIndex="6">
                                                          <font>
                                                             <Font size="12.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField fx:id="tfBankAccountName" editable="false" maxHeight="25.0" GridPane.columnIndex="2" GridPane.columnSpan="5" GridPane.rowIndex="5" />
+                                                      <TextField fx:id="tfBankAccountName" editable="false" maxHeight="25.0" GridPane.columnIndex="2" GridPane.columnSpan="5" GridPane.rowIndex="6" />
+                                                      <Label text="Bank" GridPane.rowIndex="4">
+                                                         <font>
+                                                            <Font size="12.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField fx:id="tfBankMaster" editable="false" maxHeight="25.0" GridPane.columnIndex="2" GridPane.columnSpan="5" GridPane.rowIndex="4" />
                                               </children>
                                           </GridPane>
                                       </children>
@@ -293,7 +300,7 @@
                                                             <Font size="12.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField fx:id="tfCheckTransNo" maxHeight="25.0" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.columnSpan="2" />
+                                                      <TextField fx:id="tfCheckTransNo" maxHeight="25.0" GridPane.columnIndex="2" GridPane.columnSpan="2" />
                                                       <DatePicker fx:id="dpCheckDate" editable="false" GridPane.columnIndex="7" GridPane.columnSpan="2" GridPane.rowIndex="1" />
                                                       <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" text="Check Date" GridPane.columnIndex="5" GridPane.rowIndex="1">
                                                          <font>
@@ -305,7 +312,7 @@
                                                             <Font size="12.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField fx:id="tfCheckNo" maxHeight="25.0" promptText="Press F3: Search" GridPane.columnIndex="7" GridPane.columnSpan="2" />
+                                                      <TextField fx:id="tfCheckNo" maxHeight="25.0" GridPane.columnIndex="7" GridPane.columnSpan="2" />
                                                       <Label text="Note" GridPane.rowIndex="3">
                                                          <font>
                                                             <Font size="12.0" />
