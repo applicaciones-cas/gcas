@@ -1114,6 +1114,7 @@ public class POReplacement_ConfirmationCarController implements Initializable, S
             if (poController.PurchaseOrderReceiving().Detail(pnDetail).getStockId() != null && !poController.PurchaseOrderReceiving().Detail(pnDetail).getStockId().equals("")) {
                 poController.PurchaseOrderReceiving().Detail(pnDetail).setBrandId(poController.PurchaseOrderReceiving().Detail(pnDetail).Inventory().getBrandId());
             }
+            JFXUtil.setDisabled(oApp.getUserLevel() <= UserRight.ENCODER, tfCost);
 
             tfBrand.setText(poController.PurchaseOrderReceiving().Detail(pnDetail).Brand().getDescription()); //TODO
             tfModelVariant.setText(poController.PurchaseOrderReceiving().Detail(pnDetail).Inventory().Variant().getDescription()); //TODO
