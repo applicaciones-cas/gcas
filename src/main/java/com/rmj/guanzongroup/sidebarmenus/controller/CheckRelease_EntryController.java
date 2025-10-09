@@ -164,11 +164,18 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
         if (e.getClickCount() == 1 && !e.isConsumed()) {
             e.consume();
             
+            //check selected detail row if not empty, ask user to replace the existing. else add to row item
+            if (!tblColDetailReference.getCellData(pnTransactionDetail).isEmpty()) {
+                if (ShowMessageFX.OkayCancel("Do you want to replace item on row " + String.valueOf(pnTransactionDetail) + "?", "Initialize check transaction", null) == false) {
+                    return;
+                }
+            }
             //set entry no default value by counting list item from details
-            if (!isJSONSuccess(poAppController.LoadCheckTransaction(tblColTransNo.getCellData(pnSelectMaster), pnTransactionDetail >= 0 ? pnTransactionDetail : laCheckListDetail.size() + 1), psFormName)) {
+            if (!isJSONSuccess(poAppController.LoadCheckTransaction(tblColTransNo.getCellData(pnSelectMaster), pnTransactionDetail), psFormName)) {
                 return;
             }
             getLoadedTransaction();
+
         }
         return;
     }
@@ -334,6 +341,61 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
                     pnEditMode = poAppController.getEditMode();
                     break;
                     
+                case "btnUpdate":
+                    if (poAppController.GetMaster().getTransactionNo() == null || poAppController.GetMaster().getTransactionNo().isEmpty()) {
+                        ShowMessageFX.Information("Please load transaction before proceeding..", "Stock Request Issuance", "");
+                        return;
+                    }
+                    poAppController.OpenTransaction(poAppController.GetMaster().getTransactionNo());
+                    if (!isJSONSuccess(poAppController.UpdateTransaction(), "Initialize UPdate Transaction")) {
+                        return;
+                    }
+                    getLoadedTransaction();
+                    pnEditMode = poAppController.getEditMode();
+                    break;
+                    
+                case "btnSave":
+                    if (poAppController.GetMaster().getTransactionNo() == null || poAppController.GetMaster().getTransactionNo().isEmpty()) {
+                        ShowMessageFX.Information("Please load transaction before proceeding..", "Stock Request Issuance", "");
+                        return;
+                    }
+
+    //                    if (!isJSONSuccess(poAppController.SaveTransaction(), "Initialize Save Transaction")) {
+    //                        return;
+    //                    }
+                    getLoadedTransaction();
+                    pnEditMode = poAppController.getEditMode();
+
+                    break;
+
+                case "btnCancel":
+                    if (ShowMessageFX.OkayCancel(null, psFormName, "Do you want to disregard changes?") == true) {
+                        poAppController = new CheckController(poApp, poLogWrapper).CheckRelease();
+                        poAppController.setTransactionStatus("0");
+
+                        if (!isJSONSuccess(poAppController.initTransaction(), "Initialize Transaction")) {
+                            unloadForm appUnload = new unloadForm();
+                            appUnload.unloadForm(apMainAnchor, poApp, psFormName);
+                        }
+
+                        Platform.runLater(() -> {
+
+                            poAppController.setTransactionStatus("0");
+                            poAppController.GetMaster().setIndustryId(psIndustryID);
+                            poAppController.setIndustryID(psIndustryID);
+
+                            clearAllInputs();
+                        });
+                        pnEditMode = poAppController.getEditMode();
+                        break;
+                    }
+                    break;
+
+                case "btnHistory":
+                    ShowMessageFX.Information(null, psFormName,
+                            "This feature is under development and will be available soon.\nThank you for your patience!");
+                    break;
+                    
             }
         }catch(Exception e){
             Logger.getLogger(DeliverySchedule_EntryController.class.getName()).log(Level.SEVERE, null, e);
@@ -370,9 +432,9 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
 
                                     }
                                 }
-                                
+ 
                                 if (!isJSONSuccess(poAppController.SearchTransactionMaster(tfSearchTransNo.getText().toString(), true, true), "Initialize Search Check Release Master")) {
-                                return;
+                                    return;
                                 }
                                 if (!isJSONSuccess(poAppController.LoadDetail(poAppController.GetMaster().getTransactionNo()),
                                         "Initialize : Load of Transaction List")) {
@@ -604,7 +666,7 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
             
             if(pnTransactionDetail < 0)  return;
 
-            Model_Check_Payments loCheck = poAppController.getCheckDetail(pnTransactionDetail);
+            Model_Check_Payments loCheck = poAppController.GetCheckDetail(pnTransactionDetail);
 
             tfSearchCheckRef.setText(loCheck.getTransactionNo());
             tfPayee.setText(loCheck.Payee().getPayeeName());
@@ -631,7 +693,7 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
             @Override
             protected ObservableList<Model_Check_Payments> call() throws Exception {
                 
-                laCheckListPayment.setAll(poAppController.getCheckPaymentList());
+                laCheckListPayment.setAll(poAppController.GetCheckPaymentList());
                 return laCheckListPayment;
             }
             
@@ -817,11 +879,11 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
     private void reloadTableDetail(){
         
         //load check payments
-        laCheckListDetail.setAll(poAppController.getDetailCheckList());
+        laCheckListDetail.setAll(poAppController.GetDetailCheckList());
   
         // Restore or select last row
-        int indexToSelect = (pnTransactionDetail >= 1 && pnTransactionDetail < laCheckListDetail.size())
-                ? pnTransactionDetail - 1
+        int indexToSelect = (pnTransactionDetail >= 0 && pnTransactionDetail < laCheckListDetail.size())
+                ? pnTransactionDetail
                 : laCheckListDetail.size() - 1;
 
         tblViewDetails.getSelectionModel().select(indexToSelect);
