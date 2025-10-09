@@ -901,8 +901,14 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
             chbkIsCrossCheck.setSelected(poDisbursementController.CheckPayments().getModel().isCross());
             chbkIsPersonOnly.setSelected(poDisbursementController.CheckPayments().getModel().isPayee());
             cmbCheckStatus.getSelectionModel().select(!poDisbursementController.CheckPayments().getModel().getTransactionStatus().equals("") ? Integer.valueOf(poDisbursementController.CheckPayments().getModel().getTransactionStatus()) : -1);
-
-        } catch (SQLException | GuanzonException ex) {
+            if (!chbkPrintByBank.isSelected()){
+                    cmbPayeeType.setDisable(true);
+                    cmbDisbursementMode.setDisable(true);
+                    cmbDisbursementMode.setDisable(true);
+                    cmbClaimantType.setDisable(true);
+                    tfAuthorizedPerson.setDisable(true);
+            }
+        } catch (SQLException | GuanzonException ex) {  
             Logger.getLogger(DisbursementVoucher_EntryController.class
                     .getName()).log(Level.SEVERE, null, ex);
         }
@@ -2433,6 +2439,19 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
         chbkPrintByBank.setOnAction(event -> {
             if ((pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE)) {
                 poDisbursementController.Master().setBankPrint(chbkPrintByBank.isSelected() == true ? "1" : "0");
+                if (!chbkPrintByBank.isSelected()){
+                    cmbPayeeType.setDisable(true);
+                    cmbDisbursementMode.setDisable(true);
+                    cmbDisbursementMode.setDisable(true);
+                    cmbClaimantType.setDisable(true);
+                    tfAuthorizedPerson.setDisable(true);
+                }else{
+                     cmbPayeeType.setDisable(false);
+                    cmbDisbursementMode.setDisable(false);
+                    cmbDisbursementMode.setDisable(false);
+                    cmbClaimantType.setDisable(false);
+                    tfAuthorizedPerson.setDisable(false);
+                }
                 initFields(pnEditMode);
             }
         }
