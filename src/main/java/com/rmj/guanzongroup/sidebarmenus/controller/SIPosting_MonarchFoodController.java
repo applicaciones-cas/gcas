@@ -1175,7 +1175,7 @@ public class SIPosting_MonarchFoodController implements Initializable, ScreenInt
 
                             if (pbSuccess && (selectedDate.isAfter(transactionDate))) {
                                 poJSON.put("result", "error");
-                                poJSON.put("message", "Reference date cannot be later than the receiving date.");
+                                poJSON.put("message", "SI date cannot be later than the receiving date.");
                                 pbSuccess = false;
                             }
 
