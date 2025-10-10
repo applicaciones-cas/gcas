@@ -55,6 +55,7 @@ import org.json.simple.JSONObject;
 import ph.com.guanzongroup.cas.cashflow.model.Model_Check_Payments;
 import ph.com.guanzongroup.cas.check.module.mnv.CheckRelease;
 import ph.com.guanzongroup.cas.check.module.mnv.constant.CheckReleaseStatus;
+import ph.com.guanzongroup.cas.check.module.mnv.models.Model_Check_Release_Detail;
 import ph.com.guanzongroup.cas.check.module.mnv.services.CheckController;
 
 /**
@@ -71,7 +72,7 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
     private CheckRelease poAppController;
     
     private ObservableList<Model_Check_Payments> laCheckListPayment = FXCollections.observableArrayList();
-    private ObservableList<Model_Check_Payments> laCheckListDetail = FXCollections.observableArrayList();
+    private ObservableList<Model_Check_Release_Detail> laCheckListDetail = FXCollections.observableArrayList();
     
     private int pnSelectMaster, pnTransactionDetail, pnEditMode;
     
@@ -98,13 +99,13 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
     private TableView<Model_Check_Payments> tblViewMaster;
     
     @FXML
-    private TableView<Model_Check_Payments> tblViewDetails;
+    private TableView<Model_Check_Release_Detail> tblViewDetails;
     
     @FXML
     private TableColumn<Model_Check_Payments, String> tblColNo, tblColTransNo, tblColTransDate, tblColCheckNo, tblColCheckAmt;
     
     @FXML
-    private TableColumn<Model_Check_Payments, String> tblColDetailNo, tblColDetailReference, tblColDetailPayee, tblColDetailParticular, tblColDetailCheckDt, tblColDetailCheckNo, tblColDetailAmt;
+    private TableColumn<Model_Check_Release_Detail, String> tblColDetailNo, tblColDetailReference, tblColDetailPayee, tblColDetailParticular, tblColDetailCheckDt, tblColDetailCheckNo, tblColDetailAmt;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -156,28 +157,49 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
     @FXML
     void ontblMasterClicked(MouseEvent e) {
         
-        pnSelectMaster = tblViewMaster.getSelectionModel().getSelectedIndex();
-        if (pnSelectMaster < 0) {
-            return;
-        }
-
-        if (e.getClickCount() == 1 && !e.isConsumed()) {
-            e.consume();
+        try{
             
-            //check selected detail row if not empty, ask user to replace the existing. else add to row item
-            if (!tblColDetailReference.getCellData(pnTransactionDetail).isEmpty()) {
-                if (ShowMessageFX.OkayCancel("Do you want to replace item on row " + String.valueOf(pnTransactionDetail) + "?", "Initialize check transaction", null) == false) {
-                    return;
-                }
-            }
-            //set entry no default value by counting list item from details
-            if (!isJSONSuccess(poAppController.LoadCheckTransaction(tblColTransNo.getCellData(pnSelectMaster), pnTransactionDetail), psFormName)) {
+            pnSelectMaster = tblViewMaster.getSelectionModel().getSelectedIndex();
+            if (pnSelectMaster < 0) {
                 return;
             }
-            getLoadedTransaction();
 
+            if (e.getClickCount() == 1 && !e.isConsumed()) {
+                e.consume();
+
+                //On AddNew or Update Mode, ask uesr to confirm replace of item on detail.
+                if (poAppController.GetMaster().getTransactionNo().isEmpty()) {
+                   ShowMessageFX.Information("Please load transaction!", "Initialize check transaction", null);
+                   return;
+                }
+
+                //if selected detail is empty, set checklist size as default
+                if (pnTransactionDetail < 0) {
+                    pnTransactionDetail = laCheckListDetail.size();
+                }
+
+                //check selected row's transaction no if not empty, ask user to replace the existing.
+                if (tblColDetailReference.getCellData(pnTransactionDetail) != null) {
+                    if (!tblColDetailReference.getCellData(pnTransactionDetail).isEmpty()) {
+                        if (ShowMessageFX.OkayCancel("Do you want to replace item on row " + String.valueOf(pnTransactionDetail + 1) + "?", "Initialize check transaction", null) == false) {
+                            return;
+                        }
+                    }
+                }
+
+                //set entry no default value by counting list item from details
+                if (!isJSONSuccess(poAppController.LoadCheckTransaction(tblColTransNo.getCellData(pnSelectMaster), pnTransactionDetail), psFormName)) {
+                    return;
+                }
+                ComputeTotal();
+                getLoadedTransaction();
+
+            }
+
+        }catch(SQLException | GuanzonException ex){
+            Logger.getLogger(CheckRelease.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
-        return;
     }
     
     @FXML
@@ -329,6 +351,30 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
                             clearAllInputs();
                             getLoadedTransaction();
                             break;
+                            
+                            case "tfSearchPayee":
+                            if (!isJSONSuccess(poAppController.SearchCheckTransaction(tfSearchPayee.getText().toString(),
+                                    true, false), "Initialize Search Check Release Master")) {
+                                break;
+                            }
+                            LoadCheckPayments();
+                            break;
+                            
+                        case "tfSearchCheck":
+                            if (!isJSONSuccess(poAppController.SearchCheckTransaction(tfSearchCheck.getText().toString(), false, false), "Initialize Search Check Release Master")) {
+                                break;
+                            }
+                            LoadCheckPayments();
+                            break;
+                            
+                        case "dpCheckDtFrm":
+                        case "dpCheckDTTo":
+                            if (!isJSONSuccess(poAppController.LoadCheckListByDate(String.valueOf(dpCheckDtFrm.getValue()), String.valueOf(dpCheckDTTo.getValue())),
+                                    "Initialize : Load of Transaction List")) {
+                                return;
+                            }
+                            LoadCheckPayments();
+                            break;
                     }
                     break;
                     
@@ -360,9 +406,9 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
                         return;
                     }
 
-    //                    if (!isJSONSuccess(poAppController.SaveTransaction(), "Initialize Save Transaction")) {
-    //                        return;
-    //                    }
+                    if (!isJSONSuccess(poAppController.SaveTransaction(), "Initialize Save Transaction")) {
+                        return;
+                    }
                     getLoadedTransaction();
                     pnEditMode = poAppController.getEditMode();
 
@@ -443,6 +489,8 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
 
                                 clearAllInputs();
                                 getLoadedTransaction();
+                                
+                                break;
                         
                             case "tfSearchReceived":
                                 if (pnEditMode != EditMode.READY && pnEditMode != EditMode.UNKNOWN) {
@@ -466,6 +514,8 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
 
                                 clearAllInputs();
                                 getLoadedTransaction();
+                                
+                                break;
 
                             case "tfSearchPayee":
                                 if (!isJSONSuccess(poAppController.SearchCheckTransaction(tfSearchPayee.getText().toString(), true, false), "Initialize Search Check Release Master")) {
@@ -512,6 +562,45 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
             if (!nv) {
                 /*Lost Focus*/
                 switch (lsTextFieldID) {
+                    
+                    case "tfCheckAmt":
+                        if (poAppController.GetMaster().getTransactionNo().isEmpty()) {
+                            ShowMessageFX.Information("Please load transaction!", "Initalize Check Amount", null);
+                            return;
+                        }
+                        
+                        if (tfCheckAmt.getText().toString().isEmpty() || tfCheckAmt.getText() == null) {
+                            ShowMessageFX.Information("Check amount is invalid.", "Initalize Check Amount", null);
+                            tfCheckAmt.requestFocus();
+                            return;
+                        }
+                        
+                        double ldblCheckAmt = Double.parseDouble(tfCheckAmt.getText().toString());
+                        if (ldblCheckAmt < 0) {
+                            ShowMessageFX.Information("Check amount is invalid.", "Initalize Check Amount", null);
+                            tfCheckAmt.requestFocus();
+                            return;
+                        }
+                        
+                        if (ldblCheckAmt == 0) {
+                            ShowMessageFX.Information("Check amount is 0. It will be disregarded on saving detail list.", "Initalize Check Amount", null);
+                            return;
+                        }
+                        
+                        if (ldblCheckAmt != poAppController.GetDetail(pnTransactionDetail).CheckPayment().getAmount()) {
+                            ShowMessageFX.Information("Check amount should be zero or same as original amount!", "Initalize Check Amount", null);
+                            tfCheckAmt.requestFocus();
+                            return;
+                        }
+                        
+                        poAppController.GetDetail(pnTransactionDetail).CheckPayment().setAmount(Integer.parseInt(tfCheckAmt.getText().toString()));
+                        ComputeTotal();
+                        getLoadedTransaction();
+                        break;
+                        
+                    case "tfNote":
+                        poAppController.GetDetail(pnTransactionDetail).CheckPayment().setRemarks(tfNote.getText().toString());
+                        break;
                 }
             } else {
                 loTextField.selectAll();
@@ -537,111 +626,6 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
         }
     };
     
-    private void initControlEvents() {
-        List<Control> laControls = getAllSupportedControls();
-
-        for (Control loControl : laControls) {
-            //add more if required
-            if (loControl instanceof TextField) {
-                TextField loControlField = (TextField) loControl;
-                controllerFocusTracker(loControlField);
-                loControlField.setOnKeyPressed(this::txtField_KeyPressed);
-                loControlField.focusedProperty().addListener(txtField_Focus);
-            } else if (loControl instanceof TableView) {
-                TableView loControlField = (TableView) loControl;
-                controllerFocusTracker(loControlField);
-            } else if (loControl instanceof ComboBox) {
-                ComboBox loControlField = (ComboBox) loControl;
-                controllerFocusTracker(loControlField);
-            } else if (loControl instanceof DatePicker) {
-                DatePicker loControlField = (DatePicker) loControl;
-                controllerFocusTracker(loControlField);
-                loControlField.focusedProperty().addListener(dPicker_Focus);
-            }
-        }
-
-        clearAllInputs();
-    }
-    
-    private void clearAllInputs() {
-
-        List<Control> laControls = getAllSupportedControls();
-
-        for (Control loControl : laControls) {
-            if (loControl instanceof TextField) {
-                ((TextField) loControl).clear();
-            } else if (loControl instanceof TextArea) {
-                ((TextArea) loControl).clear();
-            } else if (loControl != null && loControl instanceof TableView) {
-                TableView<?> table = (TableView<?>) loControl;
-                if (table.getItems() != null) {
-                    table.getItems().clear();
-                }
-
-            } else if (loControl instanceof DatePicker) {
-                ((DatePicker) loControl).setValue(null);
-            } else if (loControl instanceof ComboBox) {
-                ((ComboBox) loControl).setItems(null);
-            }
-        }
-        pnEditMode = poAppController.getEditMode();
-        initButtonDisplay(poAppController.getEditMode());
-        try {
-            dpCheckDate.setValue(ParseDate((Date) poApp.getServerDate()));
-            dpCheckDtFrm.setValue(ParseDate((Date) poApp.getServerDate()));
-            dpCheckDTTo.setValue(ParseDate((Date) poApp.getServerDate()));
-        } catch (SQLException ex) {
-            Logger.getLogger(CheckDeposit_EntryController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-    
-    private void initButtonDisplay(int fnEditMode) {
-        boolean lbShow = (fnEditMode == EditMode.ADDNEW || fnEditMode == EditMode.UPDATE);
-
-        // Always show these buttons
-        initButtonControls(true, "btnRetrieve", "btnHistory", "btnClose");
-
-        // Show-only based on mode
-        initButtonControls(lbShow, "btnSearch", "btnSave", "btnCancel");
-        initButtonControls(!lbShow, "btnBrowse", "btnNew", "btnUpdate");
-
-        apMaster.setDisable(!lbShow);
-        apDetail.setDisable(!lbShow);
-    }
-
-    private void initButtonControls(boolean visible, String... buttonFxIdsToShow) {
-        Set<String> showOnly = new HashSet<>(Arrays.asList(buttonFxIdsToShow));
-
-        for (Field loField : getClass().getDeclaredFields()) {
-            loField.setAccessible(true);
-            String fieldName = loField.getName(); // fx:id
-
-            // Only touch the buttons listed
-            if (!showOnly.contains(fieldName)) {
-                continue;
-            }
-            try {
-                Object value = loField.get(this);
-                if (value instanceof Button) {
-                    Button loButton = (Button) value;
-                    loButton.setVisible(visible);
-                    loButton.setManaged(visible);
-                }
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-                poLogWrapper.severe(psFormName + " :" + e.getMessage());
-            }
-        }
-    }
-
-    private void controllerFocusTracker(Control control) {
-        control.focusedProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal) {
-                lastFocusedControl = control;
-            }
-        });
-    }
-    
     private void InitTransactionMaster(){
         
         try {
@@ -666,7 +650,7 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
             
             if(pnTransactionDetail < 0)  return;
 
-            Model_Check_Payments loCheck = poAppController.GetCheckDetail(pnTransactionDetail);
+            Model_Check_Payments loCheck = poAppController.GetDetail(pnTransactionDetail).CheckPayment();
 
             tfSearchCheckRef.setText(loCheck.getTransactionNo());
             tfPayee.setText(loCheck.Payee().getPayeeName());
@@ -778,16 +762,16 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
         overlay.setVisible(true);
         pi.setVisible(true);
 
-        Task<ObservableList<Model_Check_Payments>> loadCheckPayment = new Task<ObservableList<Model_Check_Payments>>() {
+        Task<ObservableList<Model_Check_Release_Detail>> loadCheckPayment = new Task<ObservableList<Model_Check_Release_Detail>>() {
             @Override
-            protected ObservableList<Model_Check_Payments> call() throws Exception {
+            protected ObservableList<Model_Check_Release_Detail> call() throws Exception {
                 return laCheckListDetail;
             }
 
             @Override
             protected void succeeded() {
                 
-                ObservableList<Model_Check_Payments> laDetailList = getValue();
+                ObservableList<Model_Check_Release_Detail> laDetailList = getValue();
                     tblViewDetails.setItems(laDetailList);
 
                     tblColDetailNo.setCellValueFactory((loModel) -> {
@@ -797,7 +781,7 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
 
                     tblColDetailReference.setCellValueFactory((loModel) -> {
                         try{
-                            return new SimpleStringProperty(loModel.getValue().getTransactionNo());
+                            return new SimpleStringProperty(loModel.getValue().CheckPayment().getTransactionNo());
                         }catch(Exception e){
                             poLogWrapper.severe(psFormName, e.getMessage());
                             return new SimpleStringProperty("");
@@ -806,7 +790,7 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
 
                     tblColDetailPayee.setCellValueFactory((loModel) -> {
                         try{
-                            return new SimpleStringProperty(loModel.getValue().Payee().getPayeeName());
+                            return new SimpleStringProperty(loModel.getValue().CheckPayment().Payee().getPayeeName());
                         }catch(Exception e){
                             poLogWrapper.severe(psFormName, e.getMessage());
                             return new SimpleStringProperty("");
@@ -815,7 +799,7 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
 
                     tblColDetailParticular.setCellValueFactory((loModel) -> {
                         try{
-                            return new SimpleStringProperty(loModel.getValue().Banks().getBankName());
+                            return new SimpleStringProperty(loModel.getValue().CheckPayment().Banks().getBankName());
                         }catch(Exception e){
                             poLogWrapper.severe(psFormName, e.getMessage());
                             return new SimpleStringProperty("");
@@ -824,7 +808,7 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
 
                     tblColDetailCheckDt.setCellValueFactory((loModel) -> {
                         try{
-                            return new SimpleStringProperty(String.valueOf(loModel.getValue().getCheckDate()));
+                            return new SimpleStringProperty(String.valueOf(loModel.getValue().CheckPayment().getCheckDate()));
                         }catch(Exception e){
                             poLogWrapper.severe(psFormName, e.getMessage());
                             return new SimpleStringProperty("");
@@ -833,7 +817,7 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
 
                     tblColDetailCheckNo.setCellValueFactory((loModel) -> {
                         try{
-                            return new SimpleStringProperty(loModel.getValue().getCheckNo());
+                            return new SimpleStringProperty(loModel.getValue().CheckPayment().getCheckNo());
                         }catch(Exception e){
                             poLogWrapper.severe(psFormName, e.getMessage());
                             return new SimpleStringProperty("");
@@ -842,7 +826,7 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
 
                     tblColDetailAmt.setCellValueFactory((loModel) -> {
                         try{
-                            return new SimpleStringProperty(String.valueOf(loModel.getValue().getAmount()));
+                            return new SimpleStringProperty(String.valueOf(loModel.getValue().CheckPayment().getAmount()));
                         }catch(Exception e){
                             poLogWrapper.severe(psFormName, e.getMessage());
                             return new SimpleStringProperty("");
@@ -876,10 +860,125 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
         thread.start();
     }
     
+    private void ComputeTotal() throws SQLException, GuanzonException{
+        
+        double ldbl_total = 0.00;
+        for (Model_Check_Release_Detail loPayments : poAppController.GetDetailList()) {
+            ldbl_total = ldbl_total + loPayments.CheckPayment().getAmount();
+        }
+        
+        poAppController.GetMaster().setTransactionTotal(ldbl_total);
+    }
+    
+    private void initControlEvents() {
+        List<Control> laControls = getAllSupportedControls();
+
+        for (Control loControl : laControls) {
+            //add more if required
+            if (loControl instanceof TextField) {
+                TextField loControlField = (TextField) loControl;
+                controllerFocusTracker(loControlField);
+                loControlField.setOnKeyPressed(this::txtField_KeyPressed);
+                loControlField.focusedProperty().addListener(txtField_Focus);
+            } else if (loControl instanceof TableView) {
+                TableView loControlField = (TableView) loControl;
+                controllerFocusTracker(loControlField);
+            } else if (loControl instanceof ComboBox) {
+                ComboBox loControlField = (ComboBox) loControl;
+                controllerFocusTracker(loControlField);
+            } else if (loControl instanceof DatePicker) {
+                DatePicker loControlField = (DatePicker) loControl;
+                controllerFocusTracker(loControlField);
+                loControlField.focusedProperty().addListener(dPicker_Focus);
+            }
+        }
+
+        clearAllInputs();
+    }
+    
+    private void clearAllInputs() {
+
+        List<Control> laControls = getAllSupportedControls();
+
+        for (Control loControl : laControls) {
+            if (loControl instanceof TextField) {
+                ((TextField) loControl).clear();
+            } else if (loControl instanceof TextArea) {
+                ((TextArea) loControl).clear();
+            } else if (loControl != null && loControl instanceof TableView) {
+                TableView<?> table = (TableView<?>) loControl;
+                if (table.getItems() != null) {
+                    table.getItems().clear();
+                }
+
+            } else if (loControl instanceof DatePicker) {
+                ((DatePicker) loControl).setValue(null);
+            } else if (loControl instanceof ComboBox) {
+                ((ComboBox) loControl).setItems(null);
+            }
+        }
+        pnEditMode = poAppController.getEditMode();
+        initButtonDisplay(poAppController.getEditMode());
+        try {
+            dpCheckDate.setValue(ParseDate((Date) poApp.getServerDate()));
+            dpCheckDtFrm.setValue(ParseDate((Date) poApp.getServerDate()));
+            dpCheckDTTo.setValue(ParseDate((Date) poApp.getServerDate()));
+        } catch (SQLException ex) {
+            Logger.getLogger(CheckDeposit_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    private void initButtonDisplay(int fnEditMode) {
+        boolean lbShow = (fnEditMode == EditMode.ADDNEW || fnEditMode == EditMode.UPDATE);
+
+        // Always show these buttons
+        initButtonControls(true, "btnRetrieve", "btnHistory", "btnClose");
+
+        // Show-only based on mode
+        initButtonControls(lbShow, "btnSearch", "btnSave", "btnCancel");
+        initButtonControls(!lbShow, "btnBrowse", "btnNew", "btnUpdate");
+
+        apMaster.setDisable(!lbShow);
+        apDetail.setDisable(!lbShow);
+    }
+
+    private void initButtonControls(boolean visible, String... buttonFxIdsToShow) {
+        Set<String> showOnly = new HashSet<>(Arrays.asList(buttonFxIdsToShow));
+
+        for (Field loField : getClass().getDeclaredFields()) {
+            loField.setAccessible(true);
+            String fieldName = loField.getName(); // fx:id
+
+            // Only touch the buttons listed
+            if (!showOnly.contains(fieldName)) {
+                continue;
+            }
+            try {
+                Object value = loField.get(this);
+                if (value instanceof Button) {
+                    Button loButton = (Button) value;
+                    loButton.setVisible(visible);
+                    loButton.setManaged(visible);
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+                poLogWrapper.severe(psFormName + " :" + e.getMessage());
+            }
+        }
+    }
+
+    private void controllerFocusTracker(Control control) {
+        control.focusedProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal) {
+                lastFocusedControl = control;
+            }
+        });
+    }
+    
     private void reloadTableDetail(){
         
         //load check payments
-        laCheckListDetail.setAll(poAppController.GetDetailCheckList());
+        laCheckListDetail.setAll(poAppController.GetDetailList());
   
         // Restore or select last row
         int indexToSelect = (pnTransactionDetail >= 0 && pnTransactionDetail < laCheckListDetail.size())
