@@ -305,15 +305,6 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
                             }
                             LoadCheckPayments();
                             break;
-                            
-                        case "dpCheckDtFrm":
-                        case "dpCheckDTTo":
-                            if (!isJSONSuccess(poAppController.LoadCheckListByDate(String.valueOf(dpCheckDtFrm.getValue()), String.valueOf(dpCheckDTTo.getValue())),
-                                    "Initialize : Load of Transaction List")) {
-                                return;
-                            }
-                            LoadCheckPayments();
-                            break;
                     }
                     break;
                     
@@ -366,7 +357,13 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
                             }
                             LoadCheckPayments();
                             break;
-                            
+                    }
+                    break;
+                    
+                case "btnRetrieve":
+                    
+                    switch (lastFocusedControl.getId()) {
+                        
                         case "dpCheckDtFrm":
                         case "dpCheckDTTo":
                             if (!isJSONSuccess(poAppController.LoadCheckListByDate(String.valueOf(dpCheckDtFrm.getValue()), String.valueOf(dpCheckDTTo.getValue())),
@@ -402,7 +399,7 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
                     
                 case "btnSave":
                     if (poAppController.GetMaster().getTransactionNo() == null || poAppController.GetMaster().getTransactionNo().isEmpty()) {
-                        ShowMessageFX.Information("Please load transaction before proceeding..", "Stock Request Issuance", "");
+                        ShowMessageFX.Information("Please load transaction before proceeding..", "Initialize Save Transaction", "");
                         return;
                     }
 
@@ -919,9 +916,12 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
         }
         pnEditMode = poAppController.getEditMode();
         initButtonDisplay(poAppController.getEditMode());
+        
         try {
+            LocalDate today = LocalDate.now();
+   
             dpCheckDate.setValue(ParseDate((Date) poApp.getServerDate()));
-            dpCheckDtFrm.setValue(ParseDate((Date) poApp.getServerDate()));
+            dpCheckDtFrm.setValue(today.minusMonths(1));
             dpCheckDTTo.setValue(ParseDate((Date) poApp.getServerDate()));
         } catch (SQLException ex) {
             Logger.getLogger(CheckDeposit_EntryController.class.getName()).log(Level.SEVERE, null, ex);
