@@ -93,6 +93,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
     private boolean lsIsSaved = false;
     private boolean pbIsCheckedJournalTab = false;
     private boolean pbIsVerifier = false;
+    private boolean isWithVAToriginal = false;
 //    private boolean pbIsFromBrowse = false;
     private final String pxeModuleName = "Disbursement Voucher";
     private Disbursement poDisbursementController;
@@ -331,13 +332,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
         initFields(pnEditMode);
         initButton(pnEditMode);
         pagination.setPageCount(0);
-        Node[] txtField_Focusx = {
-            tfTaxCodeDetail
-            
-        };
-        for (Node txtInput : txtField_Focusx) {
-            txtInput.focusedProperty().addListener(txtField_Focus);
-        }
+        
     }
 
     private void loadRecordSearch() {
@@ -958,7 +953,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                 tfTaxRateDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(pnDetailDV).getTaxRates(), false));
                 tfTaxAmountDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(pnDetailDV).getTaxAmount(), true));
                 tfNetAmountDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(pnDetailDV).getAmount()
-                        - poDisbursementController.Detail(pnDetailDV).getTaxAmount(), true));
+                        - (poDisbursementController.Detail(pnDetailDV).getTaxAmount() + poDisbursementController.Detail(pnDetailDV).getDetailVatAmount()), true));
                 
                 tfVatRateDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(pnDetailDV).getDetailVatRates(), false));
                 tfPartialPayment.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poJSONVAT.get("totalApplied"), true));
@@ -1331,7 +1326,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
         JFXUtil.setFocusListener(txtMasterOnlinePayment_Focus, tfBankNameOnlinePayment, tfBankAccountOnlinePayment, tfSupplierServiceName, tfSupplierAccountNo);
 
         JFXUtil.setFocusListener(txtDetailJE_Focus, tfAccountCode, tfAccountDescription, tfDebitAmount, tfCreditAmount);
-//        JFXUtil.setFocusListener(txtField_Focus,tfTaxCodeDetail);
+        JFXUtil.setFocusListener(txtField_Focus,tfTaxCodeDetail);
         //Initialise  TextField KeyPressed
         List<TextField> loTxtFieldKeyPressed = Arrays.asList(tfSupplier, tfPayeeName, tfBankNameCheck, tfBankAccountCheck, tfPurchasedAmountDetail, tfTaxCodeDetail, tfParticularsDetail, tfAuthorizedPerson,
                 tfAccountCode, tfAccountDescription, tfDebitAmount, tfCreditAmount,tfVatAmountDetail,tfVatRateDetail, tfSearchBranch,tfSearchParticular,tfSearchPayee);
@@ -1522,6 +1517,9 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
             try {
                 switch (lsTextFieldID) {
                     case "tfTaxCodeDetail":
+                       
+                        
+                        
 //                        if(poDisbursementController.Detail(pnDetailDV).getTaxCode().isEmpty() && poDisbursementController.Detail(pnDetailDV).isWithVat() ){
 //                            if(ShowMessageFX.YesNo("No Tax Code has been assigned. \n "
 //                                    + " VAT will not be applied, and this transaction requires user approval before proceeding.\n "
@@ -1616,25 +1614,25 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                                  
                                 poDisbursementController.Detail(pnDetailDV).setAmountApplied(Double.parseDouble(JFXUtil.removeComma(tfPurchasedAmountDetail.getText())));
                                 
-                                if (ShowMessageFX.YesNo("No Tax Code has been assigned. \n "
-                                            + " VAT will not be applied, and this transaction requires user approval before proceeding.\n "
-                                            + " Do you want to proceed?", pxeModuleName, null)) {
-                                        poJSON = poDisbursementController.callapproval();
-                                        if ("error".equals(poJSON.get("result"))) {
-                                            ShowMessageFX.Information((String) poJSON.get("message"), pxeModuleName, lsValue);
-                                            return;
-                                        }
-
-                                        poDisbursementController.Detail(pnDetailDV).isWithVat(false);
-                                        poDisbursementController.Detail(pnDetailDV).setDetailVatRates(DisbursementStatic.DefaultValues.default_value_double);
-                                        poDisbursementController.computeVat(pnDetailDV,
-                                                poDisbursementController.Detail(pnDetailDV).getAmount(),
-                                                poDisbursementController.Detail(pnDetailDV).getDetailVatRates(),
-                                                (double) poJSONVAT.get("totalApplied"),
-                                                true);
-
-                                        loadTableDetailDV();
-                                    }
+//                                if (ShowMessageFX.YesNo("No Tax Code has been assigned. \n "
+//                                            + " VAT will not be applied, and this transaction requires user approval before proceeding.\n "
+//                                            + " Do you want to proceed?", pxeModuleName, null)) {
+//                                        poJSON = poDisbursementController.callapproval();
+//                                        if ("error".equals(poJSON.get("result"))) {
+//                                            ShowMessageFX.Information((String) poJSON.get("message"), pxeModuleName, lsValue);
+//                                            return;
+//                                        }
+//
+//                                        poDisbursementController.Detail(pnDetailDV).isWithVat(false);
+//                                        poDisbursementController.Detail(pnDetailDV).setDetailVatRates(DisbursementStatic.DefaultValues.default_value_double);
+//                                        poDisbursementController.computeVat(pnDetailDV,
+//                                                poDisbursementController.Detail(pnDetailDV).getAmount(),
+//                                                poDisbursementController.Detail(pnDetailDV).getDetailVatRates(),
+//                                                (double) poJSONVAT.get("totalApplied"),
+//                                                true);
+//
+//                                        loadTableDetailDV();
+//                                    }
                                 poDisbursementController.computeVat(pnDetailDV,
                                         Double.parseDouble(JFXUtil.removeComma(tfPurchasedAmountDetail.getText())),
                                         Double.parseDouble(JFXUtil.removeComma(tfVatRateDetail.getText())),
@@ -1818,9 +1816,11 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                                 poJSON = poDisbursementController.SearchTaxCode(lsValue, pnDetailDV, false);
                                 if ("error".equals((String) poJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
+                                    
                                     return;
                                 }
                                 if (!poDisbursementController.Detail(pnDetailDV).isWithVat()){
+                                    isWithVAToriginal = false;
                                     poDisbursementController.Detail(pnDetailDV).isWithVat(true);
                                     poDisbursementController.Detail(pnDetailDV).setDetailVatRates((double) poJSONVAT.get("totalVatRa"));
                                     poDisbursementController.computeVat(pnDetailDV, 
