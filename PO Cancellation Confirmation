@@ -1,0 +1,86 @@
+Oct 13, 2025 2:51:54 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: PO Cancellation Confirmation : Success on PO Cancellation Confirmation
+Oct 13, 2025 2:52:00 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: PO Cancellation Confirmation : You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'LIKE 'a.sTransNox%' AND (a.cTranStat IN ('0', '7')) AND (a.sIndstCdx = '0007') A' at line 1
+Oct 13, 2025 2:52:01 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: PO Cancellation Confirmation : You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'LIKE 'a.sTransNox%' AND (a.cTranStat IN ('0', '7')) AND (a.sIndstCdx = '0007') A' at line 1
+Oct 13, 2025 2:55:08 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: PO Cancellation Confirmation : Success on PO Cancellation Confirmation
+Oct 13, 2025 2:55:10 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: PO Cancellation Confirmation : No record found.
+Oct 13, 2025 2:56:33 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: PO Cancellation Confirmation : No record loaded.
+Oct 13, 2025 2:56:35 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: PO Cancellation Confirmation : Success on Initialize : Load of Transaction List
+Oct 13, 2025 2:58:50 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: PO Cancellation Confirmation : Unable to open transaction detail record.
+Oct 13, 2025 2:58:53 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: PO Cancellation Confirmation : Success on PO Cancellation Confirmation
+Oct 13, 2025 2:58:59 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: PO Cancellation Confirmation : Unable to open transaction detail record.
+Oct 13, 2025 3:01:07 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: PO Cancellation Confirmation : Success on Initialize : Load of Transaction List
+Oct 13, 2025 3:01:18 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: PO Cancellation Confirmation : Success on Initialize : Load of Transaction List
+Oct 13, 2025 3:01:29 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: PO Cancellation Confirmation : Success on PO Cancellation Confirmation
+Oct 13, 2025 3:01:30 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: PO Cancellation Confirmation :null
+Oct 13, 2025 3:01:30 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: PO Cancellation Confirmation : Success on Initialize : Load of Transaction List
+Oct 13, 2025 3:03:25 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: PO Cancellation Confirmation : Success on PO Cancellation Confirmation
+Oct 13, 2025 3:03:28 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: PO Cancellation Confirmation :null
+Oct 13, 2025 3:03:28 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: PO Cancellation Confirmation : No record found.
+Oct 13, 2025 3:10:36 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: PO Cancellation Confirmation : Success on PO Cancellation Confirmation
+Oct 13, 2025 3:10:50 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: PO Cancellation Confirmation : Success on Initialize : Load of Transaction List
+Oct 13, 2025 3:10:53 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: PO Cancellation Confirmation : Unable to open transaction detail record.
+Oct 13, 2025 3:10:55 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: PO Cancellation Confirmation : Success on PO Cancellation Confirmation
+Oct 13, 2025 3:12:31 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: PO Cancellation Confirmation : Success on Initialize UPdate Transaction
+Oct 13, 2025 3:12:32 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: PO Cancellation Confirmation : Success on Initialize retrieve Purchase Transaction transaction
+Oct 13, 2025 3:14:49 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: PO Cancellation Confirmation : Success on PO Cancellation Confirmation
+Oct 13, 2025 3:14:54 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: PO Cancellation Confirmation :null
+Oct 13, 2025 3:14:55 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: PO Cancellation Confirmation : Success on Initialize : Load of Transaction List
+Oct 13, 2025 3:14:59 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: PO Cancellation Confirmation : Unable to open transaction detail record.
+Oct 13, 2025 3:15:02 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: PO Cancellation Confirmation : Success on PO Cancellation Confirmation
+Oct 13, 2025 3:17:59 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: PO Cancellation Confirmation : Success on PO Cancellation Confirmation
+Oct 13, 2025 3:18:05 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: PO Cancellation Confirmation : No record loaded.
+Oct 13, 2025 3:18:08 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: PO Cancellation Confirmation : Success on Initialize : Load of Transaction List
+Oct 13, 2025 3:20:09 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: PO Cancellation Confirmation : Success on PO Cancellation Confirmation
+Oct 13, 2025 3:20:14 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: PO Cancellation Confirmation : Success on Initialize Void Transaction
+Oct 13, 2025 3:20:18 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: PO Cancellation Confirmation : Success on Initialize : Load of Transaction List
+Oct 13, 2025 3:20:22 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: PO Cancellation Confirmation : Unable to open transaction detail record.
+Oct 13, 2025 3:20:24 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: PO Cancellation Confirmation : Unable to open transaction detail record.
+Oct 13, 2025 3:20:26 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: PO Cancellation Confirmation : Unable to open transaction detail record.
+Oct 13, 2025 3:20:28 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: PO Cancellation Confirmation : Success on PO Cancellation Confirmation
+Oct 13, 2025 3:20:40 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: PO Cancellation Confirmation : Success on Initialize Close Transaction
+Oct 13, 2025 3:20:53 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: PO Cancellation Confirmation : Success on Initialize Cancel Transaction
+Oct 13, 2025 3:21:37 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: PO Cancellation Confirmation : Transaction was already cancelled.
+Oct 13, 2025 3:21:40 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: PO Cancellation Confirmation : Unable to open transaction detail record.

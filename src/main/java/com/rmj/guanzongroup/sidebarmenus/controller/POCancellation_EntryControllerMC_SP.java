@@ -71,7 +71,7 @@ import ph.com.guanzongroup.cas.purchasing.module.mnv.services.POController;
  *
  * @author User
  */
-public class POCancellation_EntryController implements Initializable, ScreenInterface {
+public class POCancellation_EntryControllerMC_SP implements Initializable, ScreenInterface {
 
     private GRiderCAS poApp;
     private LogWrapper poLogWrapper;
@@ -160,8 +160,7 @@ public class POCancellation_EntryController implements Initializable, ScreenInte
             poLogWrapper = new LogWrapper(psFormName, psFormName);
             poAppController = new POController(poApp, poLogWrapper).POCancellation();
             poAppController.setTransactionStatus(POCancellationStatus.OPEN);
-            //remove if not general
-            psIndustryID = "";
+
             //initlalize and validate transaction objects from class controller
             if (!isJSONSuccess(poAppController.initTransaction(), psFormName)) {
                 unloadForm appUnload = new unloadForm();
@@ -186,7 +185,7 @@ public class POCancellation_EntryController implements Initializable, ScreenInte
             initControlEvents();
 
         } catch (SQLException | GuanzonException e) {
-            Logger.getLogger(POCancellation_EntryController.class.getName()).log(Level.SEVERE, null, e);
+            Logger.getLogger(POCancellation_EntryControllerMC_SP.class.getName()).log(Level.SEVERE, null, e);
             poLogWrapper.severe(psFormName + " :" + e.getMessage());
         }
     }
@@ -719,7 +718,7 @@ public class POCancellation_EntryController implements Initializable, ScreenInte
         overlay.setVisible(true);
         pi.setVisible(true);
 
-        Task<ObservableList<Model_PO_Master>> loadPurchase = new Task<ObservableList<Model_PO_Master>>() {
+        Task<ObservableList<Model_PO_Master>> loadCheckPayment = new Task<ObservableList<Model_PO_Master>>() {
             @Override
             protected ObservableList<Model_PO_Master> call() throws Exception {
                 if (!isJSONSuccess(poAppController.loadPurchaseOrderList(fsColumn, fsValue),
@@ -756,7 +755,7 @@ public class POCancellation_EntryController implements Initializable, ScreenInte
                 pi.setVisible(false);
             }
         };
-        Thread thread = new Thread(loadPurchase);
+        Thread thread = new Thread(loadCheckPayment);
         thread.setDaemon(true);
         thread.start();
     }

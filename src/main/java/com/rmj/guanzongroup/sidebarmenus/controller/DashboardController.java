@@ -2230,38 +2230,114 @@ public class DashboardController implements Initializable {
                     psIndustryID = "";
                     psCategoryID = "0007";
                     return "PO Cancellation Entry";
-                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_Entry_EntryAppliance.fxml":
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_EntryAppliance.fxml":
                     psIndustryID = "07";
                     psCategoryID = "0002";
                     return "PO Cancellation Entry Appliance";
-                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_Entry_EntryCar.fxml":
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_EntryCar.fxml":
                     psIndustryID = "03";
                     psCategoryID = "0005";
                     return "PO Cancellation Entry Car";
-                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_Entry_EntryCar_SP.fxml":
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_EntryCar_SP.fxml":
                     psIndustryID = "03";
                     psCategoryID = "0006";
                     return "PO Cancellation Entry Car SP";
-                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_Entry_EntryLP_Food.fxml":
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_EntryLP_Food.fxml":
                     psIndustryID = "05";
                     psCategoryID = "0008";
                     return "PO Cancellation Entry LP Food";
-                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_Entry_EntryMC.fxml":
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_EntryMC.fxml":
                     psIndustryID = "02";
                     psCategoryID = "0003";
                     return "PO Cancellation Entry MC";
-                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_Entry_EntryMC_SP.fxml":
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_EntryMC_SP.fxml":
                     psIndustryID = "02";
                     psCategoryID = "0004";
                     return "PO Cancellation Entry MC SP";
-                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_Entry_EntryMP.fxml":
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_EntryMP.fxml":
                     psIndustryID = "01";
                     psCategoryID = "0001";
                     return "PO Cancellation Entry MP";
-                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_Entry_EntryMonarch_Food.fxml":
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_EntryMonarch_Food.fxml":
                     psIndustryID = "04";
                     psCategoryID = "0009";
                     return "PO Cancellation Entry Monarch Food";
+
+                //PO Cancellation  Confirmation
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_Confirmation.fxml":
+                    psIndustryID = "";
+                    psCategoryID = "0007";
+                    return "PO Cancellation Confirmation";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_Confirmation_EntryAppliance.fxml":
+                    psIndustryID = "07";
+                    psCategoryID = "0002";
+                    return "PO Cancellation Confirmation Appliance";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_Confirmation_EntryCar.fxml":
+                    psIndustryID = "03";
+                    psCategoryID = "0005";
+                    return "PO Cancellation Confirmation Car";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_Confirmation_EntryCar_SP.fxml":
+                    psIndustryID = "03";
+                    psCategoryID = "0006";
+                    return "PO Cancellation Confirmation Car SP";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_Confirmation_EntryLP_Food.fxml":
+                    psIndustryID = "05";
+                    psCategoryID = "0008";
+                    return "PO Cancellation Confirmation LP Food";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_Confirmation_EntryMC.fxml":
+                    psIndustryID = "02";
+                    psCategoryID = "0003";
+                    return "PO Cancellation Confirmation MC";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_Confirmation_EntryMC_SP.fxml":
+                    psIndustryID = "02";
+                    psCategoryID = "0004";
+                    return "PO Cancellation Confirmation MC SP";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_Confirmation_EntryMP.fxml":
+                    psIndustryID = "01";
+                    psCategoryID = "0001";
+                    return "PO Cancellation Confirmation MP";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_Confirmation_EntryMonarch_Food.fxml":
+                    psIndustryID = "04";
+                    psCategoryID = "0009";
+                    return "PO Cancellation Confirmation Monarch Food";
+
+                //PO Cancellation  History
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_History.fxml":
+                    psIndustryID = "";
+                    psCategoryID = "0007";
+                    return "PO Cancellation History ";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_History_EntryAppliance.fxml":
+                    psIndustryID = "07";
+                    psCategoryID = "0002";
+                    return "PO Cancellation History Appliance";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_History_EntryCar.fxml":
+                    psIndustryID = "03";
+                    psCategoryID = "0005";
+                    return "PO Cancellation History Car";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_History_EntryCar_SP.fxml":
+                    psIndustryID = "03";
+                    psCategoryID = "0006";
+                    return "PO Cancellation History Car SP";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_History_EntryLP_Food.fxml":
+                    psIndustryID = "05";
+                    psCategoryID = "0008";
+                    return "PO Cancellation History LP Food";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_History_EntryMC.fxml":
+                    psIndustryID = "02";
+                    psCategoryID = "0003";
+                    return "PO Cancellation History MC";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_History_EntryMC_SP.fxml":
+                    psIndustryID = "02";
+                    psCategoryID = "0004";
+                    return "PO Cancellation History MC SP";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_History_EntryMP.fxml":
+                    psIndustryID = "01";
+                    psCategoryID = "0001";
+                    return "PO Cancellation History MP";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_History_EntryMonarch_Food.fxml":
+                    psIndustryID = "04";
+                    psCategoryID = "0009";
+                    return "PO Cancellation History Monarch Food";
 
                 //Update
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CheckStatusUpdate.fxml":
@@ -4147,18 +4223,58 @@ public class DashboardController implements Initializable {
 //                    return new POCancellation_EntryControllerAppliance();
 //                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_EntryCar.fxml":
 //                    return new POCancellation_EntryControllerCar();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_EntryCar_SP.fxml":
-//                    return new POCancellation_EntryControllerCar_SP();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_EntryLP_Food.fxml":
-//                    return new POCancellation_EntryControllerLP_Food();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_EntryCar_SP.fxml":
+                    return new POCancellation_EntryControllerCar_SP();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_EntryLP_Food.fxml":
+                    return new POCancellation_EntryControllerLP_Food();
 //                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_EntryMC.fxml":
 //                    return new POCancellation_EntryControllerMC();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_EntryMC_SP.fxml":
-//                    return new POCancellation_EntryControllerMC_SP();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_EntryMC_SP.fxml":
+                    return new POCancellation_EntryControllerMC_SP();
 //                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_EntryMP.fxml":
 //                    return new POCancellation_EntryControllerMP();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_EntryMonarch_Food.fxml":
-//                    return new POCancellation_EntryControllerMonarch_Food();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_EntryMonarch_Food.fxml":
+                    return new POCancellation_EntryControllerMonarch_Food();
+
+                //Confirmation
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_Confirmation.fxml":
+                    return new POCancellation_ConfirmationController();
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_ConfirmationAppliance.fxml":
+//                    return new POCancellation_ConfirmationControllerAppliance();
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_ConfirmationCar.fxml":
+//                    return new POCancellation_ConfirmationControllerCar();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_ConfirmationCar_SP.fxml":
+                    return new POCancellation_ConfirmationControllerCar_SP();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_ConfirmationLP_Food.fxml":
+                    return new POCancellation_ConfirmationControllerLP_Food();
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_ConfirmationMC.fxml":
+//                    return new POCancellation_ConfirmationControllerMC();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_ConfirmationMC_SP.fxml":
+                    return new POCancellation_ConfirmationControllerMC_SP();
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_ConfirmationMP.fxml":
+//                    return new POCancellation_ConfirmationControllerMP();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_ConfirmationMonarch_Food.fxml":
+                    return new POCancellation_ConfirmationControllerMonarch_Food();
+
+                //History
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_History.fxml":
+                    return new POCancellation_HistoryController();
+////                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_HistoryAppliance.fxml":
+////                    return new POCancellation_HistoryControllerAppliance();
+////                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_HistoryCar.fxml":
+////                    return new POCancellation_HistoryControllerCar();
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_HistoryCar_SP.fxml":
+//                    return new POCancellation_HistoryControllerCar_SP();
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_HistoryLP_Food.fxml":
+//                    return new POCancellation_HistoryControllerLP_Food();
+////                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_HistoryMC.fxml":
+////                    return new POCancellation_HistoryControllerMC();
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_HistoryMC_SP.fxml":
+//                    return new POCancellation_HistoryControllerMC_SP();
+////                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_HistoryMP.fxml":
+////                    return new POCancellation_HistoryControllerMP();
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_HistoryMonarch_Food.fxml":
+//                    return new POCancellation_HistoryControllerMonarch_Food();
 
 //                UPDATE
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CheckStatusUpdate.fxml":
@@ -6188,6 +6304,28 @@ public class DashboardController implements Initializable {
                 + "{\"access_level\":\"02\",\"menu_name\":\"MC SP\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_EntryMC_SP.fxml\",\"controller_path\":\"POCancellationEntry.controller\",\"menu_id\":\"128\",\"menu_parent\":\"121\"},"
                 + "{\"access_level\":\"01\",\"menu_name\":\"MP\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_EntryMP.fxml\",\"controller_path\":\"POCancellationEntry.controller\",\"menu_id\":\"129\",\"menu_parent\":\"121\"},"
                 + "{\"access_level\":\"04\",\"menu_name\":\"Monarch Food\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_EntryMonarch_Food.fxml\",\"controller_path\":\"POCancellationEntry.controller\",\"menu_id\":\"130\",\"menu_parent\":\"121\"},"
+                //Confimation
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Confirmation\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"131\",\"menu_parent\":\"120\"},"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"General\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_Confirmation.fxml\",\"controller_path\":\"POCancellationConfirmation.controller\",\"menu_id\":\"132\",\"menu_parent\":\"131\"},"
+                + "{\"access_level\":\"07\",\"menu_name\":\"Appliance\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_ConfirmationAppliance.fxml\",\"controller_path\":\"POCancellationConfirmation.controller\",\"menu_id\":\"133\",\"menu_parent\":\"131\"},"
+                + "{\"access_level\":\"03\",\"menu_name\":\"Car\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_ConfirmationCar.fxml\",\"controller_path\":\"POCancellationConfirmation.controller\",\"menu_id\":\"134\",\"menu_parent\":\"131\"},"
+                + "{\"access_level\":\"03\",\"menu_name\":\"Car SP\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_ConfirmationCar_SP.fxml\",\"controller_path\":\"POCancellationConfirmation.controller\",\"menu_id\":\"135\",\"menu_parent\":\"131\"},"
+                + "{\"access_level\":\"05\",\"menu_name\":\"LP Food\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_ConfirmationLP_Food.fxml\",\"controller_path\":\"POCancellationConfirmation.controller\",\"menu_id\":\"136\",\"menu_parent\":\"131\"},"
+                + "{\"access_level\":\"02\",\"menu_name\":\"MC\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_ConfirmationMC.fxml\",\"controller_path\":\"POCancellationConfirmation.controller\",\"menu_id\":\"137\",\"menu_parent\":\"131\"},"
+                + "{\"access_level\":\"02\",\"menu_name\":\"MC SP\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_ConfirmationMC_SP.fxml\",\"controller_path\":\"POCancellationConfirmation.controller\",\"menu_id\":\"138\",\"menu_parent\":\"131\"},"
+                + "{\"access_level\":\"01\",\"menu_name\":\"MP\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_ConfirmationMP.fxml\",\"controller_path\":\"POCancellationConfirmation.controller\",\"menu_id\":\"139\",\"menu_parent\":\"131\"},"
+                + "{\"access_level\":\"04\",\"menu_name\":\"Monarch Food\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_ConfirmationMonarch_Food.fxml\",\"controller_path\":\"POCancellationConfirmation.controller\",\"menu_id\":\"140\",\"menu_parent\":\"131\"},"
+                //History
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"History\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"141\",\"menu_parent\":\"120\"},"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"General\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_History.fxml\",\"controller_path\":\"POCancellationHistory.controller\",\"menu_id\":\"142\",\"menu_parent\":\"141\"},"
+                + "{\"access_level\":\"07\",\"menu_name\":\"Appliance\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_HistoryAppliance.fxml\",\"controller_path\":\"POCancellationHistory.controller\",\"menu_id\":\"143\",\"menu_parent\":\"141\"},"
+                + "{\"access_level\":\"03\",\"menu_name\":\"Car\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_HistoryCar.fxml\",\"controller_path\":\"POCancellationHistory.controller\",\"menu_id\":\"144\",\"menu_parent\":\"141\"},"
+                + "{\"access_level\":\"03\",\"menu_name\":\"Car SP\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_HistoryCar_SP.fxml\",\"controller_path\":\"POCancellationHistory.controller\",\"menu_id\":\"145\",\"menu_parent\":\"141\"},"
+                + "{\"access_level\":\"05\",\"menu_name\":\"LP Food\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_HistoryLP_Food.fxml\",\"controller_path\":\"POCancellationHistory.controller\",\"menu_id\":\"146\",\"menu_parent\":\"141\"},"
+                + "{\"access_level\":\"02\",\"menu_name\":\"MC\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_HistoryMC.fxml\",\"controller_path\":\"POCancellationHistory.controller\",\"menu_id\":\"147\",\"menu_parent\":\"141\"},"
+                + "{\"access_level\":\"02\",\"menu_name\":\"MC SP\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_HistoryMC_SP.fxml\",\"controller_path\":\"POCancellationHistory.controller\",\"menu_id\":\"148\",\"menu_parent\":\"141\"},"
+                + "{\"access_level\":\"01\",\"menu_name\":\"MP\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_HistoryMP.fxml\",\"controller_path\":\"POCancellationHistory.controller\",\"menu_id\":\"149\",\"menu_parent\":\"141\"},"
+                + "{\"access_level\":\"04\",\"menu_name\":\"Monarch Food\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_HistoryMonarch_Food.fxml\",\"controller_path\":\"POCancellationHistory.controller\",\"menu_id\":\"150\",\"menu_parent\":\"141\"},"
                 + "]";
         JSONParser parser = new JSONParser();
         try {

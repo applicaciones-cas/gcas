@@ -1,0 +1,8 @@
+Oct 13, 2025 3:43:07 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: PO Cancellation History : Success on PO Cancellation History
+Oct 13, 2025 3:43:11 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: PO Cancellation History : Unable to open transaction detail record.
+Oct 13, 2025 3:45:21 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: PO Cancellation History : Success on PO Cancellation History
+Oct 13, 2025 3:45:26 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: PO Cancellation History : Success on Initialize Search Source No! 

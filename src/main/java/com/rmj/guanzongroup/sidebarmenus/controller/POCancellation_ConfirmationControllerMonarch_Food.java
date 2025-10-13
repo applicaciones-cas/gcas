@@ -64,6 +64,7 @@ import org.json.simple.JSONObject;
 import ph.com.guanzongroup.cas.purchasing.module.mnv.POCancellation;
 import ph.com.guanzongroup.cas.purchasing.module.mnv.constant.POCancellationStatus;
 import ph.com.guanzongroup.cas.purchasing.module.mnv.models.Model_PO_Cancellation_Detail;
+import ph.com.guanzongroup.cas.purchasing.module.mnv.models.Model_PO_Cancellation_Master;
 import ph.com.guanzongroup.cas.purchasing.module.mnv.services.POController;
 
 /**
@@ -71,19 +72,19 @@ import ph.com.guanzongroup.cas.purchasing.module.mnv.services.POController;
  *
  * @author User
  */
-public class POCancellation_EntryController implements Initializable, ScreenInterface {
+public class POCancellation_ConfirmationControllerMonarch_Food implements Initializable, ScreenInterface {
 
     private GRiderCAS poApp;
     private LogWrapper poLogWrapper;
-    private String psFormName = "PO Cancellation Entry";
+    private String psFormName = "PO Cancellation Confirmation";
     private String psIndustryID;
     private String psCompanyID;
     private String psCategoryID;
     private Control lastFocusedControl;
     private POCancellation poAppController;
-    private ObservableList<Model_PO_Master> paPurchaseOrder;
+    private ObservableList<Model_PO_Cancellation_Master> paPurchaseCancel;
     private ObservableList<Model_PO_Cancellation_Detail> paTransactionDetail;
-    private FilteredList<Model_PO_Master> filteredPurchaseOrder;
+    private FilteredList<Model_PO_Cancellation_Master> filteredPurchaseCancel;
     private int pnSelectMaster, pnEditMode, pnTransactionDetail, pgRowSelect;
 
     private static final int ROWS_PER_PAGE = 50;
@@ -108,7 +109,7 @@ public class POCancellation_EntryController implements Initializable, ScreenInte
     private Label lblSource, lblStatus;
 
     @FXML
-    private Button btnSearch, btnBrowse, btnNew, btnCancel, btnTag, btnHistory, btnUpdate, btnSave,
+    private Button btnSearch, btnBrowse, btnConfirm, btnVoid, btnCancel, btnTag, btnHistory, btnUpdate, btnSave,
             btnRetrieve, btnClose;
 
     @FXML
@@ -122,10 +123,10 @@ public class POCancellation_EntryController implements Initializable, ScreenInte
             tblColDetailOrderQty, tblColDetailCancelQty, tblColDetailCost, tblColDetailTotal;
 
     @FXML
-    private TableView<Model_PO_Master> tblTransaction;
+    private TableView<Model_PO_Cancellation_Master> tblTransaction;
 
     @FXML
-    private TableColumn<Model_PO_Master, String> tblColNo, tblColTransactionNo, tblColDate, tblColReference, tblColItems;
+    private TableColumn<Model_PO_Cancellation_Master, String> tblColNo, tblColTransactionNo, tblColDate, tblColReference, tblColItems;
 
     @FXML
     private Pagination pgTransaction;
@@ -159,9 +160,7 @@ public class POCancellation_EntryController implements Initializable, ScreenInte
         try {
             poLogWrapper = new LogWrapper(psFormName, psFormName);
             poAppController = new POController(poApp, poLogWrapper).POCancellation();
-            poAppController.setTransactionStatus(POCancellationStatus.OPEN);
-            //remove if not general
-            psIndustryID = "";
+
             //initlalize and validate transaction objects from class controller
             if (!isJSONSuccess(poAppController.initTransaction(), psFormName)) {
                 unloadForm appUnload = new unloadForm();
@@ -170,7 +169,7 @@ public class POCancellation_EntryController implements Initializable, ScreenInte
 
             //background thread
             Platform.runLater(() -> {
-                poAppController.setTransactionStatus("07");
+                poAppController.setTransactionStatus("01");
                 //initialize logged in category
                 poAppController.setIndustryID(psIndustryID);
                 poAppController.setCompanyID(psCompanyID);
@@ -179,14 +178,13 @@ public class POCancellation_EntryController implements Initializable, ScreenInte
                 System.err.println("Initialize value : Category >" + psCategoryID);
                 System.err.println("Initialize value : Company >" + psCompanyID);
 
-                btnNew.fire();
             });
             initializeTableDetail();
             initializeTablePurchase();
             initControlEvents();
 
         } catch (SQLException | GuanzonException e) {
-            Logger.getLogger(POCancellation_EntryController.class.getName()).log(Level.SEVERE, null, e);
+            Logger.getLogger(POCancellation_ConfirmationControllerMonarch_Food.class.getName()).log(Level.SEVERE, null, e);
             poLogWrapper.severe(psFormName + " :" + e.getMessage());
         }
     }
@@ -204,11 +202,6 @@ public class POCancellation_EntryController implements Initializable, ScreenInte
 
         if (e.getClickCount() == 2 && !e.isConsumed()) {
             try {
-                if (poAppController.getEditMode() != EditMode.ADDNEW
-                        && poAppController.getEditMode() != EditMode.UPDATE) {
-                    ShowMessageFX.Information("Please enter to update or create a new transaction. Thank you!", psFormName, null);
-                    return;
-                }
                 if (poAppController.getMaster().getSourceNo() != null) {
                     if (!poAppController.getMaster().getSourceNo().isEmpty()) {
 
@@ -219,7 +212,9 @@ public class POCancellation_EntryController implements Initializable, ScreenInte
                 }
 
                 e.consume();
-                if (!isJSONSuccess(poAppController.replaceDetail(pgRowSelect), psFormName)) {
+                if (!isJSONSuccess(poAppController.OpenTransaction(
+                        filteredPurchaseCancel.get(pgRowSelect).getTransactionNo()),
+                        psFormName)) {
 //                    ShowMessageFX.Information("Failed to add detail", psFormName, null);
                     return;
                 }
@@ -367,13 +362,47 @@ public class POCancellation_EntryController implements Initializable, ScreenInte
                             break;
                     }
                     break;
-                case "btnNew":
-                    if (!isJSONSuccess(poAppController.NewTransaction(), "Initialize New Transaction")) {
+                case "btnConfirm":
+                    if (tfTransactionNo.getText().isEmpty()) {
+                        ShowMessageFX.Information("Please load transaction before proceeding..", null, "Issuance Approval");
                         return;
                     }
-                    clearAllInputs();
-                    getLoadedTransaction();
-                    pnEditMode = poAppController.getEditMode();
+
+                    if (!poAppController.getMaster().getTransactionStatus().equalsIgnoreCase(POCancellationStatus.OPEN)) {
+                        ShowMessageFX.Information("Status was already " + POCancellationStatus.STATUS.get(Integer.parseInt(poAppController.getMaster().getTransactionStatus())).toLowerCase(), null, "Issuance Approval");
+                        return;
+                    }
+
+                    if (ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to confirm transaction?") == true) {
+                        if (!isJSONSuccess(poAppController.CloseTransaction(), "Initialize Close Transaction")) {
+                            return;
+                        }
+                        getLoadedTransaction();
+                        pnEditMode = poAppController.getEditMode();
+                        break;
+                    }
+                    break;
+                case "btnVoid":
+                    if (tfTransactionNo.getText().isEmpty()) {
+                        ShowMessageFX.Information("Please load transaction before proceeding..", null, "Issuance Approval");
+                        return;
+                    }
+
+                    if (ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to Void/Cancel transaction?") == true) {
+                        if (btnVoid.getText().equals("Void")) {
+                            if (!isJSONSuccess(poAppController.VoidTransaction(), "Initialize Void Transaction")) {
+                                return;
+                            }
+                        } else {
+                            if (!isJSONSuccess(poAppController.CancelTransaction(), "Initialize Cancel Transaction")) {
+                                return;
+                            }
+
+                        }
+                        getLoadedTransaction();
+                        pnEditMode = poAppController.getEditMode();
+                        break;
+                    }
                     break;
 
                 case "btnUpdate":
@@ -418,7 +447,7 @@ public class POCancellation_EntryController implements Initializable, ScreenInte
                 case "btnCancel":
                     if (ShowMessageFX.OkayCancel(null, psFormName, "Do you want to disregard changes?") == true) {
                         poAppController = new POController(poApp, poLogWrapper).POCancellation();
-                        poAppController.setTransactionStatus("07");
+                        poAppController.setTransactionStatus("01");
 
                         if (!isJSONSuccess(poAppController.initTransaction(), "Initialize Transaction")) {
                             unloadForm appUnload = new unloadForm();
@@ -427,7 +456,7 @@ public class POCancellation_EntryController implements Initializable, ScreenInte
 
                         Platform.runLater(() -> {
 
-                            poAppController.setTransactionStatus("07");
+                            poAppController.setTransactionStatus("01");
                             poAppController.getMaster().setIndustryId(psIndustryID);
                             poAppController.setIndustryID(psIndustryID);
                             poAppController.setCompanyID(psCompanyID);
@@ -457,9 +486,29 @@ public class POCancellation_EntryController implements Initializable, ScreenInte
                     loadSelectedTransactionDetail(pnTransactionDetail);
                     break;
                 case "btnRetrieve":
-//                    loadRetrieveFilter();
-                    loadTransactionPurchaseList("a.sTransNox", "%");
-                    reloadTablePurchase();
+
+                    if (lastFocusedControl == null) {
+                        loadTransactionList("a.sTransNox", tfSearchTransaction.getText() != null ? tfSearchTransaction.getText() : "");
+                        reloadTablePurchase();
+                    }
+                    switch (lastFocusedControl.getId()) {
+                        case "tfSearchTransaction":
+                            loadTransactionList("a.sTransNox", tfSearchTransaction.getText() != null ? tfSearchTransaction.getText() : "");
+                            reloadTablePurchase();
+                            break;
+                        case "tfSearchSupplier":
+                            loadTransactionList("b.sCompnyNm", tfSearchSupplier.getText() != null ? tfSearchSupplier.getText() : "");
+                            reloadTablePurchase();
+                            break;
+                        case "tfSearchReferNo":
+                            loadTransactionList("c.sReferNox", tfSearchReferNo.getText() != null ? tfSearchReferNo.getText() : "");
+                            reloadTablePurchase();
+                            break;
+                        default:
+                            loadTransactionList("a.sTransNox", tfSearchTransaction.getText() != null ? tfSearchTransaction.getText() : "");
+                            reloadTablePurchase();
+
+                    }
                     break;
                 case "btnClose":
                     if (ShowMessageFX.YesNo("Are you sure you want to close this form?", psFormName, null)) {
@@ -713,21 +762,21 @@ public class POCancellation_EntryController implements Initializable, ScreenInte
         }
     }
 
-    private void loadTransactionPurchaseList(String fsColumn, String fsValue) {
+    private void loadTransactionList(String fsColumn, String fsValue) {
         StackPane overlay = getOverlayProgress(apTransaction);
         ProgressIndicator pi = (ProgressIndicator) overlay.getChildren().get(0);
         overlay.setVisible(true);
         pi.setVisible(true);
 
-        Task<ObservableList<Model_PO_Master>> loadPurchase = new Task<ObservableList<Model_PO_Master>>() {
+        Task<ObservableList<Model_PO_Cancellation_Master>> loadPurchaseCancel = new Task<ObservableList<Model_PO_Cancellation_Master>>() {
             @Override
-            protected ObservableList<Model_PO_Master> call() throws Exception {
-                if (!isJSONSuccess(poAppController.loadPurchaseOrderList(fsColumn, fsValue),
+            protected ObservableList<Model_PO_Cancellation_Master> call() throws Exception {
+                if (!isJSONSuccess(poAppController.loadTransactionListConfirmation(fsValue, fsColumn),
                         "Initialize : Load of Transaction List")) {
                     return null;
                 }
 
-                List<Model_PO_Master> rawList = poAppController.getPurchaseOrderList();
+                List<Model_PO_Cancellation_Master> rawList = poAppController.getMasterList();
                 System.out.print("The size of list is " + rawList.size());
                 return FXCollections.observableArrayList(new ArrayList<>(rawList));
             }
@@ -756,7 +805,7 @@ public class POCancellation_EntryController implements Initializable, ScreenInte
                 pi.setVisible(false);
             }
         };
-        Thread thread = new Thread(loadPurchase);
+        Thread thread = new Thread(loadPurchaseCancel);
         thread.setDaemon(true);
         thread.start();
     }
@@ -776,6 +825,12 @@ public class POCancellation_EntryController implements Initializable, ScreenInte
             taRemarks.setText(String.valueOf(poAppController.getMaster().getRemarks()));
             tfTransactionAmount.setText(CommonUtils.NumberFormat(poAppController.getMaster().PurchaseOrderMaster().getTranTotal(), "###,##0.0000"));
             tfCancelAmount.setText(CommonUtils.NumberFormat(poAppController.getMaster().getTransactionTotal(), "###,##0.0000"));
+
+            if (poAppController.getMaster().getTransactionStatus().equals(POCancellationStatus.CONFIRMED)) {
+                btnVoid.setText("Cancel");
+            } else {
+                btnVoid.setText("Void");
+            }
         } catch (SQLException | GuanzonException e) {
             poLogWrapper.severe(psFormName, e.getMessage());
         }
@@ -912,10 +967,10 @@ public class POCancellation_EntryController implements Initializable, ScreenInte
                 if (items != null) {
                     // Handle FilteredList or SortedList safely
                     if (items instanceof FilteredList) {
-                        paPurchaseOrder.clear(); // ✅ Clear the filtered data basedata
+                        paPurchaseCancel.clear(); // ✅ Clear the filtered data basedata
 
                     } else if (items instanceof SortedList) {
-                        paPurchaseOrder.clear(); //✅ Clear the sorteed  basedata
+                        paPurchaseCancel.clear(); //✅ Clear the sorteed  basedata
 
                     } else if (items instanceof ObservableList) {
                         ((ObservableList<?>) items).clear(); // ✅ Normal ObservableList
@@ -943,7 +998,7 @@ public class POCancellation_EntryController implements Initializable, ScreenInte
 
         // Show-only based on mode
         initButtonControls(lbShow, "btnSearch", "btnSave", "btnTag", "btnCancel");
-        initButtonControls(!lbShow, "btnBrowse", "btnNew", "btnUpdate");
+        initButtonControls(!lbShow, "btnBrowse", "btnConfirm", "btnVoid", "btnUpdate");
 
         apMaster.setDisable(!lbShow);
         apDetail.setDisable(!lbShow);
@@ -1045,8 +1100,8 @@ public class POCancellation_EntryController implements Initializable, ScreenInte
     }
 
     private void initializeTablePurchase() {
-        if (paPurchaseOrder == null) {
-            paPurchaseOrder = FXCollections.observableArrayList();
+        if (paPurchaseCancel == null) {
+            paPurchaseCancel = FXCollections.observableArrayList();
 
 //            tblTransaction.setItems(laPurchaseOrder);
             tblColNo.setCellValueFactory(loModel -> {
@@ -1059,21 +1114,25 @@ public class POCancellation_EntryController implements Initializable, ScreenInte
             tblColDate.setCellValueFactory(loModel -> {
                 return new SimpleStringProperty(String.valueOf(loModel.getValue().getTransactionDate()));
             });
-            tblColReference.setCellValueFactory(loModel -> {
-                return new SimpleStringProperty(String.valueOf(loModel.getValue().getReference()));
+            tblColReference.setCellValueFactory((loModel) -> {
+                try {
+                    return new SimpleStringProperty(String.valueOf(loModel.getValue().PurchaseOrderMaster().getReference()));
+                } catch (SQLException | GuanzonException e) {
+                    poLogWrapper.severe(psFormName, e.getMessage());
+                    return new SimpleStringProperty("");
+                }
             });
-            tblColItems.setCellValueFactory(loModel -> {
-                return new SimpleStringProperty(CommonUtils.NumberFormat(loModel.getValue().getEntryNo(), "###,##0.00"));
-
+            tblColItems.setCellValueFactory((loModel) -> {
+                return new SimpleStringProperty(String.valueOf(loModel.getValue().getEntryNo()));
             });
 
-            filteredPurchaseOrder = new FilteredList<>(paPurchaseOrder, b -> true);
-//            autoSearch(tfSearchTransaction);
-//            autoSearch(tfSearchSupplier);
-//            autoSearch(tfSearchReferNo);
+            filteredPurchaseCancel = new FilteredList<>(paPurchaseCancel, b -> true);
+            autoSearch(tfSearchTransaction);
+            autoSearch(tfSearchSupplier);
+            autoSearch(tfSearchReferNo);
 
             // 3. Wrap the FilteredList in a SortedList. 
-            SortedList<Model_PO_Master> sortedData = new SortedList<>(filteredPurchaseOrder);
+            SortedList<Model_PO_Cancellation_Master> sortedData = new SortedList<>(filteredPurchaseCancel);
 
             // 4. Bind the SortedList comparator to the TableView comparator.
             // 	  Otherwise, sorting the TableView would have no effect.
@@ -1091,12 +1150,12 @@ public class POCancellation_EntryController implements Initializable, ScreenInte
     }
 
     private void reloadTablePurchase() {
-        List<Model_PO_Master> rawDetail = poAppController.getPurchaseOrderList();
-        paPurchaseOrder.setAll(rawDetail);
+        List<Model_PO_Cancellation_Master> rawDetail = poAppController.getMasterList();
+        paPurchaseCancel.setAll(rawDetail);
         // Restore or select last row
-        int indexToSelect = (pnSelectMaster >= 1 && pnSelectMaster < paPurchaseOrder.size())
+        int indexToSelect = (pnSelectMaster >= 1 && pnSelectMaster < paPurchaseCancel.size())
                 ? pnSelectMaster
-                : paPurchaseOrder.size();
+                : paPurchaseCancel.size();
         loadPageTranasction();
         tblTransaction.getSelectionModel().select(indexToSelect);
 
@@ -1106,37 +1165,57 @@ public class POCancellation_EntryController implements Initializable, ScreenInte
 
     private Node pageTransaction(int pageIndex) {
         int fromIndex = pageIndex * ROWS_PER_PAGE;
-        int toIndex = Math.min(fromIndex + ROWS_PER_PAGE, paPurchaseOrder.size());
-        tblTransaction.setItems(FXCollections.observableArrayList(paPurchaseOrder.subList(fromIndex, toIndex)));
+        int toIndex = Math.min(fromIndex + ROWS_PER_PAGE, paPurchaseCancel.size());
+        tblTransaction.setItems(FXCollections.observableArrayList(paPurchaseCancel.subList(fromIndex, toIndex)));
         return tblTransaction;
     }
 
     private void autoSearch(TextField txtField) {
         String lsTxtFieldID = txtField.getId();
         boolean fsCode = true;
+
         txtField.textProperty().addListener((observable, oldValue, newValue) -> {
-            filteredPurchaseOrder.setPredicate(master -> {
+            filteredPurchaseCancel.setPredicate(master -> {
                 // If filter text is empty, display all persons.
                 if (newValue == null || newValue.isEmpty()) {
                     return true;
                 }
                 // Compare order no. and last name of every person with filter text.
                 String lowerCaseFilter = newValue.toLowerCase();
-                switch (lsTxtFieldID) {
-//                   //na
-                    default:
-                        return true;
+                try {
+                    switch (lsTxtFieldID) {
+                        case "tfSearchTransaction":
+                            return (master.getTransactionNo().toLowerCase().contains(lowerCaseFilter)); // Does not match.
 
+                        case "tfSearchSupplier": {
+
+                            return (master.PurchaseOrderMaster().Supplier().getCompanyName().toLowerCase().contains(lowerCaseFilter)); // Does not match.
+
+                        }
+
+                        case "tfSearchReferNo":
+                            return (master.PurchaseOrderMaster().getReference().toLowerCase().contains(lowerCaseFilter)); // Does not match.   
+
+                        default:
+                            return true;
+
+                    }
+                } catch (SQLException | GuanzonException ex) {
+
+                    poLogWrapper.severe(psFormName + " :" + ex.getMessage());
+                    return true;
                 }
             });
 
             changePageTransactionView(0, ROWS_PER_PAGE);
-        });
+        }
+        );
+
         loadPageTranasction();
     }
 
     private void loadPageTranasction() {
-        int totalPage = (int) (Math.ceil(paPurchaseOrder.size() * 1.0 / ROWS_PER_PAGE));
+        int totalPage = (int) (Math.ceil(paPurchaseCancel.size() * 1.0 / ROWS_PER_PAGE));
         pgTransaction.setPageCount(totalPage);
         pgTransaction.setCurrentPageIndex(0);
         changePageTransactionView(0, ROWS_PER_PAGE);
@@ -1147,11 +1226,11 @@ public class POCancellation_EntryController implements Initializable, ScreenInte
 
     private void changePageTransactionView(int index, int limit) {
         int fromIndex = index * limit;
-        int toIndex = Math.min(fromIndex + limit, paPurchaseOrder.size());
+        int toIndex = Math.min(fromIndex + limit, paPurchaseCancel.size());
 
-        int minIndex = Math.min(toIndex, filteredPurchaseOrder.size());
-        SortedList<Model_PO_Master> sortedData = new SortedList<>(
-                FXCollections.observableArrayList(filteredPurchaseOrder.subList(Math.min(fromIndex, minIndex), minIndex)));
+        int minIndex = Math.min(toIndex, filteredPurchaseCancel.size());
+        SortedList<Model_PO_Cancellation_Master> sortedData = new SortedList<>(
+                FXCollections.observableArrayList(filteredPurchaseCancel.subList(Math.min(fromIndex, minIndex), minIndex)));
         sortedData.comparatorProperty().bind(tblTransaction.comparatorProperty());
         tblTransaction.setItems(sortedData);
     }
