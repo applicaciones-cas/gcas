@@ -2265,8 +2265,8 @@ public class DeliveryAcceptance_ConfirmationSPCarController implements Initializ
                     btnVoid.setVisible(false);
                     btnVoid.setManaged(false);
                 } else {
-                    btnReturn.setVisible(lbShow3);
-                    btnReturn.setManaged(lbShow3);
+                    //btnReturn.setVisible(lbShow3);
+                    //btnReturn.setManaged(lbShow3);
                 }
                 break;
             case PurchaseOrderReceivingStatus.POSTED:

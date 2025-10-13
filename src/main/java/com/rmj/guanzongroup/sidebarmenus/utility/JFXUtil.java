@@ -123,6 +123,7 @@ import javafx.scene.control.TableView;
 import javafx.util.Callback;
 import java.io.File;
 import java.util.regex.Pattern;
+import javafx.css.PseudoClass;
 
 /**
  * Date : 4/28/2025
@@ -308,70 +309,70 @@ public class JFXUtil {
 
     /* To modify combobox lists color, includes hover and selected*/
     public static <T> void initComboBoxCellDesignColor(ComboBox<T> comboBox, String hexcolor) {
-//      #FF8201
+        PseudoClass selected = PseudoClass.getPseudoClass("selected");
+        PseudoClass focused = PseudoClass.getPseudoClass("focused");
+
         comboBox.setCellFactory(param -> new ListCell<T>() {
+            {
+                // Handle hover color logic
+                hoverProperty().addListener((obs, wasHovered, isNowHovered) -> {
+                    if (!isEmpty() && getItem() != null) {
+                        if (isNowHovered) {
+                            if (isSelected()) {
+                                // hovering current selected item
+                                setStyle("-fx-background-color: " + hexcolor + "; -fx-text-fill: black;");
+                            } else {
+                                // hovering other items
+                                setStyle("-fx-background-color: " + hexcolor + "; -fx-text-fill: white;");
+                            }
+                        } else {
+                            updateColor();
+                        }
+                    }
+                });
+            }
+
             @Override
             protected void updateItem(T item, boolean empty) {
                 super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                    setStyle("");
+                    return;
+                }
 
+                setText(item.toString());
+                updateColor();
+
+                // respond to selection/focus changes
+                selectedProperty().addListener((obs, oldSel, newSel) -> updateColor());
+                focusedProperty().addListener((obs, oldFoc, newFoc) -> updateColor());
+            }
+
+            private void updateColor() {
+                boolean isSel = isSelected();
+                boolean isFoc = isFocused();
+
+                // For keyboard navigation or selection, always black text
+                if (isSel || isFoc) {
+                    setStyle("-fx-background-color: " + hexcolor + "; -fx-text-fill: black;");
+                } else {
+                    setStyle("-fx-background-color: transparent; -fx-text-fill: black;");
+                }
+            }
+        });
+
+        // Displayed value in the ComboBox (should look normal)
+        comboBox.setButtonCell(new ListCell<T>() {
+            @Override
+            protected void updateItem(T item, boolean empty) {
+                super.updateItem(item, empty);
                 if (empty || item == null) {
                     setText(null);
                     setStyle("");
                 } else {
                     setText(item.toString());
-
-                    boolean isSelected = item.equals(comboBox.getValue());
-
-                    // Apply initial style
-                    if (isSelected) {
-                        setStyle("-fx-background-color: " + hexcolor + "; -fx-text-fill: white;");
-                    } else {
-                        setStyle("");
-                    }
-
-                    hoverProperty().addListener((obs, wasHovered, isNowHovered) -> {
-                        if (isNowHovered && !isEmpty() && getItem() != null) {
-                            if (getItem().toString().equals(comboBox.getValue() != null ? comboBox.getValue().toString() : "")) {
-                                setStyle("-fx-background-color: " + hexcolor + "; -fx-text-fill: white;");
-
-                            } else {
-                                setStyle("-fx-background-color: " + hexcolor + "; -fx-text-fill: black;");
-
-                            }
-                        } else if (!isEmpty() && getItem() != null) {
-                            // If not hovered, reset style based on selection
-                            if (getItem().toString().equals(comboBox.getValue() != null ? comboBox.getValue().toString() : "")) {
-                                setStyle("-fx-background-color: " + hexcolor + "; -fx-text-fill: white;");
-                            } else {
-                                setStyle("");
-                            }
-                        }
-                    });
-
-                    setOnMouseExited(e -> {
-                        if (item.equals(comboBox.getValue())) {
-                            setStyle("-fx-background-color: " + hexcolor + "; -fx-text-fill: white;");
-                        } else {
-                            setStyle("");
-                        }
-                    });
-                }
-            }
-        });
-        comboBox.setOnShowing(event -> {
-            T selectedItem = comboBox.getValue();
-            if (selectedItem != null) {
-                // Loop through each item and apply style based on selection
-                for (int i = 0; i < comboBox.getItems().size(); i++) {
-                    T item = comboBox.getItems().get(i);
-
-                    if (item.equals(selectedItem)) {
-                        // Apply the custom background color for selected item in the list
-                        comboBox.getItems().set(i, item);
-                    } else {
-                        // Reset the style for non-selected items
-                        comboBox.getItems().set(i, item);
-                    }
+                    setStyle("-fx-background-color: transparent; -fx-text-fill: black;");
                 }
             }
         });
@@ -776,8 +777,8 @@ public class JFXUtil {
         });
     }
 
-    /* Clears textFields, textAreas, checkboxes,combobxes, & datepickers by calling its parent anchorpane */
- /* For datepicker it auto set value to null before clearing text input*/
+    /* Clears textFields, textAreas, checkboxes, combobxes, & datepickers by calling its parent Anchorpane */
+ /* For datepicker it auto set value to null before clearing its text input*/
     public static void clearTextFields(AnchorPane... anchorPanes) {
         for (AnchorPane pane : anchorPanes) {
             clearTextInputsRecursive(pane);
@@ -863,6 +864,7 @@ public class JFXUtil {
         }
     }
 
+    /*Converts MM/dd/yyyy into yyyy-MM-dd*/
     public static String convertToIsoFormat(String dateStr) {
         DateTimeFormatter isoFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         DateTimeFormatter usFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
@@ -886,6 +888,7 @@ public class JFXUtil {
         }
     }
 
+    /*Deprecated*/
     public static JFXUtilDateResult processDate(String inputText, DatePicker datePicker) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy"); // accepted string
         JSONObject poJSON = new JSONObject();
@@ -918,6 +921,7 @@ public class JFXUtil {
         return new JFXUtilDateResult(inputText, selectedDate, poJSON);
     }
 
+    /*Deprecated*/
     public static class JFXUtilDateResult {
 
         public String inputText;
@@ -1335,6 +1339,7 @@ public class JFXUtil {
         }
     }
 
+    /*Alternative version of inputDecimalOnly; restricts to 1 dot, commas not allowed*/
     public static void inputDecimalOnly(TextField... foTxtFields) {
         Pattern pattern = Pattern.compile("\\d*(\\.\\d*)?");
         for (TextField txtField : foTxtFields) {
@@ -1600,52 +1605,36 @@ public class JFXUtil {
         }
     }
 
-    /*Identifies if an fxml industry is general*/
-    public static boolean isGeneralFXML(String fxmlPath) {
-        String fileName = fxmlPath.substring(fxmlPath.lastIndexOf('/') + 1, fxmlPath.lastIndexOf('.'));
-
-        int underscoreIndex = fileName.indexOf('_');
-
-        if (underscoreIndex == -1) {
-            return true;
+    /*Identifies if general based on title*/
+    public static boolean isGeneral(String title) {
+        if (title == null || title.trim().isEmpty()) {
+            return false;
         }
 
-        String suffix = fileName.substring(underscoreIndex + 1);
+        // Trim and normalize spaces
+        title = title.trim();
 
         String[] generalSuffixes = {
             "Entry", "Confirmation", "History", "Approval"
         };
-        for (String general : generalSuffixes) {
-            if (suffix.equals(general)) {
+
+        for (String suffix : generalSuffixes) {
+            // Check if the title ends exactly with one of the general suffixes
+            if (title.endsWith(suffix)) {
                 return true;
             }
         }
+
+        // If it contains any of those words but continues after, it's not general
+        for (String suffix : generalSuffixes) {
+            if (title.contains(suffix + " ")) {
+                return false;
+            }
+        }
+
         return false;
     }
 
-//    public static String formatForMessageBox(String message, int maxLinewidth) {
-//        if (message == null || message.isEmpty()) {
-//            return "";
-//        }
-//
-//        StringBuilder result = new StringBuilder();
-//        String[] words = message.split(" ");
-//        StringBuilder line = new StringBuilder();
-//
-//        for (String word : words) {
-//            if (line.length() + word.length() + 1 > maxLinewidth) {
-//                result.append(line.toString().trim()).append("\n");
-//                line.setLength(0);
-//            }
-//            line.append(word).append(" ");
-//        }
-//
-//        if (line.length() > 0) {
-//            result.append(line.toString().trim());
-//        }
-//
-//        return result.toString();
-//    }
     @FunctionalInterface
     public interface Action<T> {
 
@@ -2208,7 +2197,7 @@ public class JFXUtil {
     }
 
     /*Adds checkbox to any column, returns column index and row index, and check status*/
- /*Requires Table Model, tableView, boolean, and column index/s that checkbox will be applied (e.g. 0,1,2)*/
+ /*Requires Table Model, tableView, boolean, and column int index/s that checkbox will be applied (e.g. 0,1,2)*/
     public static <T> void addCheckboxColumns(
             Class<T> modelClass,
             TableView<T> table,
@@ -2376,25 +2365,12 @@ public class JFXUtil {
         });
     }
 
-    private static void syncMarkScale(CheckBox cb) {
-        Node mark = cb.lookup(".mark");
-        if (mark != null) {
-            if (cb.isSelected()) {
-                mark.setScaleX(1.0);
-                mark.setScaleY(1.0);
-            } else {
-                mark.setScaleX(0.0);
-                mark.setScaleY(0.0);
-            }
-        }
-    }
-
     private static final Map<Class<?>, Map<String, String>> cache = new HashMap<>();
 
     /*Sets value to a label, textField, textArea, or button from class various variable name w/ value*/
- /*Ideally used for set Status of Transaction*/
+ /*Ideally used for set Status label of Transaction*/
  /*Compares class variables values from string value (the third parameter)*/
- /*Requires UI Node, class, a string value*/
+ /*Requires Node, class, and a string value*/
     public static String setStatusValue(Node node, Class<?> clazz, String value) {
         String text = getNameByValue(clazz, value);
 
@@ -2447,6 +2423,7 @@ public class JFXUtil {
         return valueToNameMap;
     }
 
+    /*Alternative ComboboxListener*/
 //    sample usage
 //    EventHandler<ActionEvent> comboBoxActionListener = JFXUtil.CmbActionListener(
 //            (cmbId, selectedIndex, selectedValue) -> {
@@ -2572,11 +2549,27 @@ public class JFXUtil {
         return poJSON;
     }
 
+    /*Removes TextField listener*/
     public static void removeTextFieldListener(ChangeListener<String> searchListener, TextField textField) {
         if (searchListener != null) {
             // Remove the listener if already attached
             textField.textProperty().removeListener(searchListener);
         }
+    }
+
+    public static String IDToWord(String id) {
+        if (id == null || id.isEmpty()) {
+            return "";
+        }
+        // Remove known common prefixes like tf, dp, cb, btn, etc.
+        String cleaned = id.replaceFirst("^(tf|dp|cb|btn|lbl|txt|cmb|ap|rb)", "");
+        // Insert spaces before capital letters but not between consecutive capitals (e.g., "SI")
+        String withSpaces = cleaned.replaceAll("(?<=[a-z])(?=[A-Z])", " ");
+        // Capitalize first character if needed
+        if (!withSpaces.isEmpty()) {
+            withSpaces = withSpaces.substring(0, 1).toUpperCase() + withSpaces.substring(1);
+        }
+        return withSpaces.trim();
     }
 
 }
