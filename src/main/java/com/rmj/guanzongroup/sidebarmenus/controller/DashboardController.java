@@ -2226,7 +2226,7 @@ public class DashboardController implements Initializable {
 
                 /*PO Cancellation */
                 //PO Cancellation  Entry
-                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_Entry_Entry.fxml":
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_Entry.fxml":
                     psIndustryID = "";
                     psCategoryID = "0007";
                     return "PO Cancellation Entry";
