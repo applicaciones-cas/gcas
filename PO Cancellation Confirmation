@@ -84,3 +84,13 @@ Oct 13, 2025 3:21:37 PM org.guanzon.appdriver.base.LogWrapper severe
 SEVERE: PO Cancellation Confirmation : Transaction was already cancelled.
 Oct 13, 2025 3:21:40 PM org.guanzon.appdriver.base.LogWrapper severe
 SEVERE: PO Cancellation Confirmation : Unable to open transaction detail record.
+Oct 13, 2025 4:32:46 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: PO Cancellation Confirmation : Success on PO Cancellation Confirmation
+Oct 13, 2025 4:32:47 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: PO Cancellation Confirmation : Success on Initialize Search Source No! 
+Oct 13, 2025 4:32:58 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: PO Cancellation Confirmation : Username or password is not set.
+Oct 13, 2025 4:32:59 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: PO Cancellation Confirmation : Success on Initialize : Load of Transaction List
+Oct 13, 2025 4:33:54 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: PO Cancellation Confirmation :Lock wait timeout exceeded; try restarting transaction

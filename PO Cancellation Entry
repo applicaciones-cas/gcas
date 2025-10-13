@@ -176,3 +176,21 @@ Oct 13, 2025 2:07:38 PM org.guanzon.appdriver.base.LogWrapper info
 INFO: PO Cancellation Entry : Success on Initialize UPdate Transaction
 Oct 13, 2025 2:07:39 PM org.guanzon.appdriver.base.LogWrapper info
 INFO: PO Cancellation Entry : Success on Initialize retrieve stock request transaction
+Oct 13, 2025 4:19:31 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: PO Cancellation Entry : Success on PO Cancellation Entry
+Oct 13, 2025 4:19:32 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: PO Cancellation Entry : Success on Initialize New Transaction
+Oct 13, 2025 4:19:37 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: PO Cancellation Entry : Success on Initialize : Load of Transaction List
+Oct 13, 2025 4:19:39 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: PO Cancellation Entry : Success on PO Cancellation Entry
+Oct 13, 2025 4:19:46 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: PO Cancellation Entry : Success on PO Cancellation Entry
+Oct 13, 2025 4:19:51 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: PO Cancellation Entry : Success on PO Cancellation Entry
+Oct 13, 2025 4:20:53 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: PO Cancellation Entry : Detail is not set.
+Oct 13, 2025 4:20:59 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: PO Cancellation Entry : Success on Initialize Save Transaction
+Oct 13, 2025 4:21:03 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: PO Cancellation Entry : Success on Initialize Close Transaction
