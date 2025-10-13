@@ -1052,7 +1052,7 @@ public class POReplacement_ConfirmationAppliancesController implements Initializ
                 poController.PurchaseOrderReceiving().Detail(pnDetail).setBrandId(poController.PurchaseOrderReceiving().Detail(pnDetail).Inventory().getBrandId());
             }
             JFXUtil.setDisabled(oApp.getUserLevel() <= UserRight.ENCODER, tfCost);
-            
+
             tfBarcode.setText(poController.PurchaseOrderReceiving().Detail(pnDetail).Inventory().getBarCode());
             tfDescription.setText(poController.PurchaseOrderReceiving().Detail(pnDetail).Inventory().getDescription());
             tfBrand.setText(poController.PurchaseOrderReceiving().Detail(pnDetail).Brand().getDescription()); //TODO
@@ -1578,7 +1578,7 @@ public class POReplacement_ConfirmationAppliancesController implements Initializ
                 if (poController.PurchaseOrderReceiving().Master().isProcessed()) {
                     JFXUtil.setButtonsVisibility(false, btnUpdate, btnVoid);
                 } else {
-                    JFXUtil.setButtonsVisibility(lbShow3, btnReturn);
+                    //JFXUtil.setButtonsVisibility(lbShow3, btnReturn); // hide 
                 }
                 break;
             case PurchaseOrderReceivingStatus.POSTED:
