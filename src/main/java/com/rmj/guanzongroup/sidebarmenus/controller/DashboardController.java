@@ -4259,22 +4259,22 @@ public class DashboardController implements Initializable {
                 //History
                 case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_History.fxml":
                     return new POCancellation_HistoryController();
-////                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_HistoryAppliance.fxml":
-////                    return new POCancellation_HistoryControllerAppliance();
-////                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_HistoryCar.fxml":
-////                    return new POCancellation_HistoryControllerCar();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_HistoryCar_SP.fxml":
-//                    return new POCancellation_HistoryControllerCar_SP();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_HistoryLP_Food.fxml":
-//                    return new POCancellation_HistoryControllerLP_Food();
-////                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_HistoryMC.fxml":
-////                    return new POCancellation_HistoryControllerMC();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_HistoryMC_SP.fxml":
-//                    return new POCancellation_HistoryControllerMC_SP();
-////                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_HistoryMP.fxml":
-////                    return new POCancellation_HistoryControllerMP();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_HistoryMonarch_Food.fxml":
-//                    return new POCancellation_HistoryControllerMonarch_Food();
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_HistoryAppliance.fxml":
+//                    return new POCancellation_HistoryControllerAppliance();
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_HistoryCar.fxml":
+//                    return new POCancellation_HistoryControllerCar();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_HistoryCar_SP.fxml":
+                    return new POCancellation_HistoryControllerCar_SP();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_HistoryLP_Food.fxml":
+                    return new POCancellation_HistoryControllerLP_Food();
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_HistoryMC.fxml":
+//                    return new POCancellation_HistoryControllerMC();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_HistoryMC_SP.fxml":
+                    return new POCancellation_HistoryControllerMC_SP();
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_HistoryMP.fxml":
+//                    return new POCancellation_HistoryControllerMP();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/POCancellation_HistoryMonarch_Food.fxml":
+                    return new POCancellation_HistoryControllerMonarch_Food();
 
 //                UPDATE
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CheckStatusUpdate.fxml":
