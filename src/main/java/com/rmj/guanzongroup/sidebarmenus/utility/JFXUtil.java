@@ -1605,26 +1605,33 @@ public class JFXUtil {
         }
     }
 
-    /*Identifies if an fxml industry is general*/
-    public static boolean isGeneralFXML(String fxmlPath) {
-        String fileName = fxmlPath.substring(fxmlPath.lastIndexOf('/') + 1, fxmlPath.lastIndexOf('.'));
-
-        int underscoreIndex = fileName.indexOf('_');
-
-        if (underscoreIndex == -1) {
-            return true;
+    /*Identifies if general based on title*/
+    public static boolean isGeneral(String title) {
+        if (title == null || title.trim().isEmpty()) {
+            return false;
         }
 
-        String suffix = fileName.substring(underscoreIndex + 1);
+        // Trim and normalize spaces
+        title = title.trim();
 
         String[] generalSuffixes = {
             "Entry", "Confirmation", "History", "Approval"
         };
-        for (String general : generalSuffixes) {
-            if (suffix.equals(general)) {
+
+        for (String suffix : generalSuffixes) {
+            // Check if the title ends exactly with one of the general suffixes
+            if (title.endsWith(suffix)) {
                 return true;
             }
         }
+
+        // If it contains any of those words but continues after, it's not general
+        for (String suffix : generalSuffixes) {
+            if (title.contains(suffix + " ")) {
+                return false;
+            }
+        }
+
         return false;
     }
 
@@ -2548,6 +2555,21 @@ public class JFXUtil {
             // Remove the listener if already attached
             textField.textProperty().removeListener(searchListener);
         }
+    }
+
+    public static String IDToWord(String id) {
+        if (id == null || id.isEmpty()) {
+            return "";
+        }
+        // Remove known common prefixes like tf, dp, cb, btn, etc.
+        String cleaned = id.replaceFirst("^(tf|dp|cb|btn|lbl|txt|cmb|ap|rb)", "");
+        // Insert spaces before capital letters but not between consecutive capitals (e.g., "SI")
+        String withSpaces = cleaned.replaceAll("(?<=[a-z])(?=[A-Z])", " ");
+        // Capitalize first character if needed
+        if (!withSpaces.isEmpty()) {
+            withSpaces = withSpaces.substring(0, 1).toUpperCase() + withSpaces.substring(1);
+        }
+        return withSpaces.trim();
     }
 
 }
