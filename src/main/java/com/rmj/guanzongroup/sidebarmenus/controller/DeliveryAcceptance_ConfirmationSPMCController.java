@@ -2259,8 +2259,8 @@ public class DeliveryAcceptance_ConfirmationSPMCController implements Initializa
                     btnVoid.setVisible(false);
                     btnVoid.setManaged(false);
                 } else {
-                    btnReturn.setVisible(lbShow3);
-                    btnReturn.setManaged(lbShow3);
+                    //btnReturn.setVisible(lbShow3);
+                    //btnReturn.setManaged(lbShow3);
                 }
                 break;
             case PurchaseOrderReceivingStatus.POSTED:

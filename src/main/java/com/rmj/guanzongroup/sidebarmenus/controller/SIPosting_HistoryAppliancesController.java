@@ -307,6 +307,7 @@ public class SIPosting_HistoryAppliancesController implements Initializable, Scr
 
         }
         AttachmentDialogController controller = new AttachmentDialogController();
+        controller.setOpenedImage(pnAttachment);
         controller.addData(data);
         try {
             stageAttachment.showDialog((Stage) btnClose.getScene().getWindow(), getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/AttachmentDialog.fxml"), controller, "Attachment Dialog", false, false, true);

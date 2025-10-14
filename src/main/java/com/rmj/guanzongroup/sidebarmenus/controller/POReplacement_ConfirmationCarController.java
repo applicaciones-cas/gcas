@@ -1639,7 +1639,7 @@ public class POReplacement_ConfirmationCarController implements Initializable, S
                 if (poController.PurchaseOrderReceiving().Master().isProcessed()) {
                     JFXUtil.setButtonsVisibility(false, btnUpdate, btnVoid);
                 } else {
-                    JFXUtil.setButtonsVisibility(lbShow3, btnReturn);
+                    //JFXUtil.setButtonsVisibility(lbShow3, btnReturn);
                 }
                 break;
             case PurchaseOrderReceivingStatus.POSTED:

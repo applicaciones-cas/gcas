@@ -307,6 +307,7 @@ public class SIPosting_HistoryMCController implements Initializable, ScreenInter
 
         }
         AttachmentDialogController controller = new AttachmentDialogController();
+        controller.setOpenedImage(pnAttachment);
         controller.addData(data);
         try {
             stageAttachment.showDialog((Stage) btnBrowse.getScene().getWindow(), getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/AttachmentDialog.fxml"), controller, "Attachment Dialog", false, false, true);
