@@ -60,7 +60,7 @@
                                           <Font name="System Bold" size="14.0" />
                                        </font>
                                     </Label>
-                                    <TextField fx:id="tfSearchSourceno" promptText="Press F3: Search" GridPane.columnIndex="2" />
+                                    <TextField fx:id="tfSearchReceived" promptText="Press F3: Search" GridPane.columnIndex="2" />
                                     <TextField fx:id="tfSearchTransNo" promptText="Press F3: Search" GridPane.columnIndex="6" />
                                  </children>
                               </GridPane>
@@ -79,7 +79,7 @@
                             <children>
                                 <HBox fx:id="hbButtons" alignment="CENTER_LEFT" spacing="5.0" style="-fx-background-color: E9E9E9;" styleClass="button_process" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                     <children>
-                              <Button fx:id="btnSearch1" contentDisplay="TOP" ellipsisString="" layoutX="15.0" layoutY="15.0" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="70.0" prefWidth="70.0" styleClass="button_process" stylesheets="@000MNVProject/CAS%20IntegSys%20JavaMaven/gcas/src/main/resources/com/rmj/guanzongroup/sidebarmenus/css/StyleSheet.css" text="Browse">
+                              <Button fx:id="btnBrowse" contentDisplay="TOP" ellipsisString="" layoutX="15.0" layoutY="15.0" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="70.0" prefWidth="70.0" styleClass="button_process" stylesheets="@000MNVProject/CAS%20IntegSys%20JavaMaven/gcas/src/main/resources/com/rmj/guanzongroup/sidebarmenus/css/StyleSheet.css" text="Browse">
                                  <effect>
                                     <Blend />
                                  </effect>
@@ -90,7 +90,7 @@
                                     <Font size="12.0" />
                                  </font>
                               </Button>
-                              <Button fx:id="btnSave1" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="70.0" prefWidth="70.0" styleClass="button_process" stylesheets="@000MNVProject/CAS%20IntegSys%20JavaMaven/gcas/src/main/resources/com/rmj/guanzongroup/sidebarmenus/css/StyleSheet.css" text="POST">
+                              <Button fx:id="btnPost" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="70.0" prefWidth="70.0" styleClass="button_process" stylesheets="@000MNVProject/CAS%20IntegSys%20JavaMaven/gcas/src/main/resources/com/rmj/guanzongroup/sidebarmenus/css/StyleSheet.css" text="POST">
                                  <effect>
                                     <Blend />
                                  </effect>
@@ -101,7 +101,7 @@
                                     <Font size="12.0" />
                                  </font>
                               </Button>
-                              <Button fx:id="btnSave111" contentDisplay="TOP" ellipsisString="" layoutX="540.0" layoutY="15.0" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="70.0" prefWidth="70.0" styleClass="button_process" stylesheets="@000MNVProject/CAS%20IntegSys%20JavaMaven/gcas/src/main/resources/com/rmj/guanzongroup/sidebarmenus/css/StyleSheet.css" text="Print">
+                              <Button fx:id="btnPrint" contentDisplay="TOP" ellipsisString="" layoutX="540.0" layoutY="15.0" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="70.0" prefWidth="70.0" styleClass="button_process" stylesheets="@000MNVProject/CAS%20IntegSys%20JavaMaven/gcas/src/main/resources/com/rmj/guanzongroup/sidebarmenus/css/StyleSheet.css" text="Print">
                                  <effect>
                                     <Blend />
                                  </effect>
@@ -210,7 +210,7 @@
                                                             <Font size="12.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField fx:id="tfTrucking1" maxHeight="25.0" GridPane.columnIndex="2" GridPane.columnSpan="5" GridPane.rowIndex="3" />
+                                                      <TextField fx:id="tfReceivedBy" maxHeight="25.0" GridPane.columnIndex="2" GridPane.columnSpan="5" GridPane.rowIndex="3" />
                                               </children>
                                           </GridPane>
                                       </children>
@@ -258,16 +258,16 @@
                                                           <Font name="System Bold" size="14.0" />
                                                       </font>
                                                   </Label>
-                                                  <TextField fx:id="tfSearchBarcode" maxHeight="25.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="1" />
-                                                  <TextField fx:id="tfSearchDescription" alignment="TOP_LEFT" maxHeight="1.7976931348623157E308" GridPane.columnIndex="2" GridPane.columnSpan="6" GridPane.rowIndex="2" />
-                              <TextField fx:id="tfIssuedQty" alignment="CENTER_RIGHT" promptText="0.0000" GridPane.columnIndex="2" GridPane.columnSpan="6" GridPane.rowIndex="4" />
+                                                  <TextField fx:id="tfPayee" maxHeight="25.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="1" />
+                                                  <TextField fx:id="tfParticular" alignment="TOP_LEFT" maxHeight="1.7976931348623157E308" GridPane.columnIndex="2" GridPane.columnSpan="6" GridPane.rowIndex="2" />
+                              <TextField fx:id="tfCheckAmt" alignment="CENTER_RIGHT" promptText="0.0000" GridPane.columnIndex="2" GridPane.columnSpan="6" GridPane.rowIndex="4" />
                                                       <Label text="Check Reference">
                                                          <font>
                                                             <Font size="12.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField fx:id="tfSearchSerial" maxHeight="25.0" GridPane.columnIndex="2" GridPane.columnSpan="2" />
-                                                      <DatePicker fx:id="dpTransactionDate1" editable="false" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                                      <TextField fx:id="tfSearchCheckRef" maxHeight="25.0" GridPane.columnIndex="2" GridPane.columnSpan="2" />
+                                                      <DatePicker fx:id="dpCheckDate" editable="false" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                                                       <Label text="Check Date" GridPane.rowIndex="3">
                                                          <font>
                                                             <Font size="12.0" />
@@ -278,13 +278,13 @@
                                                             <Font size="12.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField fx:id="tfSearchBarcode1" maxHeight="25.0" GridPane.columnIndex="6" GridPane.columnSpan="2" GridPane.rowIndex="3" />
+                                                      <TextField fx:id="tfCheckNo" maxHeight="25.0" GridPane.columnIndex="6" GridPane.columnSpan="2" GridPane.rowIndex="3" />
                                                       <Label text="Note" GridPane.rowIndex="5">
                                                          <font>
                                                             <Font size="12.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField fx:id="tfSearchBarcode2" maxHeight="25.0" GridPane.columnIndex="2" GridPane.columnSpan="2147483647" GridPane.rowIndex="5" />
+                                                      <TextField fx:id="tfNote" maxHeight="25.0" GridPane.columnIndex="2" GridPane.columnSpan="2147483647" GridPane.rowIndex="5" />
                                               </children>
                                           </GridPane>
                                       </children>
@@ -301,12 +301,12 @@
                                                   <columns>
                                               <TableColumn fx:id="tblColDetailNo" editable="false" maxWidth="30.0" minWidth="30.0" prefWidth="-1.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="No." />
                                               <TableColumn fx:id="tblColDetailOrderNo" editable="false" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Order No." visible="false" />
-                                              <TableColumn fx:id="tblColDetailSerial" editable="false" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Reference No." />
-                                                      <TableColumn fx:id="tblColDetailBarcode" editable="false" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Payee" />
-                                              <TableColumn fx:id="tblColDetailDescr" editable="false" maxWidth="1.7976931348623157E308" minWidth="-1.0" prefWidth="120.0" sortable="false" style="-fx-font-size: 12;" text="Particular" />
-                                                      <TableColumn fx:id="tblColDetailBrand" editable="false" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Check Date" />
-                                                      <TableColumn fx:id="tblColDetailVariant" editable="false" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Check No." />
-                                              <TableColumn fx:id="tblColDetailCost" editable="false" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Amount" />
+                                              <TableColumn fx:id="tblColDetailReference" editable="false" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Reference No." />
+                                                      <TableColumn fx:id="tblColDetailPayee" editable="false" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Payee" />
+                                              <TableColumn fx:id="tblColDetailParticular" editable="false" maxWidth="1.7976931348623157E308" minWidth="-1.0" prefWidth="120.0" sortable="false" style="-fx-font-size: 12;" text="Particular" />
+                                                      <TableColumn fx:id="tblColDetailCheckDt" editable="false" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Check Date" />
+                                                      <TableColumn fx:id="tblColDetailCheckNo" editable="false" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Check No." />
+                                              <TableColumn fx:id="tblColDetailAmt" editable="false" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Amount" />
                                                   </columns>
                                                    <columnResizePolicy>
                                                       <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

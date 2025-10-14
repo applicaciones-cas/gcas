@@ -130,6 +130,7 @@ C:\Users\User\CAS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controlle
 C:\Users\User\CAS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\SOATagging_HistoryAppliancesController.java
 C:\Users\User\CAS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\InvRequest_Roq_HistoryLPFoodController.java
 C:\Users\User\CAS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrder_ConfirmationMonarchHospitalityController.java
+C:\Users\User\CAS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\CheckRelease_ConfirmationController.java
 C:\Users\User\CAS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrderReturn_HistorySPMCController.java
 C:\Users\User\CAS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\CheckPrintRequest_EntryController.java
 C:\Users\User\CAS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\BarangayController.java
@@ -378,6 +379,7 @@ C:\Users\User\CAS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controlle
 C:\Users\User\CAS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_EntryController.java
 C:\Users\User\CAS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\SalesReservation_EntryMonarchFoodController.java
 C:\Users\User\CAS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\InventoryRequest_ApprovalLPController.java
+C:\Users\User\CAS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\CheckRelease_HistoryController.java
 C:\Users\User\CAS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\SalesReservation_EntryAppliancesController.java
 C:\Users\User\CAS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\SIPosting_HistoryMonarchHospitalityController.java
 C:\Users\User\CAS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\APPaymentAdjustment_EntryLPController.java

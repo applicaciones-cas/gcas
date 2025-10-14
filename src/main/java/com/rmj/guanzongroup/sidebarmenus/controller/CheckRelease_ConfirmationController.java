@@ -62,11 +62,11 @@ import ph.com.guanzongroup.cas.check.module.mnv.services.CheckController;
  *
  * @author User
  */
-public class CheckRelease_EntryController implements Initializable, ScreenInterface{
+public class CheckRelease_ConfirmationController implements Initializable, ScreenInterface{
     
     private GRiderCAS poApp;
     private LogWrapper poLogWrapper;
-    private String psFormName = "Check Release Entry";
+    private String psFormName = "Check Release Confirmation";
     private String psIndustryID;
     private Control lastFocusedControl;
     private CheckRelease poAppController;
@@ -93,7 +93,7 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
     private DatePicker dpTransactionDate, dpCheckDate, dpCheckDtFrm, dpCheckDTTo;
     
     @FXML
-    private Button btnSearch, btnBrowse, btnNew, btnUpdate, btnSave, btnCancel, btnHistory, btnRetrieve, btnClose;
+    private Button btnSearch, btnBrowse, btnUpdate, btnApprove, btnVoid, btnPrint, btnSave, btnCancel, btnHistory, btnRetrieve, btnClose;
     
     @FXML
     private TableView<Model_Check_Payments> tblViewMaster;
@@ -123,16 +123,15 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
             //background thread
             Platform.runLater(() -> {
                 
-                poAppController.setTransactionStatus(CheckReleaseStatus.OPEN);
+                poAppController.setTransactionStatus("10");
                 poAppController.setIndustryID(psIndustryID);
                 
                 System.err.println("Initialize value : Industry >" + psIndustryID);
-                btnNew.fire();
             });
             LoadTransactionDetails();
             initControlEvents();
         } catch (SQLException | GuanzonException e) {
-            Logger.getLogger(CheckRelease_EntryController.class.getName()).log(Level.SEVERE, null, e);
+            Logger.getLogger(CheckRelease_ConfirmationController.class.getName()).log(Level.SEVERE, null, e);
             poLogWrapper.severe(psFormName + " :" + e.getMessage());
         }
     }
@@ -175,11 +174,11 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
                 }
                 
                 //do not load transaction if not in update or add mode
+                System.out.println(pnEditMode);
                 if (pnEditMode == EditMode.READY || pnEditMode == EditMode.UNKNOWN) {
                     return;
                 }
 
-                System.out.print(pnTransactionDetail);
                 //check selected row's transaction no if not empty, ask user to replace the existing.
                 if (tblColDetailReference.getCellData(pnTransactionDetail) != null) {
                     if (!tblColDetailReference.getCellData(pnTransactionDetail).isEmpty()) {
@@ -189,7 +188,7 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
                     }
                 }
 
-                //load check details
+                //set entry no default value by counting list item from details
                 if (!isJSONSuccess(poAppController.LoadCheckTransaction(tblColTransNo.getCellData(pnSelectMaster), pnTransactionDetail <= 0 ? 1 : pnTransactionDetail), psFormName)) {
                     return;
                 }
@@ -311,6 +310,18 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
                     switch (lastFocusedControl.getId()) {
                         
                         case "tfSearchTransNo":
+                            
+                            if (pnEditMode != EditMode.READY && pnEditMode != EditMode.UNKNOWN) {
+                        
+                                if (!poAppController.GetMaster().getTransactionNo().isEmpty()) {
+
+                                    if (ShowMessageFX.OkayCancel(null, "Initialize Search Check Release Master", "Do you want to disregard changes?") == false) {
+                                        return;
+                                    }
+
+                                }
+                            }
+
                              if (!isJSONSuccess(poAppController.SearchTransaction(tfSearchTransNo.getText().toString(), true), "Initialize Search Check Release Master")) {
                                 break;
                             }
@@ -321,6 +332,18 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
                             break;
                         
                         case "tfSearchReceived":
+                            
+                            if (pnEditMode != EditMode.READY && pnEditMode != EditMode.UNKNOWN) {
+                        
+                                if (!poAppController.GetMaster().getTransactionNo().isEmpty()) {
+
+                                    if (ShowMessageFX.OkayCancel(null, "Initialize Search Check Release Master", "Do you want to disregard changes?") == false) {
+                                        return;
+                                    }
+
+                                }
+                            }
+                            
                              if (!isJSONSuccess(poAppController.SearchTransaction(tfSearchReceived.getText().toString(), false), "Initialize Search Check Release Master")) {
                                 return;
                             }
@@ -330,7 +353,7 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
                             
                             break;
                             
-                            case "tfSearchPayee":
+                        case "tfSearchPayee":
                             if (!isJSONSuccess(poAppController.SearchCheckTransaction(tfSearchPayee.getText().toString(),
                                     true, false), "Initialize Search Check Release Master")) {
                                 break;
@@ -361,18 +384,74 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
                             break;
                     }
                     break;
-                    
-                case "btnNew":
-                    if (!isJSONSuccess(poAppController.NewTransaction(), "Initialize New Transaction")) {
+
+                case "btnApprove":
+                    if (tfTransNo.getText().isEmpty()) {
+                        ShowMessageFX.Information("Please load transaction before proceeding..", null, "Check Release Confirmation");
                         return;
                     }
-                    clearAllInputs();
+
+                    //allow only open transactions, for confirmation
+                    if (!poAppController.GetMaster().getTransactionStatus().equalsIgnoreCase(CheckReleaseStatus.OPEN)) {
+                        ShowMessageFX.Information("Status was already " + CheckReleaseStatus.STATUS.get(Integer.parseInt(poAppController.GetMaster().getTransactionStatus())).toLowerCase(), null, "Issuance Approval");
+                        return;
+                    }
+
+                    if (ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to confirm transaction?") == true) {
+                        if (!isJSONSuccess(poAppController.CloseTransaction(), "Initialize Close Transaction")) {
+                            return;
+                        }
+                        clearAllInputs();
+                        getLoadedTransaction();
+                        pnEditMode = poAppController.getEditMode();
+                        break;
+                    }
+                    break;
+                case "btnVoid":
+                    if (tfTransNo.getText().isEmpty()) {
+                        ShowMessageFX.Information("Please load transaction before proceeding..", null, "Check Release Confirmation");
+                        return;
+                    }
+                    
+                    if (ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to Void/Cancel transaction?") == true) {
+                        
+                        //Update transaction based on button text
+                        if (btnVoid.getText().equals("Void")) {
+                            if (!isJSONSuccess(poAppController.VoidTransaction(), "Initialize Void Transaction")) {
+                                return;
+                            }
+                        } else {
+                            if (!isJSONSuccess(poAppController.CancelTransaction(), "Initialize Cancel Transaction")) {
+                                return;
+                            }
+
+                        }
+                        //clear only, do not reload as it will not be reloaded upon the query
+                        clearAllInputs();
+                        pnEditMode = poAppController.getEditMode();
+                        break;
+                    }
+                    break;
+
+                case "btnPrint":
+                    if (poAppController.GetMaster().getTransactionNo() == null || poAppController.GetMaster().getTransactionNo().isEmpty()) {
+                        ShowMessageFX.Information("Please load transaction before proceeding..", "Check Release Confirmation", "");
+                        return;
+                    }
+                    if (ShowMessageFX.OkayCancel(null, psFormName, "Do you want to print the transaction ?") == true) {
+                        if (!isJSONSuccess(poAppController.PrintRecord(),
+                                "Initialize Print Transaction")) {
+                            return;
+                        }
+                    }
                     getLoadedTransaction();
+
+                    pnEditMode = poAppController.getEditMode();
                     break;
                     
                 case "btnUpdate":
                     if (poAppController.GetMaster().getTransactionNo() == null || poAppController.GetMaster().getTransactionNo().isEmpty()) {
-                        ShowMessageFX.Information("Please load transaction before proceeding..", "Check Release Entry", "");
+                        ShowMessageFX.Information("Please load transaction before proceeding..", "Check Release Confirmation", "");
                         return;
                     }
                     poAppController.OpenTransaction(poAppController.GetMaster().getTransactionNo());
@@ -623,8 +702,15 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
             taRemarks.setText(poAppController.GetMaster().getRemarks());
             tfTotal.setText((String.valueOf(poAppController.GetMaster().getTransactionTotal())));
             
+            //initialize button text upon load of status
+            if (poAppController.GetMaster().getTransactionStatus().equals(CheckReleaseStatus.CONFIRMED)) {
+                btnVoid.setText("Cancel");
+            } else {
+                btnVoid.setText("Void");
+            }
+            
         } catch (SQLException | GuanzonException ex) {
-            Logger.getLogger(CheckRelease_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CheckRelease_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -649,7 +735,7 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
             tfNote.setText(loCheck.getRemarks());
             
         }catch(Exception e){
-            Logger.getLogger(CheckRelease_EntryController.class.getName()).log(Level.SEVERE, null, e);
+            Logger.getLogger(CheckRelease_ConfirmationController.class.getName()).log(Level.SEVERE, null, e);
             poLogWrapper.severe(psFormName + " :" + e.getMessage());
         }
     }
@@ -726,7 +812,7 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
                 pi.setVisible(false);
                 Throwable ex = getException();
                 Logger
-                        .getLogger(CheckRelease_EntryController.class
+                        .getLogger(CheckRelease_ConfirmationController.class
                                 .getName()).log(Level.SEVERE, null, ex);
                 poLogWrapper.severe(psFormName + " : " + ex.getMessage());
             }
@@ -891,7 +977,7 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
 
         // Show-only based on mode
         initButtonControls(lbShow, "btnSearch", "btnSave", "btnCancel");
-        initButtonControls(!lbShow, "btnBrowse", "btnNew", "btnUpdate");
+        initButtonControls(!lbShow, "btnBrowse", "btnNew", "btnUpdate", "btnApprove", "btnVoid", "btnPrint");
 
         apMaster.setDisable(!lbShow);
         apDetail.setDisable(!lbShow);

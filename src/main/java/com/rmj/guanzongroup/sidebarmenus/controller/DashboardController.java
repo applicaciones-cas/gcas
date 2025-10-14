@@ -2224,6 +2224,10 @@ public class DashboardController implements Initializable {
                     
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CheckRelease_Entry.fxml":
                     return "Check Release Entry";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/CheckRelease_Confirmation.fxml":
+                    return "Check Release Confirmatino";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/CheckRelease_History.fxml":
+                    return "Check Release History";
 
                 //Update
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CheckStatusUpdate.fxml":
@@ -4101,9 +4105,13 @@ public class DashboardController implements Initializable {
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CheckDeposit_History.fxml":
                     return new CheckDeposit_HistoryController();
                 
-                    //Check Release
+                //Check Release
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CheckRelease_Entry.fxml":
                     return new CheckRelease_EntryController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/CheckRelease_Confirmation.fxml":
+                    return new CheckRelease_ConfirmationController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/CheckRelease_History.fxml":
+                    return new CheckRelease_HistoryController();
 
 //                UPDATE
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CheckStatusUpdate.fxml":
@@ -6124,6 +6132,10 @@ public class DashboardController implements Initializable {
                 + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Check Release\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"120\",\"menu_parent\":\"001\"},"
                 //Entry
                 + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Check Release Entry\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/CheckRelease_Entry.fxml\",\"controller_path\":\"CheckRelease_EntryController\",\"menu_id\":\"121\",\"menu_parent\":\"120\"},"
+                //Confirmation
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Check Release Confirmation\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/CheckRelease_Confirmation.fxml\",\"controller_path\":\"CheckRelease_ConfirmationController\",\"menu_id\":\"122\",\"menu_parent\":\"120\"},"
+                //History
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Check Release History\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/CheckRelease_History.fxml\",\"controller_path\":\"CheckRelease_HistoryController\",\"menu_id\":\"123\",\"menu_parent\":\"120\"},"
                 + "]";
         JSONParser parser = new JSONParser();
         try {

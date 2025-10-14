@@ -265,7 +265,7 @@
                                                             <Font size="12.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField fx:id="tfReceivedBy" maxHeight="25.0" GridPane.columnIndex="2" GridPane.columnSpan="5" GridPane.rowIndex="3" />
+                                                      <TextField fx:id="tfReceivedBy" editable="false" maxHeight="25.0" GridPane.columnIndex="2" GridPane.columnSpan="5" GridPane.rowIndex="3" />
                                               </children>
                                           </GridPane>
                                       </children>
