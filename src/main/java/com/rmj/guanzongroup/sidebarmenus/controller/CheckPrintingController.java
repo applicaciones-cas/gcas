@@ -334,6 +334,8 @@ public class CheckPrintingController implements Initializable, ScreenInterface {
                         getSelectedItems.clear();
                         listOfDVToAssign.clear();
                     }
+                    ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
+//                    ShowMessageFX.YesNo("Do you want to print BIR 2307 Form?", pxeModuleName, null);
                     break;
                 case "btnPrintDV":
                     poJSON =  validateSelectedItem();

@@ -1035,7 +1035,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                     double lnNetTotal = 0.0000;
                     for (lnCtr = 0; lnCtr < poDisbursementController.getDetailCount(); lnCtr++) {
                         try {
-                            lnNetTotal = poDisbursementController.Detail(lnCtr).getAmount() - (poDisbursementController.Detail(lnCtr).getTaxAmount()+ poDisbursementController.Detail(lnCtr).getDetailVatAmount());
+                            lnNetTotal = poDisbursementController.Detail(lnCtr).getAmount() - poDisbursementController.Detail(lnCtr).getTaxAmount();
                             String lsTransactionType;
 //                            switch (poDisbursementController.Detail(lnCtr).getSourceCode()) {
 //                                case DisbursementStatic.SourceCode.PAYMENT_REQUEST:
