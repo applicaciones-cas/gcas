@@ -2443,7 +2443,7 @@ public class DashboardController implements Initializable {
                     return "Inventory Serial Parameter";
 
                 /* ACCOUNTS/ACCOUNTS/ACCOUNTS PAYABLE */
-                case "/com/rmj/guanzongroup/sidebarmenus/views/AccountsPayable.fxml":
+                case "/com/rmj/guanzongroup/sidebarmenus/views/AccountsPayablex.fxml":
                     return "Accounts Payable";
 
                 /* ACCOUNTS/ACCOUNTS/ACCOUNTS RECEIVABLE */
@@ -4631,8 +4631,8 @@ public class DashboardController implements Initializable {
 //                    return new InventorySerialParamController();
 //
 //                /* ACOUNTS/ACOUNTS/ACOUNTS PAYABLE */
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/AccountsPayable.fxml":
-//                    return new AccountsPayableController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/AccountsPayablex.fxml":
+                    return new AccountsPayablexController();
 //
 //                /* ACOUNTS/ACOUNTS/ACOUNTS RECEIVABLE */
 //                case "/com/rmj/guanzongroup/sidebarmenus/views/AccountsReceivable.fxml":
@@ -6128,6 +6128,9 @@ public class DashboardController implements Initializable {
                 + "{\"access_level\":\"04\",\"menu_name\":\"Monarch Hospitality\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistoryMonarchHospitality.fxml\",\"controller_path\":\"SIPosting_HistoryMonarchHospitality.controller\",\"menu_id\":\"090\",\"menu_parent\":\"082\"},"
                 + "{\"access_level\":\"04\",\"menu_name\":\"Monarch Restaurant\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistoryMonarchFood.fxml\",\"controller_path\":\"SIPosting_HistoryMonarchFood.controller\",\"menu_id\":\"091\",\"menu_parent\":\"082\"},"
                 + "{\"access_level\":\"05\",\"menu_name\":\"Los Pedritos\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistoryLP.fxml\",\"controller_path\":\"SIPosting_HistoryLP.controller\",\"menu_id\":\"092\",\"menu_parent\":\"082\"}"
+                //Account Master
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Client Account\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"093\",\"menu_parent\":\"001\"},"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Account Payable\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/AccountsPayablex.fxml\",\"controller_path\":\"AccountsPayablex.controller\",\"menu_id\":\"094\",\"menu_parent\":\"093\"},"
                 + "]";
         JSONParser parser = new JSONParser();
         try {
