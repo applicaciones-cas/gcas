@@ -192,7 +192,14 @@ public class AccountsPayablexController implements Initializable, ScreenInterfac
                             getLoadedClient();
                             initButtonDisplay(poAppController.getEditMode());
                             break;
-
+                        case "tfContactPerson":
+                            if (!isJSONSuccess(poAppController.searchClientContact(tfContactPerson.getText(), false),
+                                    "Initialize Search Client Contact! ")) {
+                                return;
+                            }
+                            getLoadedClient();
+                            initButtonDisplay(poAppController.getEditMode());
+                            break;
                     }
                     break;
 
@@ -204,7 +211,7 @@ public class AccountsPayablexController implements Initializable, ScreenInterfac
                             }
                         }
                         if (!isJSONSuccess(poAppController.searchRecord(tfSearchClient.getText(), true),
-                                "Initialize Search Source No! ")) {
+                                "")) {
                             return;
                         }
 
@@ -222,7 +229,7 @@ public class AccountsPayablexController implements Initializable, ScreenInterfac
                                 }
                             }
                             if (!isJSONSuccess(poAppController.searchRecord(tfSearchClient.getText(), true),
-                                    "Initialize Search Source No! ")) {
+                                    "Initialize Search Client! ")) {
                                 return;
                             }
 
@@ -250,7 +257,7 @@ public class AccountsPayablexController implements Initializable, ScreenInterfac
                                 }
                             }
                             if (!isJSONSuccess(poAppController.searchRecord(tfSearchClient.getText(), true),
-                                    "Initialize Search Source No! ")) {
+                                    "Initialize Search Client! ")) {
                                 return;
                             }
 
@@ -318,7 +325,7 @@ public class AccountsPayablexController implements Initializable, ScreenInterfac
             initButtonDisplay(poAppController.getEditMode());
 
         } catch (Exception e) {
-             poLogWrapper.severe(psFormName + " :" + e.getMessage());
+            poLogWrapper.severe(psFormName + " :" + e.getMessage());
         }
     }
 
@@ -446,7 +453,7 @@ public class AccountsPayablexController implements Initializable, ScreenInterfac
                                     }
                                 }
                                 if (!isJSONSuccess(poAppController.searchRecord(tfSearchClient.getText(), true),
-                                        "Initialize Search Source No! ")) {
+                                        "")) {
                                     return;
                                 }
 
@@ -460,7 +467,7 @@ public class AccountsPayablexController implements Initializable, ScreenInterfac
                                     }
                                 }
                                 if (!isJSONSuccess(poAppController.searchRecord(tfSearchCompanyName.getText(), false),
-                                        "Initialize Search Client! ")) {
+                                        "")) {
                                     return;
                                 }
                                 getLoadedClient();
