@@ -2446,6 +2446,14 @@ public class DashboardController implements Initializable {
                 case "/com/rmj/guanzongroup/sidebarmenus/views/AccountsPayablex.fxml":
                     return "Accounts Payable";
 
+                /* ACCOUNTS/ACCOUNTS/ACCOUNTS ACCREDITATION */
+                case "/com/rmj/guanzongroup/sidebarmenus/views/AccountsAccreditation_Entry.fxml":
+                    return "Accounts Accreditation Entry";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/AccountsAccreditation_Confirmation.fxml":
+                    return "Accounts Accreditation Confirmation";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/AccountsAccreditation_History.fxml":
+                    return "Accounts Accreditation History";
+
                 /* ACCOUNTS/ACCOUNTS/ACCOUNTS RECEIVABLE */
                 case "/com/rmj/guanzongroup/sidebarmenus/views/AccountsReceivable.fxml":
                     return "Accounts Receivable";
@@ -4633,6 +4641,14 @@ public class DashboardController implements Initializable {
 //                /* ACOUNTS/ACOUNTS/ACOUNTS PAYABLE */
                 case "/com/rmj/guanzongroup/sidebarmenus/views/AccountsPayablex.fxml":
                     return new AccountsPayablexController();
+
+//                /* ACOUNTS/ACOUNTS/ACOUNTS ACCREDITATION */
+                case "/com/rmj/guanzongroup/sidebarmenus/views/AccountsAccreditation_Entry.fxml":
+                    return new AccountsAccreditation_EntryController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/AccountsAccreditation_Confirmation.fxml":
+                    return new AccountsAccreditation_ConfirmationController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/AccountsAccreditation_History.fxml":
+                    return new AccountsAccreditation_HistoryController();
 //
 //                /* ACOUNTS/ACOUNTS/ACOUNTS RECEIVABLE */
 //                case "/com/rmj/guanzongroup/sidebarmenus/views/AccountsReceivable.fxml":
@@ -6129,8 +6145,13 @@ public class DashboardController implements Initializable {
                 + "{\"access_level\":\"04\",\"menu_name\":\"Monarch Restaurant\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistoryMonarchFood.fxml\",\"controller_path\":\"SIPosting_HistoryMonarchFood.controller\",\"menu_id\":\"091\",\"menu_parent\":\"082\"},"
                 + "{\"access_level\":\"05\",\"menu_name\":\"Los Pedritos\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistoryLP.fxml\",\"controller_path\":\"SIPosting_HistoryLP.controller\",\"menu_id\":\"092\",\"menu_parent\":\"082\"}"
                 //Account Master
-                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Client Account\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"093\",\"menu_parent\":\"001\"},"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Accounts\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"093\",\"menu_parent\":\"001\"},"
                 + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Account Payable\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/AccountsPayablex.fxml\",\"controller_path\":\"AccountsPayablex.controller\",\"menu_id\":\"094\",\"menu_parent\":\"093\"},"
+                //Account Master
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Account Accreditation\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"095\",\"menu_parent\":\"093\"},"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Entry\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/AccountsAccreditation_Entry.fxml\",\"controller_path\":\"AccountsAccreditation.controller\",\"menu_id\":\"096\",\"menu_parent\":\"095\"},"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Confirmation\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/AccountsAccreditation_Confirmation.fxml\",\"controller_path\":\"AccountsAccreditation.controller\",\"menu_id\":\"097\",\"menu_parent\":\"095\"},"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"History\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/AccountsAccreditation_History.fxml\",\"controller_path\":\"AccountsAccreditation.controller\",\"menu_id\":\"098\",\"menu_parent\":\"095\"},"
                 + "]";
         JSONParser parser = new JSONParser();
         try {
