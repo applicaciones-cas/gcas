@@ -1875,6 +1875,12 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
                 }
                 goToPageBasedOnSelectedRow(String.valueOf(pnMain));
             }
+            
+            //Populate purhcase receiving serials - Added by Arsiela 10152025 13:53:01
+            //Need to populate serialize for confirmation; need to re-check for redundancy
+            for (int lnCtr = 0; lnCtr <= poPurchaseReceivingController.PurchaseOrderReceiving().getDetailCount() - 1; lnCtr++) {
+                poPurchaseReceivingController.PurchaseOrderReceiving().getPurchaseOrderReceivingSerial(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(lnCtr).getEntryNo());
+            }
             poPurchaseReceivingController.PurchaseOrderReceiving().loadAttachments();
             Platform.runLater(() -> {
                 loadTableDetail();
