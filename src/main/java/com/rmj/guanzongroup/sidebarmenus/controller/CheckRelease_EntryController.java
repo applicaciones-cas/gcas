@@ -60,7 +60,7 @@ import ph.com.guanzongroup.cas.check.module.mnv.services.CheckController;
 
 /**
  *
- * @author User
+ * @author Guillier
  */
 public class CheckRelease_EntryController implements Initializable, ScreenInterface{
     
@@ -178,8 +178,7 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
                 if (pnEditMode == EditMode.READY || pnEditMode == EditMode.UNKNOWN) {
                     return;
                 }
-
-                System.out.print(pnTransactionDetail);
+                
                 //check selected row's transaction no if not empty, ask user to replace the existing.
                 if (tblColDetailReference.getCellData(pnTransactionDetail) != null) {
                     if (!tblColDetailReference.getCellData(pnTransactionDetail).isEmpty()) {
@@ -189,8 +188,8 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
                     }
                 }
 
-                //load check details
-                if (!isJSONSuccess(poAppController.LoadCheckTransaction(tblColTransNo.getCellData(pnSelectMaster), pnTransactionDetail <= 0 ? 1 : pnTransactionDetail), psFormName)) {
+                //load item's check detail, increase 1 to get the right validation for adding to the list
+                if (!isJSONSuccess(poAppController.LoadCheckTransaction(tblColTransNo.getCellData(pnSelectMaster), pnTransactionDetail + 1), psFormName)) {
                     return;
                 }
                 ComputeTotal();
@@ -380,6 +379,7 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
                         return;
                     }
                     getLoadedTransaction();
+ 
                     pnEditMode = poAppController.getEditMode();
                     initButtonDisplay(poAppController.getEditMode());
                     break;
@@ -389,10 +389,16 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
                         ShowMessageFX.Information("Please load transaction before proceeding..", "Initialize Save Transaction", "");
                         return;
                     }
+                    
+                    //set received by and remarks property for master
+                    poAppController.GetMaster().setReceivedBy(tfReceivedBy.getText().toString());
+                    poAppController.GetMaster().setRemarks(taRemarks.getText().toString());
 
                     if (!isJSONSuccess(poAppController.SaveTransaction(), "Initialize Save Transaction")) {
                         return;
                     }
+                    ShowMessageFX.Information("Transaction saved successfully", "Check Release Entry", null);
+                    
                     clearAllInputs();
                     getLoadedTransaction();
                     initButtonDisplay(poAppController.getEditMode());
@@ -539,8 +545,13 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
                 switch (lsTextFieldID) {
                     
                     case "tfCheckAmt":
-                        if (poAppController.GetMaster().getTransactionNo().isEmpty()) {
+                        if (poAppController.GetMaster().getTransactionNo().isEmpty()) { //check master transaction no if loaded
                             ShowMessageFX.Information("Please load transaction!", "Initalize Check Amount", null);
+                            return;
+                        }
+                        
+                        if (tfCheckNo.getText().isEmpty()) { //validate check no if loaded
+                            ShowMessageFX.Information("Please load check detail!", "Initalize Check Amount", null);
                             return;
                         }
                         
@@ -577,11 +588,15 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
                             return;
                         }
                         
-                        poAppController.GetDetail(pnTransactionDetail).CheckPayment().setAmount(Integer.parseInt(tfCheckAmt.getText().toString()));
+                        poAppController.GetDetail(pnTransactionDetail).CheckPayment().setAmount(Double.parseDouble(tfCheckAmt.getText().toString()));
                         ComputeTotal();
                         getLoadedTransaction();
                         break;
-                        
+                    
+                    case "tfReceivedBy":
+                        poAppController.GetMaster().setReceivedBy(tfReceivedBy.getText().toString());
+                        break;
+
                     case "tfNote":
                         poAppController.GetDetail(pnTransactionDetail).CheckPayment().setRemarks(tfNote.getText().toString());
                         break;
@@ -606,6 +621,10 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
         if (!nv) {
             /*Lost Focus*/
             switch (lsDatePickerID) {
+                
+                case "dpTransactionDate":
+                    poAppController.GetMaster().setTransactionDate(Date.from(dpTransactionDate.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+                    break;
             }
         }
     };

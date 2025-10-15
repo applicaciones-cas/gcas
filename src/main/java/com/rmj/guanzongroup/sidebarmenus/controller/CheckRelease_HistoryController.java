@@ -86,7 +86,7 @@ public class CheckRelease_HistoryController implements Initializable, ScreenInte
     private TextArea taRemarks;
     
     @FXML
-    private DatePicker dpTransactionDate, dpCheckDate, dpCheckDtFrm, dpCheckDTTo;
+    private DatePicker dpTransactionDate, dpCheckDate;
     
     @FXML
     private Button btnPost, btnBrowse, btnPrint, btnClose;
@@ -197,19 +197,31 @@ public class CheckRelease_HistoryController implements Initializable, ScreenInte
                     break;
                     
                 case "btnPost":
+                    if (tfTransNo.getText().isEmpty()) {
+                        ShowMessageFX.Information("Please load transaction before proceeding..", "Inventory Stock Issuance Posting", "");
+                        return;
+                    }
+                    if (!isJSONSuccess(poAppController.PostTransaction(), "Initialize Post Transaction")) {
+                        return;
+                    }
+                    
+                    ShowMessageFX.Information("Transaction posted successfully", "Check Release History", null);
+                    
+                    reloadTableDetail();
+                    pnEditMode = poAppController.getEditMode();
                     break;
 
                 case "btnPrint":
                     if (poAppController.GetMaster().getTransactionNo() == null || poAppController.GetMaster().getTransactionNo().isEmpty()) {
-                        ShowMessageFX.Information("Please load transaction before proceeding..", "Stock Request Approval", "");
+                        ShowMessageFX.Information("Please load transaction before proceeding..", "Check Release Confirmation", "");
                         return;
                     }
-//                    if (ShowMessageFX.OkayCancel(null, psFormName, "Do you want to print the transaction ?") == true) {
-//                        if (!isJSONSuccess(poAppController.printDepositSlip(),
-//                                "Initialize Print Transaction")) {
-//                            return;
-//                        }
-//                    }
+                    if (ShowMessageFX.OkayCancel(null, psFormName, "Do you want to print the transaction ?") == true) {
+                        if (!isJSONSuccess(poAppController.PrintRecord(),
+                                "Initialize Print Transaction")) {
+                            return;
+                        }
+                    }
                     getLoadedTransaction();
 
                     pnEditMode = poAppController.getEditMode();
@@ -217,7 +229,7 @@ public class CheckRelease_HistoryController implements Initializable, ScreenInte
                     
             }
         }catch(Exception e){
-            Logger.getLogger(DeliverySchedule_EntryController.class.getName()).log(Level.SEVERE, null, e);
+            Logger.getLogger(CheckRelease_HistoryController.class.getName()).log(Level.SEVERE, null, e);
             poLogWrapper.severe(psFormName + " :" + e.getMessage());
         }
     }
@@ -265,7 +277,7 @@ public class CheckRelease_HistoryController implements Initializable, ScreenInte
                 }
             }
         }catch(Exception e){
-            Logger.getLogger(DeliverySchedule_EntryController.class
+            Logger.getLogger(CheckRelease_HistoryController.class
                     .getName()).log(Level.SEVERE, null, e);
             poLogWrapper.severe(psFormName + " :" + e.getMessage());
         }
@@ -474,11 +486,7 @@ public class CheckRelease_HistoryController implements Initializable, ScreenInte
         initButtonDisplay(poAppController.getEditMode());
         
         try {
-            LocalDate today = LocalDate.now();
-   
             dpCheckDate.setValue(ParseDate((Date) poApp.getServerDate()));
-            dpCheckDtFrm.setValue(today.minusMonths(1));
-            dpCheckDTTo.setValue(ParseDate((Date) poApp.getServerDate()));
         } catch (SQLException ex) {
             Logger.getLogger(CheckDeposit_EntryController.class.getName()).log(Level.SEVERE, null, ex);
         }
