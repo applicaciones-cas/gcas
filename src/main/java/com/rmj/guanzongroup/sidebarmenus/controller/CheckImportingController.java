@@ -192,7 +192,6 @@ public class CheckImportingController implements Initializable, ScreenInterface 
                     initButtons(pnEditMode);
                     break;
                 case "btnSave":
-                    System.out.println("SIZE : " + main_data.size());
                     if (!ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure you want to save the transaction?")) {
                         return;
                     }
