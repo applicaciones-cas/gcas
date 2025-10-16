@@ -221,12 +221,12 @@ public class AccountsAccreditation_ConfirmationController implements Initializab
                     break;
                 case "btnConfirm":
                     if (tfTransactionNo.getText().isEmpty()) {
-                        ShowMessageFX.Information("Please load transaction before proceeding..", null, "Issuance Approval");
+                        ShowMessageFX.Information("Please load transaction before proceeding..", null, psFormName);
                         return;
                     }
 
-                    if (!poAppController.getModel().getRecordStatus().equalsIgnoreCase(TransactionStatus.STATE_CLOSED)) {
-                        ShowMessageFX.Information("Status was already Confirmed", null, "Issuance Approval");
+                    if (!poAppController.getModel().getRecordStatus().equalsIgnoreCase(TransactionStatus.STATE_OPEN)) {
+                        ShowMessageFX.Information("Status was already tagged", null, psFormName);
                         return;
                     }
 
@@ -241,21 +241,21 @@ public class AccountsAccreditation_ConfirmationController implements Initializab
                     break;
                 case "btnVoid":
                     if (tfTransactionNo.getText().isEmpty()) {
-                        ShowMessageFX.Information("Please load transaction before proceeding..", null, "Issuance Approval");
+                        ShowMessageFX.Information("Please load transaction before proceeding..", null, psFormName);
+                        return;
+                    }
+
+                    if (!poAppController.getModel().getRecordStatus().equalsIgnoreCase(TransactionStatus.STATE_OPEN)) {
+                        ShowMessageFX.Information("Status was already tagged", null, psFormName);
                         return;
                     }
 
                     if (ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to Void/Cancel transaction?") == true) {
-                        if (btnVoid.getText().equals("Void")) {
-                            if (!isJSONSuccess(poAppController.VoidTransaction(), "Initialize Void Transaction")) {
-                                return;
-                            }
-                        } else {
-                            if (!isJSONSuccess(poAppController.CancelTransaction(), "Initialize Cancel Transaction")) {
-                                return;
-                            }
 
+                        if (!isJSONSuccess(poAppController.VoidTransaction(), "Initialize Void Transaction")) {
+                            return;
                         }
+
                         getLoadedClient();
                         break;
                     }
@@ -448,8 +448,6 @@ public class AccountsAccreditation_ConfirmationController implements Initializab
                 }
             }
         } catch (Exception ex) {
-            Logger.getLogger(DeliverySchedule_EntryController.class
-                    .getName()).log(Level.SEVERE, null, ex);
             poLogWrapper.severe(psFormName + " :" + ex.getMessage());
         }
     }
@@ -471,11 +469,6 @@ public class AccountsAccreditation_ConfirmationController implements Initializab
             cmbAccountType.getSelectionModel().select(Integer.parseInt(poAppController.getModel().getAccountType()));
             cmbTransType.getSelectionModel().select(Integer.parseInt(poAppController.getModel().getTransactionType()));
 
-            if (poAppController.getModel().getRecordStatus().equals(TransactionStatus.STATE_CLOSED)) {
-                btnVoid.setText("Cancel");
-            } else {
-                btnVoid.setText("Void");
-            }
         } catch (SQLException | GuanzonException e) {
             poLogWrapper.severe(psFormName, e.getMessage());
         }

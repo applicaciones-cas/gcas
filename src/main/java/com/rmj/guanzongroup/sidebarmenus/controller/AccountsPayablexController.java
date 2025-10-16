@@ -169,14 +169,6 @@ public class AccountsPayablexController implements Initializable, ScreenInterfac
                     }
 
                     switch (lastFocusedControl.getId()) {
-
-                        case "tfCategory":
-                            if (!isJSONSuccess(poAppController.searchCategory(tfCategory.getText() == null ? "" : tfCategory.getText(), false),
-                                    "Initialize Search Category! ")) {
-                                return;
-                            }
-                            loadClientMaster();
-                            break;
                         case "tfTerm":
                             if (!isJSONSuccess(poAppController.searchTerm(tfTerm.getText() == null ? "" : tfTerm.getText(), false),
                                     "Initialize Search Category! ")) {
@@ -184,22 +176,7 @@ public class AccountsPayablexController implements Initializable, ScreenInterfac
                             }
                             loadClientMaster();
                             break;
-                        case "tfCompanyName":
-                            if (!isJSONSuccess(poAppController.searchClient(tfCompanyName.getText(), false),
-                                    "Initialize Search Client! ")) {
-                                return;
-                            }
-                            getLoadedClient();
-                            initButtonDisplay(poAppController.getEditMode());
-                            break;
-                        case "tfContactPerson":
-                            if (!isJSONSuccess(poAppController.searchClientContact(tfContactPerson.getText(), false),
-                                    "Initialize Search Client Contact! ")) {
-                                return;
-                            }
-                            getLoadedClient();
-                            initButtonDisplay(poAppController.getEditMode());
-                            break;
+
                     }
                     break;
 
@@ -396,33 +373,6 @@ public class AccountsPayablexController implements Initializable, ScreenInterfac
                     loadClientMaster();
                     break;
 
-                case "tfBegBalanace":
-                    if (poAppController.getModel().getClientId() == null
-                            || poAppController.getModel().getClientId() == null) {
-                        if (Double.parseDouble(lsValue) > 0.0) {
-                            tfCreditLimit.setText("0.00");
-                            loTextField.requestFocus();
-                            ShowMessageFX.Information("Unable to set Beg. Balance! No Client Detected", psFormName, null);
-                        }
-                        return;
-                    }
-                    double lnBegBalAmount;
-                    try {
-                        lnBegBalAmount = Double.parseDouble(lsValue);
-                    } catch (NumberFormatException e) {
-                        lnBegBalAmount = 0.0; // default if parsing fails
-                        poAppController.getModel().setBeginningBalance(lnBegBalAmount);
-                        loadClientMaster();
-                        loTextField.requestFocus();
-                    }
-                    if (lnBegBalAmount < 0.00) {
-                        return;
-                    }
-
-                    poAppController.getModel().setBeginningBalance(lnBegBalAmount);
-                    loadClientMaster();
-                    break;
-
             }
         } else {
             loTextField.selectAll();
@@ -474,36 +424,12 @@ public class AccountsPayablexController implements Initializable, ScreenInterfac
                                 initButtonDisplay(poAppController.getEditMode());
                                 break;
 
-                            case "tfCategory":
-                                if (!isJSONSuccess(poAppController.searchCategory(tfCategory.getText() == null ? "" : tfCategory.getText(), false),
-                                        "Initialize Search Category! ")) {
-                                    return;
-                                }
-                                loadClientMaster();
-                                break;
                             case "tfTerm":
                                 if (!isJSONSuccess(poAppController.searchTerm(tfTerm.getText() == null ? "" : tfTerm.getText(), false),
                                         "Initialize Search Category! ")) {
                                     return;
                                 }
                                 loadClientMaster();
-                                break;
-                            case "tfCompanyName":
-                                if (!isJSONSuccess(poAppController.searchClient(tfCompanyName.getText(), false),
-                                        "Initialize Search Client! ")) {
-                                    return;
-                                }
-                                getLoadedClient();
-                                initButtonDisplay(poAppController.getEditMode());
-                                break;
-
-                            case "tfContactPerson":
-                                if (!isJSONSuccess(poAppController.searchClientContact(tfContactPerson.getText(), false),
-                                        "Initialize Search Client Contact! ")) {
-                                    return;
-                                }
-                                getLoadedClient();
-                                initButtonDisplay(poAppController.getEditMode());
                                 break;
 
                         }
@@ -529,9 +455,9 @@ public class AccountsPayablexController implements Initializable, ScreenInterfac
                 case "dpClientSince":
                     poAppController.getModel().setdateClientSince(ldDateValue);
                     return;
-                case "dpBegBalance":
-                    poAppController.getModel().setBeginningDate(ldDateValue);
-                    return;
+//                case "dpBegBalance":
+//                    poAppController.getModel().setBeginningDate(ldDateValue);
+//                    return;
 
             }
         }
