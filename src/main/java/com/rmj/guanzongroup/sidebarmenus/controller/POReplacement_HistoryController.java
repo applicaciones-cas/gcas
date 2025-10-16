@@ -150,7 +150,7 @@ public class POReplacement_HistoryController implements Initializable, ScreenInt
             poController.PurchaseOrderReceiving().setCompanyId(psCompanyId);
             poController.PurchaseOrderReceiving().setCategoryId(psCategoryId);
             poController.PurchaseOrderReceiving().initFields();
-            poController.PurchaseOrderReceiving().setWithUI(true);            
+            poController.PurchaseOrderReceiving().setWithUI(true);
             poController.PurchaseOrderReceiving().setPurpose(PurchaseOrderReceivingStatus.Purpose.REPLACEMENT);
             loadRecordSearch();
         });
@@ -617,9 +617,7 @@ public class POReplacement_HistoryController implements Initializable, ScreenInt
 
                                 }
 
-                                if ((!poController.PurchaseOrderReceiving().Detail(lnCtr).getOrderNo().equals("") && poController.PurchaseOrderReceiving().Detail(lnCtr).getOrderNo() != null)
-                                        && poController.PurchaseOrderReceiving().Detail(lnCtr).getOrderQty().doubleValue() != poController.PurchaseOrderReceiving().Detail(lnCtr).getQuantity().doubleValue()
-                                        && poController.PurchaseOrderReceiving().Detail(lnCtr).getQuantity().doubleValue() != 0) {
+                                if (poController.PurchaseOrderReceiving().Detail(lnCtr).getOrderQty().doubleValue() != poController.PurchaseOrderReceiving().Detail(lnCtr).getQuantity().doubleValue()) {
                                     JFXUtil.highlightByKey(tblViewTransDetails, String.valueOf(lnCtr + 1), "#FAA0A0", highlightedRowsDetail);
                                 }
 

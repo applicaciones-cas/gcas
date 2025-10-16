@@ -686,9 +686,7 @@ public class POReplacement_HistoryMCController implements Initializable, ScreenI
                                 } catch (Exception e) {
                                 }
 
-                                if ((!poController.PurchaseOrderReceiving().Detail(lnCtr).getOrderNo().equals("") && poController.PurchaseOrderReceiving().Detail(lnCtr).getOrderNo() != null)
-                                        && poController.PurchaseOrderReceiving().Detail(lnCtr).getOrderQty().intValue() != poController.PurchaseOrderReceiving().Detail(lnCtr).getQuantity().intValue()
-                                        && poController.PurchaseOrderReceiving().Detail(lnCtr).getQuantity().intValue() != 0) {
+                                if (poController.PurchaseOrderReceiving().Detail(lnCtr).getOrderQty().doubleValue() != poController.PurchaseOrderReceiving().Detail(lnCtr).getQuantity().doubleValue()) {
                                     JFXUtil.highlightByKey(tblViewTransDetails, String.valueOf(lnCtr + 1), "#FAA0A0", highlightedRowsDetail);
                                 }
 
