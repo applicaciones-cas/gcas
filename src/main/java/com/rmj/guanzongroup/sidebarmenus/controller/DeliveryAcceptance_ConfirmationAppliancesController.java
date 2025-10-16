@@ -888,20 +888,22 @@ public class DeliveryAcceptance_ConfirmationAppliancesController implements Init
                             if (oApp.getUserLevel() <= UserRight.ENCODER) {
                                 if (ShowMessageFX.YesNo(null, pxeModuleName, "Receive quantity is greater than the Order quantity, Approval is needed\nDo you want to proceed?") == true) {
                                     poJSON = ShowDialogFX.getUserApproval(oApp);
-                                    if (!"success".equals((String) poJSON.get("result"))) {
-                                    } else {
+                                    if ("success".equals((String) poJSON.get("result"))) {
                                         if (Integer.parseInt(poJSON.get("nUserLevl").toString()) <= UserRight.ENCODER) {
                                             poJSON.put("result", "error");
                                             poJSON.put("message", "User is not an authorized approving officer.");
                                         }
+                                    }
+                                    
+                                    if ("error".equals((String) poJSON.get("result"))) {
                                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                         loadRecordDetail();
                                         break;
                                     }
                                 } else {
+                                    break;
                                 }
                             }
-                            break;
                         }
                     }
 
