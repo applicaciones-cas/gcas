@@ -12676,3 +12676,363 @@ Oct 15, 2025 4:00:07 PM org.guanzon.appdriver.base.LogWrapper info
 INFO: Check Release Entry : Success on Initialize UPdate Transaction
 Oct 15, 2025 4:00:36 PM org.guanzon.appdriver.base.LogWrapper severe
 SEVERE: Check Release Entry :Username or password is not set.
+Oct 16, 2025 10:43:13 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 10:43:13 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Check Release Entry
+Oct 16, 2025 10:43:13 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 10:43:13 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Initialize New Transaction
+Oct 16, 2025 10:43:15 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 10:43:15 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Initialize : Load of Transaction List
+Oct 16, 2025 10:43:17 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 10:43:17 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Check Release Entry
+Oct 16, 2025 10:56:13 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 10:56:13 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Check Release Entry
+Oct 16, 2025 10:56:13 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 10:56:13 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Initialize New Transaction
+Oct 16, 2025 10:56:16 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 10:56:16 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Initialize : Load of Transaction List
+Oct 16, 2025 10:56:17 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 10:56:17 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Check Release Entry
+Oct 16, 2025 10:57:26 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :Username or password is not set.
+Oct 16, 2025 11:09:52 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 11:09:52 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Check Release Entry
+Oct 16, 2025 11:09:52 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 11:09:52 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Initialize New Transaction
+Oct 16, 2025 11:09:55 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 11:09:55 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Initialize : Load of Transaction List
+Oct 16, 2025 11:09:56 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 11:09:56 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Check Release Entry
+Oct 16, 2025 11:11:20 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :Username or password is not set.
+Oct 16, 2025 11:19:32 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 11:19:32 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Check Release Entry
+Oct 16, 2025 11:19:33 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 11:19:33 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Initialize New Transaction
+Oct 16, 2025 11:19:35 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 11:19:35 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Initialize : Load of Transaction List
+Oct 16, 2025 11:19:36 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 11:19:36 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Check Release Entry
+Oct 16, 2025 11:19:45 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 11:22:00 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 11:22:00 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Check Release Entry
+Oct 16, 2025 11:22:00 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 11:22:00 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Initialize New Transaction
+Oct 16, 2025 11:22:02 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 11:22:02 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Initialize : Load of Transaction List
+Oct 16, 2025 11:22:03 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 11:22:03 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Check Release Entry
+Oct 16, 2025 11:22:06 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 11:26:42 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 11:26:42 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Check Release Entry
+Oct 16, 2025 11:26:42 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 11:26:42 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Initialize New Transaction
+Oct 16, 2025 11:26:44 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 11:26:44 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Initialize : Load of Transaction List
+Oct 16, 2025 11:26:45 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 11:26:45 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Check Release Entry
+Oct 16, 2025 11:26:50 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :Username or password is not set.
+Oct 16, 2025 11:33:34 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 11:33:34 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Check Release Entry
+Oct 16, 2025 11:33:34 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 11:33:34 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Initialize New Transaction
+Oct 16, 2025 11:33:36 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 11:33:36 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Initialize : Load of Transaction List
+Oct 16, 2025 11:33:37 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 11:33:37 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Check Release Entry
+Oct 16, 2025 11:33:43 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :Username or password is not set.
+Oct 16, 2025 11:34:17 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 11:34:17 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Check Release Entry
+Oct 16, 2025 11:34:17 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 11:34:17 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Initialize New Transaction
+Oct 16, 2025 11:34:19 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 11:34:19 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Initialize : Load of Transaction List
+Oct 16, 2025 11:34:20 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 11:34:20 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Check Release Entry
+Oct 16, 2025 11:48:56 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 11:48:56 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Check Release Entry
+Oct 16, 2025 11:48:56 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 11:48:56 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Initialize New Transaction
+Oct 16, 2025 11:49:00 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 11:49:00 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Initialize : Load of Transaction List
+Oct 16, 2025 11:49:01 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 11:49:01 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Check Release Entry
+Oct 16, 2025 11:49:03 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 11:49:03 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Initialize Save Transaction
+Oct 16, 2025 11:49:16 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 11:49:16 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Initialize UPdate Transaction
+Oct 16, 2025 11:49:29 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 1:07:22 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 1:07:22 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Check Release Entry
+Oct 16, 2025 1:07:22 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 1:07:22 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Initialize New Transaction
+Oct 16, 2025 1:07:28 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 1:07:28 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Initialize : Load of Transaction List
+Oct 16, 2025 1:07:29 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 1:07:29 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Check Release Entry
+Oct 16, 2025 1:08:04 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :Text '2025-10-16 13:07:22.0' could not be parsed, unparsed text found at index 10
+Oct 16, 2025 1:12:13 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 1:12:13 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Check Release Entry
+Oct 16, 2025 1:12:13 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 1:12:13 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Initialize New Transaction
+Oct 16, 2025 1:12:15 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 1:12:15 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Initialize : Load of Transaction List
+Oct 16, 2025 1:12:16 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 1:12:16 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Check Release Entry
+Oct 16, 2025 1:13:04 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 1:13:04 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Initialize Save Transaction
+Oct 16, 2025 1:13:47 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 1:13:47 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Initialize Search Check Release Master
+Oct 16, 2025 1:13:51 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 1:13:51 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Initialize UPdate Transaction
+Oct 16, 2025 1:14:38 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 1:14:38 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Initialize Save Transaction
+Oct 16, 2025 1:14:43 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 1:14:43 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Initialize UPdate Transaction
+Oct 16, 2025 1:14:58 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 1:14:58 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Initialize Save Transaction
+Oct 16, 2025 1:15:10 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 1:15:10 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Initialize : Load of Transaction List
+Oct 16, 2025 1:22:34 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 1:22:34 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Check Release Entry
+Oct 16, 2025 1:22:34 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 1:22:34 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Initialize New Transaction
+Oct 16, 2025 1:22:41 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :Unable to open transaction master record.
+Oct 16, 2025 1:22:59 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 1:23:00 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 1:23:04 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 1:23:07 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 1:23:09 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 1:23:10 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 1:23:34 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 1:23:34 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Check Release Entry
+Oct 16, 2025 1:23:34 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 1:23:34 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Initialize New Transaction
+Oct 16, 2025 1:27:06 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 1:27:06 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Check Release Entry
+Oct 16, 2025 1:27:06 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 1:27:06 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Initialize New Transaction
+Oct 16, 2025 1:27:26 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :Unable to open transaction master record.
+Oct 16, 2025 1:27:29 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 1:27:30 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 1:27:32 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 1:27:32 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 1:27:33 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 1:27:33 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 1:27:33 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 1:27:55 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 1:27:55 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Initialize Transaction
+Oct 16, 2025 1:27:57 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :Unable to open transaction master record.
+Oct 16, 2025 1:28:00 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :Unable to open transaction master record.
+Oct 16, 2025 1:28:02 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :Unable to open transaction master record.
+Oct 16, 2025 1:28:07 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :Unable to open transaction master record.
+Oct 16, 2025 1:28:15 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :Unable to open transaction master record.
+Oct 16, 2025 1:28:19 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :Unable to open transaction master record.
+Oct 16, 2025 1:28:41 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :Unable to open transaction master record.
+Oct 16, 2025 1:28:43 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :Unable to open transaction master record.
+Oct 16, 2025 1:28:46 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :Unable to open transaction master record.
+Oct 16, 2025 1:28:48 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :Unable to open transaction master record.
+Oct 16, 2025 1:29:02 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 1:29:02 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Initialize Search Check Release Master
+Oct 16, 2025 1:29:06 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 1:29:06 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Initialize Search Check Release Master
+Oct 16, 2025 1:44:02 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 1:44:02 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Check Release Entry
+Oct 16, 2025 1:44:02 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 1:44:02 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Initialize New Transaction
+Oct 16, 2025 1:44:12 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :Unable to open transaction master record.
+Oct 16, 2025 1:44:16 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :Unable to open transaction master record.
+Oct 16, 2025 1:44:19 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :Unable to open transaction master record.
+Oct 16, 2025 1:44:22 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :Unable to open transaction master record.
+Oct 16, 2025 1:44:24 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :Unable to open transaction master record.
+Oct 16, 2025 1:44:27 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :Unable to open transaction master record.
+Oct 16, 2025 1:44:44 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 1:44:44 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Initialize : Load of Transaction List
+Oct 16, 2025 2:07:37 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 2:07:37 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Check Release Entry
+Oct 16, 2025 2:07:37 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 2:07:37 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Initialize New Transaction
+Oct 16, 2025 2:07:45 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :Unable to open transaction master record.
+Oct 16, 2025 2:07:50 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 2:07:50 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Initialize Transaction
+Oct 16, 2025 2:07:55 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :Unable to open transaction master record.
+Oct 16, 2025 2:08:00 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :Unable to open transaction master record.
+Oct 16, 2025 2:08:08 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Entry :null
+Oct 16, 2025 2:08:08 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Entry : Success on Initialize Search Check Release Master

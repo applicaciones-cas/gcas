@@ -178,8 +178,6 @@ public class CheckRelease_HistoryController implements Initializable, ScreenInte
                              if (!isJSONSuccess(poAppController.SearchTransactionPosting(tfSearchTransNo.getText().toString(), true), "Initialize Search Check Release Master")) {
                                 break;
                             }
-                            
-                            clearAllInputs();
                             getLoadedTransaction();
                             
                             break;
@@ -188,8 +186,6 @@ public class CheckRelease_HistoryController implements Initializable, ScreenInte
                              if (!isJSONSuccess(poAppController.SearchTransactionPosting(tfSearchReceived.getText().toString(), false), "Initialize Search Check Release Master")) {
                                 return;
                             }
-
-                            clearAllInputs();
                             getLoadedTransaction();
                             
                             break;
@@ -201,7 +197,7 @@ public class CheckRelease_HistoryController implements Initializable, ScreenInte
                         ShowMessageFX.Information("Please load transaction before proceeding..", "Inventory Stock Issuance Posting", "");
                         return;
                     }
-                    if (!isJSONSuccess(poAppController.PostTransaction(), "Initialize Post Transaction")) {
+                    if (!isJSONSuccess(poAppController.ReleaseTransaction(), "Initialize Post Transaction")) {
                         return;
                     }
                     
@@ -257,8 +253,6 @@ public class CheckRelease_HistoryController implements Initializable, ScreenInte
                                 if (!isJSONSuccess(poAppController.SearchTransactionPosting(tfSearchTransNo.getText().toString(), true), "Initialize Search Check Release Master")) {
                                     return;
                                 }
-
-                                clearAllInputs();
                                 getLoadedTransaction();
                                 
                                 break;
@@ -268,8 +262,6 @@ public class CheckRelease_HistoryController implements Initializable, ScreenInte
                                 if (!isJSONSuccess(poAppController.SearchTransactionPosting(tfSearchReceived.getText().toString(),  false), "Initialize Search Check Release Master")) {
                                     return;
                                 }
-
-                                clearAllInputs();
                                 getLoadedTransaction();
                                 
                                 break;
@@ -483,7 +475,7 @@ public class CheckRelease_HistoryController implements Initializable, ScreenInte
             }
         }
         pnEditMode = poAppController.getEditMode();
-        initButtonDisplay(poAppController.getEditMode());
+        initButtonDisplay();
         
         try {
             dpCheckDate.setValue(ParseDate((Date) poApp.getServerDate()));
@@ -492,14 +484,18 @@ public class CheckRelease_HistoryController implements Initializable, ScreenInte
         }
     }
     
-    private void initButtonDisplay(int fnEditMode) {
-        boolean lbShow = (fnEditMode == EditMode.ADDNEW || fnEditMode == EditMode.UPDATE);
+    private void initButtonDisplay() {
+        boolean lbShow = Integer.parseInt(poAppController.GetMaster().getTransactionStatus()) == 1; //confirm status
 
-        // Always show these buttons
-        initButtonControls(true, "btnBrowse", "btnPost", "btnPrint", "btnClose");
+        //always show
+        initButtonControls(true, "btnBrowse", "btnPrint", "btnClose");
+        
+        //show base on status
+        initButtonControls(lbShow, "btnPost");
 
-        apMaster.setDisable(!lbShow);
-        apDetail.setDisable(!lbShow);
+        //disable editing of transaction
+        apMaster.setDisable(true);
+        apDetail.setDisable(true);
     }
 
     private void initButtonControls(boolean visible, String... buttonFxIdsToShow) {
@@ -553,6 +549,7 @@ public class CheckRelease_HistoryController implements Initializable, ScreenInte
     }
     
     private void getLoadedTransaction(){
+        clearAllInputs();
         InitTransactionMaster();
         reloadTableDetail();
         InitCheckDetail();

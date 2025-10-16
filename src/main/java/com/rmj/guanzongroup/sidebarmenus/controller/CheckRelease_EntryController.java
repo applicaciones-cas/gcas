@@ -169,7 +169,7 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
                 e.consume();
 
                 //check transaction number, if transaction is loaded properly
-                if (poAppController.GetMaster().getTransactionNo().isEmpty()) {
+                if (poAppController.GetMaster().getTransactionNo().isEmpty() || poAppController.GetMaster().getTransactionNo() == null) {
                    ShowMessageFX.Information("Please load transaction!", "Initialize check transaction", null);
                    return;
                 }
@@ -236,10 +236,14 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
                             
                             if (pnEditMode != EditMode.READY && pnEditMode != EditMode.UNKNOWN) {
                         
-                                if (!poAppController.GetMaster().getTransactionNo().isEmpty()) {
+                                if (poAppController.GetMaster().getTransactionNo() != null) {
                                     
-                                    if (ShowMessageFX.OkayCancel(null, "Initialize Search Check Release Master", "Do you want to disregard changes?") == false) {
-                                        return;
+                                    if (!poAppController.GetMaster().getTransactionNo().isEmpty()) {
+                                    
+                                        if (ShowMessageFX.OkayCancel(null, "Initialize Search Check Release Master", "Do you want to disregard changes?") == false) {
+                                            return;
+                                        }
+
                                     }
 
                                 }
@@ -258,10 +262,14 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
                             
                             if (pnEditMode != EditMode.READY && pnEditMode != EditMode.UNKNOWN) {
                         
-                                if (!poAppController.GetMaster().getTransactionNo().isEmpty()) {
+                                if (poAppController.GetMaster().getTransactionNo() != null) {
                                     
-                                    if (ShowMessageFX.OkayCancel(null, "Initialize Search Check Release Master", "Do you want to disregard changes?") == false) {
-                                        return;
+                                    if (!poAppController.GetMaster().getTransactionNo().isEmpty()) {
+                                    
+                                        if (ShowMessageFX.OkayCancel(null, "Initialize Search Check Release Master", "Do you want to disregard changes?") == false) {
+                                            return;
+                                        }
+
                                     }
 
                                 }
@@ -329,7 +337,7 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
                             
                             break;
                             
-                            case "tfSearchPayee":
+                        case "tfSearchPayee":
                             if (!isJSONSuccess(poAppController.SearchCheckTransaction(tfSearchPayee.getText().toString(),
                                     true, false), "Initialize Search Check Release Master")) {
                                 break;
@@ -389,10 +397,6 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
                         ShowMessageFX.Information("Please load transaction before proceeding..", "Initialize Save Transaction", "");
                         return;
                     }
-                    
-                    //set received by and remarks property for master
-                    poAppController.GetMaster().setReceivedBy(tfReceivedBy.getText().toString());
-                    poAppController.GetMaster().setRemarks(taRemarks.getText().toString());
 
                     if (!isJSONSuccess(poAppController.SaveTransaction(), "Initialize Save Transaction")) {
                         return;
@@ -459,10 +463,14 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
                             case "tfSearchTransNo":
                                 if (pnEditMode != EditMode.READY && pnEditMode != EditMode.UNKNOWN) {
                         
-                                    if (!poAppController.GetMaster().getTransactionNo().isEmpty()) {
+                                    if (poAppController.GetMaster().getTransactionNo() != null) {
 
-                                        if (ShowMessageFX.OkayCancel(null, "Initialize Search Check Release Master", "Do you want to disregard changes?") == false) {
-                                            return;
+                                        if (!poAppController.GetMaster().getTransactionNo().isEmpty()) {
+
+                                            if (ShowMessageFX.OkayCancel(null, "Initialize Search Check Release Master", "Do you want to disregard changes?") == false) {
+                                                return;
+                                            }
+
                                         }
 
                                     }
@@ -480,10 +488,14 @@ public class CheckRelease_EntryController implements Initializable, ScreenInterf
                             case "tfSearchReceived":
                                 if (pnEditMode != EditMode.READY && pnEditMode != EditMode.UNKNOWN) {
                         
-                                    if (!poAppController.GetMaster().getTransactionNo().isEmpty()) {
+                                    if (poAppController.GetMaster().getTransactionNo() != null) {
 
-                                        if (ShowMessageFX.OkayCancel(null, "Initialize Search Check Release Master", "Do you want to disregard changes?") == false) {
-                                            return;
+                                        if (!poAppController.GetMaster().getTransactionNo().isEmpty()) {
+
+                                            if (ShowMessageFX.OkayCancel(null, "Initialize Search Check Release Master", "Do you want to disregard changes?") == false) {
+                                                return;
+                                            }
+
                                         }
 
                                     }

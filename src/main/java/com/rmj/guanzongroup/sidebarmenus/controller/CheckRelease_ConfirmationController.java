@@ -168,7 +168,7 @@ public class CheckRelease_ConfirmationController implements Initializable, Scree
                 e.consume();
 
                 //check transaction number, if transaction is loaded properly
-                if (poAppController.GetMaster().getTransactionNo().isEmpty()) {
+                if (poAppController.GetMaster().getTransactionNo().isEmpty() || poAppController.GetMaster().getTransactionNo() == null) {
                    ShowMessageFX.Information("Please load transaction!", "Initialize check transaction", null);
                    return;
                 }
@@ -235,10 +235,14 @@ public class CheckRelease_ConfirmationController implements Initializable, Scree
                             
                             if (pnEditMode != EditMode.READY && pnEditMode != EditMode.UNKNOWN) {
                         
-                                if (!poAppController.GetMaster().getTransactionNo().isEmpty()) {
+                                if (poAppController.GetMaster().getTransactionNo() != null) {
                                     
-                                    if (ShowMessageFX.OkayCancel(null, "Initialize Search Check Release Master", "Do you want to disregard changes?") == false) {
-                                        return;
+                                    if (!poAppController.GetMaster().getTransactionNo().isEmpty()) {
+                                    
+                                        if (ShowMessageFX.OkayCancel(null, "Initialize Search Check Release Master", "Do you want to disregard changes?") == false) {
+                                            return;
+                                        }
+
                                     }
 
                                 }
@@ -257,10 +261,14 @@ public class CheckRelease_ConfirmationController implements Initializable, Scree
                             
                             if (pnEditMode != EditMode.READY && pnEditMode != EditMode.UNKNOWN) {
                         
-                                if (!poAppController.GetMaster().getTransactionNo().isEmpty()) {
+                                if (poAppController.GetMaster().getTransactionNo() != null) {
                                     
-                                    if (ShowMessageFX.OkayCancel(null, "Initialize Search Check Release Master", "Do you want to disregard changes?") == false) {
-                                        return;
+                                    if (!poAppController.GetMaster().getTransactionNo().isEmpty()) {
+                                    
+                                        if (ShowMessageFX.OkayCancel(null, "Initialize Search Check Release Master", "Do you want to disregard changes?") == false) {
+                                            return;
+                                        }
+
                                     }
 
                                 }
@@ -472,10 +480,6 @@ public class CheckRelease_ConfirmationController implements Initializable, Scree
                         ShowMessageFX.Information("Please load transaction before proceeding..", "Initialize Save Transaction", "");
                         return;
                     }
-                    
-                    //set received by and remarks property for master
-                    poAppController.GetMaster().setReceivedBy(tfReceivedBy.getText().toString());
-                    poAppController.GetMaster().setRemarks(taRemarks.getText().toString());
 
                     if (!isJSONSuccess(poAppController.SaveTransaction(), "Initialize Save Transaction")) {
                         return;
@@ -540,45 +544,55 @@ public class CheckRelease_ConfirmationController implements Initializable, Scree
                         switch (txtFieldID) {
                             
                             case "tfSearchTransNo":
-                                if (pnEditMode != EditMode.READY && pnEditMode != EditMode.UNKNOWN) {
-                        
-                                    if (!poAppController.GetMaster().getTransactionNo().isEmpty()) {
 
-                                        if (ShowMessageFX.OkayCancel(null, "Initialize Search Check Release Master", "Do you want to disregard changes?") == false) {
-                                            return;
+                                if (pnEditMode != EditMode.READY && pnEditMode != EditMode.UNKNOWN) {
+
+                                    if (poAppController.GetMaster().getTransactionNo() != null) {
+
+                                        if (!poAppController.GetMaster().getTransactionNo().isEmpty()) {
+
+                                            if (ShowMessageFX.OkayCancel(null, "Initialize Search Check Release Master", "Do you want to disregard changes?") == false) {
+                                                return;
+                                            }
+
                                         }
 
                                     }
                                 }
- 
-                                if (!isJSONSuccess(poAppController.SearchTransaction(tfSearchTransNo.getText().toString(), true), "Initialize Search Check Release Master")) {
+
+                                if (!isJSONSuccess(poAppController.SearchTransaction(tfSearchTransNo.getText().toString(),  true), "Initialize Search Check Release Master")) {
                                     return;
                                 }
 
                                 clearAllInputs();
                                 getLoadedTransaction();
-                                
+
                                 break;
-                        
-                            case "tfSearchReceived":
-                                if (pnEditMode != EditMode.READY && pnEditMode != EditMode.UNKNOWN) {
-                        
-                                    if (!poAppController.GetMaster().getTransactionNo().isEmpty()) {
 
-                                        if (ShowMessageFX.OkayCancel(null, "Initialize Search Check Release Master", "Do you want to disregard changes?") == false) {
-                                            return;
+                            case "tfSearchReceived":
+
+                                if (pnEditMode != EditMode.READY && pnEditMode != EditMode.UNKNOWN) {
+
+                                    if (poAppController.GetMaster().getTransactionNo() != null) {
+
+                                        if (!poAppController.GetMaster().getTransactionNo().isEmpty()) {
+
+                                            if (ShowMessageFX.OkayCancel(null, "Initialize Search Check Release Master", "Do you want to disregard changes?") == false) {
+                                                return;
+                                            }
+
                                         }
 
                                     }
                                 }
 
-                                if (!isJSONSuccess(poAppController.SearchTransaction(tfSearchReceived.getText().toString(),  false), "Initialize Search Check Release Master")) {
+                                if (!isJSONSuccess(poAppController.SearchTransaction(tfSearchReceived.getText().toString(), false), "Initialize Search Check Release Master")) {
                                     return;
                                 }
 
                                 clearAllInputs();
                                 getLoadedTransaction();
-                                
+
                                 break;
 
                             case "tfSearchPayee":
