@@ -2215,6 +2215,14 @@ public class DashboardController implements Initializable {
                     return "Check Transfer History";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CheckTransfer_Posting.fxml":
                     return "Check Transfer Posting";
+                
+                //Check Release
+                case "/com/rmj/guanzongroup/sidebarmenus/views/CheckRelease_Entry.fxml":
+                    return "Check Release Entry";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/CheckRelease_Confirmation.fxml":
+                    return "Check Release Confirmation";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/CheckRelease_History.fxml":
+                    return "Check Release History";
 
                 /*Check Deposit */
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CheckDeposit_Entry.fxml":
@@ -4214,6 +4222,14 @@ public class DashboardController implements Initializable {
                     return new CheckTransfer_HistoryController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CheckTransfer_Posting.fxml":
                     return new CheckTransfer_PostingController();
+                    
+                //Check Release
+                case "/com/rmj/guanzongroup/sidebarmenus/views/CheckRelease_Entry.fxml":
+                    return new CheckRelease_EntryController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/CheckRelease_Confirmation.fxml":
+                    return new CheckRelease_ConfirmationController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/CheckRelease_History.fxml":
+                    return new CheckRelease_HistoryController();
 
                 //Check Deposit
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CheckDeposit_Entry.fxml":
@@ -6315,6 +6331,14 @@ public class DashboardController implements Initializable {
                 + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Check Deposit Confirmation\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/CheckDeposit_Confirmation.fxml\",\"controller_path\":\"CheckDeposit_ConfimationController\",\"menu_id\":\"118\",\"menu_parent\":\"116\"},"
                 //History
                 + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Check Deposit History\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/CheckDeposit_History.fxml\",\"controller_path\":\"CheckDeposit_HistoryController\",\"menu_id\":\"119\",\"menu_parent\":\"116\"},"
+                //CheckRelease
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Check Release\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"151\",\"menu_parent\":\"001\"},"
+                //Entry
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Check Release Entry\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/CheckRelease_Entry.fxml\",\"controller_path\":\"CheckRelease_EntryController\",\"menu_id\":\"152\",\"menu_parent\":\"151\"},"
+                //Confirmation
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Check Release Confirmation\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/CheckRelease_Confirmation.fxml\",\"controller_path\":\"CheckRelease_ConfirmationController\",\"menu_id\":\"153\",\"menu_parent\":\"151\"},"
+                //History
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Check Release History\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/CheckRelease_History.fxml\",\"controller_path\":\"CheckRelease_HistoryController\",\"menu_id\":\"154\",\"menu_parent\":\"151\"},"
                 //Module PO Cancellation
                 + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"PO Cancellation\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"120\",\"menu_parent\":\"001\"},"
                 //Entry

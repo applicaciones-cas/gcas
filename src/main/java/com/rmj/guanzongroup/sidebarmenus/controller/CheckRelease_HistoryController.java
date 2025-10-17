@@ -67,6 +67,8 @@ public class CheckRelease_HistoryController implements Initializable, ScreenInte
     private Control lastFocusedControl;
     private CheckRelease poAppController;
     
+    private unloadForm poUnload = new unloadForm();
+    
     private ObservableList<Model_Check_Payments> laCheckListPayment = FXCollections.observableArrayList();
     private ObservableList<Model_Check_Release_Detail> laCheckListDetail;
     
@@ -221,6 +223,16 @@ public class CheckRelease_HistoryController implements Initializable, ScreenInte
                     getLoadedTransaction();
 
                     pnEditMode = poAppController.getEditMode();
+                    break;
+                    
+                case "btnClose":
+                    if (ShowMessageFX.YesNo("Are you sure you want to close this form?", psFormName, null)) {
+                        if (poUnload != null) {
+                            poUnload.unloadForm(apMainAnchor, poApp, psFormName);
+                        } else {
+                            ShowMessageFX.Warning("Please notify the system administrator to configure the null value at the close button.", "Warning", null);
+                        }
+                    }
                     break;
                     
             }
