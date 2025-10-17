@@ -22,6 +22,7 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
@@ -81,10 +82,10 @@ public class CustomCommonUtil {
      * }</pre>
      */
     public static String formatDateToShortString(Date foDateValue) {
-        if(foDateValue == null){
+        if (foDateValue == null) {
             return "1900-01-01";
         }
-        
+
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         return sdf.format(foDateValue);
     }
@@ -246,6 +247,7 @@ public class CustomCommonUtil {
         }
     }
 
+
     /**
      * @param foTxtFields The {@link TextField} to apply the behavior to.
      *
@@ -257,7 +259,7 @@ public class CustomCommonUtil {
      * }</pre>
      */
     public static void inputIntegersOnly(TextField... foTxtFields) {
-        Pattern pattern = Pattern.compile("[0-9,]*");
+        Pattern pattern = Pattern.compile("[0-9]*"); // removed comma from pattern
         for (TextField txtField : foTxtFields) {
             if (txtField != null) {
                 txtField.setTextFormatter(new TextFormaterUtil(pattern));

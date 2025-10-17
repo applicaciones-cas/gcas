@@ -77,6 +77,7 @@ import org.json.simple.JSONObject;
 import javafx.scene.control.ComboBox;
 import org.guanzon.appdriver.constant.DocumentType;
 import com.rmj.guanzongroup.sidebarmenus.utility.JFXUtil;
+
 /**
  * FXML Controller class
  *
@@ -342,7 +343,7 @@ public class DeliveryAcceptance_HistoryMonarchHospitalityController implements I
                             loadRecordSearch();
                             return;
                         case "tfSearchReferenceNo":
-                            poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().searchTransaction(psIndustryId, psCompanyId, 
+                            poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().searchTransaction(psIndustryId, psCompanyId,
                                     tfSearchSupplier.getText(), tfSearchReferenceNo.getText());
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -479,7 +480,7 @@ public class DeliveryAcceptance_HistoryMonarchHospitalityController implements I
             tfInventoryType.setText(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).Inventory().InventoryType().getDescription());
             tfMeasure.setText(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).Inventory().Measure().getDescription());
 
-             tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getUnitPrce(), true));
+            tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getUnitPrce(), true));
             tfOrderQuantity.setText(String.valueOf(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getOrderQty().intValue()));
             tfReceiveQuantity.setText(String.valueOf(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getQuantity().intValue()));
 
@@ -575,10 +576,10 @@ public class DeliveryAcceptance_HistoryMonarchHospitalityController implements I
                     tfDiscountRate.setText("0.00");
                 }
             });
-            
+
             tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getDiscount(), true));
             tfTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getTransactionTotal(), true));
-            
+
         } catch (SQLException ex) {
             Logger.getLogger(DeliveryAcceptance_HistoryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         } catch (GuanzonException ex) {
@@ -673,9 +674,7 @@ public class DeliveryAcceptance_HistoryMonarchHospitalityController implements I
 
                             }
 
-                            if ((!poPurchaseReceivingController.PurchaseOrderReceiving().Detail(lnCtr).getOrderNo().equals("") && poPurchaseReceivingController.PurchaseOrderReceiving().Detail(lnCtr).getOrderNo() != null)
-                                    && poPurchaseReceivingController.PurchaseOrderReceiving().Detail(lnCtr).getOrderQty().intValue() != poPurchaseReceivingController.PurchaseOrderReceiving().Detail(lnCtr).getQuantity().intValue()
-                                    && poPurchaseReceivingController.PurchaseOrderReceiving().Detail(lnCtr).getQuantity().intValue() != 0) {
+                            if (poPurchaseReceivingController.PurchaseOrderReceiving().Detail(lnCtr).getOrderQty().doubleValue() != poPurchaseReceivingController.PurchaseOrderReceiving().Detail(lnCtr).getQuantity().doubleValue()) {
                                 highlight(tblViewOrderDetails, lnCtr + 1, "#FAA0A0", highlightedRowsDetail);
                             }
 
@@ -839,7 +838,7 @@ public class DeliveryAcceptance_HistoryMonarchHospitalityController implements I
     }
 
     public void initDatePickers() {
-        
+
         JFXUtil.setDatePickerFormat("MM/dd/yyyy", dpTransactionDate, dpReferenceDate);
 
     }
@@ -911,7 +910,6 @@ public class DeliveryAcceptance_HistoryMonarchHospitalityController implements I
         tblAttachments.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
         JFXUtil.adjustColumnForScrollbar(tblViewOrderDetails, tblAttachments);  // need to use computed-size as min-width on particular column to work
 
-        
     }
 
     private void initButton(int fnValue) {
@@ -1096,31 +1094,10 @@ public class DeliveryAcceptance_HistoryMonarchHospitalityController implements I
     }
 
     public void initDetailsGrid() {
-
-        tblRowNoDetail.setStyle("-fx-alignment: CENTER;");
-        tblOrderNoDetail.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 5 0 5;");
-        tblBarcodeDetail.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 5 0 5;");
-        tblDescriptionDetail.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 5 0 5;");
-        tblCostDetail.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 5;");
-        tblOrderQuantityDetail.setStyle("-fx-alignment: CENTER;");
-        tblReceiveQuantityDetail.setStyle("-fx-alignment: CENTER;");
-        tblTotalDetail.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 5;");
-
-        tblRowNoDetail.setCellValueFactory(new PropertyValueFactory<>("index01"));
-        tblOrderNoDetail.setCellValueFactory(new PropertyValueFactory<>("index02"));
-        tblBarcodeDetail.setCellValueFactory(new PropertyValueFactory<>("index03"));
-        tblDescriptionDetail.setCellValueFactory(new PropertyValueFactory<>("index04"));
-        tblCostDetail.setCellValueFactory(new PropertyValueFactory<>("index05"));
-        tblOrderQuantityDetail.setCellValueFactory(new PropertyValueFactory<>("index06"));
-        tblReceiveQuantityDetail.setCellValueFactory(new PropertyValueFactory<>("index07"));
-        tblTotalDetail.setCellValueFactory(new PropertyValueFactory<>("index08"));
-
-        tblViewOrderDetails.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
-            TableHeaderRow header = (TableHeaderRow) tblViewOrderDetails.lookup("TableHeaderRow");
-            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-                header.setReordering(false);
-            });
-        });
+        JFXUtil.setColumnCenter(tblRowNoDetail, tblOrderNoDetail);
+        JFXUtil.setColumnLeft(tblBarcodeDetail, tblDescriptionDetail);
+        JFXUtil.setColumnRight(tblCostDetail, tblOrderQuantityDetail, tblReceiveQuantityDetail, tblTotalDetail);
+        JFXUtil.setColumnsIndexAndDisableReordering(tblViewOrderDetails);
         filteredDataDetail = new FilteredList<>(details_data, b -> true);
         autoSearch(tfOrderNo);
 

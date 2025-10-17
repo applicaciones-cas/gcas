@@ -889,7 +889,7 @@ public class SOATagging_EntryCarController implements Initializable, ScreenInter
                                     lsPayeeName = poSOATaggingController.SOATagging().PaymentRequestList(lnCtr).Payee().getPayeeName();
                                     lsTransNo = poSOATaggingController.SOATagging().PaymentRequestList(lnCtr).getSeriesNo();
                                     lsTransDate = String.valueOf(poSOATaggingController.SOATagging().PaymentRequestList(lnCtr).getTransactionDate());
-                                    lsTransNoBasis = poSOATaggingController.SOATagging().PaymentRequestList(lnCtr).getSourceNo();
+                                    lsTransNoBasis = poSOATaggingController.SOATagging().PaymentRequestList(lnCtr).getTransactionNo();
                                     lsTransType = "PRF";
                                     break;
                                 case SOATaggingStatic.APPaymentAdjustment:

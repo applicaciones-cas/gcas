@@ -409,7 +409,6 @@ public class POQuotation_EntryController implements Initializable, ScreenInterfa
                                 poController.POQuotation().AddDetail();
                                 loadRecordMaster();
                                 loadTableDetail.reload();
-                                poController.POQuotation().loadAttachments();
                                 loadTableAttachment.reload();
                                 return;
                             } else {

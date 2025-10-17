@@ -25,11 +25,9 @@ import java.time.format.DateTimeParseException;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Observable;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
@@ -46,7 +44,6 @@ import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
-import javafx.beans.property.ReadOnlyProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
@@ -125,6 +122,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.util.Callback;
 import java.io.File;
+import java.util.regex.Pattern;
+import javafx.css.PseudoClass;
 
 /**
  * Date : 4/28/2025
@@ -208,25 +207,27 @@ public class JFXUtil {
     }
 
     /* To disable particular highlight*/
+ /* Requires TableView, string key (basis value), Map list for local storage of highlights */
     public static <T> void disableHighlightByKey(TableView<T> table, String key, Map<String, List<String>> highlightMap) {
         highlightMap.remove(key);
         table.refresh();
     }
 
-    /* To conviniently disable all highlight*/
+    /* To conveniently disable all highlight*/
     public static <T> void disableAllHighlight(TableView<T> table, Map<String, List<String>> highlightMap) {
         highlightMap.clear();
         table.refresh();
     }
 
     /* To disable highlight by defining color in hex*/
+ /* Requires TableView, , String Color in hex(e.g. #H1H1H1), Map list for local storage of highlights */
     public static <T> void disableAllHighlightByColor(TableView<T> table, String color, Map<String, List<String>> highlightMap) {
         highlightMap.forEach((key, colors) -> colors.removeIf(c -> c.equals(color)));
         highlightMap.entrySet().removeIf(entry -> entry.getValue().isEmpty());
         table.refresh();
     }
 
-    /* To make highlighting effective, apply in initialization, called once*/
+    /* To make highlighting effective, apply in initialization; call only once*/
     public static <T> void applyRowHighlighting(
             final TableView<T> tableView,
             final Function<T, String> keyExtractor,
@@ -258,9 +259,12 @@ public class JFXUtil {
         });
     }
 
-    /* To retain non temporary highlights and remove temporary highlights specifically used for ENTRY form*/
+    /* To retain non-temporary highlights and remove temporary highlights; this is specifically used for ENTRY form*/
     public static void showRetainedHighlight(boolean isRetained, TableView<?> tblView, String color, List<Pair<String, String>> plPartial, List<Pair<String, String>> plFinal,
             Map<String, List<String>> highlightedRows, boolean resetpartial) {
+
+        //decide if to allow adding to final of rows highlighted 
+        //if contains 1 value, indicates will proceed
         if (isRetained) {
             for (Pair<String, String> pair : plPartial) {
                 if (!"0".equals(pair.getValue())) {
@@ -268,10 +272,12 @@ public class JFXUtil {
                 }
             }
         }
+        //decide if to reset the temporary highlights made
         if (resetpartial) {
             disableAllHighlightByColor(tblView, color, highlightedRows);
             plPartial.clear();
         }
+        //highlighting 
         for (Pair<String, String> pair : plFinal) {
             if (!"0".equals(pair.getValue())) {
                 highlightByKey(tblView, pair.getKey(), color, highlightedRows);
@@ -310,70 +316,70 @@ public class JFXUtil {
 
     /* To modify combobox lists color, includes hover and selected*/
     public static <T> void initComboBoxCellDesignColor(ComboBox<T> comboBox, String hexcolor) {
-//      #FF8201
+        PseudoClass selected = PseudoClass.getPseudoClass("selected");
+        PseudoClass focused = PseudoClass.getPseudoClass("focused");
+
         comboBox.setCellFactory(param -> new ListCell<T>() {
+            {
+                // Handle hover color logic
+                hoverProperty().addListener((obs, wasHovered, isNowHovered) -> {
+                    if (!isEmpty() && getItem() != null) {
+                        if (isNowHovered) {
+                            if (isSelected()) {
+                                // hovering current selected item
+                                setStyle("-fx-background-color: " + hexcolor + "; -fx-text-fill: black;");
+                            } else {
+                                // hovering other items
+                                setStyle("-fx-background-color: " + hexcolor + "; -fx-text-fill: white;");
+                            }
+                        } else {
+                            updateColor();
+                        }
+                    }
+                });
+            }
+
             @Override
             protected void updateItem(T item, boolean empty) {
                 super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                    setStyle("");
+                    return;
+                }
 
+                setText(item.toString());
+                updateColor();
+
+                // respond to selection/focus changes
+                selectedProperty().addListener((obs, oldSel, newSel) -> updateColor());
+                focusedProperty().addListener((obs, oldFoc, newFoc) -> updateColor());
+            }
+
+            private void updateColor() {
+                boolean isSel = isSelected();
+                boolean isFoc = isFocused();
+
+                // For keyboard navigation or selection, always black text
+                if (isSel || isFoc) {
+                    setStyle("-fx-background-color: " + hexcolor + "; -fx-text-fill: black;");
+                } else {
+                    setStyle("-fx-background-color: transparent; -fx-text-fill: black;");
+                }
+            }
+        });
+
+        // Displayed value in the ComboBox (should look normal)
+        comboBox.setButtonCell(new ListCell<T>() {
+            @Override
+            protected void updateItem(T item, boolean empty) {
+                super.updateItem(item, empty);
                 if (empty || item == null) {
                     setText(null);
                     setStyle("");
                 } else {
                     setText(item.toString());
-
-                    boolean isSelected = item.equals(comboBox.getValue());
-
-                    // Apply initial style
-                    if (isSelected) {
-                        setStyle("-fx-background-color: " + hexcolor + "; -fx-text-fill: white;");
-                    } else {
-                        setStyle("");
-                    }
-
-                    hoverProperty().addListener((obs, wasHovered, isNowHovered) -> {
-                        if (isNowHovered && !isEmpty() && getItem() != null) {
-                            if (getItem().toString().equals(comboBox.getValue() != null ? comboBox.getValue().toString() : "")) {
-                                setStyle("-fx-background-color: " + hexcolor + "; -fx-text-fill: white;");
-
-                            } else {
-                                setStyle("-fx-background-color: " + hexcolor + "; -fx-text-fill: black;");
-
-                            }
-                        } else if (!isEmpty() && getItem() != null) {
-                            // If not hovered, reset style based on selection
-                            if (getItem().toString().equals(comboBox.getValue() != null ? comboBox.getValue().toString() : "")) {
-                                setStyle("-fx-background-color: " + hexcolor + "; -fx-text-fill: white;");
-                            } else {
-                                setStyle("");
-                            }
-                        }
-                    });
-
-                    setOnMouseExited(e -> {
-                        if (item.equals(comboBox.getValue())) {
-                            setStyle("-fx-background-color: " + hexcolor + "; -fx-text-fill: white;");
-                        } else {
-                            setStyle("");
-                        }
-                    });
-                }
-            }
-        });
-        comboBox.setOnShowing(event -> {
-            T selectedItem = comboBox.getValue();
-            if (selectedItem != null) {
-                // Loop through each item and apply style based on selection
-                for (int i = 0; i < comboBox.getItems().size(); i++) {
-                    T item = comboBox.getItems().get(i);
-
-                    if (item.equals(selectedItem)) {
-                        // Apply the custom background color for selected item in the list
-                        comboBox.getItems().set(i, item);
-                    } else {
-                        // Reset the style for non-selected items
-                        comboBox.getItems().set(i, item);
-                    }
+                    setStyle("-fx-background-color: transparent; -fx-text-fill: black;");
                 }
             }
         });
@@ -418,7 +424,7 @@ public class JFXUtil {
     }
 
     /* To put caret position of a textfield to last character index*/
- /* Requires AnchorPane parent ID of textfields*/
+ /* Requires AnchorPane ID containing textfields*/
     public static void updateCaretPositions(AnchorPane anchorPane) {
         List<TextField> textFields = getAllTextFields(anchorPane);
         for (TextField textField : textFields) {
@@ -439,7 +445,7 @@ public class JFXUtil {
         }
     }
 
-    /* JFXUtil private usage */
+    // private
     private static List<TextField> getAllTextFields(Parent parent) {
         List<TextField> textFields = new ArrayList<>();
 
@@ -487,7 +493,7 @@ public class JFXUtil {
 
     }
 
-    /* use when pagination is present in tableView */
+    /* Use when pagination is present in tableView */
  /*Updates the pagination count dynamically*/
     public static void loadTab(Pagination pgPagination, int tbldata_list_size, int ROWS_PER_PAGE, TableView tbl, FilteredList filteredData) {
         int totalPage = (int) (Math.ceil(tbldata_list_size * 1.0 / ROWS_PER_PAGE));
@@ -528,6 +534,7 @@ public class JFXUtil {
         Scene scene = null;
         Parent root = null;
 
+        // call to show the dialog
         public void showDialog(Stage parentStage, URL fxmlurl,
                 Object controller,
                 String lsDialogTitle,
@@ -582,6 +589,7 @@ public class JFXUtil {
             dialog.toFront();
         }
 
+        //allows set own functionality when the dialog is closed o hid
         public void setOnHidden(EventHandler<WindowEvent> handler) {
             onHiddenHandler = handler;
         }
@@ -594,6 +602,7 @@ public class JFXUtil {
             return root;
         }
 
+        // call to close the dialog
         public void closeDialog() {
             if (dialog != null) {
                 dialog.close();
@@ -778,8 +787,8 @@ public class JFXUtil {
         });
     }
 
-    /* Clears textFields, textAreas, checkboxes,combobxes, & datepickers by calling its parent anchorpane */
- /* For datepicker it auto set value to null before clearing text input*/
+    /* Clears textFields, textAreas, checkboxes, combobxes, & datepickers by calling its parent Anchorpane */
+ /* For datepicker it auto set value to null before clearing its text input*/
     public static void clearTextFields(AnchorPane... anchorPanes) {
         for (AnchorPane pane : anchorPanes) {
             clearTextInputsRecursive(pane);
@@ -807,7 +816,7 @@ public class JFXUtil {
         }
     }
 
-    /* Used to hide button visibility*/
+    /* Used to hide/unhide button*/
     public static void setButtonsVisibility(boolean visible, Button... buttons) {
         for (Button btn : buttons) {
             btn.setVisible(visible);
@@ -815,18 +824,22 @@ public class JFXUtil {
         }
     }
 
+    /* Old usage(for particular use); used to add CSS class into textfield*/
     public static void AddStyleClass(String lsCssClassName, TextField... textFields) {
         for (TextField tf : textFields) {
             tf.getStyleClass().add(lsCssClassName);
         }
     }
 
+    /* Old usage(for particular use); used to remove CSS class from textfield*/
     public static void RemoveStyleClass(String lsCssClassName, TextField... textFields) {
         for (TextField tf : textFields) {
             tf.getStyleClass().remove(lsCssClassName);
         }
     }
 
+    /*Returns boolean*/
+ /*Determines if textfield/s contains particular CSS class name*/
     public static boolean isTextFieldContainsStyleClass(String lsCssClassName, TextField... textFields) {
         //used for removal
         for (TextField tf : textFields) {
@@ -837,6 +850,8 @@ public class JFXUtil {
         return false;
     }
 
+    /* Disables any node in UI*/
+ /* Requires boolean & Nodes*/
     public static void setDisabled(boolean disable, Node... nodes) {
         for (Node node : nodes) {
             node.setDisable(disable);
@@ -852,6 +867,7 @@ public class JFXUtil {
         }
     }
 
+    /*Sets a listener to any node*/
     public static void setFocusListener(ChangeListener<? super Boolean> listener, Node... nodes) {
         for (Node node : nodes) {
             if (node instanceof Control) {
@@ -860,6 +876,7 @@ public class JFXUtil {
         }
     }
 
+    /*Converts MM/dd/yyyy into yyyy-MM-dd*/
     public static String convertToIsoFormat(String dateStr) {
         DateTimeFormatter isoFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         DateTimeFormatter usFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
@@ -883,6 +900,7 @@ public class JFXUtil {
         }
     }
 
+    /*Deprecated*/
     public static JFXUtilDateResult processDate(String inputText, DatePicker datePicker) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy"); // accepted string
         JSONObject poJSON = new JSONObject();
@@ -915,6 +933,7 @@ public class JFXUtil {
         return new JFXUtilDateResult(inputText, selectedDate, poJSON);
     }
 
+    /*Deprecated*/
     public static class JFXUtilDateResult {
 
         public String inputText;
@@ -928,6 +947,7 @@ public class JFXUtil {
         }
     }
 
+    /*Compares an object to any object if equal*/
     public static boolean isObjectEqualTo(Object source, Object... others) {
         if (source == null && others != null) {
             for (Object other : others) {
@@ -946,6 +966,7 @@ public class JFXUtil {
         return false;
     }
 
+    /*Sets a keypress listener to textfields in any anchorPane*/
     public static void setKeyPressedListener(EventHandler<KeyEvent> listener, AnchorPane... anchorPanes) {
         for (AnchorPane pane : anchorPanes) {
             for (Node node : pane.getChildrenUnmodifiable()) {
@@ -959,6 +980,7 @@ public class JFXUtil {
         }
     }
 
+    //private
     private static void applyListenerToNestedTextFields(Parent parent, EventHandler<KeyEvent> listener) {
         for (Node child : parent.getChildrenUnmodifiable()) {
             if (child instanceof TextField) {
@@ -1005,6 +1027,7 @@ public class JFXUtil {
         int caretPos;
     }
 
+    /*Applies customed orange colored vertical scroll bar in textArea*/
     public static void setVerticalScroll(TextArea textArea) {
         textArea.applyCss();
         textArea.layout();
@@ -1069,6 +1092,7 @@ public class JFXUtil {
         textArea.getStyleClass().add("custom-text-area");
     }
 
+    /*Old usage; Deprecated*/
     public static class LoadScreenComponents {
 
         public final ProgressIndicator progressIndicator;
@@ -1082,6 +1106,7 @@ public class JFXUtil {
         }
     }
 
+    /*Deprecated*/
     //JFXUtil.LoadScreenComponents loading = JFXUtil.createLoadingComponents();
     //tblViewDetails.setPlaceholder(loading.loadingPane);
     public static LoadScreenComponents createLoadingComponents() {
@@ -1099,6 +1124,8 @@ public class JFXUtil {
         return new LoadScreenComponents(progressIndicator, loadingPane, placeholderLabel);
     }
 
+    /*Sets in pxeModuleName ideally for convenient and dynamic getter of form title*/
+ /*Requires controller class*/
     public static String getFormattedClassTitle(Class<?> javaclass) {
         String className = javaclass.getSimpleName();
 
@@ -1126,6 +1153,39 @@ public class JFXUtil {
         return className;
     }
 
+    /*V2, allow modification on naming*/
+    public static String getFormattedClassTitle(Class<?> javaclass, String lsChangeIdentifier) {
+        String className = javaclass.getSimpleName();
+
+        if (className.endsWith("Controller")) {
+            className = className.substring(0, className.length() - "Controller".length());
+        }
+
+        className = className.replace("MonarchFood", "MF");
+        className = className.replace("MonarchHospitality", "MH");
+
+        className = className.replace("_", " ");
+
+        className = className.replaceAll("(?<=[a-z])(?=[A-Z])", " ");
+        className = className.replaceAll("(?<=[A-Z])(?=[A-Z][a-z])", " ");
+
+        className = className.trim();
+
+        className = className.replace("SP Car", "SPCar");
+        className = className.replace("SP MC", "SPMC");
+
+        //modification
+        switch (lsChangeIdentifier) {
+            case "PO":
+                className = className.replaceAll("\\bPO\\b", "Purchase Order");
+                break;
+        }
+        return className;
+    }
+
+    /*Depracated*/
+    //gets title through fxml path
+    //JFXUtil.getFormattedClassTitle(this.getClass());
     public static String getFormattedFXMLTitle(String fxmlPath) {
         // Extract the FXML file name without extension
         String fileName = fxmlPath.substring(fxmlPath.lastIndexOf('/') + 1, fxmlPath.lastIndexOf('.'));
@@ -1154,12 +1214,13 @@ public class JFXUtil {
         return fileName;
     }
 
-    //JFXUtil.getFormattedClassTitle(this.getClass());
+    /*Selects & focus row through an index number*/
     public static <T> void selectAndFocusRow(TableView<T> tableView, int index) {
         tableView.getSelectionModel().select(index);
         tableView.getFocusModel().focus(index);
     }
 
+    /*Sets any object to null*/
     public static void setValueToNull(Object... items) {
         for (Object item : items) {
             if (item instanceof Node) {
@@ -1182,36 +1243,7 @@ public class JFXUtil {
         }
     }
 
-    public static String safeString(Object value) {
-        return value != null ? value.toString() : "";
-    }
-
-    public static TextFieldControlInfo getControlInfo(Observable o) {
-        if (o instanceof ReadOnlyProperty) {
-            Object bean = ((ReadOnlyProperty<?>) o).getBean();
-            if (bean instanceof TextInputControl) {
-                TextInputControl control = (TextInputControl) bean;
-                String id = control.getId();
-                String value = control.getText() != null ? control.getText() : "";
-                return new TextFieldControlInfo(id, value, control);
-            }
-        }
-        return null;
-    }
-
-    public static class TextFieldControlInfo {
-
-        public final String lsID;
-        public final String lsTxtValue;
-        public final TextInputControl txtField;
-
-        public TextFieldControlInfo(String id, String value, TextInputControl control) {
-            this.lsID = id;
-            this.lsTxtValue = value;
-            this.txtField = control;
-        }
-    }
-
+    /*Sets action listener*/
     //JFXUtil.TextFieldControlInfo txtcontrol = JFXUtil.getControlInfo((Observable) o);
     public static void setActionListener(EventHandler<ActionEvent> handler, Node... nodes) {
         for (Node node : nodes) {
@@ -1247,10 +1279,9 @@ public class JFXUtil {
         AtomicBoolean isAdjusting;
         int newCaretPos;
     }
-//    private static boolean isUpdating = false;
-//   private static  AtomicBoolean isAdjusting = new AtomicBoolean(false);
-//    private static int newCaretPos = 0;
 
+    /*Sets real-time comma formatting to a textfield (containing numbers/digits)*/
+ /*Does not recommend setting to other real time textfield formatter*/
     public static void setCommaFormatter(TextField... textFields) {
 
         DecimalFormat finalFormat = (DecimalFormat) NumberFormat.getNumberInstance(Locale.US);
@@ -1327,6 +1358,29 @@ public class JFXUtil {
         }
     }
 
+    /*Alternative version of inputDecimalOnly; restricts to 1 dot, commas not allowed*/
+    public static void inputDecimalOnly(TextField... foTxtFields) {
+        Pattern pattern = Pattern.compile("\\d*(\\.\\d*)?");
+        for (TextField txtField : foTxtFields) {
+            if (txtField != null) {
+                txtField.setTextFormatter(new TextFormatter<>(change -> {
+                    String newText = change.getControlNewText();
+                    if (newText.isEmpty()) {
+                        return change;
+                    }
+                    if (newText.contains(",")) {
+                        return null;
+                    }
+                    if (!pattern.matcher(newText).matches()) {
+                        return null;
+                    }
+                    return change;
+                }));
+            }
+        }
+    }
+
+    /*Experimental; customed Month & Year only picker*/
     public static class MonthYearPicker {
 
         public static class Picker {
@@ -1479,6 +1533,7 @@ public class JFXUtil {
         }
     }
 
+    /*Programmatically press depending on keyCode*/
     public static void makeKeyPressed(Node targetNode, KeyCode keyCode) {
         if (targetNode == null || keyCode == null) {
             return;
@@ -1496,6 +1551,8 @@ public class JFXUtil {
         targetNode.fireEvent(keyEvent);
     }
 
+    /*Sets key event to node*/
+ /*Requires event handles and any count of node*/
     public static void setKeyEventFilter(EventHandler<KeyEvent> handler, Node... nodes) {
         if (handler == null || nodes == null) {
             return;
@@ -1508,6 +1565,8 @@ public class JFXUtil {
         }
     }
 
+    /*Focuses in first textfield existing in anchorPane*/
+ /*Requires anchorpane*/
     public static void focusFirstTextField(final AnchorPane anchorPane) {
         Platform.runLater(new Runnable() {
             @Override
@@ -1520,6 +1579,7 @@ public class JFXUtil {
         });
     }
 
+    //private
     private static TextField findFirstTextField(Parent parent) {
         for (Node node : parent.getChildrenUnmodifiable()) {
             if (node instanceof TextField) {
@@ -1534,6 +1594,7 @@ public class JFXUtil {
         return null;
     }
 
+    /*Removes comma character existing in a string containing number*/
     public static String removeComma(String numberStr) {
         if (numberStr == null || numberStr.equals("")) {
             return "0";
@@ -1542,53 +1603,15 @@ public class JFXUtil {
         return result.isEmpty() ? "0" : result;
     }
 
-    public static void removeNoByKey(List<Pair<String, String>> plOrderNoPartial, List<Pair<String, String>> plOrderNoFinal, String lsNo) {
-        removeFromListByKey(plOrderNoPartial, lsNo);
-        removeFromListByKey(plOrderNoFinal, lsNo);
-    }
-
-    private static void removeFromListByKey(List<Pair<String, String>> list, String key) {
-        Iterator<Pair<String, String>> iterator = list.iterator();
-        while (iterator.hasNext()) {
-            Pair<String, String> pair = iterator.next();
-            if (pair.getKey().equals(key)) {
-                iterator.remove();
-            }
-        }
-    }
-
-    private static void setKeyEvent(Scene scene, AtomicReference<Object> lastFocusedTextField, AtomicReference<Object> previousSearchedTextField) {
-        scene.focusOwnerProperty().addListener((obs, oldNode, newNode) -> {
-            if (newNode != null) {
-                if (newNode instanceof Button) {
-                } else {
-                    lastFocusedTextField.set(newNode);
-                    previousSearchedTextField.set(null);
-                }
-            }
-        });
-    }
-
-    public static void initKeyClickObject(AnchorPane ap, AtomicReference<Object> lastFocusedTextField, AtomicReference<Object> previousSearchedTextField) {
-        AnchorPane root = (AnchorPane) ap;
-        Scene scene = root.getScene();
-        if (scene != null) {
-            setKeyEvent(scene, lastFocusedTextField, previousSearchedTextField);
-        } else {
-            root.sceneProperty().addListener((obs, oldScene, newScene) -> {
-                if (newScene != null) {
-                    setKeyEvent(newScene, lastFocusedTextField, previousSearchedTextField);
-                }
-            });
-        }
-    }
-
+    /*Changes checkbox cursor type on hover, depending if enabled/disabled*/
+ /*Requires anchorPane to check any checkbox existing in the anchorPane*/
     public static void setCheckboxHoverCursor(Parent... anchorpane) {
         for (Parent container : anchorpane) {
             applyToCheckBoxes(container);
         }
     }
 
+    //private
     private static void applyToCheckBoxes(Parent parent) {
         for (Node node : parent.getChildrenUnmodifiable()) {
             if (node instanceof CheckBox) {
@@ -1606,50 +1629,34 @@ public class JFXUtil {
         }
     }
 
-    public static boolean isGeneralFXML(String fxmlPath) {
-        String fileName = fxmlPath.substring(fxmlPath.lastIndexOf('/') + 1, fxmlPath.lastIndexOf('.'));
-
-        int underscoreIndex = fileName.indexOf('_');
-
-        if (underscoreIndex == -1) {
-            return true;
+    /*Identifies if general based on title*/
+    public static boolean isGeneral(String title) {
+        if (title == null || title.trim().isEmpty()) {
+            return false;
         }
 
-        String suffix = fileName.substring(underscoreIndex + 1);
+        // Trim and normalize spaces
+        title = title.trim();
 
         String[] generalSuffixes = {
             "Entry", "Confirmation", "History", "Approval"
         };
-        for (String general : generalSuffixes) {
-            if (suffix.equals(general)) {
+
+        for (String suffix : generalSuffixes) {
+            // Check if the title ends exactly with one of the general suffixes
+            if (title.endsWith(suffix)) {
                 return true;
             }
         }
-        return false;
-    }
 
-    public static String formatForMessageBox(String message, int maxLinewidth) {
-        if (message == null || message.isEmpty()) {
-            return "";
-        }
-
-        StringBuilder result = new StringBuilder();
-        String[] words = message.split(" ");
-        StringBuilder line = new StringBuilder();
-
-        for (String word : words) {
-            if (line.length() + word.length() + 1 > maxLinewidth) {
-                result.append(line.toString().trim()).append("\n");
-                line.setLength(0);
+        // If it contains any of those words but continues after, it's not general
+        for (String suffix : generalSuffixes) {
+            if (title.contains(suffix + " ")) {
+                return false;
             }
-            line.append(word).append(" ");
         }
 
-        if (line.length() > 0) {
-            result.append(line.toString().trim());
-        }
-
-        return result.toString();
+        return false;
     }
 
     @FunctionalInterface
@@ -1658,6 +1665,7 @@ public class JFXUtil {
         T execute();
     }
 
+    /*Experimental*/
     public static void executeConditional(boolean condition, Runnable trueAction, Runnable falseAction) {
         if (condition) {
             trueAction.run();
@@ -1666,6 +1674,7 @@ public class JFXUtil {
         }
     }
 
+    /*Used in Dashboard*/
     public static void applyHoverFadeToButtons(String firstColorHex, String secondColorHex, Button... buttons) {
         for (Button button : buttons) {
             Node graphic = button.getGraphic();
@@ -1678,6 +1687,7 @@ public class JFXUtil {
         }
     }
 
+    //private
     private static void animateColorFade(FontAwesomeIconView icon, String fromColorHex, String toColorHex) {
         Color startColor = Color.web(fromColorHex);
         Color endColor = Color.web(toColorHex);
@@ -1693,6 +1703,7 @@ public class JFXUtil {
         timeline.play();
     }
 
+    /*Used in Dashboard*/
     public static void applyToggleHoverAnimation(ToggleButton... toggleButtons) {
         for (ToggleButton toggleButton : toggleButtons) {
             FontAwesomeIconView icon = extractFontAwesomeIcon(toggleButton);
@@ -1717,6 +1728,7 @@ public class JFXUtil {
         }
     }
 
+    //private
     private static FontAwesomeIconView extractFontAwesomeIcon(ToggleButton toggleButton) {
         Node graphic = toggleButton.getGraphic();
         if (graphic instanceof FontAwesomeIconView) {
@@ -1725,6 +1737,7 @@ public class JFXUtil {
         return null;
     }
 
+    //private
     private static void scaleIcon(FontAwesomeIconView icon, double scaleTo, double durationMillis) {
         ScaleTransition st = new ScaleTransition(Duration.millis(durationMillis), icon);
         st.setToX(scaleTo);
@@ -1732,6 +1745,7 @@ public class JFXUtil {
         st.play();
     }
 
+    //private
     private static void playClickBounce(FontAwesomeIconView icon) {
         ScaleTransition shrink = new ScaleTransition(Duration.millis(80), icon);
         shrink.setToX(0.9);
@@ -1745,6 +1759,7 @@ public class JFXUtil {
         shrink.play();
     }
 
+    /*Used in Dashboard*/
     public static void placeClockInAnchorPane(AnchorPane anchorPane, double size) {
         if (anchorPane == null) {
             return;
@@ -1790,6 +1805,7 @@ public class JFXUtil {
         return clockPane;
     }
 
+    //private
     private static void updateHands(Line hourHand, Line minuteHand, double center) {
         LocalDateTime now = LocalDateTime.now();
         double hourAngle = (now.getHour() % 12 + now.getMinute() / 60.0) * 30;
@@ -1799,12 +1815,15 @@ public class JFXUtil {
         setHandAngle(minuteHand, minuteAngle, center, center * minuteHand1);
     }
 
+    //private
     private static void setHandAngle(Line hand, double angle, double center, double length) {
         double radians = Math.toRadians(angle - 90);
         hand.setEndX(center + length * Math.cos(radians));
         hand.setEndY(center + length * Math.sin(radians));
     }
 
+    /*Used in enableRowDragAndDrop()*/
+ /*Determines if drag drop will be disabled/enabled*/
     public static class RowDragLock {
 
         public boolean isEnabled;
@@ -1814,7 +1833,8 @@ public class JFXUtil {
         }
     }
 
-    /*Returns new arranged indexes that should be set to dragged row*/
+    /*Enables drag and drop in tableView*/
+ /*Returns new arranged indexes that should be set to dragged row*/
     public static <T> void enableRowDragAndDrop(
             TableView<T> tableView,
             Function<T, StringProperty> index01Getter,
@@ -1936,12 +1956,14 @@ public class JFXUtil {
         });
     }
 
+    //private
     private static <T> void renumberIndex01(ObservableList<T> items, Function<T, StringProperty> index01Getter) {
         for (int i = 0; i < items.size(); i++) {
             index01Getter.apply(items.get(i)).set(String.valueOf(i + 1));
         }
     }
 
+    //private
     private static <T> boolean isBlankRow(
             T item,
             Function<T, StringProperty> index01Getter,
@@ -1961,6 +1983,7 @@ public class JFXUtil {
                 || val4 == null || val4.trim().isEmpty();
     }
 
+    /*Used in setComboBoxItems()*/
     public static class Pairs<K, V> {
 
         public final K key;
@@ -1972,6 +1995,7 @@ public class JFXUtil {
         }
     }
 
+    /*Shortened set of items in multiple comboboxes*/
     public static <T> void setComboBoxItems(Pairs<ObservableList<T>, ComboBox<T>>... comboPairs) {
         for (Pairs<ObservableList<T>, ComboBox<T>> pair : comboPairs) {
             ObservableList<T> list = pair.key;
@@ -1986,6 +2010,7 @@ public class JFXUtil {
         }
     }
 
+    /*Sets combobox action listener*/
     public static void setComboBoxActionListener(EventHandler<ActionEvent> listener, ComboBox<?>... comboBoxes) {
         for (ComboBox<?> cb : comboBoxes) {
             cb.setOnAction(listener);
@@ -2037,6 +2062,7 @@ public class JFXUtil {
 //        }
 //    }
 //
+    /*Shortened loadTable loader*/
     //sample usage
 // JFXUtil.ReloadableTableTask loadTableDetail;
 //        loadTableMain = new JFXUtil.ReloadableTableTask(
@@ -2090,6 +2116,7 @@ public class JFXUtil {
         }
     }
 
+    /*Requests focus in the node passed with 0.5 delay*/
     public static void textFieldMoveNext(Node node) {
         Platform.runLater(new Runnable() {
             @Override
@@ -2109,6 +2136,37 @@ public class JFXUtil {
         });
     }
 
+    /*Used particularly for btnSearch*/
+ /*Referenced to pass data, basis for initateBtnSearch*/
+    public static void initKeyClickObject(AnchorPane ap, AtomicReference<Object> lastFocusedTextField, AtomicReference<Object> previousSearchedTextField) {
+        AnchorPane root = (AnchorPane) ap;
+        Scene scene = root.getScene();
+        if (scene != null) {
+            setKeyEvent(scene, lastFocusedTextField, previousSearchedTextField);
+        } else {
+            root.sceneProperty().addListener((obs, oldScene, newScene) -> {
+                if (newScene != null) {
+                    setKeyEvent(newScene, lastFocusedTextField, previousSearchedTextField);
+                }
+            });
+        }
+    }
+
+    //private
+    private static void setKeyEvent(Scene scene, AtomicReference<Object> lastFocusedTextField, AtomicReference<Object> previousSearchedTextField) {
+        scene.focusOwnerProperty().addListener((obs, oldNode, newNode) -> {
+            if (newNode != null) {
+                if (newNode instanceof Button) {
+                } else {
+                    lastFocusedTextField.set(newNode);
+                    previousSearchedTextField.set(null);
+                }
+            }
+        });
+    }
+
+    /*Used particularly for btnSearch, connected to initKeyClickObject*/
+ /*Detects & Validates if focused, identifies last focused node, and identifies if there is no focus in any textfield*/
     public static void initiateBtnSearch(
             String pxeModuleName,
             AtomicReference<Object> lastFocusedTextField,
@@ -2147,6 +2205,7 @@ public class JFXUtil {
         }
     }
 
+    /*Shortened Lost focus Listener*/
 // sample usage
 //    ChangeListener<Boolean> txtArea_Focus = JFXUtil.FocusListener(TextArea.class,
 //            (lsID, lsValue) -> {
@@ -2172,6 +2231,7 @@ public class JFXUtil {
         };
     }
 
+    /*Disables up and down focus & selection in a tableView*/
     public static <T> void disableArrowNavigation(TableView<T> table) {
         table.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode() == KeyCode.UP || event.getCode() == KeyCode.DOWN) {
@@ -2180,6 +2240,8 @@ public class JFXUtil {
         });
     }
 
+    /*Adds checkbox to any column, returns column index and row index, and check status*/
+ /*Requires Table Model, tableView, boolean, and column int index/s that checkbox will be applied (e.g. 0,1,2)*/
     public static <T> void addCheckboxColumns(
             Class<T> modelClass,
             TableView<T> table,
@@ -2278,6 +2340,8 @@ public class JFXUtil {
         void accept(T t, U u, V v, W w);
     }
 
+    /*Programmatically clicks particular tab based on its title*/
+ /*Requires Tabpane & tab title*/
     public static void clickTabByTitleText(TabPane tabPane, String title) {
         for (Tab tab : tabPane.getTabs()) {
             if (title.equals(tab.getText())) {
@@ -2293,6 +2357,7 @@ public class JFXUtil {
         }
     }
 
+    /*Alternative to Platform.runlater() added seconds delay before execution*/
     public static void runWithDelay(double seconds, Runnable action) {
         Platform.runLater(() -> {
             PauseTransition delay = new PauseTransition(Duration.seconds(seconds));
@@ -2301,6 +2366,8 @@ public class JFXUtil {
         });
     }
 
+    /*Experimental; Modern checkbox UI*/
+ /*Requires hex color, and checkbox id*/
     public static void setCheckboxStyle(String hexColor, CheckBox... checkBoxes) {
         for (CheckBox cb : checkBoxes) {
             if (!cb.getStyleClass().contains("modern")) {
@@ -2317,6 +2384,7 @@ public class JFXUtil {
         }
     }
 
+    //private
     private static void setupCheckAnimation(CheckBox cb) {
         Node mark = cb.lookup(".mark");
         if (mark == null) {
@@ -2342,21 +2410,12 @@ public class JFXUtil {
         });
     }
 
-    private static void syncMarkScale(CheckBox cb) {
-        Node mark = cb.lookup(".mark");
-        if (mark != null) {
-            if (cb.isSelected()) {
-                mark.setScaleX(1.0);
-                mark.setScaleY(1.0);
-            } else {
-                mark.setScaleX(0.0);
-                mark.setScaleY(0.0);
-            }
-        }
-    }
-
     private static final Map<Class<?>, Map<String, String>> cache = new HashMap<>();
 
+    /*Sets value to a label, textField, textArea, or button from class various variable name w/ value*/
+ /*Ideally used for set Status label of Transaction*/
+ /*Compares class variables values from string value (the third parameter)*/
+ /*Requires Node, class, and a string value*/
     public static String setStatusValue(Node node, Class<?> clazz, String value) {
         String text = getNameByValue(clazz, value);
 
@@ -2376,6 +2435,7 @@ public class JFXUtil {
         return text;
     }
 
+    //private
     private static String getNameByValue(Class<?> clazz, String value) {
         if ("-1".equals(value) || "".equals(value)) {
             return "UNKNOWN";
@@ -2383,6 +2443,7 @@ public class JFXUtil {
         return buildValueToNameMap(clazz).getOrDefault(value, "UNKNOWN");
     }
 
+    //private
     private static Map<String, String> buildValueToNameMap(Class<?> clazz) {
         if (cache.containsKey(clazz)) {
             return cache.get(clazz);
@@ -2409,6 +2470,8 @@ public class JFXUtil {
         return valueToNameMap;
     }
 
+    /*Alternative ComboboxListener*/
+//    sample usage
 //    EventHandler<ActionEvent> comboBoxActionListener = JFXUtil.CmbActionListener(
 //            (cmbId, selectedIndex, selectedValue) -> {
 //            }
@@ -2417,13 +2480,12 @@ public class JFXUtil {
         return event -> {
             @SuppressWarnings("unchecked")
             ComboBox<T> comboBox = (ComboBox<T>) event.getSource();
-
-            // Ignore programmatic changes (like setValue/select in code)
-            if (!comboBox.isFocused()) {
-                return;
-            }
-
             Platform.runLater(() -> {
+                // Ignore programmatic changes (like setValue/select in code)
+                if (!comboBox.isFocused()) {
+                    return;
+                }
+
                 String comboId = comboBox.getId() != null ? comboBox.getId() : "NO_ID";
                 int selectedIndex = comboBox.getSelectionModel().getSelectedIndex();
                 T selectedValue = comboBox.getSelectionModel().getSelectedItem();
@@ -2439,17 +2501,7 @@ public class JFXUtil {
         void onChange(String comboId, int selectedIndex, T selectedValue);
     }
 
-    public static <T> void setComboBoxValue(EventHandler<ActionEvent> listener, int selection, ComboBox<T>... comboBoxes) {
-        for (ComboBox<T> comboBox : comboBoxes) {
-
-            comboBox.setOnAction(null);
-            if (!comboBox.getItems().isEmpty()) {
-                comboBox.getSelectionModel().select(selection);
-            }
-            comboBox.setOnAction(listener);
-        }
-    }
-
+    /*Requests focus on a textfield, only if its object condition is null or blank*/
     public static void requestFocusNullField(Object[][] checks, TextField fallback) {
         Stream.of(checks)
                 .filter(c -> isObjectEqualTo(c[0], null, ""))
@@ -2459,12 +2511,14 @@ public class JFXUtil {
                 .requestFocus();
     }
 
+    /*Returns title from class*/
     public static AbstractMap.SimpleEntry<String, Class<? extends ScreenInterface>> returnData(
             Class<? extends ScreenInterface> clazz) {
         return new AbstractMap.SimpleEntry<>(getFormattedClassTitle(clazz), clazz);
     }
 
-    static class BreakLoopException extends RuntimeException {
+    /*Throws similar break functionality*/
+    public static class BreakLoopException extends RuntimeException {
     }
 
     public static void ifError(boolean isError, TextField txtField, JSONObject poJSON, String pxeModuleName, Runnable orElse) {
@@ -2526,7 +2580,7 @@ public class JFXUtil {
         return result;
     }
 
-    /*Checks if the folder exists from path, creates if not */
+    /*Checks if the folder exists from path, creates if there is none */
  /*Requires JSONObject and folder path */
     public static JSONObject checkIfFolderExists(JSONObject poJSON, String lsExportPath) {
         File folder = new File(lsExportPath);
@@ -2542,6 +2596,29 @@ public class JFXUtil {
             }
         }
         return poJSON;
+    }
+
+    /*Removes TextField listener*/
+    public static void removeTextFieldListener(ChangeListener<String> searchListener, TextField textField) {
+        if (searchListener != null) {
+            // Remove the listener if already attached
+            textField.textProperty().removeListener(searchListener);
+        }
+    }
+
+    public static String IDToWord(String id) {
+        if (id == null || id.isEmpty()) {
+            return "";
+        }
+        // Remove known common prefixes like tf, dp, cb, btn, etc.
+        String cleaned = id.replaceFirst("^(tf|dp|cb|btn|lbl|txt|cmb|ap|rb)", "");
+        // Insert spaces before capital letters but not between consecutive capitals (e.g., "SI")
+        String withSpaces = cleaned.replaceAll("(?<=[a-z])(?=[A-Z])", " ");
+        // Capitalize first character if needed
+        if (!withSpaces.isEmpty()) {
+            withSpaces = withSpaces.substring(0, 1).toUpperCase() + withSpaces.substring(1);
+        }
+        return withSpaces.trim();
     }
 
 }

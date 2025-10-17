@@ -158,7 +158,7 @@ public class CheckPrintRequest_EntryController implements Initializable, ScreenI
     @FXML
     private TableView tblVwMain;
     @FXML
-    private TableColumn tblRowNo, tblBankName, tblBankAccount, tblDate, tblReferenceNo;
+    private TableColumn tblRowNo,tblBranch, tblBankName, tblBankAccount, tblDate, tblReferenceNo;
     @FXML
     private Pagination pagination;
 
@@ -441,10 +441,12 @@ public class CheckPrintRequest_EntryController implements Initializable, ScreenI
                             for (int lnCntr = 0; lnCntr <= poCheckPrintingRequestController.getCheckPaymentCount() - 1; lnCntr++) {
                                 main_data.add(new ModelDisbursementVoucher_Main(
                                         String.valueOf(lnCntr + 1),
+                                        poCheckPrintingRequestController.CheckPayments(lnCntr).Branch().getBranchName(),
                                         poCheckPrintingRequestController.CheckPayments(lnCntr).Banks().getBankName(),
                                         poCheckPrintingRequestController.CheckPayments(lnCntr).Bank_Account_Master().getAccountNo(),
                                         CustomCommonUtil.formatDateToShortString(poCheckPrintingRequestController.CheckPayments(lnCntr).getTransactionDate()),
-                                        poCheckPrintingRequestController.CheckPayments(lnCntr).getSourceNo()
+                                        poCheckPrintingRequestController.CheckPayments(lnCntr).getSourceNo(),
+                                        ""
                                 ));
                             }
                         }
@@ -496,7 +498,7 @@ public class CheckPrintRequest_EntryController implements Initializable, ScreenI
     }
 
     private void initTableMain() {
-        JFXUtil.setColumnCenter(tblRowNo, tblBankName, tblBankAccount, tblDate, tblReferenceNo);
+        JFXUtil.setColumnCenter(tblRowNo, tblBankName,tblBranch, tblBankAccount, tblDate, tblReferenceNo);
         JFXUtil.setColumnsIndexAndDisableReordering(tblVwMain);
 
         filteredMain_Data = new FilteredList<>(main_data, b -> true);
@@ -569,12 +571,12 @@ public class CheckPrintRequest_EntryController implements Initializable, ScreenI
                 try {
                     int pnRowMain = Integer.parseInt(selected.getIndex01()) - 1;
                     pnMain = pnRowMain;
-                    String lsTransactionNo = selected.getIndex05();
+                    String lsTransactionNo = selected.getIndex06();
                     poJSON = poCheckPrintingRequestController.addCheckPaymentToCheckPrintRequest(lsTransactionNo);
                     if ("success".equals(poJSON.get("result"))) {
                         JFXUtil.highlightByKey(tblVwMain, lsTransactionNo, "#A7C7E7", highlightedRowsMain);
                     } else {
-                        if ("true".equals((String) poJSON.get("warning"))) {
+                        if (Boolean.parseBoolean(String.valueOf(poJSON.get("warning")))) {
                             ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
                             if (ShowMessageFX.YesNo("If you want to change bank name, \n"
                                     + "If YES it will remove details and remove bank name.\n"
@@ -662,11 +664,11 @@ public class CheckPrintRequest_EntryController implements Initializable, ScreenI
                                                 poCheckPrintingRequestController.Detail(lnCtr).getSourceNo(),
                                                 poCheckPrintingRequestController.Detail(lnCtr).DisbursementMaster().getTransactionNo(),
                                                 CustomCommonUtil.formatDateToShortString(poCheckPrintingRequestController.Detail(lnCtr).DisbursementMaster().getTransactionDate()),
-                                                CustomCommonUtil.setIntegerValueToDecimalFormat(poCheckPrintingRequestController.Detail(lnCtr).DisbursementMaster().getNetTotal(), true),
-                                                poCheckPrintingRequestController.Detail(lnCtr).DisbursementMaster().CheckPayments().getCheckNo(),
-                                                poCheckPrintingRequestController.Detail(lnCtr).DisbursementMaster().CheckPayments().getCheckDate() != null
+                                                CustomCommonUtil.setIntegerValueToDecimalFormat(poCheckPrintingRequestController.Detail(lnCtr).CheckPayments().getAmount(), true),
+                                                poCheckPrintingRequestController.Detail(lnCtr).CheckPayments().getCheckNo(),
+                                                poCheckPrintingRequestController.Detail(lnCtr).CheckPayments().getCheckDate() != null
                                                 ? CustomCommonUtil.formatDateToShortString(
-                                                        poCheckPrintingRequestController.Detail(lnCtr).DisbursementMaster().CheckPayments().getCheckDate())
+                                                        poCheckPrintingRequestController.Detail(lnCtr).CheckPayments().getCheckDate())
                                                 : "",
                                                 CustomCommonUtil.setIntegerValueToDecimalFormat(poCheckPrintingRequestController.Detail(lnCtr).DisbursementMaster().CheckPayments().getAmount(), true)
                                         ));

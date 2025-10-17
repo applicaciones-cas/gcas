@@ -81,7 +81,7 @@ public class CheckImportingController implements Initializable, ScreenInterface 
     private unloadForm poUnload = new unloadForm();
 
     private ObservableList<ModelCheckImporting> main_data = FXCollections.observableArrayList();
-    private FilteredList<ModelCheckImporting> filteredMain_Data;
+//    private FilteredList<ModelCheckImporting> filteredMain_Data;
 
 //    List<Pair<String, String>> plOrderNoPartial = new ArrayList<>();
 //    List<Pair<String, String>> plOrderNoFinal = new ArrayList<>();
@@ -382,8 +382,8 @@ public class CheckImportingController implements Initializable, ScreenInterface 
         JFXUtil.setColumnCenter(tblRowNo, tblDVNo, tblDVDate, tblBankName, tblBankRefNo, tblDateReceived, tblCheckNo, tblCheckDate, tblCheckPrintStatus);
         JFXUtil.setColumnsIndexAndDisableReordering(tblVwMain);
 
-        filteredMain_Data = new FilteredList<>(main_data, b -> true);
-        tblVwMain.setItems(filteredMain_Data);
+//        filteredMain_Data = new FilteredList<>(main_data, b -> true);
+        tblVwMain.setItems(main_data);
     }
 
     private void initButtons(int fnEditMode) {
@@ -463,6 +463,7 @@ public class CheckImportingController implements Initializable, ScreenInterface 
     }
     
     private void handleImportFile(ActionEvent event) {
+    poJSON = new JSONObject();
     FileChooser fileChooser = new FileChooser();
     fileChooser.setTitle("Import File");
     fileChooser.getExtensionFilters().addAll(
@@ -503,9 +504,10 @@ public class CheckImportingController implements Initializable, ScreenInterface 
                 }
 
                 // Call DB/service for this voucher
-                JSONObject result = poCheckImporting.getDVwithAuthorizeCheckPayment(voucherNo);
-                if ("error".equals(result.get("result"))) {
-                    throw new RuntimeException((String) result.get("message"));
+                 poJSON = poCheckImporting.getDVwithAuthorizeCheckPayment(voucherNo);
+                if ("error".equals(poJSON.get("result"))) {
+                    ShowMessageFX.Information((String) poJSON.get("message"), pxeModuleName, null);
+                    break;
                 }
 
                 // Optionally merge DB data into the row
@@ -539,7 +541,10 @@ public class CheckImportingController implements Initializable, ScreenInterface 
     task.setOnFailed(e -> {
         Throwable ex = task.getException();
         ex.printStackTrace();
-        ShowMessageFX.Warning("Import failed: " + ex.getMessage(), pxeModuleName, null);
+        ShowMessageFX.Information((String) poJSON.get("message"), pxeModuleName, null);
+        pnEditMode = EditMode.UNKNOWN;
+        initButtons(pnEditMode);
+        
     });
 
     new Thread(task).start();

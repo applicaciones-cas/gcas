@@ -155,7 +155,8 @@ public class CheckAssignmentController implements Initializable {
             poCheckPrintingController.Master().setModifiedDate(oApp.getServerDate());
             /* ---------- 1. Save the CURRENT record ---------- */
              poCheckPrintingController.Master().setModifiedDate(oApp.getServerDate());
-            
+             poCheckPrintingController.BankAccountMaster().getModel().setCheckNo(checkNoToCheck);
+//            poJSON = poCheckPrintingController.saveBankAccountMaster();
             poJSON = poCheckPrintingController.SaveTransaction();
             
 

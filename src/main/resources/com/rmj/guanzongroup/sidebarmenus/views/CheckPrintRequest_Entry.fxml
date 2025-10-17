@@ -25,7 +25,7 @@
 
 <?import java.net.URL?>
 
-<AnchorPane id="AnchorPane" fx:id="AnchorMain" maxWidth="1.7976931348623157E308" minWidth="1487.0" prefHeight="789.0" prefWidth="1667.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane id="AnchorPane" fx:id="AnchorMain" maxWidth="1.7976931348623157E308" minWidth="1487.0" prefHeight="789.0" prefWidth="1810.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <StackPane prefHeight="150.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
@@ -337,8 +337,9 @@
                                                         <TableView fx:id="tblVwMain" minWidth="242.0" GridPane.rowIndex="1">
                                                             <columns>
                                                                 <TableColumn fx:id="tblRowNo" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" resizable="false" sortable="false" text="No." />
-                                                                <TableColumn fx:id="tblBankName" maxWidth="236.0" minWidth="236.0" prefWidth="236.0" resizable="false" sortable="false" text="Bank Name" />
-                                                                <TableColumn fx:id="tblBankAccount" maxWidth="236.0" minWidth="236.0" prefWidth="236.0" resizable="false" sortable="false" text="Bank Account" />
+                                                <TableColumn fx:id="tblBranch" maxWidth="180.0" minWidth="180.0" prefWidth="180.0" resizable="false" sortable="false" text="Branch" />
+                                                                <TableColumn fx:id="tblBankName" maxWidth="180.0" minWidth="180.0" prefWidth="180.0" resizable="false" sortable="false" text="Bank Name" />
+                                                                <TableColumn fx:id="tblBankAccount" maxWidth="180.0" minWidth="180.0" prefWidth="180.0" resizable="false" sortable="false" text="Bank Account" />
                                                                 <TableColumn fx:id="tblDate" maxWidth="90.0" minWidth="90.0" prefWidth="90.0" resizable="false" sortable="false" text="Date" />
                                                                 <TableColumn fx:id="tblReferenceNo" maxWidth="106.0" minWidth="106.0" prefWidth="106.0" resizable="false" sortable="false" text="Refer No." />
                                                             </columns>
