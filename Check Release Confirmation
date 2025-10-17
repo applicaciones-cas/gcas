@@ -1,0 +1,556 @@
+Oct 14, 2025 11:22:28 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 14, 2025 11:22:28 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Check Release Confirmation
+Oct 14, 2025 11:26:41 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 14, 2025 11:26:41 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Check Release Confirmation
+Oct 14, 2025 11:32:12 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 14, 2025 11:32:12 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Check Release Confirmation
+Oct 14, 2025 11:33:17 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 14, 2025 11:33:17 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize Search Check Release Master
+Oct 14, 2025 11:33:17 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :Index: 2, Size: 2
+Oct 14, 2025 11:33:37 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 14, 2025 11:33:37 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize UPdate Transaction
+Oct 14, 2025 11:33:37 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :Index: 2, Size: 2
+Oct 14, 2025 11:33:53 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 14, 2025 11:33:53 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize Save Transaction
+Oct 14, 2025 11:34:25 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 14, 2025 11:34:25 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize Search Check Release Master
+Oct 14, 2025 11:58:32 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 14, 2025 11:58:32 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Check Release Confirmation
+Oct 14, 2025 11:58:45 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 14, 2025 11:58:45 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize : Load of Transaction List
+Oct 14, 2025 11:58:53 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 14, 2025 11:58:53 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize Search Check Release Master
+Oct 14, 2025 11:58:53 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :Index: 2, Size: 2
+Oct 14, 2025 11:59:01 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :Transaction confirmed successfully.
+Oct 14, 2025 11:59:01 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize Close Transaction
+Oct 14, 2025 11:59:01 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :Index: 2, Size: 2
+Oct 14, 2025 12:00:37 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 14, 2025 12:00:37 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize Search Check Release Master
+Oct 14, 2025 12:00:37 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :Index: 2, Size: 2
+Oct 14, 2025 12:00:42 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 14, 2025 12:00:42 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize Search Check Release Master
+Oct 14, 2025 12:00:42 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :Index: 2, Size: 2
+Oct 14, 2025 12:00:48 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 14, 2025 12:00:48 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Check Release Confirmation
+Oct 14, 2025 12:00:51 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 14, 2025 12:00:51 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize Search Check Release Master
+Oct 14, 2025 12:00:51 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :Index: 2, Size: 2
+Oct 14, 2025 12:01:02 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :Transaction cancelled successfully.
+Oct 14, 2025 12:01:02 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize Cancel Transaction
+Oct 14, 2025 12:01:02 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :Index: 2, Size: 2
+Oct 14, 2025 12:01:32 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :Unable to open transaction master record.
+Oct 14, 2025 12:01:35 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :Unable to open transaction master record.
+Oct 14, 2025 12:08:29 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 14, 2025 12:08:29 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Check Release Confirmation
+Oct 14, 2025 12:08:41 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 14, 2025 12:08:41 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize Search Check Release Master
+Oct 14, 2025 12:08:41 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :Index: 2, Size: 2
+Oct 14, 2025 12:08:55 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 14, 2025 12:08:55 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Check Release Confirmation
+Oct 14, 2025 12:09:00 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 14, 2025 12:09:00 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize Search Check Release Master
+Oct 14, 2025 12:09:00 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :Index: 2, Size: 2
+Oct 14, 2025 12:12:59 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :Transaction confirmed successfully.
+Oct 14, 2025 12:12:59 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize Close Transaction
+Oct 14, 2025 12:12:59 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :Index: 2, Size: 2
+Oct 14, 2025 12:13:17 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :Transaction was already released.
+Oct 14, 2025 12:13:50 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 14, 2025 12:13:50 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize Search Check Release Master
+Oct 14, 2025 12:13:50 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :Index: 2, Size: 2
+Oct 14, 2025 12:13:57 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 14, 2025 12:13:57 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize UPdate Transaction
+Oct 14, 2025 12:13:57 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :Index: 2, Size: 2
+Oct 14, 2025 12:13:59 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 14, 2025 12:13:59 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize Transaction
+Oct 14, 2025 2:20:38 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 14, 2025 2:20:38 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Check Release Confirmation
+Oct 14, 2025 2:20:48 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 14, 2025 2:20:48 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize Search Check Release Master
+Oct 14, 2025 2:20:48 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :Index: 2, Size: 2
+Oct 14, 2025 2:20:52 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'a.sTransNox = b.sTransNoxAND b.sSourceNo = c.sTransNox AND (a.sTransNox = 'M0012' at line 1
+Oct 14, 2025 2:23:19 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 14, 2025 2:23:19 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Check Release Confirmation
+Oct 14, 2025 2:23:26 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 14, 2025 2:23:26 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize Search Check Release Master
+Oct 14, 2025 2:23:26 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :Index: 2, Size: 2
+Oct 14, 2025 2:23:29 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'a.sTransNox = b.sTransNoxAND b.sSourceNo = c.sTransNox AND (a.sTransNox = 'M0012' at line 1
+Oct 14, 2025 2:35:11 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 14, 2025 2:35:11 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Check Release Confirmation
+Oct 14, 2025 2:35:16 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 14, 2025 2:35:16 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize Search Check Release Master
+Oct 14, 2025 2:35:16 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :Index: 2, Size: 2
+Oct 14, 2025 2:35:19 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :java.io.FileNotFoundException: D:\GGC_Maven_Systems\reports\CheckTransferMC.jasper
+Oct 14, 2025 2:40:11 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 14, 2025 2:40:11 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Check Release Confirmation
+Oct 14, 2025 2:40:25 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 14, 2025 2:40:25 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize Search Check Release Master
+Oct 14, 2025 2:40:25 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :Index: 2, Size: 2
+Oct 14, 2025 2:40:27 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :java.io.FileNotFoundException: D:\GGC_Maven_Systems\reports\CheckReleaseMC.jasper
+Oct 14, 2025 2:44:25 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :java.io.FileNotFoundException: D:\GGC_Maven_Systems\reports\CheckReleaseMC.jasper
+Oct 14, 2025 3:19:54 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 14, 2025 3:19:54 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Check Release Confirmation
+Oct 14, 2025 3:19:59 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 14, 2025 3:19:59 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize Search Check Release Master
+Oct 14, 2025 3:19:59 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :Index: 2, Size: 2
+Oct 14, 2025 3:20:02 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :Unknown column name xRemarksx in result set.
+Oct 14, 2025 3:23:36 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :Unknown column name xRemarksx in result set.
+Oct 14, 2025 3:24:36 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 14, 2025 3:24:36 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Check Release Confirmation
+Oct 14, 2025 3:24:43 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 14, 2025 3:24:43 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize Search Check Release Master
+Oct 14, 2025 3:24:43 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :Index: 2, Size: 2
+Oct 14, 2025 3:24:46 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :Byte data not found at: D:\GGC_Maven_Systems\reports\images\blank.png.
+Oct 14, 2025 3:30:43 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 14, 2025 3:30:43 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Check Release Confirmation
+Oct 14, 2025 3:30:50 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 14, 2025 3:30:50 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize Search Check Release Master
+Oct 14, 2025 3:30:50 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :Index: 2, Size: 2
+Oct 14, 2025 3:30:54 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :Byte data not found at: D:\GGC_Maven_Systems\reports\images\blank.png.
+Oct 14, 2025 3:33:15 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 14, 2025 3:33:15 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Check Release Confirmation
+Oct 14, 2025 3:33:19 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 14, 2025 3:33:19 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize Search Check Release Master
+Oct 14, 2025 3:33:19 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :Index: 2, Size: 2
+Oct 14, 2025 3:33:55 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 14, 2025 3:33:55 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize Print Transaction
+Oct 14, 2025 3:33:56 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :Index: 2, Size: 2
+Oct 14, 2025 3:35:18 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 14, 2025 3:35:18 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Check Release Confirmation
+Oct 14, 2025 3:35:29 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 14, 2025 3:35:29 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize Search Check Release Master
+Oct 14, 2025 3:35:29 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :Index: 2, Size: 2
+Oct 14, 2025 3:37:30 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 14, 2025 3:37:30 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize Print Transaction
+Oct 14, 2025 3:37:30 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :Index: 2, Size: 2
+Oct 14, 2025 3:46:02 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 14, 2025 3:46:02 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Check Release Confirmation
+Oct 14, 2025 3:46:14 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 14, 2025 3:46:14 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize Search Check Release Master
+Oct 14, 2025 3:46:14 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :Index: 2, Size: 2
+Oct 14, 2025 3:59:37 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 14, 2025 3:59:37 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Check Release Confirmation
+Oct 14, 2025 3:59:42 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 14, 2025 3:59:42 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize Search Check Release Master
+Oct 14, 2025 4:03:08 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 14, 2025 4:03:08 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Check Release Confirmation
+Oct 15, 2025 8:58:24 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 15, 2025 8:58:24 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Check Release Confirmation
+Oct 15, 2025 8:58:38 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 15, 2025 8:58:38 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize Search Check Release Master
+Oct 15, 2025 8:58:42 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 15, 2025 8:58:42 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize : Load of Transaction List
+Oct 15, 2025 8:58:59 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 15, 2025 8:58:59 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize UPdate Transaction
+Oct 15, 2025 8:59:04 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :For input string: "69052.5"
+Oct 15, 2025 8:59:24 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 15, 2025 8:59:24 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize Search Check Release Master
+Oct 15, 2025 8:59:25 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 15, 2025 8:59:25 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize UPdate Transaction
+Oct 15, 2025 8:59:58 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 15, 2025 8:59:58 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize Save Transaction
+Oct 15, 2025 9:00:06 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 15, 2025 9:00:06 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize Search Check Release Master
+Oct 15, 2025 9:00:09 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 15, 2025 9:00:09 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize : Load of Transaction List
+Oct 15, 2025 9:00:15 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 15, 2025 9:00:15 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize UPdate Transaction
+Oct 15, 2025 9:00:24 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 15, 2025 9:00:24 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Check Release Confirmation
+Oct 15, 2025 9:00:27 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 15, 2025 9:00:27 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Check Release Confirmation
+Oct 15, 2025 9:00:40 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 15, 2025 9:00:40 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize Save Transaction
+Oct 15, 2025 9:01:59 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 15, 2025 9:01:59 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize UPdate Transaction
+Oct 15, 2025 9:24:04 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 15, 2025 9:24:04 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Check Release Confirmation
+Oct 15, 2025 9:24:06 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 15, 2025 9:24:06 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize Search Check Release Master
+Oct 15, 2025 9:24:08 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 15, 2025 9:24:08 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize UPdate Transaction
+Oct 15, 2025 9:24:26 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :Invalid update mode. Unable to save record.
+Oct 15, 2025 9:24:53 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :Invalid update mode. Unable to save record.
+Oct 15, 2025 9:25:50 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :Index: 2, Size: 1
+Oct 15, 2025 1:08:35 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 15, 2025 1:08:35 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Check Release Confirmation
+Oct 15, 2025 1:08:42 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 15, 2025 1:08:42 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize Search Check Release Master
+Oct 15, 2025 1:09:02 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 15, 2025 1:09:02 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize Print Transaction
+Oct 15, 2025 1:10:27 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 15, 2025 1:10:27 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Check Release Confirmation
+Oct 15, 2025 1:10:29 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 15, 2025 1:10:29 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize Search Check Release Master
+Oct 15, 2025 1:10:44 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 15, 2025 1:10:44 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize Print Transaction
+Oct 15, 2025 1:10:46 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 15, 2025 1:10:46 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize UPdate Transaction
+Oct 15, 2025 1:10:50 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 15, 2025 1:10:50 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize : Load of Transaction List
+Oct 15, 2025 1:10:51 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 15, 2025 1:10:51 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Check Release Confirmation
+Oct 15, 2025 1:10:54 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 15, 2025 1:10:54 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize Save Transaction
+Oct 15, 2025 1:10:58 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 15, 2025 1:10:58 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize Search Check Release Master
+Oct 15, 2025 1:11:00 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 15, 2025 1:11:00 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize UPdate Transaction
+Oct 15, 2025 1:11:05 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 15, 2025 1:11:05 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize : Load of Transaction List
+Oct 15, 2025 1:11:12 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 15, 2025 1:11:12 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize Save Transaction
+Oct 15, 2025 1:11:21 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 15, 2025 1:11:21 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize UPdate Transaction
+Oct 15, 2025 1:11:23 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 15, 2025 1:11:23 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize : Load of Transaction List
+Oct 15, 2025 1:11:24 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 15, 2025 1:11:24 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Check Release Confirmation
+Oct 15, 2025 1:11:25 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 15, 2025 1:11:25 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize Save Transaction
+Oct 15, 2025 1:11:41 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 15, 2025 1:11:41 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize UPdate Transaction
+Oct 15, 2025 1:11:53 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 15, 2025 1:11:53 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize Save Transaction
+Oct 15, 2025 1:14:02 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 15, 2025 1:14:02 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Check Release Confirmation
+Oct 15, 2025 1:14:09 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 15, 2025 1:14:09 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize Search Check Release Master
+Oct 15, 2025 1:14:18 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :Transaction was not confirmed.
+Oct 15, 2025 1:14:30 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :Transaction confirmed successfully.
+Oct 15, 2025 1:14:30 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize Close Transaction
+Oct 15, 2025 1:14:36 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 15, 2025 1:14:36 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize Print Transaction
+Oct 15, 2025 4:37:13 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 15, 2025 4:37:13 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Check Release Confirmation
+Oct 15, 2025 4:37:20 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 15, 2025 4:37:20 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize Search Check Release Master
+Oct 15, 2025 4:37:29 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :Transaction was not confirmed.
+Oct 15, 2025 4:37:51 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 15, 2025 4:37:51 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize : Load of Transaction List
+Oct 15, 2025 4:39:44 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :Transaction was not confirmed.
+Oct 15, 2025 4:39:55 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :Transaction confirmed successfully.
+Oct 15, 2025 4:39:55 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize Close Transaction
+Oct 15, 2025 4:40:52 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 15, 2025 4:40:52 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize Print Transaction
+Oct 15, 2025 4:41:32 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 15, 2025 4:41:32 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize Print Transaction
+Oct 15, 2025 4:52:06 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 15, 2025 4:52:06 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Check Release Confirmation
+Oct 15, 2025 4:52:12 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 15, 2025 4:52:12 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize Search Check Release Master
+Oct 15, 2025 4:52:21 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 15, 2025 4:52:21 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize Print Transaction
+Oct 15, 2025 4:52:43 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 15, 2025 4:52:43 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize Print Transaction
+Oct 16, 2025 1:15:21 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 16, 2025 1:15:21 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Check Release Confirmation
+Oct 16, 2025 1:15:26 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 16, 2025 1:15:26 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize Search Check Release Master
+Oct 16, 2025 1:15:29 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 16, 2025 1:15:29 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize : Load of Transaction List
+Oct 16, 2025 1:15:48 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :Transaction was not confirmed.
+Oct 16, 2025 1:16:45 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :Transaction voided successfully.
+Oct 16, 2025 1:16:45 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize Void Transaction
+Oct 16, 2025 1:16:51 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 16, 2025 1:16:51 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize Search Check Release Master
+Oct 16, 2025 2:08:12 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 16, 2025 2:08:12 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Check Release Confirmation
+Oct 16, 2025 2:08:20 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 16, 2025 2:08:20 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize Search Check Release Master
+Oct 16, 2025 2:08:49 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 16, 2025 2:08:49 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize Print Transaction
+Oct 16, 2025 2:09:07 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 16, 2025 2:09:07 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize Search Check Release Master
+Oct 16, 2025 2:09:10 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :Transaction was not confirmed.
+Oct 16, 2025 2:09:13 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :Transaction confirmed successfully.
+Oct 16, 2025 2:09:13 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize Close Transaction
+Oct 16, 2025 2:09:28 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :No record found.
+Oct 16, 2025 2:11:29 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 16, 2025 2:11:29 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Check Release Confirmation
+Oct 16, 2025 2:11:43 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :Unable to open transaction master record.
+Oct 16, 2025 2:11:55 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 16, 2025 2:11:55 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Initialize Search Check Release Master
+Oct 17, 2025 9:35:00 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 17, 2025 9:35:00 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Check Release Confirmation
+Oct 17, 2025 9:37:44 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 17, 2025 9:37:44 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Check Release Confirmation
+Oct 17, 2025 9:39:58 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Check Release Confirmation :null
+Oct 17, 2025 9:39:58 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Check Release Confirmation : Success on Check Release Confirmation
