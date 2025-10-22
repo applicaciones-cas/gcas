@@ -215,6 +215,7 @@ public class AccountsAccreditation_EntryController implements Initializable, Scr
                     if (!isJSONSuccess(poAppController.saveRecord(), "Initialize Save Record")) {
                         return;
                     }
+                    
                     if (poAppController.getModel().getRecordStatus().equals("0")) {
                         if (ShowMessageFX.OkayCancel(null, psFormName, "Do you want to Confirm transaction?") == true) {
                             
